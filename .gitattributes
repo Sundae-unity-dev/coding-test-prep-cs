@@ -1,0 +1,2 @@
+# Blazor WASM 런박스 자산은 줄바꿈 변환 금지 (SRI 무결성 해시 보존)
+run/** -text
