@@ -330,7 +330,7 @@
   <p>문제를 받으면 본문보다 먼저 <b>입력 크기 N의 범위와 시간 제한</b>을 보세요. 대부분의 채점 환경은 1초에 약 1억 번(10<sup>8</sup>) 정도의 단순 연산을 처리한다고 보면 돼요. 여기서 어떤 시간 복잡도까지 허용되는지가 바로 계산되고, 그게 곧 쓸 수 있는 알고리즘의 후보가 돼요.</p>
   <table>
     <tr><th>N의 최대 크기</th><th>허용되는 복잡도</th><th>후보 알고리즘</th></tr>
-    <tr><td>N ≤ 11</td><td>O(N!)</td><td>순열 완전 탐색</td></tr>
+    <tr><td>N ≤ 10</td><td>O(N!)</td><td>순열 완전 탐색 (10! ≈ 360만)</td></tr>
     <tr><td>N ≤ 20</td><td>O(2<sup>N</sup>)</td><td>부분집합 탐색, 비트마스킹</td></tr>
     <tr><td>N ≤ 500</td><td>O(N<sup>3</sup>)</td><td>플로이드 워셜, 3중 반복문</td></tr>
     <tr><td>N ≤ 2,000</td><td>O(N<sup>2</sup>)</td><td>2중 반복문, 기초 DP</td></tr>
@@ -394,7 +394,8 @@
         <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; n; i++)
         {
             <span class="cm">// 공백으로 구분된 한 줄을 숫자 배열로 받는 패턴이에요</span>
-            <span class="kw">int</span>[] arr = input.ReadLine().Split(<span class="st">' '</span>).Select(<span class="kw">int</span>.Parse).ToArray();
+            <span class="cm">// 공백이 여러 개여도 안전하도록 빈 항목을 제거해요</span>
+            <span class="kw">int</span>[] arr = input.ReadLine().Split(<span class="st">' '</span>, <span class="ty">StringSplitOptions</span>.RemoveEmptyEntries).Select(<span class="kw">int</span>.Parse).ToArray();
             sb.AppendLine((arr[<span class="nm">0</span>] + arr[<span class="nm">1</span>]).ToString());
         }
 
@@ -656,7 +657,7 @@ thread.Join();</pre>
 
 // ===== 내비게이션 : 현재 섹션 하이라이트 =====
 (function () {
-  var links = document.querySelectorAll('#topnav a');
+  var links = document.querySelectorAll('#topnav a[href^="#"]');
   var sections = Array.prototype.map.call(links, function (a) {
     return document.querySelector(a.getAttribute('href'));
   });

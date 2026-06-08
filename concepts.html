@@ -607,7 +607,7 @@ students.Sort((a, b) =&gt;
       <button data-ok="1">(b + a).CompareTo(a + b) 기준</button>
       <button data-ok="0">길이가 긴 순서</button>
     </div>
-    <div class="expl"><b class="ok">정답: (b + a).CompareTo(a + b)</b><br>"34" + "3" = 343 과 "3" + "34" = 334 처럼, 두 문자열을 직접 이어 붙여본 결과끼리 비교해야 해요. 사전순 내림차순이면 "3"과 "30" 중 "30"이 앞에 와서 303 &lt; 330 으로 손해를 봐요. 프로그래머스 "가장 큰 수"의 핵심 아이디어예요.</div>
+    <div class="expl"><b class="ok">정답: (b + a).CompareTo(a + b)</b><br>"34" + "3" = 343 과 "3" + "34" = 334 처럼, 두 문자열을 직접 이어 붙여본 결과끼리 비교해야 해요. 올바른 정렬은 "3"+"30"="330", 잘못된(사전순 내림차순) 정렬은 "30"+"3"="303" 이라, 더 큰 330을 만드는 "3"을 앞에 둬야 이득이에요. 프로그래머스 "가장 큰 수"의 핵심 아이디어예요.</div>
     <button class="retry">다시 풀기</button>
   </div>
 </div>
@@ -636,7 +636,7 @@ students.Sort((a, b) =&gt;
     }
     <span class="kw">return</span> -<span class="nm">1</span>;
 }</pre>
-  <p>C#에는 <code>Array.BinarySearch(arr, target)</code>이 내장되어 있어요. 찾으면 인덱스, 없으면 음수를 반환해요. 다만 직접 구현도 손에 익혀두세요. 변형 문제에서는 내장 함수로 부족한 경우가 많아요.</p>
+  <p>C#에는 <code>Array.BinarySearch(arr, target)</code>이 내장되어 있어요. 찾으면 인덱스를, 없으면 "들어갈 위치"를 비트 반전한 음수를 반환해요. 그래서 <code>int pos = ~result;</code> 로 삽입 위치를 구할 수 있어요. 정렬이 안 된 배열에선 결과가 보장되지 않으니 주의하세요. 다만 직접 구현도 손에 익혀두세요. 변형 문제에서는 내장 함수로 부족한 경우가 많아요.</p>
 
   <h3>한 단계 위 : 파라메트릭 서치</h3>
   <p>"최소 시간", "최대 길이"처럼 <b>답 자체를 이분 탐색</b>하는 변형이에요. "답이 X라면 조건을 만족하는가?"라는 예/아니오 판정 함수를 만들고, X를 이분 탐색으로 좁혀가요.</p>
@@ -911,7 +911,7 @@ meetings.Sort((a, b) =&gt; a.end != b.end
 <span class="kw">static</span> <span class="kw">long</span> Fib(<span class="kw">int</span> n)
 {
     <span class="kw">if</span> (n &lt;= <span class="nm">1</span>) <span class="kw">return</span> n;
-    <span class="kw">if</span> (memo[n] != <span class="nm">0</span>) <span class="kw">return</span> memo[n];   <span class="cm">// 이미 구했으면 재사용해요</span>
+    <span class="kw">if</span> (memo[n] != <span class="nm">0</span>) <span class="kw">return</span> memo[n];   <span class="cm">// 이미 구했으면 재사용 (0이 정답일 수 있는 문제에선 bool 배열로 따로 표시)</span>
     <span class="kw">return</span> memo[n] = Fib(n - <span class="nm">1</span>) + Fib(n - <span class="nm">2</span>);
 }
 
@@ -1131,7 +1131,7 @@ pq.Enqueue(start, <span class="nm">0</span>);
 <span class="kw">while</span> (pq.Count &gt; <span class="nm">0</span>)
 {
     pq.TryDequeue(<span class="kw">out</span> <span class="kw">int</span> u, <span class="kw">out</span> <span class="kw">long</span> d);
-    <span class="cm">// 이미 더 짧은 경로로 확정된 정점이면 버려요 (중복 삽입 정리)</span>
+    <span class="cm">// 이미 더 짧게 확정된 정점이면 건너뛰어요. 중복으로 넣어도 이 검사가 걸러줘서 decrease-key가 필요 없어요</span>
     <span class="kw">if</span> (d &gt; dist[u]) <span class="kw">continue</span>;
 
     <span class="kw">foreach</span> (<span class="kw">var</span> (v, w) <span class="kw">in</span> graph[u])
@@ -1165,7 +1165,7 @@ pq.Enqueue(start, <span class="nm">0</span>);
       <button data-ok="1">간선 비용에 음수가 섞여 있을 때</button>
       <button data-ok="0">정점이 한 개뿐일 때</button>
     </div>
-    <div class="expl"><b class="no">음수 간선</b>이 있으면 다익스트라는 틀린 답을 낼 수 있어요. "한 번 확정한 최단 거리는 다시 줄어들지 않는다"는 전제가 음수 간선에서 깨지기 때문이에요. 이때는 벨만-포드(음수 허용)나 음수 사이클 판별이 필요해요. 간선이 많은 건 O(E log V)라 오히려 다익스트라가 잘 맞는 상황이에요.</div>
+    <div class="expl"><b class="ok">정답: 음수 간선이 있을 때</b><br>음수 간선이 있으면 다익스트라는 틀린 답을 낼 수 있어요. "한 번 확정한 최단 거리는 다시 줄어들지 않는다"는 전제가 음수 간선에서 깨지기 때문이에요. 이때는 벨만-포드(음수 허용)나 음수 사이클 판별이 필요해요. 간선이 많은 건 O(E log V)라 오히려 다익스트라가 잘 맞는 상황이에요.</div>
     <button class="retry">다시 풀기</button>
   </div>
 </div>
@@ -1257,7 +1257,7 @@ state ^= (<span class="nm">1</span> &lt;&lt; i);              <span class="cm">/
 
 <span class="cm">// 켜진 비트(원소) 개수는 이렇게 한 번에 셀 수 있어요</span>
 <span class="kw">int</span> cnt = <span class="ty">System</span>.Numerics.<span class="ty">BitOperations</span>.PopCount((<span class="kw">uint</span>)s);</pre>
-  <div class="warn"><b>주의</b> : <code>1 &lt;&lt; i</code>는 <code>int</code> 연산이라 i가 31 이상이면 넘쳐요. 원소가 32개를 넘으면 <code>1L &lt;&lt; i</code>처럼 <code>long</code>으로 미세요. 그리고 우선순위 때문에 <code>(state &amp; (1 &lt;&lt; i)) != 0</code>의 괄호를 꼭 챙기세요.</div>
+  <div class="warn"><b>주의</b> : <code>1 &lt;&lt; i</code>는 <code>int</code> 연산이라 i가 31 이상이면 넘쳐요. 원소가 32개를 넘으면 <code>1L &lt;&lt; i</code>처럼 <code>long</code>으로 미세요. 그리고 우선순위 때문에 <code>(state &amp; (1 &lt;&lt; i)) != 0</code>의 괄호를 꼭 챙기세요. 마스크가 <code>long</code>이면 켜진 비트 수도 <code>PopCount((ulong)s)</code> 로 세요.</div>
 
   <div class="quiz" data-qid="q15-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">정수 <code>state</code>의 i번째 비트가 켜져 있는지 확인하는 올바른 식은 무엇일까요?</span></div>
@@ -1319,7 +1319,7 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
       <button data-ok="1">-1</button>
       <button data-ok="0">0</button>
     </div>
-    <div class="expl"><b class="no">-1</b>이에요. C#의 <code>%</code>는 피제수의 부호를 따라가서 음수가 나올 수 있어요. 방향 회전에서 <code>(dir - 1) % 4</code>로 좌회전을 구현하면 -1이 나와 배열 인덱스 예외가 터져요. <code>(dir + 3) % 4</code>처럼 양수를 더해 도는 방식으로 피하세요. (파이썬의 % 와 동작이 다르니 주의)</div>
+    <div class="expl"><b class="ok">정답: -1</b><br>C#의 <code>%</code>는 피제수의 부호를 따라가서 음수가 나올 수 있어요. 방향 회전에서 <code>(dir - 1) % 4</code>로 좌회전을 구현하면 -1이 나와 배열 인덱스 예외가 터져요. <code>(dir + 3) % 4</code>처럼 양수를 더해 도는 방식으로 피하세요. (파이썬의 % 와 동작이 다르니 주의)</div>
     <button class="retry">다시 풀기</button>
   </div>
 

@@ -75,7 +75,7 @@ table.ex pre { background: none; color: #1F2230; padding: 6px 0; margin: 0; font
 .case small { font-weight: 600; color: #9AA0B5; }
 .case.p { background: #EFFAF3; border-color: #BBE7CC; } .case.p .mark { color: #16A34A; }
 .case.f { background: #FEF1F1; border-color: #F3C2C2; } .case.f .mark { color: #DC2626; }
-.case-detail { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 4px 4px 8px; }
+.case-detail { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; padding: 4px 4px 10px; }
 .case-detail b { font-size: 12px; color: #6A2FD0; display: block; margin-bottom: 3px; }
 .case-detail pre { background: #1E1E2E; color: #E4E4F0; border-radius: 8px; padding: 8px 10px; font-size: 12px; margin: 0; white-space: pre-wrap; }
 
