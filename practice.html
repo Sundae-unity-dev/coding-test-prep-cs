@@ -6,18 +6,13 @@
 <title>코딩 테스트 예시 문제 (C#)</title>
 <style>
   @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
-
   :root {
     --purple: #8843FF; --purple-dark: #6A2FD0; --purple-bg: #F4EEFF;
     --ink: #1F2230; --ink-soft: #555B6E; --line: #E5E2F0; --bg: #FAFAFD;
-    --card: #FFFFFF; --code-bg: #1E1E2E; --code-ink: #E4E4F0;
-    --green: #16A34A; --amber: #D97706; --red: #DC2626;
+    --card: #FFFFFF; --green: #16A34A; --amber: #D97706;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif;
-    background: var(--bg); color: var(--ink); line-height: 1.7;
-  }
+  body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.7; }
 
   nav {
     position: sticky; top: 0; z-index: 100;
@@ -26,103 +21,49 @@
     display: flex; align-items: center; gap: 8px; padding: 0 20px; height: 56px;
   }
   nav .logo { font-weight: 800; color: var(--purple); font-size: 15px; margin-right: auto; }
-  nav a {
-    color: var(--ink-soft); text-decoration: none; font-size: 13.5px; font-weight: 700;
-    padding: 7px 13px; border-radius: 8px; transition: all 0.15s;
-  }
+  nav a { color: var(--ink-soft); text-decoration: none; font-size: 13.5px; font-weight: 700; padding: 7px 13px; border-radius: 8px; transition: all 0.15s; }
   nav a:hover { background: var(--purple-bg); color: var(--purple-dark); }
 
   header.hero {
     background: linear-gradient(135deg, #3B1B7E 0%, #6A2FD0 55%, #8843FF 100%);
-    color: #fff; text-align: center; padding: 64px 24px 56px;
+    color: #fff; text-align: center; padding: 60px 24px 52px;
   }
-  header.hero .badge {
-    display: inline-block; background: rgba(255,255,255,0.18);
-    border: 1px solid rgba(255,255,255,0.35); padding: 4px 14px;
-    border-radius: 99px; font-size: 13px; font-weight: 600; margin-bottom: 16px;
-  }
+  header.hero .badge { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); padding: 4px 14px; border-radius: 99px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
   header.hero h1 { font-size: 32px; font-weight: 800; margin-bottom: 12px; }
-  header.hero p { font-size: 15.5px; opacity: 0.88; max-width: 600px; margin: 0 auto; }
+  header.hero p { font-size: 15.5px; opacity: 0.88; max-width: 620px; margin: 0 auto; }
 
-  main { max-width: 880px; margin: 0 auto; padding: 28px 20px 80px; }
+  main { max-width: 900px; margin: 0 auto; padding: 28px 20px 80px; }
 
-  .progress-wrap {
-    position: sticky; top: 64px; z-index: 50;
-    background: #fff; border: 1px solid var(--line); border-radius: 12px;
-    padding: 12px 18px; margin-bottom: 8px;
-    display: flex; align-items: center; gap: 14px;
-    box-shadow: 0 2px 10px rgba(60,30,130,0.06);
-  }
+  .progress-wrap { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px 18px; display: flex; align-items: center; gap: 14px; box-shadow: 0 2px 10px rgba(60,30,130,0.06); }
   .progress-bar { flex: 1; height: 10px; background: var(--line); border-radius: 99px; overflow: hidden; }
   .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--purple), #B388FF); border-radius: 99px; transition: width 0.3s ease; }
-  .progress-text { font-size: 13.5px; font-weight: 700; color: var(--purple-dark); min-width: 90px; text-align: right; }
+  .progress-text { font-size: 13.5px; font-weight: 700; color: var(--purple-dark); min-width: 92px; text-align: right; }
 
-  .howto {
-    background: var(--purple-bg); border-left: 4px solid var(--purple);
-    border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 18px 0 8px; font-size: 14.5px;
-  }
+  .howto { background: var(--purple-bg); border-left: 4px solid var(--purple); border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 16px 0 6px; font-size: 14.5px; }
   .howto strong { color: var(--purple-dark); }
 
-  .prob {
-    background: var(--card); border: 1px solid var(--line); border-radius: 16px;
-    padding: 22px 24px; margin-top: 20px;
-  }
-  .prob.solved { border-color: var(--green); box-shadow: 0 0 0 1px var(--green) inset; }
-  .prob .top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
-  .prob .tag {
-    font-size: 11.5px; font-weight: 800; color: #fff; background: var(--purple);
-    padding: 3px 10px; border-radius: 99px;
-  }
-  .prob .lv { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 99px; border: 1px solid var(--line); color: var(--ink-soft); }
-  .prob .lv.easy { color: var(--green); border-color: #BBE7CC; background: #EFFAF3; }
-  .prob .lv.mid { color: var(--amber); border-color: #F2D9AE; background: #FFF7ED; }
-  .prob h2 { font-size: 20px; font-weight: 800; margin: 2px 0 10px; }
-  .prob .desc { font-size: 15px; }
-  .prob h4 { font-size: 14px; font-weight: 800; color: var(--purple-dark); margin: 16px 0 6px; }
-
-  table {
-    width: 100%; border-collapse: collapse; margin-top: 6px;
-    background: #fff; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); font-size: 13.5px;
-  }
-  th { background: var(--purple); color: #fff; padding: 8px 12px; text-align: left; font-weight: 700; }
-  td { padding: 8px 12px; border-top: 1px solid var(--line); vertical-align: top; }
-  td code, .desc code { background: #EFEAFB; color: var(--purple-dark); padding: 1px 6px; border-radius: 5px; font-family: Consolas, 'D2Coding', monospace; font-size: 0.92em; }
-
-  pre {
-    background: var(--code-bg); color: var(--code-ink); border-radius: 12px;
-    padding: 16px 18px; margin-top: 8px; overflow-x: auto; font-size: 13px; line-height: 1.6;
-    font-family: Consolas, 'D2Coding', monospace;
-  }
-  pre .cm { color: #7E8BA3; } pre .kw { color: #C792EA; } pre .st { color: #C3E88D; }
-  pre .ty { color: #82AAFF; } pre .nm { color: #F78C6C; }
-
-  .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; align-items: center; }
-  .reveal-btn, .judge {
-    font-size: 13.5px; font-weight: 700; padding: 9px 16px; border-radius: 9px;
-    cursor: pointer; font-family: inherit; text-decoration: none; transition: all 0.15s; border: 1.5px solid var(--purple);
-  }
-  .reveal-btn { background: #fff; color: var(--purple-dark); }
-  .reveal-btn:hover { background: var(--purple); color: #fff; }
-  .judge { background: var(--purple); color: #fff; border-color: var(--purple); display: inline-flex; align-items: center; gap: 6px; }
-  .judge:hover { background: var(--purple-dark); }
-  .reveal-body { display: none; margin-top: 6px; }
-  .reveal-body.open { display: block; }
-  .hint-box { background: #FFF7ED; border-left: 4px solid var(--amber); border-radius: 0 10px 10px 0; padding: 13px 17px; font-size: 14px; }
-
-  label.solve {
-    margin-left: auto; display: inline-flex; align-items: center; gap: 8px;
-    font-size: 13.5px; font-weight: 700; color: var(--ink-soft); cursor: pointer;
-    border: 1px solid var(--line); border-radius: 9px; padding: 8px 14px;
-  }
-  label.solve input { accent-color: var(--green); width: 16px; height: 16px; }
-  label.solve.on { color: var(--green); border-color: var(--green); background: #EFFAF3; }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 18px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; display: flex; flex-direction: column; transition: all 0.15s; }
+  .card:hover { border-color: var(--purple); box-shadow: 0 8px 22px rgba(60,30,130,0.08); }
+  .card.solved { border-color: var(--green); }
+  .card .top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .card .tag { font-size: 11.5px; font-weight: 800; color: #fff; background: var(--purple); padding: 3px 10px; border-radius: 99px; }
+  .card .lv { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 99px; border: 1px solid var(--line); color: var(--ink-soft); }
+  .card .lv.easy { color: var(--green); border-color: #BBE7CC; background: #EFFAF3; }
+  .card .lv.mid { color: var(--amber); border-color: #F2D9AE; background: #FFF7ED; }
+  .card .done { margin-left: auto; font-size: 12px; font-weight: 800; color: var(--green); display: none; }
+  .card.solved .done { display: inline; }
+  .card h2 { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+  .card p { font-size: 14px; color: var(--ink-soft); flex: 1; }
+  .card .go { margin-top: 16px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: var(--purple); color: #fff; text-decoration: none; font-size: 14.5px; font-weight: 800; padding: 11px 18px; border-radius: 10px; transition: all 0.15s; }
+  .card .go:hover { background: var(--purple-dark); }
+  .card.solved .go { background: #fff; color: var(--purple-dark); border: 1.5px solid var(--purple); }
 
   .reset { margin-top: 20px; background: none; border: 1px solid var(--line); color: var(--ink-soft); padding: 7px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: inherit; }
-  .reset:hover { border-color: var(--red); color: var(--red); }
-
+  .reset:hover { border-color: #DC2626; color: #DC2626; }
   footer { text-align: center; padding: 38px 20px; color: var(--ink-soft); font-size: 13px; border-top: 1px solid var(--line); margin-top: 50px; }
 
-  @media (max-width: 640px) { header.hero h1 { font-size: 25px; } .prob { padding: 18px 16px; } }
+  @media (max-width: 680px) { .cards { grid-template-columns: 1fr; } header.hero h1 { font-size: 25px; } }
 </style>
 </head>
 <body>
@@ -137,325 +78,86 @@
 <header class="hero">
   <div class="badge">Unity 트랙 수강생용</div>
   <h1>예시 문제로 손에 익히기</h1>
-  <p>개념 정리에서 배운 유형을 대표 문제로 직접 풀어 보는 페이지예요. 먼저 스스로 풀어 보고, 막히면 힌트를, 그래도 막히면 모범 답안을 펼쳐 보세요.</p>
+  <p>프로그래머스 대표 유형 6문제예요. "문제 풀기"를 누르면 코드 실행기가 열리고, 거기서 코드를 작성해 "채점하기"를 누르면 테스트 케이스를 모두 만족하는지 바로 판정돼요.</p>
 </header>
 
 <main>
 
   <div class="progress-wrap">
     <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
-    <div class="progress-text" id="progText">0 / 0 완료</div>
+    <div class="progress-text" id="progText">0 / 6 해결</div>
   </div>
 
-  <div class="howto"><strong>이렇게 푸세요</strong> : ① 문제와 입출력 예시를 읽고 접근법을 한국어로 떠올려요 → ② 채점 사이트 링크로 들어가 직접 코드를 작성하고 제출해요 → ③ 풀었으면 오른쪽 "풀었어요"에 체크해요. 진행 상황은 이 브라우저에 자동 저장돼요. 모범 답안은 비교용이니 먼저 스스로 고민한 뒤에 펼쳐 보길 권해요.</div>
+  <div class="howto"><strong>이렇게 풀어요</strong> : 문제를 고르면 코드 실행기(런박스)가 열려요. 문제 설명과 시작 코드가 준비돼 있으니, 직접 작성하고 <b>채점하기</b>를 누르면 공개/숨김 테스트 케이스를 한 번에 채점해 정답 여부를 알려줘요. 막히면 힌트와 모범 답안도 그 안에서 볼 수 있어요. 해결한 문제는 자동으로 표시돼요.</div>
 
-  <div class="howto" style="background:#EFFAF3;border-left-color:#16A34A;margin-top:8px;"><strong>코드 실행기 (베타)</strong> : 백준 채점 서비스가 일시 중단된 동안에도, 페이지 안에서 바로 C# 코드를 작성하고 실행해 볼 수 있어요. <a href="https://sundae-unity-dev.github.io/coding-test-prep-cs/run/" target="_blank" rel="noopener" style="font-weight:800;color:#15803D;text-decoration:none;">코드 실행기 열기 →</a></div>
-
-  <!-- ===== 1. 올바른 괄호 ===== -->
-  <div class="prob" data-key="p1">
-    <div class="top">
-      <span class="tag">스택 / 큐</span><span class="lv easy">입문</span>
-      <label class="solve"><input type="checkbox"><span>풀었어요</span></label>
+  <div class="cards" id="cards">
+    <div class="card" data-pid="bracket">
+      <div class="top"><span class="tag">스택 / 큐</span><span class="lv easy">입문</span><span class="done">해결 ✓</span></div>
+      <h2>1. 올바른 괄호</h2>
+      <p>괄호 문자열이 올바르게 짝지어졌는지 판별해요. 스택의 기본을 익히기 좋은 문제예요.</p>
+      <a class="go" href="https://sundae-unity-dev.github.io/coding-test-prep-cs/run/?problem=bracket" target="_blank" rel="noopener">문제 풀기 →</a>
     </div>
-    <h2>1. 올바른 괄호</h2>
-    <div class="desc">
-      <p><code>(</code> 와 <code>)</code> 로만 이루어진 문자열 <code>s</code> 가 주어져요. 모든 여는 괄호가 짝이 맞게 닫히면 <code>true</code>, 아니면 <code>false</code> 를 반환하세요.</p>
-      <h4>입출력 예시</h4>
-      <table>
-        <tr><th>s</th><th>반환값</th></tr>
-        <tr><td>"()()"</td><td>true</td></tr>
-        <tr><td>"(())()"</td><td>true</td></tr>
-        <tr><td>")()("</td><td>false</td></tr>
-        <tr><td>"(()("</td><td>false</td></tr>
-      </table>
+    <div class="card" data-pid="finisher">
+      <div class="top"><span class="tag">해시</span><span class="lv easy">입문</span><span class="done">해결 ✓</span></div>
+      <h2>2. 완주하지 못한 선수</h2>
+      <p>동명이인 속에서 완주하지 못한 한 명을 찾아요. Dictionary 활용의 정석이에요.</p>
+      <a class="go" href="https://sundae-unity-dev.github.io/coding-test-prep-cs/run/?problem=finisher" target="_blank" rel="noopener">문제 풀기 →</a>
     </div>
-    <div class="actions">
-      <button class="reveal-btn" data-target="h1">힌트 보기</button>
-      <button class="reveal-btn" data-target="s1">모범 답안 (C#)</button>
-      <a class="judge" href="https://school.programmers.co.kr/learn/courses/30/lessons/12909" target="_blank" rel="noopener">프로그래머스에서 풀기 →</a>
+    <div class="card" data-pid="triangle">
+      <div class="top"><span class="tag">DP</span><span class="lv mid">중급</span><span class="done">해결 ✓</span></div>
+      <h2>3. 정수 삼각형</h2>
+      <p>꼭대기에서 바닥까지 내려가는 경로 합의 최댓값을 구해요. 동적 계획법 입문 문제예요.</p>
+      <a class="go" href="https://sundae-unity-dev.github.io/coding-test-prep-cs/run/?problem=triangle" target="_blank" rel="noopener">문제 풀기 →</a>
     </div>
-    <div class="reveal-body" id="h1"><div class="hint-box">여는 괄호를 만나면 +1, 닫는 괄호를 만나면 -1 하며 세어 보세요. 중간에 카운트가 음수가 되면(닫는 괄호가 더 많으면) 그 순간 false예요. 끝까지 갔을 때 0이면 모든 짝이 맞은 거예요. 스택을 쓰지 않고 정수 하나로도 풀 수 있는 게 포인트예요.</div></div>
-    <div class="reveal-body" id="s1">
-      <pre><span class="kw">public</span> <span class="kw">bool</span> solution(<span class="kw">string</span> s)
-{
-    <span class="kw">int</span> open = <span class="nm">0</span>;
-    <span class="kw">foreach</span> (<span class="kw">char</span> c <span class="kw">in</span> s)
-    {
-        <span class="kw">if</span> (c == <span class="st">'('</span>) open++;
-        <span class="kw">else</span> open--;
-        <span class="kw">if</span> (open &lt; <span class="nm">0</span>) <span class="kw">return</span> <span class="kw">false</span>;   <span class="cm">// 닫는 괄호가 더 많으면 실패</span>
-    }
-    <span class="kw">return</span> open == <span class="nm">0</span>;                  <span class="cm">// 모두 짝이 맞아야 true</span>
-}</pre>
+    <div class="card" data-pid="gamemap">
+      <div class="top"><span class="tag">DFS / BFS</span><span class="lv mid">중급</span><span class="done">해결 ✓</span></div>
+      <h2>4. 게임 맵 최단거리</h2>
+      <p>격자 지도에서 도착점까지 최소 칸 수를 구해요. 가중치 없는 최단 거리는 BFS예요.</p>
+      <a class="go" href="https://sundae-unity-dev.github.io/coding-test-prep-cs/run/?problem=gamemap" target="_blank" rel="noopener">문제 풀기 →</a>
     </div>
-  </div>
-
-  <!-- ===== 2. 완주하지 못한 선수 ===== -->
-  <div class="prob" data-key="p2">
-    <div class="top">
-      <span class="tag">해시</span><span class="lv easy">입문</span>
-      <label class="solve"><input type="checkbox"><span>풀었어요</span></label>
+    <div class="card" data-pid="largest">
+      <div class="top"><span class="tag">정렬</span><span class="lv mid">중급</span><span class="done">해결 ✓</span></div>
+      <h2>5. 가장 큰 수</h2>
+      <p>수들을 이어 붙여 만들 수 있는 가장 큰 수를 만들어요. 커스텀 정렬 기준이 핵심이에요.</p>
+      <a class="go" href="https://sundae-unity-dev.github.io/coding-test-prep-cs/run/?problem=largest" target="_blank" rel="noopener">문제 풀기 →</a>
     </div>
-    <h2>2. 완주하지 못한 선수</h2>
-    <div class="desc">
-      <p>마라톤 참가자 명단 <code>participant</code> 와 완주자 명단 <code>completion</code> 이 주어져요. 완주하지 못한 단 한 명의 이름을 반환하세요. <b>동명이인이 있을 수 있어요.</b></p>
-      <h4>입출력 예시</h4>
-      <table>
-        <tr><th>participant</th><th>completion</th><th>반환값</th></tr>
-        <tr><td>["leo", "kiki", "eden"]</td><td>["eden", "kiki"]</td><td>"leo"</td></tr>
-        <tr><td>["mislav", "stanko", "mislav", "ana"]</td><td>["stanko", "ana", "mislav"]</td><td>"mislav"</td></tr>
-      </table>
-    </div>
-    <div class="actions">
-      <button class="reveal-btn" data-target="h2">힌트 보기</button>
-      <button class="reveal-btn" data-target="s2">모범 답안 (C#)</button>
-      <a class="judge" href="https://school.programmers.co.kr/learn/courses/30/lessons/42576" target="_blank" rel="noopener">프로그래머스에서 풀기 →</a>
-    </div>
-    <div class="reveal-body" id="h2"><div class="hint-box">동명이인 때문에 HashSet으로는 안 돼요. Dictionary에 이름별 인원수를 세어 두고, 완주자 명단을 돌며 하나씩 빼세요. 마지막에 값이 0보다 큰(=빠지지 않은) 이름이 답이에요. 두 명단을 정렬해 비교하는 방법도 있지만 해시가 더 빨라요.</div></div>
-    <div class="reveal-body" id="s2">
-      <pre><span class="kw">public</span> <span class="kw">string</span> solution(<span class="kw">string</span>[] participant, <span class="kw">string</span>[] completion)
-{
-    <span class="kw">var</span> count = <span class="kw">new</span> <span class="ty">Dictionary</span>&lt;<span class="kw">string</span>, <span class="kw">int</span>&gt;();
-    <span class="kw">foreach</span> (<span class="kw">var</span> p <span class="kw">in</span> participant)
-        count[p] = count.TryGetValue(p, <span class="kw">out</span> <span class="kw">int</span> c) ? c + <span class="nm">1</span> : <span class="nm">1</span>;
-
-    <span class="kw">foreach</span> (<span class="kw">var</span> c <span class="kw">in</span> completion)
-        count[c]--;                    <span class="cm">// 완주자는 하나씩 깎아요</span>
-
-    <span class="kw">foreach</span> (<span class="kw">var</span> kv <span class="kw">in</span> count)
-        <span class="kw">if</span> (kv.Value &gt; <span class="nm">0</span>) <span class="kw">return</span> kv.Key;   <span class="cm">// 남은 한 명이 미완주자</span>
-    <span class="kw">return</span> <span class="st">""</span>;
-}</pre>
+    <div class="card" data-pid="spicy">
+      <div class="top"><span class="tag">우선순위 큐</span><span class="lv mid">중급</span><span class="done">해결 ✓</span></div>
+      <h2>6. 더 맵게</h2>
+      <p>가장 안 매운 두 음식을 섞어 모두 K 이상으로 만들어요. 최소 힙의 대표 문제예요.</p>
+      <a class="go" href="https://sundae-unity-dev.github.io/coding-test-prep-cs/run/?problem=spicy" target="_blank" rel="noopener">문제 풀기 →</a>
     </div>
   </div>
 
-  <!-- ===== 3. 2xn 타일링 ===== -->
-  <div class="prob" data-key="p3">
-    <div class="top">
-      <span class="tag">DP</span><span class="lv mid">중급</span>
-      <label class="solve"><input type="checkbox"><span>풀었어요</span></label>
-    </div>
-    <h2>3. 2 x n 타일링</h2>
-    <div class="desc">
-      <p>2 x n 크기의 직사각형을 <code>1 x 2</code> 또는 <code>2 x 1</code> 타일로 채우는 방법의 수를 구하세요. 경우의 수가 커질 수 있으니 <b>10,007로 나눈 나머지</b>를 출력해요. (입력: 정수 n, 1 ≤ n ≤ 1,000)</p>
-      <h4>입출력 예시</h4>
-      <table>
-        <tr><th>입력 n</th><th>출력</th></tr>
-        <tr><td>2</td><td>2</td></tr>
-        <tr><td>4</td><td>5</td></tr>
-      </table>
-    </div>
-    <div class="actions">
-      <button class="reveal-btn" data-target="h3">힌트 보기</button>
-      <button class="reveal-btn" data-target="s3">모범 답안 (C#)</button>
-      <a class="judge" href="https://www.acmicpc.net/problem/11726" target="_blank" rel="noopener">백준에서 풀기 →</a>
-    </div>
-    <div class="reveal-body" id="h3"><div class="hint-box">마지막 타일을 어떻게 놓는지로 경우를 나눠 보세요. 맨 끝에 세로 타일(2 x 1) 하나를 놓으면 남은 건 2 x (n-1), 가로 타일(1 x 2) 두 장을 놓으면 남은 건 2 x (n-2)예요. 그래서 dp[n] = dp[n-1] + dp[n-2], 피보나치와 같은 점화식이에요. 더하면서 나머지(% 10007)를 꼭 취하세요.</div></div>
-    <div class="reveal-body" id="s3">
-      <pre><span class="kw">static</span> <span class="kw">void</span> Main()
-{
-    <span class="kw">int</span> n = <span class="kw">int</span>.Parse(<span class="ty">Console</span>.ReadLine());
-    <span class="kw">const</span> <span class="kw">int</span> MOD = <span class="nm">10007</span>;
-    <span class="kw">long</span>[] dp = <span class="kw">new</span> <span class="kw">long</span>[<span class="ty">Math</span>.Max(<span class="nm">3</span>, n + <span class="nm">1</span>)];
-    dp[<span class="nm">1</span>] = <span class="nm">1</span>; dp[<span class="nm">2</span>] = <span class="nm">2</span>;
-    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">3</span>; i &lt;= n; i++)
-        dp[i] = (dp[i - <span class="nm">1</span>] + dp[i - <span class="nm">2</span>]) % MOD;   <span class="cm">// 더하면서 나머지를 취해요</span>
-    <span class="ty">Console</span>.WriteLine(dp[n] % MOD);
-}</pre>
-    </div>
-  </div>
-
-  <!-- ===== 4. 미로 탐색 ===== -->
-  <div class="prob" data-key="p4">
-    <div class="top">
-      <span class="tag">DFS / BFS</span><span class="lv mid">중급</span>
-      <label class="solve"><input type="checkbox"><span>풀었어요</span></label>
-    </div>
-    <h2>4. 미로 탐색</h2>
-    <div class="desc">
-      <p>N x M 미로가 주어져요. <code>1</code> 은 갈 수 있는 칸, <code>0</code> 은 벽이에요. 출발점 (0, 0) 에서 도착점 (N-1, M-1) 까지 지나야 하는 <b>최소 칸 수</b>(출발과 도착 칸을 모두 포함)를 구하세요. 상하좌우로만 움직여요.</p>
-      <h4>입출력 예시</h4>
-      <table>
-        <tr><th>입력 (4 x 6)</th><th>출력</th></tr>
-        <tr><td><code>101111 / 101010 / 101011 / 111011</code></td><td>15</td></tr>
-      </table>
-    </div>
-    <div class="actions">
-      <button class="reveal-btn" data-target="h4">힌트 보기</button>
-      <button class="reveal-btn" data-target="s4">모범 답안 (C#)</button>
-      <a class="judge" href="https://www.acmicpc.net/problem/2178" target="_blank" rel="noopener">백준에서 풀기 →</a>
-    </div>
-    <div class="reveal-body" id="h4"><div class="hint-box">모든 이동 비용이 1인 최단 거리이니 BFS예요. 큐에서 칸을 꺼내 상하좌우 네 방향을 살피고, 격자 안이면서 길(1)이고 아직 방문하지 않은 칸이면 거리를 +1 해서 큐에 넣어요. 거리 표시는 반드시 <b>큐에 넣는 순간</b> 하세요. 꺼낼 때 표시하면 같은 칸이 여러 번 들어가요.</div></div>
-    <div class="reveal-body" id="s4">
-      <pre><span class="kw">static</span> <span class="kw">int</span>[] dx = { -<span class="nm">1</span>, <span class="nm">1</span>, <span class="nm">0</span>, <span class="nm">0</span> };
-<span class="kw">static</span> <span class="kw">int</span>[] dy = { <span class="nm">0</span>, <span class="nm">0</span>, -<span class="nm">1</span>, <span class="nm">1</span> };
-
-<span class="kw">static</span> <span class="kw">void</span> Main()
-{
-    <span class="kw">var</span> f = <span class="ty">Console</span>.ReadLine().Split();
-    <span class="kw">int</span> n = <span class="kw">int</span>.Parse(f[<span class="nm">0</span>]), m = <span class="kw">int</span>.Parse(f[<span class="nm">1</span>]);
-    <span class="kw">int</span>[,] maze = <span class="kw">new</span> <span class="kw">int</span>[n, m];
-    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; n; i++)
-    {
-        <span class="kw">string</span> row = <span class="ty">Console</span>.ReadLine();
-        <span class="kw">for</span> (<span class="kw">int</span> j = <span class="nm">0</span>; j &lt; m; j++) maze[i, j] = row[j] - <span class="st">'0'</span>;
-    }
-
-    <span class="kw">var</span> dist = <span class="kw">new</span> <span class="kw">int</span>[n, m];
-    <span class="kw">var</span> q = <span class="kw">new</span> <span class="ty">Queue</span>&lt;(<span class="kw">int</span> x, <span class="kw">int</span> y)&gt;();
-    q.Enqueue((<span class="nm">0</span>, <span class="nm">0</span>));
-    dist[<span class="nm">0</span>, <span class="nm">0</span>] = <span class="nm">1</span>;                    <span class="cm">// 시작 칸 포함 거리 1</span>
-
-    <span class="kw">while</span> (q.Count &gt; <span class="nm">0</span>)
-    {
-        <span class="kw">var</span> (x, y) = q.Dequeue();
-        <span class="kw">for</span> (<span class="kw">int</span> d = <span class="nm">0</span>; d &lt; <span class="nm">4</span>; d++)
-        {
-            <span class="kw">int</span> nx = x + dx[d], ny = y + dy[d];
-            <span class="kw">if</span> (nx &lt; <span class="nm">0</span> || nx &gt;= n || ny &lt; <span class="nm">0</span> || ny &gt;= m) <span class="kw">continue</span>;
-            <span class="kw">if</span> (maze[nx, ny] == <span class="nm">0</span> || dist[nx, ny] != <span class="nm">0</span>) <span class="kw">continue</span>;
-            dist[nx, ny] = dist[x, y] + <span class="nm">1</span>;   <span class="cm">// 큐에 넣을 때 거리 확정</span>
-            q.Enqueue((nx, ny));
-        }
-    }
-    <span class="ty">Console</span>.WriteLine(dist[n - <span class="nm">1</span>, m - <span class="nm">1</span>]);
-}</pre>
-    </div>
-  </div>
-
-  <!-- ===== 5. 가장 큰 수 ===== -->
-  <div class="prob" data-key="p5">
-    <div class="top">
-      <span class="tag">정렬</span><span class="lv mid">중급</span>
-      <label class="solve"><input type="checkbox"><span>풀었어요</span></label>
-    </div>
-    <h2>5. 가장 큰 수</h2>
-    <div class="desc">
-      <p>0 이상의 정수 배열 <code>numbers</code> 가 주어져요. 이 수들을 이어 붙여 만들 수 있는 <b>가장 큰 수</b>를 문자열로 반환하세요. (결과가 클 수 있어 문자열로 반환해요.)</p>
-      <h4>입출력 예시</h4>
-      <table>
-        <tr><th>numbers</th><th>반환값</th></tr>
-        <tr><td>[6, 10, 2]</td><td>"6210"</td></tr>
-        <tr><td>[3, 30, 34, 5, 9]</td><td>"9534330"</td></tr>
-        <tr><td>[0, 0, 0]</td><td>"0"</td></tr>
-      </table>
-    </div>
-    <div class="actions">
-      <button class="reveal-btn" data-target="h5">힌트 보기</button>
-      <button class="reveal-btn" data-target="s5">모범 답안 (C#)</button>
-      <a class="judge" href="https://school.programmers.co.kr/learn/courses/30/lessons/42746" target="_blank" rel="noopener">프로그래머스에서 풀기 →</a>
-    </div>
-    <div class="reveal-body" id="h5"><div class="hint-box">두 수 a, b의 순서는 단순 크기나 사전순이 아니라 "이어 붙인 결과"로 정해요. 즉 <code>b+a</code> 와 <code>a+b</code> 를 문자열로 비교해서 더 큰 쪽이 앞에 오게 정렬해요. 마지막 함정 하나, 모든 수가 0이면 결과가 "000..."이 되니 맨 앞이 "0"이면 그냥 "0"을 반환하세요.</div></div>
-    <div class="reveal-body" id="s5">
-      <pre><span class="cm">// using System; using System.Linq; 필요</span>
-<span class="kw">public</span> <span class="kw">string</span> solution(<span class="kw">int</span>[] numbers)
-{
-    <span class="kw">string</span>[] arr = numbers.Select(x =&gt; x.ToString()).ToArray();
-    <span class="ty">Array</span>.Sort(arr, (a, b) =&gt; (b + a).CompareTo(a + b));  <span class="cm">// 이어붙인 결과로 비교</span>
-    <span class="kw">if</span> (arr[<span class="nm">0</span>] == <span class="st">"0"</span>) <span class="kw">return</span> <span class="st">"0"</span>;     <span class="cm">// 모두 0이면 "0" 하나로</span>
-    <span class="kw">return</span> <span class="kw">string</span>.Concat(arr);
-}</pre>
-    </div>
-  </div>
-
-  <!-- ===== 6. 더 맵게 ===== -->
-  <div class="prob" data-key="p6">
-    <div class="top">
-      <span class="tag">우선순위 큐</span><span class="lv mid">중급</span>
-      <label class="solve"><input type="checkbox"><span>풀었어요</span></label>
-    </div>
-    <h2>6. 더 맵게</h2>
-    <div class="desc">
-      <p>모든 음식의 스코빌 지수를 <code>K</code> 이상으로 만들려고 해요. 가장 맵지 않은 두 음식을 골라 <code>가장 맵지 않은 음식 + (두 번째로 맵지 않은 음식 x 2)</code> 로 섞는 과정을 반복해요. 모든 음식이 K 이상이 되는 <b>최소 섞기 횟수</b>를 반환하고, 불가능하면 <code>-1</code> 을 반환하세요.</p>
-      <h4>입출력 예시</h4>
-      <table>
-        <tr><th>scoville</th><th>K</th><th>반환값</th></tr>
-        <tr><td>[1, 2, 3, 9, 10, 12]</td><td>7</td><td>2</td></tr>
-      </table>
-    </div>
-    <div class="actions">
-      <button class="reveal-btn" data-target="h6">힌트 보기</button>
-      <button class="reveal-btn" data-target="s6">모범 답안 (C#)</button>
-      <a class="judge" href="https://school.programmers.co.kr/learn/courses/30/lessons/42626" target="_blank" rel="noopener">프로그래머스에서 풀기 →</a>
-    </div>
-    <div class="reveal-body" id="h6"><div class="hint-box">매번 "가장 작은 값 두 개"가 필요해요. 매번 정렬하면 느리니 최소 힙(PriorityQueue)을 쓰세요. 가장 작은 값이 K 이상이 될 때까지 두 개를 꺼내 섞은 결과를 다시 넣어요. 꺼낼 게 하나뿐인데 아직 K 미만이면 -1이에요. C#의 PriorityQueue는 기본이 최소 힙이라 그대로 쓰면 돼요.</div></div>
-    <div class="reveal-body" id="s6">
-      <pre><span class="kw">public</span> <span class="kw">int</span> solution(<span class="kw">int</span>[] scoville, <span class="kw">int</span> K)
-{
-    <span class="kw">var</span> pq = <span class="kw">new</span> <span class="ty">PriorityQueue</span>&lt;<span class="kw">int</span>, <span class="kw">int</span>&gt;();
-    <span class="kw">foreach</span> (<span class="kw">var</span> s <span class="kw">in</span> scoville) pq.Enqueue(s, s);
-
-    <span class="kw">int</span> count = <span class="nm">0</span>;
-    <span class="kw">while</span> (pq.Peek() &lt; K)
-    {
-        <span class="kw">if</span> (pq.Count &lt; <span class="nm">2</span>) <span class="kw">return</span> -<span class="nm">1</span>;   <span class="cm">// 더 섞을 게 없는데 아직 K 미만</span>
-        <span class="kw">int</span> a = pq.Dequeue();
-        <span class="kw">int</span> b = pq.Dequeue();
-        pq.Enqueue(a + b * <span class="nm">2</span>, a + b * <span class="nm">2</span>);
-        count++;
-    }
-    <span class="kw">return</span> count;
-}</pre>
-    </div>
-  </div>
-
-  <button class="reset" id="resetBtn">풀이 기록 초기화</button>
+  <button class="reset" id="resetBtn">해결 기록 초기화</button>
 
 </main>
 
-<footer>코딩 테스트 예시 문제 | C# 기준 | 실제 채점은 각 문제의 채점 사이트에서 진행해요.</footer>
+<footer>코딩 테스트 예시 문제 | C# 기준 | 채점은 코드 실행기 안에서 바로 이루어져요.</footer>
 
 <script>
-// ===== 힌트 / 모범 답안 토글 =====
-document.querySelectorAll('.reveal-btn').forEach(function (btn) {
-  btn.addEventListener('click', function () {
-    var box = document.getElementById(btn.dataset.target);
-    var open = box.classList.toggle('open');
-    var base = btn.textContent.replace(' 닫기', '').replace(' 보기', '');
-    btn.textContent = open ? base + ' 닫기' : base + ' 보기';
-  });
-});
-
-// ===== 풀이 체크 : localStorage 저장 =====
 (function () {
   var KEY = 'ct_practice_solved_v1';
-  var probs = document.querySelectorAll('.prob');
-  var saved = {};
-  try { saved = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { saved = {}; }
-
+  var cards = document.querySelectorAll('.card');
+  function read() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
   function refresh() {
-    var done = 0;
-    probs.forEach(function (p) {
-      var box = p.querySelector('label.solve input');
-      p.classList.toggle('solved', box.checked);
-      p.querySelector('label.solve').classList.toggle('on', box.checked);
-      if (box.checked) done++;
+    var solved = read(), done = 0;
+    cards.forEach(function (c) {
+      var ok = !!solved[c.dataset.pid];
+      c.classList.toggle('solved', ok);
+      if (ok) done++;
     });
-    var total = probs.length;
-    var pct = total ? Math.round(done / total * 100) : 0;
-    document.getElementById('progFill').style.width = pct + '%';
-    document.getElementById('progText').textContent = done + ' / ' + total + ' 완료';
+    var total = cards.length;
+    document.getElementById('progFill').style.width = (total ? Math.round(done / total * 100) : 0) + '%';
+    document.getElementById('progText').textContent = done + ' / ' + total + ' 해결';
   }
-
-  probs.forEach(function (p) {
-    var key = p.dataset.key;
-    var box = p.querySelector('label.solve input');
-    box.checked = !!saved[key];
-    box.addEventListener('change', function () {
-      saved[key] = box.checked;
-      localStorage.setItem(KEY, JSON.stringify(saved));
-      refresh();
-    });
-  });
-
   document.getElementById('resetBtn').addEventListener('click', function () {
-    if (!confirm('풀이 기록을 모두 초기화할까요?')) return;
-    saved = {};
-    localStorage.removeItem(KEY);
-    probs.forEach(function (p) { p.querySelector('label.solve input').checked = false; });
-    refresh();
+    if (!confirm('해결 기록을 모두 초기화할까요?')) return;
+    localStorage.removeItem(KEY); refresh();
   });
-
+  // 다른 탭(코드 실행기)에서 정답 처리하면 돌아왔을 때 반영
+  window.addEventListener('focus', refresh);
+  window.addEventListener('storage', refresh);
   refresh();
 })();
 </script>
