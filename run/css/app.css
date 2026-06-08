@@ -85,7 +85,7 @@ table.ex pre { background: none; color: #1F2230; padding: 6px 0; margin: 0; font
 .toggles .reveal-btn.link { border-color: #E5E2F0; color: #555B6E; }
 .hint-box { margin-top: 10px; background: #FFF7ED; border-left: 4px solid #D97706; border-radius: 0 10px 10px 0; padding: 8px 18px; font-size: 14px; }
 .hint-box ul { margin: 8px 0 8px 18px; } .hint-box li { margin-bottom: 6px; }
-.output.sol { color: #C3E88D; margin-top: 10px; }
+.output.sol { color: #C3E88D; margin-top: 10px; white-space: pre; overflow-x: auto; }
 
 h1:focus {
     outline: none;

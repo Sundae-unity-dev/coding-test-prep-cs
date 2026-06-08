@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>C# 코드 실행기</title>
     <base href="/coding-test-prep-cs/run/" />
-    <link href="_framework/dotnet.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-uZd1CKiiKxg9+23T5snI5wKdRM/fcyVPIV5splgu65Q=" />
+    <link href="_framework/dotnet.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-U089tDCz42Ksyp84iLRXvYkMYH277AbLsFkx2QxUsHk=" />
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="css/app.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
@@ -38,6 +38,28 @@
         <span class="dismiss">🗙</span>
     </div>
     <script src="_framework/blazor.webassembly.66stpp682q.js"></script>
+    <script>
+      // 코드 입력칸을 코드 에디터처럼: Tab=4칸 들여쓰기, Enter=이전 줄 들여쓰기 따라가기.
+      // (Blazor 가 textarea 를 다시 그려도 document 위임 리스너라 항상 동작)
+      document.addEventListener('keydown', function (e) {
+        var ta = e.target;
+        if (!(ta instanceof HTMLTextAreaElement) || !ta.classList.contains('code')) return;
+
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          ta.setRangeText('    ', ta.selectionStart, ta.selectionEnd, 'end');
+          ta.dispatchEvent(new Event('input', { bubbles: true }));
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          var s = ta.selectionStart;
+          var lineStart = ta.value.lastIndexOf('\n', s - 1) + 1;
+          var m = ta.value.slice(lineStart, s).match(/^[ \t]*/);
+          var indent = m ? m[0] : '';
+          ta.setRangeText('\n' + indent, ta.selectionStart, ta.selectionEnd, 'end');
+          ta.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      });
+    </script>
 </body>
 
 </html>
