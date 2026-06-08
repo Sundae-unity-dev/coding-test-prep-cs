@@ -43,6 +43,14 @@
   }
   aside .brand h1 { font-size: 16.5px; font-weight: 800; color: var(--purple-dark); }
   aside .brand p { font-size: 12.5px; color: var(--ink-soft); margin-top: 2px; }
+  aside .brand .links { display: flex; gap: 6px; margin-top: 12px; }
+  aside .brand .links a {
+    flex: 1; text-align: center; text-decoration: none;
+    font-size: 12.5px; font-weight: 700; color: var(--purple-dark);
+    background: var(--purple-bg); border: 1px solid var(--line);
+    border-radius: 8px; padding: 7px 4px; transition: all 0.15s;
+  }
+  aside .brand .links a:hover { background: var(--purple); color: #fff; border-color: var(--purple); }
   aside .search { padding: 12px 14px; border-bottom: 1px solid var(--line); }
   aside .search input {
     width: 100%; padding: 9px 12px;
@@ -220,6 +228,10 @@
   <div class="brand">
     <h1>코딩 테스트 필수 개념</h1>
     <p>C# 기준 | 퀴즈 진행 상황 자동 저장</p>
+    <div class="links">
+      <a href="guide.html">준비 가이드</a>
+      <a href="practice.html">예시 문제</a>
+    </div>
   </div>
   <div class="search">
     <input type="text" id="searchBox" placeholder="개념 검색 (예: 정렬, BFS, DP)">
@@ -245,8 +257,9 @@
     <button data-topic="t14" data-kw="유니온파인드 union find 분리집합 서로소 disjoint 그래프 연결 사이클">14. 분리 집합 (Union-Find)</button>
     <button data-topic="t15" data-kw="비트마스킹 bitmask 비트연산 상태압축 부분집합 shift">15. 비트마스킹</button>
     <button data-topic="t16" data-kw="구현 시뮬레이션 implementation simulation 방향전환 좌표 회전">16. 구현과 시뮬레이션</button>
+    <button data-topic="t18" data-kw="길찾기 astar a* 에이스타 휴리스틱 미로 maze 다익스트라 bfs 경로 게임 navmesh 맨해튼">17. 길찾기 (A*와 미로)</button>
     <div class="grp">마무리</div>
-    <button data-topic="t17" data-kw="추천문제 기출 프로그래머스 백준 유형별 매핑 problem">17. 유형별 추천 문제</button>
+    <button data-topic="t17" data-kw="추천문제 기출 프로그래머스 백준 유형별 매핑 problem">18. 유형별 추천 문제</button>
   </div>
   <div class="nores" id="noRes">검색 결과가 없어요</div>
 </aside>
@@ -1322,7 +1335,109 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
   </div>
 </div>
 
-<!-- ==================== 17. 유형별 추천 문제 ==================== -->
+<!-- ==================== 17. 길찾기 (A*와 미로) ==================== -->
+<div class="topic" id="t18">
+  <div class="crumb">심화</div>
+  <h2>길찾기 알고리즘 (A*와 미로 탐색)</h2>
+  <p class="lead">시작점에서 목표점까지 최단 경로를 찾는 문제예요. 게임 길찾기, 미로 탈출, 지도 내비게이션의 핵심이고, 상황에 맞게 BFS, 다익스트라, A* 중 알맞은 것을 고르는 눈이 중요해요.</p>
+
+  <h3>먼저, 셋 중 무엇을 쓸까요?</h3>
+  <table>
+    <tr><th>상황</th><th>알맞은 알고리즘</th><th>이유</th></tr>
+    <tr><td>모든 이동 비용이 같음 (한 칸 = 1)</td><td>BFS (8번 주제)</td><td>가까운 곳부터 퍼져, 처음 도달한 순간이 곧 최단이에요</td></tr>
+    <tr><td>이동 비용이 칸/간선마다 다름</td><td>다익스트라 (13번 주제)</td><td>지금까지 거리가 가장 짧은 정점부터 확정해요</td></tr>
+    <tr><td>목표가 한 점으로 정해져 있고 빠른 길찾기가 필요</td><td>A*</td><td>목표 방향으로 탐색을 집중해, 같은 최단을 더 적게 탐색해요</td></tr>
+  </table>
+  <div class="tip"><strong>셋은 한 가족이에요</strong> : A*는 다익스트라에 "목표까지 남은 거리 추정값(휴리스틱)"을 더한 거예요. 휴리스틱을 0으로 두면 A*는 그대로 다익스트라가 되고, 모든 비용이 1인 다익스트라는 사실상 BFS예요. 그래서 하나를 이해하면 나머지가 쉬워져요.</div>
+
+  <h3>A*의 아이디어 : f = g + h</h3>
+  <p>A*는 다음에 살펴볼 칸을 고를 때 두 값을 더해 판단해요.</p>
+  <div class="card">
+    <ul class="plain">
+      <li><b>g(n)</b> : 시작점부터 지금 칸까지 <b>실제로 든 비용</b>이에요 (다익스트라의 거리와 같아요).</li>
+      <li><b>h(n)</b> : 지금 칸부터 목표까지 <b>예상 비용(휴리스틱)</b>이에요. 벽을 무시하고 어림한 거리예요.</li>
+      <li><b>f(n) = g(n) + h(n)</b> : 이 칸을 거치는 전체 경로의 예상 길이예요. 우선순위 큐에서 f가 가장 작은 칸부터 꺼내요.</li>
+    </ul>
+  </div>
+  <p>상하좌우만 움직이는 그리드에서는 <b>맨해튼 거리</b>(가로 차이 + 세로 차이)를 휴리스틱으로 써요. 대각선 이동이 가능하면 체비쇼프 거리나 유클리드 거리를 쓰고요.</p>
+  <div class="warn"><b>최단을 보장하는 조건</b> : 휴리스틱 h가 실제 남은 비용을 <b>절대 과대평가하지 않아야</b> 해요(이를 "허용 가능한 휴리스틱"이라 불러요). 맨해튼 거리는 벽이 있어도 실제 거리보다 클 수 없으니 안전해요. 과대평가하는 h를 쓰면 빨라지는 대신 최단이 아닐 수 있어요.</div>
+
+  <h3>그리드 미로에서의 A*</h3>
+  <pre><span class="cm">// grid : 0 = 길, 1 = 벽. (0,0)에서 (n-1, m-1)까지 최소 칸 수를 구해요</span>
+<span class="kw">static</span> <span class="kw">int</span> AStar(<span class="kw">int</span>[,] grid, <span class="kw">int</span> n, <span class="kw">int</span> m)
+{
+    <span class="kw">int</span>[] dx = { -<span class="nm">1</span>, <span class="nm">1</span>, <span class="nm">0</span>, <span class="nm">0</span> };
+    <span class="kw">int</span>[] dy = { <span class="nm">0</span>, <span class="nm">0</span>, -<span class="nm">1</span>, <span class="nm">1</span> };
+
+    <span class="cm">// 휴리스틱 : 목표까지 맨해튼 거리 (상하좌우만 이동하므로 과대평가가 없어요)</span>
+    <span class="kw">int</span> H(<span class="kw">int</span> x, <span class="kw">int</span> y) =&gt; <span class="ty">Math</span>.Abs(x - (n - <span class="nm">1</span>)) + <span class="ty">Math</span>.Abs(y - (m - <span class="nm">1</span>));
+
+    <span class="kw">var</span> g = <span class="kw">new</span> <span class="kw">int</span>[n, m];   <span class="cm">// g[x,y] = 시작부터 실제 비용</span>
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; n; i++)
+        <span class="kw">for</span> (<span class="kw">int</span> j = <span class="nm">0</span>; j &lt; m; j++) g[i, j] = <span class="kw">int</span>.MaxValue;
+
+    <span class="kw">var</span> pq = <span class="kw">new</span> <span class="ty">PriorityQueue</span>&lt;(<span class="kw">int</span> x, <span class="kw">int</span> y), <span class="kw">int</span>&gt;();  <span class="cm">// 우선순위 = f = g + h</span>
+    g[<span class="nm">0</span>, <span class="nm">0</span>] = <span class="nm">0</span>;
+    pq.Enqueue((<span class="nm">0</span>, <span class="nm">0</span>), H(<span class="nm">0</span>, <span class="nm">0</span>));
+
+    <span class="kw">while</span> (pq.Count &gt; <span class="nm">0</span>)
+    {
+        <span class="kw">var</span> (x, y) = pq.Dequeue();
+        <span class="cm">// 목표를 처음 꺼낸 순간이 최단이에요 (허용 가능한 휴리스틱 덕분)</span>
+        <span class="kw">if</span> (x == n - <span class="nm">1</span> &amp;&amp; y == m - <span class="nm">1</span>) <span class="kw">return</span> g[x, y] + <span class="nm">1</span>;  <span class="cm">// 칸 수로 환산</span>
+
+        <span class="kw">for</span> (<span class="kw">int</span> d = <span class="nm">0</span>; d &lt; <span class="nm">4</span>; d++)
+        {
+            <span class="kw">int</span> nx = x + dx[d], ny = y + dy[d];
+            <span class="kw">if</span> (nx &lt; <span class="nm">0</span> || nx &gt;= n || ny &lt; <span class="nm">0</span> || ny &gt;= m) <span class="kw">continue</span>;  <span class="cm">// 격자 밖</span>
+            <span class="kw">if</span> (grid[nx, ny] == <span class="nm">1</span>) <span class="kw">continue</span>;                          <span class="cm">// 벽</span>
+
+            <span class="kw">int</span> ng = g[x, y] + <span class="nm">1</span>;   <span class="cm">// 한 칸 이동 비용 1</span>
+            <span class="kw">if</span> (ng &lt; g[nx, ny])
+            {
+                g[nx, ny] = ng;
+                pq.Enqueue((nx, ny), ng + H(nx, ny));   <span class="cm">// f = g + h 로 우선순위 부여</span>
+            }
+        }
+    }
+    <span class="kw">return</span> -<span class="nm">1</span>;   <span class="cm">// 도달 불가</span>
+}</pre>
+  <div class="tip"><strong>다익스트라와 거의 같죠?</strong> : 13번 주제의 다익스트라와 비교해 보세요. 딱 한 군데, 우선순위에 <code>ng</code>(=g) 대신 <code>ng + H(...)</code>(=g+h)를 넣는 것만 달라요. 이 한 줄이 탐색을 목표 쪽으로 끌어당겨요.</div>
+
+  <h3>미로 문제에서 빠지기 쉬운 곳</h3>
+  <div class="card">
+    <ul class="plain">
+      <li>경계 밖 검사(<code>nx, ny</code>가 격자 안인지)를 가장 먼저 해요. 안 하면 인덱스 예외가 나요.</li>
+      <li>벽(이동 불가 칸)과 방문 여부를 둘 다 확인해요.</li>
+      <li>"칸 수"를 세는지 "이동 횟수"를 세는지 정확히 읽어요. 시작 칸 포함 여부로 답이 1 차이 나요.</li>
+      <li>가중치가 없는 단순 미로라면 굳이 A*를 쓰지 말고 BFS를 쓰세요. A*는 코드가 길어 시험장에서 실수 여지가 커요.</li>
+    </ul>
+  </div>
+
+  <div class="quiz" data-qid="q18-1">
+    <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">A*에서 휴리스틱 <code>h</code>를 항상 0으로 두면 어떤 알고리즘과 똑같이 동작할까요?</span></div>
+    <div class="opts">
+      <button data-ok="1">다익스트라</button>
+      <button data-ok="0">완전 탐색</button>
+      <button data-ok="0">이분 탐색</button>
+    </div>
+    <div class="expl"><b class="ok">정답: 다익스트라</b><br>f = g + h에서 h가 0이면 f = g가 되어, "지금까지 실제 비용이 가장 작은 칸"부터 꺼내는 다익스트라와 완전히 같아져요. A*는 다익스트라에 목표 방향 힌트(h)를 얹은 확장이라고 이해하면 돼요. h가 좋을수록 불필요한 탐색이 줄어요.</div>
+    <button class="retry">다시 풀기</button>
+  </div>
+
+  <div class="quiz" data-qid="q18-2">
+    <div class="qhead"><span class="tag">QUIZ 2</span><span class="qtext">모든 칸의 이동 비용이 1인 단순 미로에서 최단 거리를 구할 때, 가장 간단하고 안전한 선택은 무엇일까요?</span></div>
+    <div class="opts">
+      <button data-ok="1">BFS</button>
+      <button data-ok="0">A* (꼭 휴리스틱을 써야 한다)</button>
+      <button data-ok="0">그리디</button>
+    </div>
+    <div class="expl"><b class="ok">정답: BFS</b><br>이동 비용이 모두 같으면 BFS의 "처음 도달 = 최단"이 그대로 성립하고, 코드도 가장 짧아요. A*도 정답을 주지만 우선순위 큐와 휴리스틱 때문에 코드가 길고 실수 여지가 커요. "도구는 문제에 맞게, 단순한 게 최고"가 시험장의 원칙이에요.</div>
+    <button class="retry">다시 풀기</button>
+  </div>
+</div>
+
+<!-- ==================== 18. 유형별 추천 문제 ==================== -->
 <div class="topic" id="t17">
   <div class="crumb">마무리</div>
   <h2>유형별 추천 문제</h2>
@@ -1362,6 +1477,7 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
     <tr><td>14. Union-Find</td><td>BOJ 1717 집합의 표현</td><td>BOJ 1976 여행 가자, BOJ 4195 친구 네트워크</td></tr>
     <tr><td>15. 비트마스킹</td><td>BOJ 11723 집합</td><td>BOJ 1182 부분수열의 합</td></tr>
     <tr><td>16. 구현과 시뮬레이션</td><td>BOJ 14503 로봇 청소기</td><td>BOJ 3190 뱀, P 거리두기 확인하기</td></tr>
+    <tr><td>17. 길찾기 (A*와 미로)</td><td>BOJ 2178 미로 탐색</td><td>BOJ 1238 파티, P 가장 먼 노드</td></tr>
   </table>
   <div class="warn"><b>한 가지만 더</b> : 문제 번호와 이름은 사이트 사정으로 바뀔 수 있어요. 검색이 안 되면 같은 유형의 비슷한 난이도 문제로 대체해도 학습 효과는 같아요. 중요한 건 "유형별로 손에 익히는 것"이에요.</div>
 </div>
@@ -1375,7 +1491,7 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
 
 <script>
 (function () {
-  var TOPICS = ['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11','t12','t13','t14','t15','t16','t17'];
+  var TOPICS = ['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11','t12','t13','t14','t15','t16','t18','t17'];
   var QUIZ_KEY = 'ct_concepts_quiz_v1';
   var menuBtns = document.querySelectorAll('#menu button');
   var current = 0;
