@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>C# 코드 실행기</title>
     <base href="/coding-test-prep-cs/run/" />
-    <link href="_framework/dotnet.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-U089tDCz42Ksyp84iLRXvYkMYH277AbLsFkx2QxUsHk=" />
+    <link href="_framework/dotnet.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-3bzrCwwsCYmwN/mdqo7v/UqxuFiVF5LxSYAt1EmTKBM=" />
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="css/app.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
@@ -45,18 +45,18 @@
         var ta = e.target;
         if (!(ta instanceof HTMLTextAreaElement) || !ta.classList.contains('code')) return;
 
+        // execCommand('insertText') 로 넣어야 네이티브 실행취소(Ctrl+Z) 스택이 보존돼요.
+        // (insertText 는 input 이벤트도 스스로 발생시켜 Blazor 바인딩이 갱신됨)
         if (e.key === 'Tab') {
           e.preventDefault();
-          ta.setRangeText('    ', ta.selectionStart, ta.selectionEnd, 'end');
-          ta.dispatchEvent(new Event('input', { bubbles: true }));
+          document.execCommand('insertText', false, '    ');
         } else if (e.key === 'Enter') {
           e.preventDefault();
           var s = ta.selectionStart;
           var lineStart = ta.value.lastIndexOf('\n', s - 1) + 1;
           var m = ta.value.slice(lineStart, s).match(/^[ \t]*/);
           var indent = m ? m[0] : '';
-          ta.setRangeText('\n' + indent, ta.selectionStart, ta.selectionEnd, 'end');
-          ta.dispatchEvent(new Event('input', { bubbles: true }));
+          document.execCommand('insertText', false, '\n' + indent);
         }
       });
     </script>
