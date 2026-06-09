@@ -6,8 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>C# 코드 실행기</title>
     <base href="/coding-test-prep-cs/run/" />
-    <link href="_framework/dotnet.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-ELUb8QOmw7JmA9xXYF1tQf3axc/j5CX5jur0SPcZt/s=" />
+    <script>(function(){try{var t=localStorage.getItem('ctprep_theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+    <link href="_framework/dotnet.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-deDu4j8itKEIPxV5eftLcRWCjA+gGfjoY64kRCYbquA=" />
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../assets/app.css" />
     <link rel="stylesheet" href="css/app.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <link href="CtRunner.styles.css" rel="stylesheet" />
@@ -95,13 +97,15 @@
             var el = document.getElementById(elementId);
             if (!el) return;
             if (window.ctEditor._ed) { window.ctEditor._ed.dispose(); window.ctEditor._ed = null; }
+            var initTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'vs-dark' : 'vs';
+            var initFont = parseInt(localStorage.getItem('ctrun_font') || '14', 10) || 14;
             window.ctEditor._ed = monaco.editor.create(el, {
               value: value || '',
               language: 'csharp',
-              theme: 'vs-dark',
+              theme: initTheme,
               automaticLayout: true,
               minimap: { enabled: false },
-              fontSize: 14,
+              fontSize: initFont,
               tabSize: 4,
               insertSpaces: true,
               scrollBeyondLastLine: false,
@@ -109,6 +113,10 @@
               renderLineHighlight: 'line',
               fontFamily: "'Cascadia Code','Consolas',monospace"
             });
+            // 단축키: Ctrl+Enter 채점, Ctrl+' 오류 체크 (버튼 DOM 클릭으로 Blazor 핸들러 호출)
+            var ed = window.ctEditor._ed;
+            ed.addAction({ id: 'ct-judge', label: '채점하기', keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter], run: function () { var b = document.querySelector('.run.judge'); if (b && !b.disabled) b.click(); } });
+            ed.addAction({ id: 'ct-check', label: '오류 체크하기', keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.Quote], run: function () { var b = document.querySelector('.run.check'); if (b && !b.disabled) b.click(); } });
           }).catch(function (e) { console.error('ctEditor init', e); });
         },
         getValue: function () { return window.ctEditor._ed ? window.ctEditor._ed.getValue() : null; },
@@ -130,9 +138,18 @@
           if (window.ctEditor._ed && window.monaco)
             monaco.editor.setModelMarkers(window.ctEditor._ed.getModel(), 'csharp', []);
         },
-        revealLine: function (line) { if (window.ctEditor._ed) { window.ctEditor._ed.revealLineInCenter(line); window.ctEditor._ed.setPosition({ lineNumber: line, column: 1 }); window.ctEditor._ed.focus(); } }
+        revealLine: function (line) { if (window.ctEditor._ed) { window.ctEditor._ed.revealLineInCenter(line); window.ctEditor._ed.setPosition({ lineNumber: line, column: 1 }); window.ctEditor._ed.focus(); } },
+        setTheme: function (t) { if (window.monaco) monaco.editor.setTheme(t); },
+        setFontSize: function (delta) {
+          if (!window.ctEditor._ed || !window.monaco) return;
+          var cur = window.ctEditor._ed.getOption(monaco.editor.EditorOption.fontSize);
+          var n = Math.max(11, Math.min(22, Math.round(cur) + delta));
+          window.ctEditor._ed.updateOptions({ fontSize: n });
+          try { localStorage.setItem('ctrun_font', n); } catch (e) {}
+        }
       };
     </script>
+    <script defer src="../assets/app.js"></script>
 </body>
 
 </html>

@@ -10,6 +10,31 @@ html, body {
 }
 pre, code, .output, .monaco-host { word-break: normal; overflow-wrap: normal; }
 
+/* ===== 다크 모드 (런박스는 하드코딩 색이라 셀렉터 타깃 오버라이드) ===== */
+html[data-theme="dark"], html[data-theme="dark"] body { background: #13131B; color: #E7E7F1; }
+html[data-theme="dark"] .rb-head .sitebrand { color: #E7E7F1; }
+html[data-theme="dark"] .rb-title { color: #C3A8FF; border-left-color: #2E2E40; }
+html[data-theme="dark"] .rb-head .back { color: #C3A8FF; border-color: #2E2E40; }
+html[data-theme="dark"] .rb-head .back:hover { background: #2A2342; }
+html[data-theme="dark"] .wrap .lead { color: #A4A6BC; }
+html[data-theme="dark"] .col label { color: #C3A8FF; }
+html[data-theme="dark"] .status, html[data-theme="dark"] .hint-box { background: #33291A; }
+html[data-theme="dark"] .statement { background: #1C1C2A; color: #E7E7F1; border-color: #2E2E40; }
+html[data-theme="dark"] .prob-head h1 { color: #E7E7F1; }
+html[data-theme="dark"] table.ex td { background: #1C1C2A; border-color: #2E2E40; }
+html[data-theme="dark"] table.ex pre { color: #E7E7F1; }
+html[data-theme="dark"] .toolbar .run.ghost { background: #1C1C2A; color: #C3A8FF; border-color: #2E2E40; }
+html[data-theme="dark"] .toolbar .run.ghost:hover:not(:disabled) { background: #2A2342; border-color: #9D6BFF; }
+html[data-theme="dark"] .toolbar .sample { background: #1C1C2A; color: #A4A6BC; border-color: #2E2E40; }
+html[data-theme="dark"] .toggles .reveal-btn { background: #1C1C2A; color: #C3A8FF; }
+html[data-theme="dark"] .toggles .reveal-btn.link { color: #A4A6BC; border-color: #2E2E40; }
+html[data-theme="dark"] .toggles .reveal-btn:hover { background: #9D6BFF; color: #fff; }
+html[data-theme="dark"] .verdict.ok { background: #17341F; color: #7CE0A0; border-color: #235038; }
+html[data-theme="dark"] .verdict.no { background: #3A1E1E; color: #FF9B9B; border-color: #5A2A2A; }
+html[data-theme="dark"] .case.p { background: #17341F; border-color: #235038; }
+html[data-theme="dark"] .case.f { background: #3A1E1E; border-color: #5A2A2A; }
+html[data-theme="dark"] .wrap .note code { background: #2A2342; color: #C3A8FF; }
+
 /* ===== 코드 실행기 (런박스) ===== */
 .rb-page { display: block; }
 .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 22px 70px; }
@@ -89,6 +114,7 @@ table.ex pre { background: none; color: #1F2230; padding: 6px 0; margin: 0; font
 .hint-box { margin-top: 10px; background: #FFF7ED; border-left: 4px solid #D97706; border-radius: 0 10px 10px 0; padding: 8px 18px; font-size: 14px; }
 .hint-box ul { margin: 8px 0 8px 18px; } .hint-box li { margin-bottom: 6px; }
 .output.sol { color: #C3E88D; margin-top: 10px; white-space: pre; overflow-x: auto; }
+.verdict .ms, h4.sec .ms { font-size: 12.5px; font-weight: 700; opacity: 0.7; margin-left: 8px; }
 
 /* ===== Monaco 코드 에디터 ===== */
 .monaco-host { height: 380px; border: 1px solid #2A2A3C; border-radius: 10px; overflow: hidden; }

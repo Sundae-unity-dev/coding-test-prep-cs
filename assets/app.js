@@ -29,6 +29,21 @@
     top.setAttribute('aria-label', '맨 위로'); top.title = '맨 위로'; top.textContent = '↑';
     top.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
+    // 런박스 페이지에서만: 에디터 폰트 크기 조절 버튼
+    if (window.ctEditor && window.ctEditor.setFontSize) {
+      var fUp = document.createElement('button');
+      fUp.className = 'fc-btn'; fUp.type = 'button'; fUp.textContent = 'A+';
+      fUp.style.fontSize = '15px'; fUp.style.fontWeight = '800';
+      fUp.setAttribute('aria-label', '글자 크게'); fUp.title = '에디터 글자 크게';
+      fUp.addEventListener('click', function () { window.ctEditor.setFontSize(1); });
+      var fDn = document.createElement('button');
+      fDn.className = 'fc-btn'; fDn.type = 'button'; fDn.textContent = 'A-';
+      fDn.style.fontSize = '13px'; fDn.style.fontWeight = '800';
+      fDn.setAttribute('aria-label', '글자 작게'); fDn.title = '에디터 글자 작게';
+      fDn.addEventListener('click', function () { window.ctEditor.setFontSize(-1); });
+      wrap.appendChild(fUp); wrap.appendChild(fDn);
+    }
+
     wrap.appendChild(tbtn); wrap.appendChild(top);
     document.body.appendChild(wrap);
 
