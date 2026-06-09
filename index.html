@@ -181,6 +181,11 @@
   .ticker .q .mk { font-weight: 800; opacity: 0.65; }
   @media (prefers-reduced-motion: reduce) { .ticker-track { animation: none; } }
 
+  /* 스크롤 진입 시 떠오르는 효과 */
+  .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.shown { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+
   @media (max-width: 760px) {
     /* 모바일에선 드롭다운(호버) 대신 최상위 링크만 줄바꿈으로 보여줘요 */
     nav { grid-template-columns: 1fr; height: auto; padding: 10px 16px; gap: 6px; }
@@ -193,6 +198,7 @@
     header h1 { font-size: 28px; }
   }
 </style>
+<noscript><style>.reveal{opacity:1;transform:none;}</style></noscript>
 </head>
 <body>
 
@@ -222,7 +228,6 @@
       </div></div>
     </li>
     <li><a href="practice.html">예시 문제</a></li>
-    <li><a class="run" href="run/">코드 실행기</a></li>
   </ul>
   <span></span>
 </nav>
@@ -233,14 +238,14 @@
   <p>응시 전략과 핵심 개념, 연습 문제를 한곳에 모았어요. 브라우저 안에서 바로 C# 코드를 실행하고 채점까지 해 볼 수 있어요.</p>
   <div class="cta">
     <a class="primary" href="guide.html">가이드부터 보기</a>
-    <a class="ghost" href="run/">코드 실행기 열기</a>
+    <a class="ghost" href="practice.html">예시 문제 풀어보기</a>
   </div>
 </header>
 
 <div class="stats">
-  <div class="stat"><b>21</b><span>핵심 개념 주제</span></div>
-  <div class="stat"><b>40</b><span>주제별 퀴즈</span></div>
-  <div class="stat"><b>16</b><span>대표 연습 문제</span></div>
+  <div class="stat"><b data-count="21">21</b><span>핵심 개념 주제</span></div>
+  <div class="stat"><b data-count="40">40</b><span>주제별 퀴즈</span></div>
+  <div class="stat"><b data-count="16">16</b><span>대표 연습 문제</span></div>
   <div class="stat"><b>C#</b><span>브라우저 내 실행</span></div>
 </div>
 
@@ -255,7 +260,7 @@
     <a class="q" href="concepts.html#t13"><span class="mk">Q.</span>다익스트라가 뭐예요?</a>
     <a class="q" href="concepts.html#t4"><span class="mk">Q.</span>해시는 언제 쓰나요?</a>
     <a class="q" href="concepts.html#t5"><span class="mk">Q.</span>정렬 기준을 바꾸려면?</a>
-    <a class="q" href="run/"><span class="mk">Q.</span>직접 코드를 돌려볼 수 있어요?</a>
+    <a class="q" href="practice.html"><span class="mk">Q.</span>직접 풀고 바로 채점받을 수 있어요?</a>
     <a class="q" href="guide.html" aria-hidden="true"><span class="mk">Q.</span>코딩 테스트, 어떻게 준비하지?</a>
     <a class="q" href="concepts.html#t1" aria-hidden="true"><span class="mk">Q.</span>시간 복잡도가 왜 중요해요?</a>
     <a class="q" href="concepts.html#t8" aria-hidden="true"><span class="mk">Q.</span>BFS랑 DFS, 언제 뭘 써요?</a>
@@ -265,14 +270,14 @@
     <a class="q" href="concepts.html#t13" aria-hidden="true"><span class="mk">Q.</span>다익스트라가 뭐예요?</a>
     <a class="q" href="concepts.html#t4" aria-hidden="true"><span class="mk">Q.</span>해시는 언제 쓰나요?</a>
     <a class="q" href="concepts.html#t5" aria-hidden="true"><span class="mk">Q.</span>정렬 기준을 바꾸려면?</a>
-    <a class="q" href="run/" aria-hidden="true"><span class="mk">Q.</span>직접 코드를 돌려볼 수 있어요?</a>
+    <a class="q" href="practice.html" aria-hidden="true"><span class="mk">Q.</span>직접 풀고 바로 채점받을 수 있어요?</a>
   </div>
 </div>
 
 <main>
   <h2 class="sec-title">무엇이 들어 있나요?</h2>
   <p class="sec-sub">전략과 개념, 문제 풀이를 단계별로 나눠 두었어요. 필요한 것부터 골라 시작해 보세요.</p>
-  <div class="cards">
+  <div class="cards reveal">
     <a class="card" href="guide.html">
       <div class="ico">🧭</div>
       <h3>준비 가이드</h3>
@@ -293,13 +298,7 @@
     </a>
   </div>
 
-  <a class="runbox" href="run/">
-    <span class="play">▶</span>
-    <span><b>C# 코드 실행기</b><br><span class="desc">브라우저 안에서 바로 코드를 작성하고 실행해요. 외부 채점 서버 없이 풀이를 돌려보고 채점까지 해 볼 수 있어요.</span></span>
-    <span class="arrow">열기 →</span>
-  </a>
-
-  <section class="flow">
+  <section class="flow reveal">
     <h2 class="sec-title">이렇게 학습해요</h2>
     <p class="sec-sub">처음이라면 위에서 아래 순서로 따라가는 걸 추천해요.</p>
     <div class="steps">
@@ -321,9 +320,48 @@
     </div>
   </section>
 
-  <div class="note"><strong>학습 진행 상황은 자동 저장돼요</strong> : 퀴즈 결과와 문제 풀이 기록은 사용하는 브라우저에 저장돼서, 다시 들어와도 이어서 볼 수 있어요.</div>
+  <div class="note reveal"><strong>학습 진행 상황은 자동 저장돼요</strong> : 퀴즈 결과와 문제 풀이 기록은 사용하는 브라우저에 저장돼서, 다시 들어와도 이어서 볼 수 있어요.</div>
 </main>
 
 <footer>Elice Coding Camp | C# 코딩 테스트 준비자료 | Unity 트랙 수강생용</footer>
+
+<script>
+  (function () {
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // 스크롤 진입 시 떠오르는 효과
+    var reveals = document.querySelectorAll('.reveal');
+    if (reduce || !('IntersectionObserver' in window)) {
+      reveals.forEach(function (el) { el.classList.add('shown'); });
+    } else {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); } });
+      }, { threshold: 0.15 });
+      reveals.forEach(function (el) { io.observe(el); });
+    }
+
+    // 통계 숫자 카운트업 (뷰포트 진입 시 0에서 목표값까지)
+    var stats = document.querySelectorAll('.stat b[data-count]');
+    function animateCount(el) {
+      var target = parseInt(el.getAttribute('data-count'), 10);
+      var dur = 900, start = null;
+      function step(ts) {
+        if (!start) start = ts;
+        var p = Math.min((ts - start) / dur, 1);
+        el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(step); else el.textContent = target;
+      }
+      requestAnimationFrame(step);
+    }
+    var band = document.querySelector('.stats');
+    if (band && 'IntersectionObserver' in window && !reduce) {
+      stats.forEach(function (el) { el.textContent = '0'; });
+      var so = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) { stats.forEach(animateCount); so.disconnect(); } });
+      }, { threshold: 0.4 });
+      so.observe(band);
+    }
+  })();
+</script>
 </body>
 </html>
