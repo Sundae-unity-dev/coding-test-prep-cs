@@ -102,6 +102,10 @@
   header .cta .primary:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(0,0,0,0.22); }
   header .cta .ghost { background: rgba(255,255,255,0.14); color: #fff; border: 1px solid rgba(255,255,255,0.4); }
   header .cta .ghost:hover { background: rgba(255,255,255,0.24); }
+  header .typed-line { font-size: 18px; font-weight: 700; min-height: 27px; margin: 0 auto 12px; position: relative; }
+  header .typed-line .cursor { display: inline-block; width: 2px; height: 1.05em; background: #fff; margin-left: 3px; vertical-align: -3px; animation: blink 1s step-end infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  header .hero-sub { font-size: 15.5px; opacity: 0.92; max-width: 620px; margin: 0 auto 28px; position: relative; line-height: 1.65; }
 
   /* 통계 띠 */
   .stats {
@@ -119,49 +123,37 @@
   .sec-title { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
   .sec-sub { color: var(--ink-soft); font-size: 14.5px; margin-bottom: 24px; }
 
-  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  /* 카드: 세로 스택 (아이콘 왼쪽, 내용 가운데, 화살표 오른쪽으로 각 맞춤) */
+  .cards { display: flex; flex-direction: column; gap: 16px; }
   a.card {
-    display: block; text-decoration: none; color: inherit;
+    display: flex; align-items: center; gap: 22px; text-decoration: none; color: inherit;
     background: #fff; border: 1px solid var(--line); border-radius: 16px;
-    padding: 28px 26px; transition: all 0.18s;
+    padding: 22px 28px; transition: transform 0.22s ease, border-color 0.18s ease, box-shadow 0.22s ease;
   }
   a.card:hover { border-color: var(--purple); transform: translateY(-3px); box-shadow: 0 10px 28px rgba(60,30,130,0.12); }
   a.card .ico {
-    width: 48px; height: 48px; border-radius: 12px; background: var(--purple-bg);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 24px; margin-bottom: 16px;
+    width: 52px; height: 52px; border-radius: 13px; background: var(--purple-bg);
+    display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0;
   }
-  a.card h3 { font-size: 19px; font-weight: 800; margin-bottom: 6px; }
+  a.card .ctxt { flex: 1; min-width: 0; }
+  a.card h3 { font-size: 19px; font-weight: 800; margin-bottom: 4px; }
   a.card p { font-size: 14px; color: var(--ink-soft); }
-  a.card .go { margin-top: 14px; font-size: 13.5px; font-weight: 700; color: var(--purple-dark); }
+  a.card .go { font-size: 14px; font-weight: 700; color: var(--purple-dark); white-space: nowrap; flex-shrink: 0; }
 
-  .runbox {
-    display: flex; align-items: center; gap: 16px; margin-top: 20px; text-decoration: none;
-    background: linear-gradient(135deg, #EFFAF3, #FFFFFF);
-    border: 1px solid #BBE7CC; border-radius: 16px; padding: 20px 24px; color: #15803D;
-    transition: all 0.18s;
-  }
-  .runbox:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(21,128,61,0.12); }
-  .runbox .play {
-    width: 46px; height: 46px; border-radius: 12px; background: #15803D; color: #fff;
-    display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
-  }
-  .runbox b { font-size: 16px; color: #166534; }
-  .runbox .desc { font-size: 13.5px; color: #3F6B50; }
-  .runbox .arrow { margin-left: auto; font-weight: 800; white-space: nowrap; }
-
-  /* 학습 흐름 */
+  /* 학습 흐름: 세로 스택 (번호 왼쪽, 내용 오른쪽) */
   .flow { margin-top: 56px; }
-  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .steps { display: flex; flex-direction: column; gap: 14px; }
   .step {
-    background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 24px 22px; position: relative;
+    display: flex; align-items: flex-start; gap: 18px;
+    background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px;
   }
   .step .n {
-    width: 30px; height: 30px; border-radius: 8px; background: var(--purple); color: #fff;
-    display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; margin-bottom: 14px;
+    width: 32px; height: 32px; border-radius: 9px; background: var(--purple); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex-shrink: 0;
   }
-  .step h4 { font-size: 16px; font-weight: 800; margin-bottom: 5px; }
-  .step p { font-size: 13.5px; color: var(--ink-soft); }
+  .step .stxt { flex: 1; min-width: 0; }
+  .step h4 { font-size: 16.5px; font-weight: 800; margin-bottom: 4px; }
+  .step p { font-size: 14px; color: var(--ink-soft); }
 
   .note {
     margin-top: 30px; background: var(--purple-bg); border-left: 4px solid var(--purple);
@@ -181,10 +173,10 @@
   .ticker .q .mk { font-weight: 800; opacity: 0.65; }
   @media (prefers-reduced-motion: reduce) { .ticker-track { animation: none; } }
 
-  /* 스크롤 진입 시 떠오르는 효과 */
-  .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s ease; }
-  .reveal.shown { opacity: 1; transform: none; }
-  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+  /* 스크롤 진입 시 떠오르는 효과 (애니메이션 후 JS가 클래스를 떼어 hover에 영향 없게) */
+  .reveal { opacity: 0; transform: translateY(20px); }
+  .reveal.shown { opacity: 1; transform: translateY(0); transition: opacity 0.55s ease, transform 0.55s ease; }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
 
   @media (max-width: 760px) {
     /* 모바일에선 드롭다운(호버) 대신 최상위 링크만 줄바꿈으로 보여줘요 */
@@ -193,7 +185,8 @@
     nav .links { flex-wrap: wrap; justify-content: center; gap: 4px 6px; }
     nav .links > li > a .caret { display: none; }
     nav .links .dropdown { display: none; }
-    .cards, .steps { grid-template-columns: 1fr; }
+    a.card { flex-wrap: wrap; gap: 14px; }
+    a.card .go { margin-left: auto; }
     .stats { grid-template-columns: repeat(2, 1fr); }
     header h1 { font-size: 28px; }
   }
@@ -235,7 +228,8 @@
 <header id="top">
   <div class="badge">Unity 트랙 수강생용</div>
   <h1>C# 코딩 테스트, 여기서 준비해요</h1>
-  <p>응시 전략과 핵심 개념, 연습 문제를 한곳에 모았어요. 브라우저 안에서 바로 C# 코드를 실행하고 채점까지 해 볼 수 있어요.</p>
+  <p class="typed-line"><span id="typed"></span><span class="cursor"></span></p>
+  <p class="hero-sub">흩어진 자료, 이제 그만 찾아도 돼요. 21개 핵심 개념과 16개 실전 문제, 4주 합격 로드맵까지 한곳에 모았어요. 막히면 힌트와 모범 답안이 있고, 작성한 풀이는 브라우저에서 바로 채점돼요.</p>
   <div class="cta">
     <a class="primary" href="guide.html">가이드부터 보기</a>
     <a class="ghost" href="practice.html">예시 문제 풀어보기</a>
@@ -277,45 +271,57 @@
 <main>
   <h2 class="sec-title">무엇이 들어 있나요?</h2>
   <p class="sec-sub">전략과 개념, 문제 풀이를 단계별로 나눠 두었어요. 필요한 것부터 골라 시작해 보세요.</p>
-  <div class="cards reveal">
-    <a class="card" href="guide.html">
+  <div class="cards">
+    <a class="card reveal" data-reveal-delay="0" href="guide.html">
       <div class="ico">🧭</div>
-      <h3>준비 가이드</h3>
-      <p>평가 기준, 4주 로드맵, 문제 접근법, 시간 배분, C# 세팅, 자주 하는 실수, 시험 전 체크리스트까지 응시 전략을 한곳에 정리했어요.</p>
+      <div class="ctxt">
+        <h3>준비 가이드</h3>
+        <p>평가 기준, 4주 로드맵, 문제 접근법, 시간 배분, C# 세팅, 자주 하는 실수, 시험 전 체크리스트까지 응시 전략을 한곳에 정리했어요.</p>
+      </div>
       <div class="go">가이드 열기 →</div>
     </a>
-    <a class="card" href="concepts.html">
+    <a class="card reveal" data-reveal-delay="110" href="concepts.html">
       <div class="ico">📚</div>
-      <h3>필수 개념 정리</h3>
-      <p>시간 복잡도부터 다익스트라, 위상정렬, 수학까지 21개 주제를 예제 코드와 함께 다뤄요. 주제마다 퀴즈가 있고 추천 문제도 연결돼 있어요.</p>
+      <div class="ctxt">
+        <h3>필수 개념 정리</h3>
+        <p>시간 복잡도부터 다익스트라, 위상정렬, 수학까지 21개 주제를 예제 코드와 함께 다뤄요. 주제마다 퀴즈가 있고 추천 문제도 연결돼 있어요.</p>
+      </div>
       <div class="go">개념 정리 열기 →</div>
     </a>
-    <a class="card" href="practice.html">
+    <a class="card reveal" data-reveal-delay="220" href="practice.html">
       <div class="ico">✍️</div>
-      <h3>예시 문제</h3>
-      <p>스택, 해시, DP, BFS, 정렬, 이분 탐색, 시뮬레이션 등 프로그래머스 대표 문제 16개를 풀어 봐요. 힌트와 C# 모범 답안이 있고, 코드 실행기에서 바로 채점돼요.</p>
+      <div class="ctxt">
+        <h3>예시 문제</h3>
+        <p>스택, 해시, DP, BFS, 정렬, 이분 탐색, 시뮬레이션 등 프로그래머스 대표 문제 16개를 풀어 봐요. 힌트와 C# 모범 답안이 있고, 코드 실행기에서 바로 채점돼요.</p>
+      </div>
       <div class="go">문제 풀러 가기 →</div>
     </a>
   </div>
 
-  <section class="flow reveal">
+  <section class="flow">
     <h2 class="sec-title">이렇게 학습해요</h2>
     <p class="sec-sub">처음이라면 위에서 아래 순서로 따라가는 걸 추천해요.</p>
     <div class="steps">
-      <div class="step">
+      <div class="step reveal" data-reveal-delay="0">
         <div class="n">1</div>
-        <h4>전략 잡기</h4>
-        <p>준비 가이드로 무엇을 평가하는지와 4주 로드맵, 시간 배분 요령을 먼저 익혀요.</p>
+        <div class="stxt">
+          <h4>전략 잡기</h4>
+          <p>준비 가이드로 무엇을 평가하는지와 4주 로드맵, 시간 배분 요령을 먼저 익혀요.</p>
+        </div>
       </div>
-      <div class="step">
+      <div class="step reveal" data-reveal-delay="110">
         <div class="n">2</div>
-        <h4>개념 다지기</h4>
-        <p>개념 정리에서 주제별 예제를 읽고, 퀴즈로 이해한 만큼 바로 확인해요.</p>
+        <div class="stxt">
+          <h4>개념 다지기</h4>
+          <p>개념 정리에서 주제별 예제를 읽고, 퀴즈로 이해한 만큼 바로 확인해요.</p>
+        </div>
       </div>
-      <div class="step">
+      <div class="step reveal" data-reveal-delay="220">
         <div class="n">3</div>
-        <h4>손에 붙이기</h4>
-        <p>예시 문제를 코드 실행기에서 직접 풀고 채점하면서 풀이 감각을 길러요.</p>
+        <div class="stxt">
+          <h4>손에 붙이기</h4>
+          <p>예시 문제를 코드 실행기에서 직접 풀고 채점하면서 풀이 감각을 길러요.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -329,15 +335,43 @@
   (function () {
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // 스크롤 진입 시 떠오르는 효과
+    // 스크롤 진입 시 순차로 떠오르는 효과 (애니메이션 후 클래스를 떼어 hover 효과를 살려요)
     var reveals = document.querySelectorAll('.reveal');
     if (reduce || !('IntersectionObserver' in window)) {
-      reveals.forEach(function (el) { el.classList.add('shown'); });
+      reveals.forEach(function (el) { el.classList.remove('reveal'); });
     } else {
       var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); } });
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          var el = e.target; io.unobserve(el);
+          var d = parseInt(el.getAttribute('data-reveal-delay') || '0', 10);
+          setTimeout(function () {
+            el.classList.add('shown');
+            setTimeout(function () { el.classList.remove('reveal', 'shown'); }, 650);
+          }, d);
+        });
       }, { threshold: 0.15 });
       reveals.forEach(function (el) { io.observe(el); });
+    }
+
+    // 히어로 타이핑 효과 (문구를 한 글자씩 썼다 지웠다 반복)
+    var typedEl = document.getElementById('typed');
+    if (typedEl) {
+      var phrases = ['막막한 코딩 테스트, 전략부터 잡아요', '21개 핵심 개념을 예제 코드로 쉽게', '16개 실전 문제를 브라우저에서 바로 채점', '4주 만에 합격 루틴 만들기'];
+      if (reduce) {
+        typedEl.textContent = phrases[0];
+      } else {
+        var pi = 0, ci = 0, deleting = false;
+        (function tick() {
+          var cur = phrases[pi];
+          ci += deleting ? -1 : 1;
+          typedEl.textContent = cur.slice(0, ci);
+          var wait = deleting ? 38 : 72;
+          if (!deleting && ci === cur.length) { deleting = true; wait = 1600; }
+          else if (deleting && ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; wait = 350; }
+          setTimeout(tick, wait);
+        })();
+      }
     }
 
     // 통계 숫자 카운트업 (뷰포트 진입 시 0에서 목표값까지)
