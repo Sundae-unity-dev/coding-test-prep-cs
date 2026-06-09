@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>C# 코드 실행기</title>
     <base href="/coding-test-prep-cs/run/" />
-    <link href="_framework/dotnet.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-5Qi0Ton1oppTkRNKlmkXJJTBfFWHL/u86Ixl8qRKXW8=" />
+    <link href="_framework/dotnet.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-3H3Ry8XQJ5GNRTJGPVQGH2pzGrcmOOqnYZ/WMIlI5UA=" />
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="css/app.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
@@ -38,27 +38,100 @@
         <span class="dismiss">🗙</span>
     </div>
     <script src="_framework/blazor.webassembly.66stpp682q.js"></script>
-    <script>
-      // 코드 입력칸을 코드 에디터처럼: Tab=4칸 들여쓰기, Enter=이전 줄 들여쓰기 따라가기.
-      // (Blazor 가 textarea 를 다시 그려도 document 위임 리스너라 항상 동작)
-      document.addEventListener('keydown', function (e) {
-        var ta = e.target;
-        if (!(ta instanceof HTMLTextAreaElement) || !ta.classList.contains('code')) return;
 
-        // execCommand('insertText') 로 넣어야 네이티브 실행취소(Ctrl+Z) 스택이 보존돼요.
-        // (insertText 는 input 이벤트도 스스로 발생시켜 Blazor 바인딩이 갱신됨)
-        if (e.key === 'Tab') {
-          e.preventDefault();
-          document.execCommand('insertText', false, '    ');
-        } else if (e.key === 'Enter') {
-          e.preventDefault();
-          var s = ta.selectionStart;
-          var lineStart = ta.value.lastIndexOf('\n', s - 1) + 1;
-          var m = ta.value.slice(lineStart, s).match(/^[ \t]*/);
-          var indent = m ? m[0] : '';
-          document.execCommand('insertText', false, '\n' + indent);
+    <!-- Monaco 코드 에디터 (CDN). C# 문법 강조 + 자동완성 + 줄번호 + 오류 밑줄 -->
+    <script>
+      var MONACO_BASE = 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/';
+      window.MonacoEnvironment = {
+        getWorkerUrl: function () {
+          return 'data:text/javascript;charset=utf-8,' + encodeURIComponent(
+            "self.MonacoEnvironment={baseUrl:'" + MONACO_BASE + "'};" +
+            "importScripts('" + MONACO_BASE + "vs/base/worker/workerMain.js');");
         }
-      });
+      };
+
+      window.ctEditor = {
+        _ed: null,
+        _loaded: false,
+        _loadMonaco: function () {
+          return new Promise(function (resolve, reject) {
+            if (window.monaco) { resolve(); return; }
+            var s = document.createElement('script');
+            s.src = MONACO_BASE + 'vs/loader.js';
+            s.onload = function () {
+              require.config({ paths: { vs: MONACO_BASE + 'vs' } });
+              require(['vs/editor/editor.main'], function () { resolve(); });
+            };
+            s.onerror = function () { reject('monaco loader 실패'); };
+            document.head.appendChild(s);
+          });
+        },
+        _registerCsharp: function () {
+          if (window.ctEditor._loaded) return;
+          window.ctEditor._loaded = true;
+          var kw = ['using','namespace','class','struct','static','void','int','long','double','float','bool','char','string','var','new','return','if','else','for','foreach','while','do','in','out','ref','public','private','protected','internal','const','readonly','true','false','null','break','continue','switch','case','default','this','base','try','catch','finally','throw','yield','params','unsafe','fixed'];
+          var members = ['Console','WriteLine','ReadLine','Write','Parse','TryParse','Convert','ToInt32','Math','Min','Max','Abs','Sqrt','Pow','Array','Sort','Reverse','ConvertAll','Fill','Copy','List','Dictionary','HashSet','Queue','Stack','PriorityQueue','SortedSet','StringBuilder','Append','AppendLine','ToString','Length','Count','Add','Contains','ContainsKey','TryGetValue','Enqueue','Dequeue','Peek','Push','Pop','Split','Join','Substring','Select','Where','OrderBy','OrderByDescending','ThenBy','Sum','Average','First','Last','Take','Skip','ToArray','ToList'];
+          monaco.languages.registerCompletionItemProvider('csharp', {
+            provideCompletionItems: function (model, position) {
+              var word = model.getWordUntilPosition(position);
+              var range = { startLineNumber: position.lineNumber, endLineNumber: position.lineNumber, startColumn: word.startColumn, endColumn: word.endColumn };
+              var sug = [];
+              kw.forEach(function (k) { sug.push({ label: k, kind: monaco.languages.CompletionItemKind.Keyword, insertText: k, range: range }); });
+              members.forEach(function (m) { sug.push({ label: m, kind: monaco.languages.CompletionItemKind.Method, insertText: m, range: range }); });
+              var snip = monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet;
+              sug.push({ label: 'cw', detail: 'Console.WriteLine', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'Console.WriteLine(${1});', insertTextRules: snip, range: range });
+              sug.push({ label: 'cr', detail: 'Console.ReadLine', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'Console.ReadLine()', insertTextRules: snip, range: range });
+              sug.push({ label: 'readints', detail: '공백 구분 정수 배열 읽기', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'int[] ${1:arr} = Array.ConvertAll(Console.ReadLine().Split(), int.Parse);', insertTextRules: snip, range: range });
+              sug.push({ label: 'forn', detail: 'for 반복문', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'for (int ${1:i} = 0; ${1:i} < ${2:n}; ${1:i}++)\n{\n    $0\n}', insertTextRules: snip, range: range });
+              sug.push({ label: 'foreachv', detail: 'foreach 반복문', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'foreach (var ${1:item} in ${2:items})\n{\n    $0\n}', insertTextRules: snip, range: range });
+              sug.push({ label: 'main', detail: 'Main 메서드 골격', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'using System;\n\nclass Program\n{\n    static void Main()\n    {\n        $0\n    }\n}', insertTextRules: snip, range: range });
+              return { suggestions: sug };
+            }
+          });
+        },
+        init: function (elementId, value) {
+          return window.ctEditor._loadMonaco().then(function () {
+            window.ctEditor._registerCsharp();
+            var el = document.getElementById(elementId);
+            if (!el) return;
+            if (window.ctEditor._ed) { window.ctEditor._ed.dispose(); window.ctEditor._ed = null; }
+            window.ctEditor._ed = monaco.editor.create(el, {
+              value: value || '',
+              language: 'csharp',
+              theme: 'vs-dark',
+              automaticLayout: true,
+              minimap: { enabled: false },
+              fontSize: 14,
+              tabSize: 4,
+              insertSpaces: true,
+              scrollBeyondLastLine: false,
+              lineNumbers: 'on',
+              renderLineHighlight: 'line',
+              fontFamily: "'Cascadia Code','Consolas',monospace"
+            });
+          }).catch(function (e) { console.error('ctEditor init', e); });
+        },
+        getValue: function () { return window.ctEditor._ed ? window.ctEditor._ed.getValue() : null; },
+        setValue: function (v) { if (window.ctEditor._ed) window.ctEditor._ed.setValue(v || ''); },
+        setMarkers: function (diags) {
+          if (!window.ctEditor._ed || !window.monaco) return;
+          var model = window.ctEditor._ed.getModel();
+          var markers = (diags || []).map(function (d) {
+            return {
+              startLineNumber: d.line, startColumn: d.col,
+              endLineNumber: d.line, endColumn: d.col + 1,
+              message: '[' + d.id + '] ' + d.message,
+              severity: d.severity === 'error' ? monaco.MarkerSeverity.Error : monaco.MarkerSeverity.Warning
+            };
+          });
+          monaco.editor.setModelMarkers(model, 'csharp', markers);
+        },
+        clearMarkers: function () {
+          if (window.ctEditor._ed && window.monaco)
+            monaco.editor.setModelMarkers(window.ctEditor._ed.getModel(), 'csharp', []);
+        },
+        revealLine: function (line) { if (window.ctEditor._ed) { window.ctEditor._ed.revealLineInCenter(line); window.ctEditor._ed.setPosition({ lineNumber: line, column: 1 }); window.ctEditor._ed.focus(); } }
+      };
     </script>
 </body>
 

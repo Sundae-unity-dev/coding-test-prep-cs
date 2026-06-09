@@ -87,6 +87,40 @@ table.ex pre { background: none; color: #1F2230; padding: 6px 0; margin: 0; font
 .hint-box ul { margin: 8px 0 8px 18px; } .hint-box li { margin-bottom: 6px; }
 .output.sol { color: #C3E88D; margin-top: 10px; white-space: pre; overflow-x: auto; }
 
+/* ===== Monaco 코드 에디터 ===== */
+.monaco-host { height: 380px; border: 1px solid #2A2A3C; border-radius: 10px; overflow: hidden; }
+.col .monaco-host { height: 460px; }
+@media (max-width: 820px) { .monaco-host, .col .monaco-host { height: 300px; } }
+
+/* 오류 체크 버튼 */
+.toolbar .run.check { background: #D97706; }
+.toolbar .run.check:hover:not(:disabled) { background: #B45309; }
+
+/* ===== 콘솔 (오류 체크 결과) ===== */
+.console { margin-top: 12px; background: #16161F; border: 1px solid #2A2A3C; border-radius: 10px; overflow: hidden; font-family: Consolas, 'D2Coding', monospace; }
+.console-head { display: flex; align-items: center; gap: 8px; padding: 8px 14px; background: #1E1E2E; color: #C9C9DA; font-size: 12.5px; font-weight: 700; border-bottom: 1px solid #2A2A3C; }
+.console-head .dot { width: 9px; height: 9px; border-radius: 50%; background: #16A34A; flex-shrink: 0; }
+.console.err .console-head .dot { background: #DC2626; }
+.console-head .summary { margin-left: auto; font-weight: 800; }
+.console.ok .console-head .summary { color: #4ADE80; }
+.console.err .console-head .summary { color: #FF8B8B; }
+.cline { display: flex; gap: 10px; align-items: baseline; padding: 7px 14px; font-size: 12.5px; color: #E4E4F0; border-top: 1px solid #23232F; cursor: pointer; }
+.cline:hover { background: #20202C; }
+.cline.ok { color: #9FE6B4; cursor: default; }
+.cline.ok:hover { background: none; }
+.cline .ln { color: #8AB4F8; font-weight: 700; min-width: 46px; flex-shrink: 0; }
+.cline .sev { font-weight: 800; min-width: 30px; flex-shrink: 0; }
+.cline.error .sev { color: #FF8B8B; }
+.cline.warning .sev { color: #FBBF24; }
+.cline .cid { color: #9AA0B5; min-width: 56px; flex-shrink: 0; }
+.cline .cmsg { color: #E4E4F0; flex: 1; }
+
+/* run 페이지 좌측 상단 브랜드 (홈과 동일) */
+.rb-head .sitebrand { display: flex; align-items: center; gap: 9px; font-weight: 800; font-size: 16px; color: #1F2230; text-decoration: none; }
+.rb-head .sitebrand .mark { width: 30px; height: 30px; border-radius: 8px; color: #fff; background: linear-gradient(135deg, #6A2FD0, #8843FF); display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; }
+.rb-head .sitebrand:hover { color: #6A2FD0; }
+.rb-head .rb-title { font-size: 15px; font-weight: 800; color: #6A2FD0; padding-left: 13px; margin-left: 1px; border-left: 1px solid #E5E2F0; }
+
 h1:focus {
     outline: none;
 }
