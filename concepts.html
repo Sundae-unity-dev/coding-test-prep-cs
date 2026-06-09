@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>코딩 테스트 필수 개념 정리 (C#)</title>
+<script>(function(){try{var t=localStorage.getItem('ctprep_theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<link rel="stylesheet" href="assets/app.css">
 <style>
   @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
 
@@ -35,7 +37,7 @@
   /* ===== 사이드바 ===== */
   aside {
     width: 264px; flex-shrink: 0;
-    background: #fff; border-right: 1px solid var(--line);
+    background: var(--card); border-right: 1px solid var(--line);
     position: sticky; top: 0; height: 100vh;
     display: flex; flex-direction: column;
   }
@@ -106,7 +108,7 @@
   ul.plain li { margin-bottom: 6px; }
 
   .card {
-    background: #fff; border: 1px solid var(--line);
+    background: var(--card); border: 1px solid var(--line);
     border-radius: 14px; padding: 18px 22px; margin-top: 12px;
   }
   .tip {
@@ -121,14 +123,14 @@
 
   table {
     width: 100%; border-collapse: collapse; margin-top: 12px;
-    background: #fff; border-radius: 12px; overflow: hidden;
+    background: var(--card); border-radius: 12px; overflow: hidden;
     border: 1px solid var(--line); font-size: 14px;
   }
   th { background: var(--purple); color: #fff; padding: 9px 12px; text-align: left; font-weight: 700; }
   td { padding: 9px 12px; border-top: 1px solid var(--line); }
   tr:nth-child(even) td { background: #FBFAFE; }
   td code, p code, li code {
-    background: #EFEAFB; color: var(--purple-dark);
+    background: var(--code-inline-bg); color: var(--code-inline-ink);
     padding: 1px 6px; border-radius: 5px;
     font-family: Consolas, 'D2Coding', monospace; font-size: 0.92em;
   }
@@ -148,7 +150,7 @@
   /* ===== 정답 토글 ===== */
   .reveal { margin-top: 12px; }
   .reveal > button {
-    background: #fff; border: 1.5px solid var(--purple);
+    background: var(--card); border: 1.5px solid var(--purple);
     color: var(--purple-dark); font-weight: 700; font-size: 13.5px;
     padding: 8px 16px; border-radius: 9px; cursor: pointer; font-family: inherit;
     transition: all 0.15s;
@@ -160,7 +162,7 @@
 
   /* ===== 퀴즈 ===== */
   .quiz {
-    background: #fff; border: 1.5px solid var(--purple);
+    background: var(--card); border: 1.5px solid var(--purple);
     border-radius: 14px; padding: 18px 22px 16px; margin-top: 14px;
   }
   .quiz .qhead {
@@ -210,7 +212,7 @@
   /* ===== 하단 이동 버튼 ===== */
   .pager { display: flex; justify-content: space-between; margin-top: 44px; gap: 12px; }
   .pager button {
-    background: #fff; border: 1.5px solid var(--line); border-radius: 11px;
+    background: var(--card); border: 1.5px solid var(--line); border-radius: 11px;
     padding: 12px 18px; font-family: inherit; font-size: 14px; font-weight: 700;
     color: var(--ink-soft); cursor: pointer; transition: all 0.15s;
   }
@@ -1783,5 +1785,6 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
   }
 })();
 </script>
+<script defer src="assets/app.js"></script>
 </body>
 </html>

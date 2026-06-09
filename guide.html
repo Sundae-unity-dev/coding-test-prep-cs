@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>코딩 테스트 준비 가이드 (C#)</title>
+<script>(function(){try{var t=localStorage.getItem('ctprep_theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<link rel="stylesheet" href="assets/app.css">
 <style>
   @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
 
@@ -37,7 +39,7 @@
   /* ===== 상단 내비게이션 ===== */
   nav {
     position: sticky; top: 0; z-index: 100;
-    background: rgba(255,255,255,0.92);
+    background: var(--nav-bg);
     backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--line);
     display: flex; align-items: center; gap: 4px;
@@ -101,7 +103,7 @@
   }
   .next-step .row a.primary { background: var(--purple); color: #fff; }
   .next-step .row a.primary:hover { background: var(--purple-dark); }
-  .next-step .row a.line { background: #fff; color: var(--purple-dark); border: 1.5px solid var(--purple); }
+  .next-step .row a.line { background: var(--card); color: var(--purple-dark); border: 1.5px solid var(--purple); }
   .next-step .row a.line:hover { background: var(--purple-bg); }
 
   /* ===== 공통 레이아웃 ===== */
@@ -143,7 +145,7 @@
   /* ===== 표 ===== */
   table {
     width: 100%; border-collapse: collapse; margin-top: 14px;
-    background: #fff; border-radius: 12px; overflow: hidden;
+    background: var(--card); border-radius: 12px; overflow: hidden;
     border: 1px solid var(--line); font-size: 14px;
   }
   th {
@@ -153,7 +155,7 @@
   td { padding: 10px 12px; border-top: 1px solid var(--line); vertical-align: top; }
   tr:nth-child(even) td { background: #FBFAFE; }
   td code, p code, li code {
-    background: #EFEAFB; color: var(--purple-dark);
+    background: var(--code-inline-bg); color: var(--code-inline-ink);
     padding: 1px 6px; border-radius: 5px;
     font-family: Consolas, 'D2Coding', monospace; font-size: 0.92em;
   }
@@ -173,7 +175,7 @@
 
   /* ===== 아코디언 ===== */
   details.acc {
-    background: #fff; border: 1px solid var(--line);
+    background: var(--card); border: 1px solid var(--line);
     border-radius: 12px; margin-top: 10px; overflow: hidden;
   }
   details.acc summary {
@@ -197,7 +199,7 @@
   /* ===== 체크리스트 ===== */
   .progress-wrap {
     position: sticky; top: 64px; z-index: 50;
-    background: #fff; border: 1px solid var(--line);
+    background: var(--card); border: 1px solid var(--line);
     border-radius: 12px; padding: 12px 18px; margin-top: 14px;
     display: flex; align-items: center; gap: 14px;
     box-shadow: 0 2px 10px rgba(60,30,130,0.06);
@@ -217,7 +219,7 @@
   }
   label.chk {
     display: flex; align-items: flex-start; gap: 10px;
-    background: #fff; border: 1px solid var(--line);
+    background: var(--card); border: 1px solid var(--line);
     border-radius: 10px; padding: 11px 14px; margin-bottom: 8px;
     cursor: pointer; font-size: 14.5px; transition: all 0.15s;
   }
@@ -681,5 +683,6 @@ thread.Join();</pre>
   onScroll();
 })();
 </script>
+<script defer src="assets/app.js"></script>
 </body>
 </html>

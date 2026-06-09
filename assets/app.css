@@ -1,0 +1,61 @@
+/* Elice Coding Camp - 공유 스타일 (디자인 토큰 + 다크모드 + 공통 컴포넌트) */
+
+/* 라이트 토큰 (각 페이지 인라인 :root 와 동일값 + 신규 토큰) */
+:root {
+  --purple: #8843FF; --purple-dark: #6A2FD0; --purple-bg: #F4EEFF;
+  --ink: #1F2230; --ink-soft: #555B6E; --line: #E5E2F0; --bg: #FAFAFD;
+  --card: #FFFFFF;
+  --nav-bg: rgba(255,255,255,0.92);
+  --code-inline-bg: #EFEAFB; --code-inline-ink: #6A2FD0;
+  --shadow: rgba(60,30,130,0.12);
+}
+
+/* 다크 토큰 (html[data-theme=dark] = 특정도 0,1,1 로 인라인 :root 0,1,0 을 이김) */
+html[data-theme="dark"] {
+  --purple: #9D6BFF; --purple-dark: #C3A8FF; --purple-bg: #2A2342;
+  --ink: #E7E7F1; --ink-soft: #A4A6BC; --line: #2E2E40; --bg: #131320;
+  --card: #1C1C2A;
+  --nav-bg: rgba(18,18,28,0.92);
+  --code-inline-bg: #2A2342; --code-inline-ink: #C3A8FF;
+  --shadow: rgba(0,0,0,0.55);
+  --green-bg: #17341F; --red-bg: #3A1E1E;
+}
+html[data-theme="dark"] body { background: var(--bg); color: var(--ink); }
+
+/* 다크: 토큰화 안 된 라이트 표면 셀렉터 타깃 보정 (페이지 공통 클래스) */
+html[data-theme="dark"] tr:nth-child(even) td { background: rgba(255,255,255,0.035); }
+html[data-theme="dark"] .warn { background: #33291A; }
+html[data-theme="dark"] details.acc summary:hover { background: rgba(255,255,255,0.05); }
+html[data-theme="dark"] .next-step { background: linear-gradient(135deg, #241C3A 0%, var(--card) 100%); }
+html[data-theme="dark"] .card .lv.easy { background: #16341F; border-color: #235038; }
+html[data-theme="dark"] .card .lv.mid  { background: #3A2E14; border-color: #5C4A22; }
+html[data-theme="dark"] .card .lv.hard { background: #2A2342; border-color: #463A68; }
+
+/* 떠있는 컨트롤: 다크 토글 + 맨 위로 */
+.float-ctrl { position: fixed; right: 18px; bottom: 18px; z-index: 200; display: flex; flex-direction: column; gap: 10px; }
+.fc-btn {
+  width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line);
+  background: var(--card); color: var(--ink); font-size: 18px; cursor: pointer;
+  box-shadow: 0 6px 18px var(--shadow); display: flex; align-items: center; justify-content: center;
+  transition: transform 0.15s ease, opacity 0.2s ease, background 0.2s ease;
+}
+.fc-btn:hover { transform: translateY(-2px); }
+.fc-btn.to-top { opacity: 0; pointer-events: none; }
+.fc-btn.to-top.show { opacity: 1; pointer-events: auto; }
+
+/* 코드 블록 복사 버튼 */
+pre.has-copy { position: relative; }
+.copy-btn {
+  position: absolute; top: 8px; right: 8px; z-index: 2;
+  border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.10); color: #D6D6E6;
+  font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 7px; cursor: pointer;
+  opacity: 0; transition: opacity 0.15s ease, background 0.15s ease;
+  font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif;
+}
+pre.has-copy:hover .copy-btn, .copy-btn:focus { opacity: 1; }
+.copy-btn:hover { background: rgba(255,255,255,0.2); }
+
+/* 스크롤 진입 효과 (등장 후 JS가 클래스 제거 → hover/flash 보존) */
+.reveal { opacity: 0; transform: translateY(20px); }
+.reveal.shown { opacity: 1; transform: translateY(0); transition: opacity 0.55s ease, transform 0.55s ease; }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
