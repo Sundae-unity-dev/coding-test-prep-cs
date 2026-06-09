@@ -241,12 +241,21 @@
   function readObj(k) { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch (e) { return {}; } }
   function writeObj(k, o) { try { localStorage.setItem(k, JSON.stringify(o)); } catch (e) {} }
 
-  // 카드 메타데이터(순서/난이도/유형) 추출
+  // 유형 → 관련 개념 주제 매핑 (문제에서 개념으로 점프)
+  var TYPE2T = { '스택 / 큐': 't3', '해시': 't4', 'DP': 't10', 'DFS / BFS': 't8', '정렬': 't5', '우선순위 큐': 't11', '완전 탐색': 't7', '이분 탐색': 't6', 'Union-Find': 't14', '시뮬레이션': 't16', '투 포인터': 't12' };
+
+  // 카드 메타데이터(순서/난이도/유형) 추출 + 유형 태그를 관련 개념 링크로
   cards.forEach(function (c, i) {
     c.dataset.order = i;
     var lv = c.querySelector('.lv');
     c.dataset.level = lv.classList.contains('easy') ? 'easy' : (lv.classList.contains('hard') ? 'hard' : 'mid');
-    c.dataset.type = c.querySelector('.tag').textContent.trim();
+    var tag = c.querySelector('.tag');
+    c.dataset.type = tag.textContent.trim();
+    var tid = TYPE2T[c.dataset.type];
+    if (tid) {
+      tag.style.cursor = 'pointer'; tag.title = '관련 개념 보기';
+      tag.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); location.href = 'concepts.html#' + tid; });
+    }
   });
 
   // 즐겨찾기 별 버튼 주입

@@ -94,6 +94,12 @@
   .topic.show { display: block; animation: fade 0.34s cubic-bezier(0.22,0.61,0.36,1); }
   @keyframes fade { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 
+  .topic-practice { margin-top: 28px; padding: 14px 16px; background: var(--purple-bg); border-radius: 10px; font-size: 14px; }
+  .topic-practice b { color: var(--purple-dark); margin-right: 8px; }
+  .topic-practice a { color: var(--purple-dark); font-weight: 700; text-decoration: none; margin-right: 12px; }
+  .topic-practice a:hover { text-decoration: underline; }
+  .topic-practice .pp-done { color: var(--green); font-weight: 700; font-size: 12px; margin-right: 10px; }
+  .side-progress { margin-top: 8px; font-size: 12px; color: var(--purple-dark); font-weight: 700; }
   .topic .crumb { font-size: 13px; color: var(--ink-soft); margin-bottom: 6px; font-weight: 600; }
   .topic > h2 { font-size: 27px; font-weight: 800; margin-bottom: 6px; }
   .topic .lead { font-size: 15.5px; color: var(--ink-soft); margin-bottom: 22px; }
@@ -1783,6 +1789,36 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
     var last = parseInt(localStorage.getItem('ct_concepts_last_topic'), 10);
     show(isNaN(last) || last < 0 || last >= TOPICS.length ? 0 : last);
   }
+})();
+</script>
+<script>
+// ===== 개념 → 예시 문제 연결 + 사이드바 진행 =====
+(function () {
+  function readObj(k) { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch (e) { return {}; } }
+  var SOLVED = readObj('ct_practice_solved_v1');
+  var MAP = {
+    t2: [['pairs', '두 개 뽑아서 더하기'], ['nodup', '같은 숫자는 싫어']],
+    t3: [['bracket', '올바른 괄호']], t4: [['finisher', '완주하지 못한 선수']],
+    t5: [['kth', 'K번째수'], ['largest', '가장 큰 수']], t6: [['immigration', '입국심사']],
+    t7: [['mock', '모의고사']], t8: [['gamemap', '게임 맵 최단거리'], ['target', '타겟 넘버']],
+    t9: [['pe', '체육복']], t10: [['triangle', '정수 삼각형']], t11: [['spicy', '더 맵게']],
+    t12: [['subseq', '연속된 부분 수열의 합']], t14: [['network', '네트워크']], t16: [['progress', '기능개발']]
+  };
+  Object.keys(MAP).forEach(function (tid) {
+    var topic = document.getElementById(tid); if (!topic) return;
+    var box = document.createElement('div'); box.className = 'topic-practice';
+    var html = '<b>이 개념으로 풀어보기</b> ';
+    html += MAP[tid].map(function (pr) {
+      var done = SOLVED[pr[0]] ? ' <span class="pp-done">해결 ✓</span>' : '';
+      return '<a href="practice.html#p-' + pr[0] + '">' + pr[1] + ' →</a>' + done;
+    }).join('');
+    box.innerHTML = html;
+    topic.appendChild(box);
+  });
+  var qn = Object.keys(readObj('ct_concepts_quiz_v1')).length;
+  var sn = Object.keys(SOLVED).filter(function (k) { return SOLVED[k]; }).length;
+  var brandP = document.querySelector('aside .brand p');
+  if (brandP) { var d = document.createElement('div'); d.className = 'side-progress'; d.textContent = '퀴즈 ' + qn + '/40, 문제 ' + sn + '/16 진행 중'; brandP.parentNode.insertBefore(d, brandP.nextSibling); }
 })();
 </script>
 <script defer src="assets/app.js"></script>

@@ -123,6 +123,19 @@
   .stats .stat span { font-size: 13px; color: var(--ink-soft); }
 
   main { flex: 1; max-width: 1000px; margin: 0 auto; padding: 56px 20px 30px; width: 100%; }
+  /* 내 학습 진행 대시보드 */
+  .dash { margin-bottom: 52px; }
+  .dash-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .dash-item { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 9px; transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease; }
+  .dash-item:hover { border-color: var(--purple); transform: translateY(-2px); box-shadow: 0 8px 22px var(--shadow); }
+  .dash-item .dl { font-size: 13px; color: var(--ink-soft); font-weight: 700; }
+  .dash-item .dn { font-size: 22px; font-weight: 800; color: var(--purple-dark); }
+  .dash-item .dbar { height: 7px; background: var(--line); border-radius: 99px; overflow: hidden; }
+  .dash-item .dbar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--purple), #B388FF); transition: width 0.9s ease; }
+  .dash-cta { margin-top: 14px; font-size: 14px; color: var(--ink-soft); }
+  .dash-cta a { color: var(--purple-dark); font-weight: 700; text-decoration: none; }
+  @media (max-width: 760px) { .dash-grid { grid-template-columns: 1fr; } }
+
   .sec-title { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
   .sec-sub { color: var(--ink-soft); font-size: 14.5px; margin-bottom: 24px; }
 
@@ -272,6 +285,17 @@
 </div>
 
 <main>
+  <section class="dash reveal">
+    <h2 class="sec-title">내 학습 진행</h2>
+    <p class="sec-sub">진행 상황은 이 브라우저에 자동 저장돼요. 이어서 학습하면 아래 막대가 채워져요.</p>
+    <div class="dash-grid">
+      <a class="dash-item" href="concepts.html"><span class="dl">개념 퀴즈</span><b class="dn" id="dQuiz">0 / 40</b><span class="dbar"><i id="dQuizBar"></i></span></a>
+      <a class="dash-item" href="practice.html"><span class="dl">예시 문제</span><b class="dn" id="dSolve">0 / 16</b><span class="dbar"><i id="dSolveBar"></i></span></a>
+      <a class="dash-item" href="guide.html#s7"><span class="dl">시험 전 체크리스트</span><b class="dn" id="dChk">0 / 13</b><span class="dbar"><i id="dChkBar"></i></span></a>
+    </div>
+    <p class="dash-cta" id="dashCta" style="display:none;">아직 시작 전이에요. <a href="guide.html">준비 가이드부터 시작해 보세요 →</a></p>
+  </section>
+
   <h2 class="sec-title">무엇이 들어 있나요?</h2>
   <p class="sec-sub">전략과 개념, 문제 풀이를 단계별로 나눠 두었어요. 필요한 것부터 골라 시작해 보세요.</p>
   <div class="cards">
@@ -380,6 +404,25 @@
         entries.forEach(function (e) { if (e.isIntersecting) { stats.forEach(animateCount); so.disconnect(); } });
       }, { threshold: 0.4 });
       so.observe(band);
+    }
+
+    // 내 학습 진행 대시보드 채우기 (localStorage 읽기)
+    function readObj(k) { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch (e) { return {}; } }
+    function countTrue(o) { return Object.keys(o).filter(function (k) { return o[k]; }).length; }
+    var quizDone = Object.keys(readObj('ct_concepts_quiz_v1')).length;
+    var solveDone = countTrue(readObj('ct_practice_solved_v1'));
+    var chkDone = countTrue(readObj('ct_guide_checklist_v1'));
+    function fill(nId, barId, done, total) {
+      var pct = total ? Math.min(Math.round(done / total * 100), 100) : 0;
+      document.getElementById(nId).textContent = done + ' / ' + total;
+      var bar = document.getElementById(barId);
+      requestAnimationFrame(function () { setTimeout(function () { bar.style.width = pct + '%'; }, 150); });
+    }
+    fill('dQuiz', 'dQuizBar', quizDone, 40);
+    fill('dSolve', 'dSolveBar', solveDone, 16);
+    fill('dChk', 'dChkBar', chkDone, 13);
+    if (quizDone + solveDone + chkDone === 0) {
+      var cta = document.getElementById('dashCta'); if (cta) cta.style.display = '';
     }
   })();
 </script>
