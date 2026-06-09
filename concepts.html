@@ -1598,9 +1598,20 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
 
   updateMenuBadges();
 
-  // 마지막으로 보던 주제에서 시작해요
-  var last = parseInt(localStorage.getItem('ct_concepts_last_topic'), 10);
-  show(isNaN(last) || last < 0 || last >= TOPICS.length ? 0 : last);
+  // 랜딩 메뉴에서 #t<번호> 로 들어오면 해당 주제를 바로 열어요
+  function showByHash() {
+    var h = location.hash.replace('#', '');
+    var i = TOPICS.indexOf(h);
+    if (i !== -1) { show(i); return true; }
+    return false;
+  }
+  window.addEventListener('hashchange', showByHash);
+
+  // 해시가 있으면 그 주제, 없으면 마지막으로 보던 주제에서 시작해요
+  if (!showByHash()) {
+    var last = parseInt(localStorage.getItem('ct_concepts_last_topic'), 10);
+    show(isNaN(last) || last < 0 || last >= TOPICS.length ? 0 : last);
+  }
 })();
 </script>
 </body>

@@ -43,8 +43,10 @@
   .howto strong { color: var(--purple-dark); }
 
   .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 18px; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; display: flex; flex-direction: column; transition: all 0.15s; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; display: flex; flex-direction: column; transition: all 0.15s; scroll-margin-top: 72px; }
   .card:hover { border-color: var(--purple); box-shadow: 0 8px 22px rgba(60,30,130,0.08); }
+  @keyframes cardFlash { 0% { box-shadow: 0 0 0 3px rgba(136,67,255,0); } 25% { box-shadow: 0 0 0 3px rgba(136,67,255,0.55); } 100% { box-shadow: 0 0 0 3px rgba(136,67,255,0); } }
+  .card.flash { border-color: var(--purple); animation: cardFlash 1.5s ease; }
   .card.solved { border-color: var(--green); }
   .card .top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
   .card .tag { font-size: 11.5px; font-weight: 800; color: #fff; background: var(--purple); padding: 3px 10px; border-radius: 99px; }
@@ -195,6 +197,20 @@
   window.addEventListener('focus', refresh);
   window.addEventListener('storage', refresh);
   refresh();
+
+  // 랜딩 메뉴에서 #p-<문제id> 로 들어오면 해당 문제 카드로 스크롤하고 잠깐 강조해요
+  function jumpToCard() {
+    if (location.hash.indexOf('#p-') !== 0) return;
+    var pid = location.hash.slice(3);
+    var card = document.querySelector('.card[data-pid="' + pid + '"]');
+    if (!card) return;
+    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    card.classList.remove('flash');
+    void card.offsetWidth;            // 같은 카드 재진입에도 애니메이션 다시 재생
+    card.classList.add('flash');
+  }
+  window.addEventListener('hashchange', jumpToCard);
+  jumpToCard();
 })();
 </script>
 </body>
