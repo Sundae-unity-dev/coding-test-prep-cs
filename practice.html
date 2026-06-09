@@ -12,7 +12,8 @@
     --card: #FFFFFF; --green: #16A34A; --amber: #D97706;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.7; }
+  body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.7; word-break: keep-all; overflow-wrap: break-word; }
+  pre, code { word-break: normal; overflow-wrap: normal; }
 
   nav {
     position: sticky; top: 0; z-index: 100;

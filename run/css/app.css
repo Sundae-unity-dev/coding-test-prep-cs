@@ -5,7 +5,10 @@ html, body {
     background: #FAFAFD;
     color: #1F2230;
     margin: 0;
+    word-break: keep-all;
+    overflow-wrap: break-word;
 }
+pre, code, .output, .monaco-host { word-break: normal; overflow-wrap: normal; }
 
 /* ===== 코드 실행기 (런박스) ===== */
 .rb-page { display: block; }

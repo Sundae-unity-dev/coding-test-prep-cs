@@ -28,7 +28,9 @@
     font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif;
     background: var(--bg); color: var(--ink); line-height: 1.7;
     display: flex; min-height: 100vh;
+    word-break: keep-all; overflow-wrap: break-word;
   }
+  pre, code { word-break: normal; overflow-wrap: normal; }
 
   /* ===== 사이드바 ===== */
   aside {

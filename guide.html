@@ -30,7 +30,9 @@
     background: var(--bg);
     color: var(--ink);
     line-height: 1.7;
+    word-break: keep-all; overflow-wrap: break-word;
   }
+  pre, code { word-break: normal; overflow-wrap: normal; }
 
   /* ===== 상단 내비게이션 ===== */
   nav {
