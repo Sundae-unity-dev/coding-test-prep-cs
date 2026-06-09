@@ -72,6 +72,24 @@
   .reset:hover { border-color: #DC2626; color: #DC2626; }
   footer { text-align: center; padding: 38px 20px; color: var(--ink-soft); font-size: 13px; border-top: 1px solid var(--line); margin-top: 50px; }
 
+  /* ===== 필터/검색 컨트롤 바 ===== */
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 18px 0 6px; }
+  .controls .ctrl-search, .controls .ctrl-sel { font-family: inherit; font-size: 13.5px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--card); color: var(--ink); outline: none; }
+  .controls .ctrl-search { flex: 1; min-width: 150px; }
+  .controls .ctrl-search:focus, .controls .ctrl-sel:focus { border-color: var(--purple); }
+  .controls .seg { display: flex; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; }
+  .controls .seg button { font-family: inherit; font-size: 13px; font-weight: 700; padding: 8px 12px; border: none; background: var(--card); color: var(--ink-soft); cursor: pointer; }
+  .controls .seg button.on { background: var(--purple); color: #fff; }
+  .controls .ctrl-btn { font-family: inherit; font-size: 13px; font-weight: 700; padding: 8px 13px; border: 1px solid var(--line); border-radius: 9px; background: var(--card); color: var(--ink); cursor: pointer; }
+  .controls .ctrl-btn.on { background: var(--purple-bg); color: var(--purple-dark); border-color: var(--purple); }
+  .controls .ctrl-btn.primary { background: var(--purple); color: #fff; border-color: var(--purple); }
+  .controls .ctrl-count { font-size: 13px; color: var(--ink-soft); margin-left: auto; }
+  .card.hidden { display: none; }
+  .card .top .done { margin-left: 6px; }
+  .card .top .star { margin-left: auto; background: none; border: none; cursor: pointer; font-size: 16px; line-height: 1; color: var(--ink-soft); padding: 0; transition: transform 0.15s ease, color 0.15s ease; }
+  .card .top .star.on { color: #F5A623; }
+  .card .top .star:hover { transform: scale(1.2); }
+
   @media (max-width: 680px) { .cards { grid-template-columns: 1fr; } header.hero h1 { font-size: 25px; } }
 </style>
 </head>
@@ -97,6 +115,17 @@
   </div>
 
   <div class="howto"><strong>이렇게 풀어요</strong> : 문제를 고르면 코드 실행기(런박스)가 열려요. 문제 설명과 시작 코드가 준비돼 있으니, 직접 작성하고 <b>채점하기</b>를 누르면 공개/숨김 테스트 케이스를 한 번에 채점해 정답 여부를 알려줘요. 막히면 힌트와 모범 답안도 그 안에서 볼 수 있어요. 해결한 문제는 자동으로 표시돼요.</div>
+
+  <div class="controls">
+    <input type="search" id="q" class="ctrl-search" placeholder="문제 제목이나 설명 검색" aria-label="문제 검색">
+    <select id="fType" class="ctrl-sel" aria-label="유형"><option value="all">전체 유형</option></select>
+    <select id="fLevel" class="ctrl-sel" aria-label="난이도"><option value="all">전체 난이도</option><option value="easy">입문</option><option value="mid">중급</option><option value="hard">심화</option></select>
+    <div class="seg" id="fSolved"><button type="button" data-v="all" class="on">전체</button><button type="button" data-v="unsolved">미해결</button><button type="button" data-v="solved">해결</button></div>
+    <select id="fSort" class="ctrl-sel" aria-label="정렬"><option value="default">기본순</option><option value="level">난이도순</option><option value="title">제목순</option></select>
+    <button type="button" id="fBookmark" class="ctrl-btn">⭐ 즐겨찾기</button>
+    <button type="button" id="randBtn" class="ctrl-btn primary">🎲 오늘의 문제</button>
+    <span class="ctrl-count" id="shownCount"></span>
+  </div>
 
   <div class="cards" id="cards">
     <div class="card" data-pid="bracket">
@@ -204,39 +233,136 @@
 
 <script>
 (function () {
-  var KEY = 'ct_practice_solved_v1';
-  var cards = document.querySelectorAll('.card');
-  function read() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
-  function refresh() {
-    var solved = read(), done = 0;
-    cards.forEach(function (c) {
-      var ok = !!solved[c.dataset.pid];
-      c.classList.toggle('solved', ok);
-      if (ok) done++;
+  var SKEY = 'ct_practice_solved_v1', BKEY = 'ct_practice_bookmarks_v1', DKEY = 'ct_practice_daily_v1';
+  var wrap = document.getElementById('cards');
+  var cards = [].slice.call(document.querySelectorAll('.card'));
+  var LVRANK = { easy: 0, mid: 1, hard: 2 };
+
+  function readObj(k) { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch (e) { return {}; } }
+  function writeObj(k, o) { try { localStorage.setItem(k, JSON.stringify(o)); } catch (e) {} }
+
+  // 카드 메타데이터(순서/난이도/유형) 추출
+  cards.forEach(function (c, i) {
+    c.dataset.order = i;
+    var lv = c.querySelector('.lv');
+    c.dataset.level = lv.classList.contains('easy') ? 'easy' : (lv.classList.contains('hard') ? 'hard' : 'mid');
+    c.dataset.type = c.querySelector('.tag').textContent.trim();
+  });
+
+  // 즐겨찾기 별 버튼 주입
+  cards.forEach(function (c) {
+    var pid = c.dataset.pid, bm = readObj(BKEY);
+    var star = document.createElement('button');
+    star.className = 'star' + (bm[pid] ? ' on' : ''); star.type = 'button';
+    star.setAttribute('aria-label', '즐겨찾기'); star.textContent = bm[pid] ? '★' : '☆';
+    star.addEventListener('click', function (e) {
+      e.preventDefault(); e.stopPropagation();
+      var b = readObj(BKEY);
+      if (b[pid]) { delete b[pid]; star.textContent = '☆'; star.classList.remove('on'); }
+      else { b[pid] = true; star.textContent = '★'; star.classList.add('on'); }
+      writeObj(BKEY, b); applyFilters();
     });
-    var total = cards.length;
-    document.getElementById('progFill').style.width = (total ? Math.round(done / total * 100) : 0) + '%';
-    document.getElementById('progText').textContent = done + ' / ' + total + ' 해결';
+    c.querySelector('.top').appendChild(star);
+  });
+
+  // 유형 select 채우기
+  var fType = document.getElementById('fType');
+  var types = []; cards.forEach(function (c) { if (types.indexOf(c.dataset.type) < 0) types.push(c.dataset.type); });
+  types.forEach(function (t) { var o = document.createElement('option'); o.value = t; o.textContent = t; fType.appendChild(o); });
+
+  var F = { q: '', type: 'all', level: 'all', solved: 'all', bookmark: false, sort: 'default' };
+
+  function refreshProgress() {
+    var solved = readObj(SKEY), done = 0;
+    cards.forEach(function (c) { var ok = !!solved[c.dataset.pid]; c.classList.toggle('solved', ok); if (ok) done++; });
+    document.getElementById('progFill').style.width = Math.round(done / cards.length * 100) + '%';
+    document.getElementById('progText').textContent = done + ' / ' + cards.length + ' 해결';
   }
+
+  function applyFilters() {
+    var solved = readObj(SKEY), bm = readObj(BKEY), q = F.q.toLowerCase().trim(), shown = 0;
+    cards.forEach(function (c) {
+      var pid = c.dataset.pid, vis = true;
+      if (q && c.textContent.toLowerCase().indexOf(q) < 0) vis = false;
+      if (F.type !== 'all' && c.dataset.type !== F.type) vis = false;
+      if (F.level !== 'all' && c.dataset.level !== F.level) vis = false;
+      if (F.solved === 'solved' && !solved[pid]) vis = false;
+      if (F.solved === 'unsolved' && solved[pid]) vis = false;
+      if (F.bookmark && !bm[pid]) vis = false;
+      c.classList.toggle('hidden', !vis);
+      if (vis) shown++;
+    });
+    var vc = cards.filter(function (c) { return !c.classList.contains('hidden'); });
+    vc.sort(function (a, b) {
+      if (F.sort === 'level') return LVRANK[a.dataset.level] - LVRANK[b.dataset.level] || (+a.dataset.order) - (+b.dataset.order);
+      if (F.sort === 'title') {
+        var ta = a.querySelector('h2').textContent.replace(/^\d+\.\s*/, '');
+        var tb = b.querySelector('h2').textContent.replace(/^\d+\.\s*/, '');
+        return ta.localeCompare(tb, 'ko');
+      }
+      return (+a.dataset.order) - (+b.dataset.order);
+    });
+    vc.forEach(function (c) { wrap.appendChild(c); });
+    document.getElementById('shownCount').textContent = shown + '문제 표시';
+  }
+
+  function resetFilters() {
+    F = { q: '', type: 'all', level: 'all', solved: 'all', bookmark: false, sort: 'default' };
+    document.getElementById('q').value = '';
+    fType.value = 'all'; document.getElementById('fLevel').value = 'all'; document.getElementById('fSort').value = 'default';
+    seg.querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b.dataset.v === 'all'); });
+    bmBtn.classList.remove('on');
+    applyFilters();
+  }
+
+  document.getElementById('q').addEventListener('input', function () { F.q = this.value; applyFilters(); });
+  fType.addEventListener('change', function () { F.type = this.value; applyFilters(); });
+  document.getElementById('fLevel').addEventListener('change', function () { F.level = this.value; applyFilters(); });
+  document.getElementById('fSort').addEventListener('change', function () { F.sort = this.value; applyFilters(); });
+  var seg = document.getElementById('fSolved');
+  seg.addEventListener('click', function (e) {
+    var btn = e.target.closest('button'); if (!btn) return;
+    seg.querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b === btn); });
+    F.solved = btn.dataset.v; applyFilters();
+  });
+  var bmBtn = document.getElementById('fBookmark');
+  bmBtn.addEventListener('click', function () { F.bookmark = !F.bookmark; bmBtn.classList.toggle('on', F.bookmark); applyFilters(); });
+
+  // 오늘의 문제: 날짜 시드 결정적 선택(미해결 우선). 같은 날엔 같은 문제.
+  document.getElementById('randBtn').addEventListener('click', function () {
+    var solved = readObj(SKEY);
+    var pool = cards.filter(function (c) { return !solved[c.dataset.pid]; });
+    if (!pool.length) pool = cards.slice();
+    var d = new Date(), seed = d.getFullYear() * 372 + (d.getMonth() + 1) * 31 + d.getDate();
+    var pick = pool[seed % pool.length];
+    resetFilters();
+    pick.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    pick.classList.remove('flash'); void pick.offsetWidth; pick.classList.add('flash');
+    writeObj(DKEY, { date: d.toISOString().slice(0, 10), pid: pick.dataset.pid });
+  });
+
   document.getElementById('resetBtn').addEventListener('click', function () {
     if (!confirm('해결 기록을 모두 초기화할까요?')) return;
-    localStorage.removeItem(KEY); refresh();
+    localStorage.removeItem(SKEY); refreshProgress(); applyFilters();
   });
-  // 다른 탭(코드 실행기)에서 정답 처리하면 돌아왔을 때 반영
-  window.addEventListener('focus', refresh);
-  window.addEventListener('storage', refresh);
-  refresh();
+  window.addEventListener('focus', function () { refreshProgress(); applyFilters(); });
+  window.addEventListener('storage', function () { refreshProgress(); applyFilters(); });
 
-  // 랜딩 메뉴에서 #p-<문제id> 로 들어오면 해당 문제 카드로 스크롤하고 잠깐 강조해요
+  // 카드 등장 효과 지정(assets/app.js 처리). JS 비활성 시 클래스 없어 그대로 표시.
+  cards.forEach(function (c, i) { c.classList.add('reveal'); c.setAttribute('data-reveal-delay', Math.min(i, 8) * 45); });
+
+  refreshProgress();
+  applyFilters();
+
+  // #p-<문제id> 딥링크: 필터로 숨겨졌으면 리셋 후 점프
   function jumpToCard() {
     if (location.hash.indexOf('#p-') !== 0) return;
     var pid = location.hash.slice(3);
     var card = document.querySelector('.card[data-pid="' + pid + '"]');
     if (!card) return;
+    if (card.classList.contains('hidden')) resetFilters();
     card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    card.classList.remove('flash');
-    void card.offsetWidth;            // 같은 카드 재진입에도 애니메이션 다시 재생
-    card.classList.add('flash');
+    card.classList.remove('flash'); void card.offsetWidth; card.classList.add('flash');
   }
   window.addEventListener('hashchange', jumpToCard);
   jumpToCard();
