@@ -230,7 +230,7 @@
     <p>C# 기준 | 퀴즈 진행 상황 자동 저장</p>
     <div class="links">
       <a href="https://sundae-unity-dev.github.io/coding-test-prep-cs/">🏠 홈</a> <a href="guide.html">준비 가이드</a>
-      <a href="practice.html">예시 문제</a>
+      <a href="practice.html">예시 문제</a> <a href="run/">코드 실행기</a>
     </div>
   </div>
   <div class="search">
@@ -587,6 +587,7 @@ students.Sort((a, b) =&gt;
     .OrderByDescending(s =&gt; s.score)
     .ThenBy(s =&gt; s.name)
     .ToList();</pre>
+  <div class="warn"><b>정렬 안정성</b> : 내장 <code>Array.Sort</code>와 <code>List.Sort</code>는 같은 값의 원래 순서를 보장하지 않는 <b>불안정 정렬</b>이에요. 반대로 LINQ <code>OrderBy</code>/<code>ThenBy</code>는 <b>안정 정렬</b>이라 동점이면 입력 순서를 지켜요. 동점의 순서가 중요한 문제라면 OrderBy를 쓰거나, 비교 기준을 동점까지 끝까지 명시하세요.</div>
   <div class="tip"><strong>숫자를 문자열처럼 정렬하는 함정</strong> : 문자열 "10"은 "9"보다 사전순으로 앞이에요 ("1" &lt; "9"). 숫자 크기로 정렬하려면 <code>int.Parse</code>로 변환한 뒤 비교해야 해요. "가장 큰 수 만들기" 유형에서 자주 등장하는 함정이에요.</div>
 
   <div class="quiz" data-qid="q5-1">
@@ -814,7 +815,7 @@ students.Sort((a, b) =&gt;
             queue.Enqueue((nx, ny));
         }
     }
-    <span class="kw">return</span> dist[n - <span class="nm">1</span>, m - <span class="nm">1</span>];   <span class="cm">// 도착점까지의 최단 거리</span>
+    <span class="kw">return</span> dist[n - <span class="nm">1</span>, m - <span class="nm">1</span>] == <span class="nm">0</span> ? -<span class="nm">1</span> : dist[n - <span class="nm">1</span>, m - <span class="nm">1</span>];   <span class="cm">// 도착 못 하면 -1 (게임 맵 최단거리 유형)</span>
 }</pre>
   <div class="warn"><b>가장 흔한 버그</b> : 방문 표시를 "큐에서 꺼낼 때" 하면 같은 칸이 큐에 여러 번 들어가 시간 초과나 메모리 초과가 나요. 반드시 <b>큐에 넣을 때</b> 방문(거리) 표시를 하세요.</div>
 
@@ -893,7 +894,7 @@ meetings.Sort((a, b) =&gt; a.end != b.end
       <button data-ok="1">DP (각 금액별 최소 개수를 계산)</button>
       <button data-ok="0">동전을 무작위로 골라 본다</button>
     </div>
-    <div class="expl"><b class="ok">정답: DP</b><br>그리디는 500 + 100 × 3 = 4개를 내놓지만 정답은 400 × 2 = 2개예요. 동전이 배수 관계가 아니면 그리디의 전제가 깨져요. "그리디로 풀었는데 일부 케이스만 틀린다"면 이런 반례형 입력을 의심하세요.</div>
+    <div class="expl"><b class="ok">정답: DP</b><br>그리디는 500 + 100 x 3 = 4개를 내놓지만 정답은 400 x 2 = 2개예요. 동전이 배수 관계가 아니면 그리디의 전제가 깨져요. "그리디로 풀었는데 일부 케이스만 틀린다"면 이런 반례형 입력을 의심하세요.</div>
     <button class="retry">다시 풀기</button>
   </div>
 </div>
@@ -905,9 +906,9 @@ meetings.Sort((a, b) =&gt; a.end != b.end
   <p class="lead">큰 문제를 작은 문제로 쪼개고, 작은 문제의 답을 <b>저장해서 재사용</b>하는 기법이에요. 어려워 보이지만 패턴이 정해져 있어요.</p>
 
   <h3>왜 필요한가요? 피보나치로 보기</h3>
-  <p>피보나치를 단순 재귀로 짜면 같은 계산이 수없이 반복돼요. Fib(50)을 부르면 Fib(10)만 수백만 번 다시 계산해서, 사실상 끝나지 않아요. <b>한 번 구한 답을 배열에 적어두고 재사용</b>하면 O(N)으로 끝나요. 이게 DP의 전부예요.</p>
+  <p>피보나치를 단순 재귀로 짜면 같은 계산이 수없이 반복돼요. Fib(50)을 부르면 Fib(10) 같은 작은 값을 수억 번 다시 계산해서, 사실상 끝나지 않아요. <b>한 번 구한 답을 배열에 적어두고 재사용</b>하면 O(N)으로 끝나요. 이게 DP의 전부예요.</p>
   <pre><span class="cm">// 방법 1 : 메모이제이션 (재귀 + 저장)</span>
-<span class="kw">static</span> <span class="kw">long</span>[] memo = <span class="kw">new</span> <span class="kw">long</span>[<span class="nm">100</span>];
+<span class="kw">static</span> <span class="kw">long</span>[] memo = <span class="kw">new</span> <span class="kw">long</span>[<span class="nm">100</span>];   <span class="cm">// n 최대치+1 크기로 잡아요 (long엔 Fib(92)까지만 담겨요)</span>
 <span class="kw">static</span> <span class="kw">long</span> Fib(<span class="kw">int</span> n)
 {
     <span class="kw">if</span> (n &lt;= <span class="nm">1</span>) <span class="kw">return</span> n;
@@ -1088,10 +1089,10 @@ maxPq.Enqueue(value, -value);</pre>
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">"길이 10만인 배열에 구간 합 질의가 10만 개" 들어와요. 매 질의를 반복문으로 더하면 어떻게 될까요?</span></div>
     <div class="opts">
       <button data-ok="0">O(N + M)이라 충분히 빠르다</button>
-      <button data-ok="1">최악 O(N × M) = 100억 연산이라 시간 초과다</button>
+      <button data-ok="1">최악 O(N x M) = 100억 연산이라 시간 초과다</button>
       <button data-ok="0">질의는 캐시가 되어 자동으로 빨라진다</button>
     </div>
-    <div class="expl"><b class="ok">정답: 시간 초과</b><br>질의당 최대 10만 번 덧셈 × 질의 10만 개 = 100억 연산이에요. 누적 합을 O(N)으로 한 번 만들어 두면 질의당 O(1), 전체 O(N + M) = 20만 연산으로 끝나요. "전처리 한 번으로 질의를 싸게"가 누적 합의 철학이에요.</div>
+    <div class="expl"><b class="ok">정답: 시간 초과</b><br>질의당 최대 10만 번 덧셈 x 질의 10만 개 = 100억 연산이에요. 누적 합을 O(N)으로 한 번 만들어 두면 질의당 O(1), 전체 O(N + M) = 20만 연산으로 끝나요. "전처리 한 번으로 질의를 싸게"가 누적 합의 철학이에요.</div>
     <button class="retry">다시 풀기</button>
   </div>
 
@@ -1402,7 +1403,7 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
     }
     <span class="kw">return</span> -<span class="nm">1</span>;   <span class="cm">// 도달 불가</span>
 }</pre>
-  <div class="tip"><strong>다익스트라와 거의 같죠?</strong> : 13번 주제의 다익스트라와 비교해 보세요. 딱 한 군데, 우선순위에 <code>ng</code>(=g) 대신 <code>ng + H(...)</code>(=g+h)를 넣는 것만 달라요. 이 한 줄이 탐색을 목표 쪽으로 끌어당겨요.</div>
+  <div class="tip"><strong>다익스트라와 거의 같죠?</strong> : 13번 주제의 다익스트라와 비교해 보세요. 핵심 차이는 한 군데예요. 우선순위에 <code>ng</code>(=g) 대신 <code>ng + H(...)</code>(=g+h)를 넣어요. 이 한 줄이 탐색을 목표 쪽으로 끌어당겨요. (다익스트라에 있던 "이미 더 짧게 확정됐으면 건너뛰기" 가드는 여기선 생략했는데, 정답은 같고 넣으면 조금 더 빨라져요.)</div>
 
   <h3>미로 문제에서 빠지기 쉬운 곳</h3>
   <div class="card">

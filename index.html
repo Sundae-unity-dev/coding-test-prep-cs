@@ -172,7 +172,12 @@
   footer { text-align: center; padding: 34px 20px; color: var(--ink-soft); font-size: 13px; border-top: 1px solid var(--line); margin-top: 50px; }
 
   @media (max-width: 760px) {
-    nav .links { display: none; }
+    /* 모바일에선 드롭다운(호버) 대신 최상위 링크만 줄바꿈으로 보여줘요 */
+    nav { grid-template-columns: 1fr; height: auto; padding: 10px 16px; gap: 6px; }
+    nav .brand { justify-self: center; }
+    nav .links { flex-wrap: wrap; justify-content: center; gap: 4px 6px; }
+    nav .links > li > a .caret { display: none; }
+    nav .links .dropdown { display: none; }
     .cards, .steps { grid-template-columns: 1fr; }
     .stats { grid-template-columns: repeat(2, 1fr); }
     header h1 { font-size: 28px; }
