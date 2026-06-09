@@ -37,25 +37,33 @@
     onScroll();
   }
 
-  // 스크롤 진입 reveal (concepts SPA 는 ctReveal() 재호출로 재생)
+  // 스크롤 진입 reveal. 스크롤 기반이라 앵커 점프로 건너뛴 요소도 숨지 않음.
   function initReveal() {
-    var reveals = document.querySelectorAll('.reveal');
-    if (reduce || !('IntersectionObserver' in window)) {
-      reveals.forEach(function (el) { el.classList.remove('reveal'); });
-      return;
+    var list = [].slice.call(document.querySelectorAll('.reveal'));
+    if (reduce) { list.forEach(function (el) { el.classList.remove('reveal'); }); return; }
+    function check() {
+      for (var i = list.length - 1; i >= 0; i--) {
+        var el = list[i];
+        var r = el.getBoundingClientRect();
+        if (r.top <= 0) {
+          // 이미 위로 지나친 요소(점프 등): 애니메이션 없이 즉시 표시
+          el.classList.remove('reveal'); list.splice(i, 1);
+        } else if (r.top < window.innerHeight * 0.92 && r.bottom > 0) {
+          // 아래에서 뷰포트로 들어옴: 스태거 등장 후 클래스 제거(hover/flash 보존)
+          (function (el) {
+            var d = parseInt(el.getAttribute('data-reveal-delay') || '0', 10);
+            setTimeout(function () {
+              el.classList.add('shown');
+              setTimeout(function () { el.classList.remove('reveal', 'shown'); }, 650);
+            }, d);
+          })(el);
+          list.splice(i, 1);
+        }
+      }
     }
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        var el = e.target; io.unobserve(el);
-        var d = parseInt(el.getAttribute('data-reveal-delay') || '0', 10);
-        setTimeout(function () {
-          el.classList.add('shown');
-          setTimeout(function () { el.classList.remove('reveal', 'shown'); }, 650);
-        }, d);
-      });
-    }, { threshold: 0.15 });
-    reveals.forEach(function (el) { io.observe(el); });
+    window.addEventListener('scroll', check, { passive: true });
+    window.addEventListener('resize', check, { passive: true });
+    check();
   }
   window.ctReveal = initReveal;
 

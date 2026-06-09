@@ -194,6 +194,10 @@
   details.acc[open] summary::before { content: '−'; }
   details.acc summary:hover { background: #FBFAFE; }
   details.acc .body { padding: 0 18px 16px; font-size: 14.5px; color: var(--ink-soft); }
+  @keyframes accOpen { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+  details.acc[open] .body { animation: accOpen 0.25s ease; }
+  .read-progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 120; }
+  .read-progress span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--purple), #B388FF); transition: width 0.12s linear; }
   details.acc .body pre { margin-top: 10px; }
 
   /* ===== 체크리스트 ===== */
@@ -276,6 +280,7 @@
   <a href="#s7">체크리스트</a>
   <a href="#s8">연습 사이트</a>
 </nav>
+<div class="read-progress"><span id="readbar"></span></div>
 
 <header class="hero">
   <div class="badge">Unity 트랙 수강생용</div>
@@ -673,14 +678,25 @@ thread.Join();</pre>
     return document.querySelector(a.getAttribute('href'));
   });
 
+  var readbar = document.getElementById('readbar');
   function onScroll() {
     var pos = window.scrollY + 90;
     var current = 0;
     sections.forEach(function (s, i) { if (s && s.offsetTop <= pos) current = i; });
     links.forEach(function (a, i) { a.classList.toggle('active', i === current); });
+    if (readbar) {
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      readbar.style.width = (max > 0 ? Math.min(window.scrollY / max * 100, 100) : 0) + '%';
+    }
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+})();
+
+// ===== 스크롤 등장 대상 지정 (assets/app.js 가 처리) =====
+(function () {
+  var els = document.querySelectorAll('main .card, main .tip, main .warn, main .timeline .step, details.acc');
+  els.forEach(function (el, i) { el.classList.add('reveal'); el.setAttribute('data-reveal-delay', (i % 3) * 55); });
 })();
 </script>
 <script defer src="assets/app.js"></script>
