@@ -11,23 +11,86 @@
     --ink: #1F2230; --ink-soft: #555B6E; --line: #E5E2F0; --bg: #FAFAFD;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
   body {
     font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif;
     background: var(--bg); color: var(--ink); line-height: 1.7;
     min-height: 100vh; display: flex; flex-direction: column;
   }
+  a { color: inherit; }
+
+  /* 상단 내비게이션 */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; gap: 8px;
+    padding: 0 24px; height: 60px;
+  }
+  nav .brand {
+    display: flex; align-items: center; gap: 9px;
+    font-weight: 800; font-size: 16px; color: var(--ink); text-decoration: none;
+    margin-right: auto;
+  }
+  nav .brand .mark {
+    width: 30px; height: 30px; border-radius: 8px; color: #fff;
+    background: linear-gradient(135deg, #6A2FD0, #8843FF);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 800;
+  }
+  nav .links { display: flex; gap: 4px; align-items: center; }
+  nav .links a {
+    text-decoration: none; color: var(--ink-soft); font-weight: 600; font-size: 14.5px;
+    padding: 8px 13px; border-radius: 9px; transition: all 0.15s;
+  }
+  nav .links a:hover { color: var(--purple-dark); background: var(--purple-bg); }
+  nav .links a.run { color: #15803D; }
+  nav .links a.run:hover { color: #166534; background: #EAFBF0; }
+  nav .menu-toggle { display: none; }
+
+  /* 히어로 */
   header {
     background: linear-gradient(135deg, #3B1B7E 0%, #6A2FD0 55%, #8843FF 100%);
-    color: #fff; text-align: center; padding: 80px 24px 70px;
+    color: #fff; text-align: center; padding: 88px 24px 78px; position: relative; overflow: hidden;
+  }
+  header::after {
+    content: ""; position: absolute; right: -120px; top: -120px;
+    width: 360px; height: 360px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.16), transparent 70%);
   }
   header .badge {
     display: inline-block; background: rgba(255,255,255,0.18);
-    border: 1px solid rgba(255,255,255,0.35); padding: 4px 14px;
-    border-radius: 99px; font-size: 13px; font-weight: 600; margin-bottom: 18px;
+    border: 1px solid rgba(255,255,255,0.35); padding: 5px 15px;
+    border-radius: 99px; font-size: 13px; font-weight: 600; margin-bottom: 20px;
   }
-  header h1 { font-size: 34px; font-weight: 800; margin-bottom: 12px; }
-  header p { font-size: 16px; opacity: 0.88; max-width: 560px; margin: 0 auto; }
-  main { flex: 1; max-width: 1000px; margin: 0 auto; padding: 48px 20px 80px; width: 100%; }
+  header h1 { font-size: 38px; font-weight: 800; margin-bottom: 14px; letter-spacing: -0.5px; position: relative; }
+  header p { font-size: 16.5px; opacity: 0.9; max-width: 580px; margin: 0 auto 28px; position: relative; }
+  header .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; position: relative; }
+  header .cta a {
+    text-decoration: none; font-weight: 700; font-size: 15px;
+    padding: 13px 26px; border-radius: 11px; transition: all 0.16s;
+  }
+  header .cta .primary { background: #fff; color: var(--purple-dark); }
+  header .cta .primary:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(0,0,0,0.22); }
+  header .cta .ghost { background: rgba(255,255,255,0.14); color: #fff; border: 1px solid rgba(255,255,255,0.4); }
+  header .cta .ghost:hover { background: rgba(255,255,255,0.24); }
+
+  /* 통계 띠 */
+  .stats {
+    max-width: 920px; margin: -34px auto 0; padding: 0 20px; position: relative; z-index: 5;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+  }
+  .stats .stat {
+    background: #fff; border: 1px solid var(--line); border-radius: 14px;
+    padding: 20px 14px; text-align: center; box-shadow: 0 6px 20px rgba(60,30,130,0.06);
+  }
+  .stats .stat b { display: block; font-size: 26px; font-weight: 800; color: var(--purple-dark); }
+  .stats .stat span { font-size: 13px; color: var(--ink-soft); }
+
+  main { flex: 1; max-width: 1000px; margin: 0 auto; padding: 56px 20px 30px; width: 100%; }
+  .sec-title { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+  .sec-sub { color: var(--ink-soft); font-size: 14.5px; margin-bottom: 24px; }
+
   .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
   a.card {
     display: block; text-decoration: none; color: inherit;
@@ -40,52 +103,138 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 24px; margin-bottom: 16px;
   }
-  a.card h2 { font-size: 19px; font-weight: 800; margin-bottom: 6px; }
+  a.card h3 { font-size: 19px; font-weight: 800; margin-bottom: 6px; }
   a.card p { font-size: 14px; color: var(--ink-soft); }
   a.card .go { margin-top: 14px; font-size: 13.5px; font-weight: 700; color: var(--purple-dark); }
+
+  .runbox {
+    display: flex; align-items: center; gap: 16px; margin-top: 20px; text-decoration: none;
+    background: linear-gradient(135deg, #EFFAF3, #FFFFFF);
+    border: 1px solid #BBE7CC; border-radius: 16px; padding: 20px 24px; color: #15803D;
+    transition: all 0.18s;
+  }
+  .runbox:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(21,128,61,0.12); }
+  .runbox .play {
+    width: 46px; height: 46px; border-radius: 12px; background: #15803D; color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
+  }
+  .runbox b { font-size: 16px; color: #166534; }
+  .runbox .desc { font-size: 13.5px; color: #3F6B50; }
+  .runbox .arrow { margin-left: auto; font-weight: 800; white-space: nowrap; }
+
+  /* 학습 흐름 */
+  .flow { margin-top: 56px; }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .step {
+    background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 24px 22px; position: relative;
+  }
+  .step .n {
+    width: 30px; height: 30px; border-radius: 8px; background: var(--purple); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; margin-bottom: 14px;
+  }
+  .step h4 { font-size: 16px; font-weight: 800; margin-bottom: 5px; }
+  .step p { font-size: 13.5px; color: var(--ink-soft); }
+
   .note {
-    margin-top: 28px; background: var(--purple-bg); border-left: 4px solid var(--purple);
-    border-radius: 0 10px 10px 0; padding: 14px 18px; font-size: 14px;
+    margin-top: 30px; background: var(--purple-bg); border-left: 4px solid var(--purple);
+    border-radius: 0 10px 10px 0; padding: 15px 18px; font-size: 14px;
   }
   .note strong { color: var(--purple-dark); }
-  footer { text-align: center; padding: 30px 20px; color: var(--ink-soft); font-size: 13px; border-top: 1px solid var(--line); }
-  @media (max-width: 760px) { .cards { grid-template-columns: 1fr; } header h1 { font-size: 26px; } }
+
+  footer { text-align: center; padding: 34px 20px; color: var(--ink-soft); font-size: 13px; border-top: 1px solid var(--line); margin-top: 50px; }
+
+  @media (max-width: 760px) {
+    nav .links { display: none; }
+    .cards, .steps { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    header h1 { font-size: 28px; }
+  }
 </style>
 </head>
 <body>
-<header>
+
+<nav>
+  <a class="brand" href="#top"><span class="mark">C#</span>코딩 테스트 준비자료</a>
+  <div class="links">
+    <a href="guide.html">준비 가이드</a>
+    <a href="concepts.html">개념 정리</a>
+    <a href="practice.html">예시 문제</a>
+    <a class="run" href="run/">코드 실행기</a>
+  </div>
+</nav>
+
+<header id="top">
   <div class="badge">Unity 트랙 수강생용</div>
-  <h1>코딩 테스트 준비자료</h1>
-  <p>C#으로 코딩 테스트를 준비하는 데 필요한 전략과 개념, 연습 문제를 모았어요. 원하는 것을 골라 시작해 보세요.</p>
+  <h1>C# 코딩 테스트, 여기서 준비해요</h1>
+  <p>응시 전략과 핵심 개념, 연습 문제를 한곳에 모았어요. 브라우저 안에서 바로 C# 코드를 실행하고 채점까지 해 볼 수 있어요.</p>
+  <div class="cta">
+    <a class="primary" href="guide.html">가이드부터 보기</a>
+    <a class="ghost" href="run/">코드 실행기 열기</a>
+  </div>
 </header>
+
+<div class="stats">
+  <div class="stat"><b>18</b><span>핵심 개념 주제</span></div>
+  <div class="stat"><b>34</b><span>주제별 퀴즈</span></div>
+  <div class="stat"><b>12</b><span>대표 연습 문제</span></div>
+  <div class="stat"><b>C#</b><span>브라우저 내 실행</span></div>
+</div>
+
 <main>
+  <h2 class="sec-title">무엇이 들어 있나요?</h2>
+  <p class="sec-sub">전략과 개념, 문제 풀이를 단계별로 나눠 두었어요. 필요한 것부터 골라 시작해 보세요.</p>
   <div class="cards">
     <a class="card" href="guide.html">
       <div class="ico">🧭</div>
-      <h2>준비 가이드</h2>
+      <h3>준비 가이드</h3>
       <p>평가 기준, 4주 로드맵, 문제 접근법, 시간 배분, C# 세팅, 자주 하는 실수, 시험 전 체크리스트까지 응시 전략을 한곳에 정리했어요.</p>
       <div class="go">가이드 열기 →</div>
     </a>
     <a class="card" href="concepts.html">
       <div class="ico">📚</div>
-      <h2>필수 개념 정리</h2>
+      <h3>필수 개념 정리</h3>
       <p>시간 복잡도부터 다익스트라, 비트마스킹, A* 길찾기까지 18개 주제를 예제 코드와 함께 다뤄요. 주제마다 퀴즈가 있고 추천 문제도 연결돼 있어요.</p>
       <div class="go">개념 정리 열기 →</div>
     </a>
     <a class="card" href="practice.html">
       <div class="ico">✍️</div>
-      <h2>예시 문제</h2>
-      <p>스택, 해시, DP, BFS, 정렬, 우선순위 큐 유형의 대표 문제 6개를 풀어 봐요. 힌트와 C# 모범 답안, 채점 사이트 링크가 함께 있어요.</p>
+      <h3>예시 문제</h3>
+      <p>스택, 해시, DP, BFS, 정렬, 우선순위 큐 유형의 프로그래머스 대표 문제 12개를 풀어 봐요. 힌트와 C# 모범 답안이 있고, 코드 실행기에서 바로 채점돼요.</p>
       <div class="go">문제 풀러 가기 →</div>
     </a>
   </div>
-  <a href="run/" style="display:flex;align-items:center;gap:14px;margin-top:20px;text-decoration:none;background:linear-gradient(135deg,#EFFAF3,#FFFFFF);border:1px solid #BBE7CC;border-radius:14px;padding:18px 22px;color:#15803D;">
-    <span style="font-size:24px;">▶</span>
-    <span><b style="font-size:16px;color:#166534;">C# 코드 실행기 (베타)</b><br><span style="font-size:13.5px;color:#3F6B50;">브라우저 안에서 바로 코드를 작성하고 실행해요. 외부 채점 서버 없이 풀이를 돌려볼 수 있어요.</span></span>
-    <span style="margin-left:auto;font-weight:800;white-space:nowrap;">열기 →</span>
+
+  <a class="runbox" href="run/">
+    <span class="play">▶</span>
+    <span><b>C# 코드 실행기 (베타)</b><br><span class="desc">브라우저 안에서 바로 코드를 작성하고 실행해요. 외부 채점 서버 없이 풀이를 돌려보고 채점까지 해 볼 수 있어요.</span></span>
+    <span class="arrow">열기 →</span>
   </a>
-  <div class="note"><strong>학습 순서 팁</strong> : 먼저 가이드로 전체 전략을 잡고, 개념 정리에서 주제별로 읽은 뒤, 예시 문제로 손에 붙여 보세요. 퀴즈와 풀이 진행 상황은 사용하는 브라우저에 자동 저장돼요.</div>
+
+  <section class="flow">
+    <h2 class="sec-title">이렇게 학습해요</h2>
+    <p class="sec-sub">처음이라면 위에서 아래 순서로 따라가는 걸 추천해요.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="n">1</div>
+        <h4>전략 잡기</h4>
+        <p>준비 가이드로 무엇을 평가하는지와 4주 로드맵, 시간 배분 요령을 먼저 익혀요.</p>
+      </div>
+      <div class="step">
+        <div class="n">2</div>
+        <h4>개념 다지기</h4>
+        <p>개념 정리에서 주제별 예제를 읽고, 퀴즈로 이해한 만큼 바로 확인해요.</p>
+      </div>
+      <div class="step">
+        <div class="n">3</div>
+        <h4>손에 붙이기</h4>
+        <p>예시 문제를 코드 실행기에서 직접 풀고 채점하면서 풀이 감각을 길러요.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="note"><strong>학습 진행 상황은 자동 저장돼요</strong> : 퀴즈 결과와 문제 풀이 기록은 사용하는 브라우저에 저장돼서, 다시 들어와도 이어서 볼 수 있어요.</div>
 </main>
-<footer>코딩 테스트 준비자료 | C# 기준</footer>
+
+<footer>코딩 테스트 준비자료 | C# 기준 | Unity 트랙 수강생용</footer>
 </body>
 </html>
