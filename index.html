@@ -171,6 +171,16 @@
 
   footer { text-align: center; padding: 34px 20px; color: var(--ink-soft); font-size: 13px; border-top: 1px solid var(--line); margin-top: 50px; }
 
+  /* 동적 질문 티커 (가운데를 가로질러 흐르는 질문들) */
+  .ticker { overflow: hidden; margin-top: 44px; padding: 16px 0; background: #fff; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
+  .ticker-track { display: flex; width: max-content; gap: 12px; animation: tickerScroll 40s linear infinite; }
+  .ticker:hover .ticker-track { animation-play-state: paused; }
+  @keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .ticker .q { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; text-decoration: none; background: var(--purple-bg); color: var(--purple-dark); border: 1px solid #E2D6FF; border-radius: 99px; padding: 9px 18px; font-size: 14px; font-weight: 600; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+  .ticker .q:hover { background: var(--purple); color: #fff; border-color: var(--purple); }
+  .ticker .q .mk { font-weight: 800; opacity: 0.65; }
+  @media (prefers-reduced-motion: reduce) { .ticker-track { animation: none; } }
+
   @media (max-width: 760px) {
     /* 모바일에선 드롭다운(호버) 대신 최상위 링크만 줄바꿈으로 보여줘요 */
     nav { grid-template-columns: 1fr; height: auto; padding: 10px 16px; gap: 6px; }
@@ -187,7 +197,7 @@
 <body>
 
 <nav>
-  <a class="brand" href="#top"><span class="mark">C#</span>코딩 테스트 준비자료</a>
+  <a class="brand" href="#top"><span class="mark">C#</span>Elice Coding Camp</a>
   <ul class="links">
     <li>
       <a href="guide.html">준비 가이드 <span class="caret">▾</span></a>
@@ -234,6 +244,31 @@
   <div class="stat"><b>C#</b><span>브라우저 내 실행</span></div>
 </div>
 
+<div class="ticker" aria-label="자주 묻는 질문">
+  <div class="ticker-track">
+    <a class="q" href="guide.html"><span class="mk">Q.</span>코딩 테스트, 어떻게 준비하지?</a>
+    <a class="q" href="concepts.html#t1"><span class="mk">Q.</span>시간 복잡도가 왜 중요해요?</a>
+    <a class="q" href="concepts.html#t8"><span class="mk">Q.</span>BFS랑 DFS, 언제 뭘 써요?</a>
+    <a class="q" href="concepts.html#t10"><span class="mk">Q.</span>DP는 어떻게 접근하죠?</a>
+    <a class="q" href="guide.html#s4"><span class="mk">Q.</span>30분 안에 못 풀면 어떡해요?</a>
+    <a class="q" href="guide.html#s5"><span class="mk">Q.</span>C#에서 빠른 입출력은?</a>
+    <a class="q" href="concepts.html#t13"><span class="mk">Q.</span>다익스트라가 뭐예요?</a>
+    <a class="q" href="concepts.html#t4"><span class="mk">Q.</span>해시는 언제 쓰나요?</a>
+    <a class="q" href="concepts.html#t5"><span class="mk">Q.</span>정렬 기준을 바꾸려면?</a>
+    <a class="q" href="run/"><span class="mk">Q.</span>직접 코드를 돌려볼 수 있어요?</a>
+    <a class="q" href="guide.html" aria-hidden="true"><span class="mk">Q.</span>코딩 테스트, 어떻게 준비하지?</a>
+    <a class="q" href="concepts.html#t1" aria-hidden="true"><span class="mk">Q.</span>시간 복잡도가 왜 중요해요?</a>
+    <a class="q" href="concepts.html#t8" aria-hidden="true"><span class="mk">Q.</span>BFS랑 DFS, 언제 뭘 써요?</a>
+    <a class="q" href="concepts.html#t10" aria-hidden="true"><span class="mk">Q.</span>DP는 어떻게 접근하죠?</a>
+    <a class="q" href="guide.html#s4" aria-hidden="true"><span class="mk">Q.</span>30분 안에 못 풀면 어떡해요?</a>
+    <a class="q" href="guide.html#s5" aria-hidden="true"><span class="mk">Q.</span>C#에서 빠른 입출력은?</a>
+    <a class="q" href="concepts.html#t13" aria-hidden="true"><span class="mk">Q.</span>다익스트라가 뭐예요?</a>
+    <a class="q" href="concepts.html#t4" aria-hidden="true"><span class="mk">Q.</span>해시는 언제 쓰나요?</a>
+    <a class="q" href="concepts.html#t5" aria-hidden="true"><span class="mk">Q.</span>정렬 기준을 바꾸려면?</a>
+    <a class="q" href="run/" aria-hidden="true"><span class="mk">Q.</span>직접 코드를 돌려볼 수 있어요?</a>
+  </div>
+</div>
+
 <main>
   <h2 class="sec-title">무엇이 들어 있나요?</h2>
   <p class="sec-sub">전략과 개념, 문제 풀이를 단계별로 나눠 두었어요. 필요한 것부터 골라 시작해 보세요.</p>
@@ -260,7 +295,7 @@
 
   <a class="runbox" href="run/">
     <span class="play">▶</span>
-    <span><b>C# 코드 실행기 (베타)</b><br><span class="desc">브라우저 안에서 바로 코드를 작성하고 실행해요. 외부 채점 서버 없이 풀이를 돌려보고 채점까지 해 볼 수 있어요.</span></span>
+    <span><b>C# 코드 실행기</b><br><span class="desc">브라우저 안에서 바로 코드를 작성하고 실행해요. 외부 채점 서버 없이 풀이를 돌려보고 채점까지 해 볼 수 있어요.</span></span>
     <span class="arrow">열기 →</span>
   </a>
 
@@ -289,6 +324,6 @@
   <div class="note"><strong>학습 진행 상황은 자동 저장돼요</strong> : 퀴즈 결과와 문제 풀이 기록은 사용하는 브라우저에 저장돼서, 다시 들어와도 이어서 볼 수 있어요.</div>
 </main>
 
-<footer>코딩 테스트 준비자료 | C# 기준 | Unity 트랙 수강생용</footer>
+<footer>Elice Coding Camp | C# 코딩 테스트 준비자료 | Unity 트랙 수강생용</footer>
 </body>
 </html>
