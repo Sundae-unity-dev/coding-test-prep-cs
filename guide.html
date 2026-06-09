@@ -56,6 +56,9 @@
   nav a.active { background: var(--purple); color: #fff; }
   nav .navsep { width: 1px; height: 20px; background: var(--line); margin: 0 10px; flex-shrink: 0; }
   nav a.sib { color: var(--purple-dark); font-weight: 700; }
+  .sitebrand { display: flex; align-items: center; gap: 9px; font-weight: 800; font-size: 15px; color: var(--ink, #1F2230); text-decoration: none; flex-shrink: 0; margin-right: 14px; }
+  .sitebrand .mark { width: 28px; height: 28px; border-radius: 8px; color: #fff; background: linear-gradient(135deg, #6A2FD0, #8843FF); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; }
+  .sitebrand:hover { color: var(--purple-dark, #6A2FD0); }
 
   /* ===== 히어로 ===== */
   header.hero {
@@ -256,8 +259,7 @@
 <body>
 
 <nav id="topnav">
-  <a href="https://sundae-unity-dev.github.io/coding-test-prep-cs/" style="font-weight:800;color:#6A2FD0;text-decoration:none;">🏠 홈</a>
-  <span class="logo">C# 코딩 테스트</span>
+  <a class="sitebrand" href="https://sundae-unity-dev.github.io/coding-test-prep-cs/"><span class="mark">C#</span>코딩 테스트 준비자료</a>
   <a class="sib" href="concepts.html">개념 정리</a>
   <a class="sib" href="practice.html">예시 문제</a>
   <a class="sib" href="run/">코드 실행기</a>
