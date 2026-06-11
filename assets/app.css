@@ -59,3 +59,12 @@ pre.has-copy:hover .copy-btn, .copy-btn:focus { opacity: 1; }
 .reveal { opacity: 0; transform: translateY(20px); }
 .reveal.shown { opacity: 1; transform: translateY(0); transition: opacity 0.55s ease, transform 0.55s ease; }
 @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
+
+/* 키보드 포커스 표시 (사이트 + 런박스 공통). 마우스 클릭엔 안 뜨도록 :focus-visible 사용 */
+a:focus-visible, button:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible,
+summary:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
