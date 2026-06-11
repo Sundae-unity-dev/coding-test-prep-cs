@@ -328,6 +328,8 @@
     <span class="kw">if</span> (set.Contains(v)) count++;    <span class="cm">// 안전!</span>
 }</pre>
 
+  <div class="warn"><b>자주 하는 실수</b> : ① 문제의 N 최대값을 안 보고 코딩을 시작해 다 짠 뒤 시간 초과를 만나요. 항상 제약부터 읽고 허용 복잡도를 역산하세요. ② 반복문 안의 <code>list.Contains</code>, <code>list.IndexOf</code>, 문자열 <code>+=</code> 누적 같은 "숨은 O(N)"을 못 보고 넘어가요. ③ 시간뿐 아니라 재귀 깊이와 메모리도 복잡도의 일부예요.</div>
+
   <div class="quiz" data-qid="q1-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">N이 최대 100,000인 문제에서 시간 안에 통과할 가능성이 가장 높은 복잡도는 무엇일까요?</span></div>
     <div class="opts">
@@ -450,6 +452,7 @@ s.Trim()                     <span class="cm">// 양쪽 공백 제거</span>
     <tr><td>비유</td><td>접시 쌓기 : 맨 위부터 꺼내요</td><td>줄 서기 : 먼저 온 사람부터 나가요</td></tr>
     <tr><td>넣기 / 꺼내기</td><td><code>Push</code> / <code>Pop</code></td><td><code>Enqueue</code> / <code>Dequeue</code></td></tr>
     <tr><td>들여다보기</td><td><code>Peek</code> (꺼내지 않고 확인)</td><td><code>Peek</code></td></tr>
+    <tr><td>넣기/꺼내기 비용</td><td>O(1)</td><td>O(1)</td></tr>
     <tr><td>대표 문제</td><td>괄호 짝 검사, 뒤로 가기, 수식 계산</td><td>BFS, 프린터 대기열, 시뮬레이션</td></tr>
   </table>
   <div class="warn"><b>주의</b> : 비어 있는 스택이나 큐에서 <code>Pop</code>, <code>Dequeue</code>, <code>Peek</code>을 호출하면 예외가 나요. 꺼내기 전에 항상 <code>Count &gt; 0</code>을 확인하는 습관을 들이세요.</div>
@@ -475,6 +478,25 @@ s.Trim()                     <span class="cm">// 양쪽 공백 제거</span>
     <span class="cm">// 다 돌고 나서 스택이 비어 있어야 모든 짝이 맞은 거예요</span>
     <span class="kw">return</span> stack.Count == <span class="nm">0</span>;
 }</pre>
+
+  <h3>스택이 이렇게 움직여요 : 입력 (())</h3>
+  <p>위 코드로 <code>(())</code>를 처리하면 스택 상태가 이렇게 변해요.</p>
+  <table>
+    <tr><th>읽은 문자</th><th>동작</th><th>스택 (아래 → 위)</th></tr>
+    <tr><td>(</td><td>Push</td><td>(</td></tr>
+    <tr><td>(</td><td>Push</td><td>( (</td></tr>
+    <tr><td>)</td><td>Pop</td><td>(</td></tr>
+    <tr><td>)</td><td>Pop</td><td>(비어 있음)</td></tr>
+  </table>
+  <p>다 읽었을 때 스택이 비어 있으니 모든 짝이 맞아 true예요. 만약 닫는 괄호 차례인데 스택이 비어 있다면 그 즉시 false죠.</p>
+
+  <div class="card">
+    <ul class="plain">
+      <li><b>이럴 때 써요</b></li>
+      <li><b>스택</b> : "직전 것과 비교", "되돌리기", "괄호 짝 맞추기", "가장 최근 것부터" 같은 표현이 보일 때</li>
+      <li><b>큐</b> : "들어온 순서대로 처리", "대기열", "한 칸씩 퍼져 나가기"(BFS) 같은 표현이 보일 때</li>
+    </ul>
+  </div>
 
   <div class="quiz" data-qid="q3-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">스택에 1, 2, 3을 순서대로 Push한 뒤 Pop을 두 번 하면 어떤 값들이 나올까요?</span></div>
@@ -543,6 +565,25 @@ s.Trim()                     <span class="cm">// 양쪽 공백 제거</span>
 }</pre>
   <div class="tip"><strong>이 발상이 핵심이에요</strong> : 2중 반복문 O(N²)으로 모든 쌍을 검사하는 대신, "지금까지 본 것"을 해시에 기록하며 한 번만 순회하면 O(N)이 돼요. 시간 초과가 나면 가장 먼저 "해시로 조회를 O(1)로 만들 수 없나?"를 자문하세요.</div>
 
+  <h3>HasPairSum 따라가기 : arr = [3, 5, 2, 8], target = 10</h3>
+  <table>
+    <tr><th>현재 값 v</th><th>찾는 짝 (target - v)</th><th>seen 에 있나?</th><th>seen 갱신</th></tr>
+    <tr><td>3</td><td>7</td><td>없음</td><td>{3}</td></tr>
+    <tr><td>5</td><td>5</td><td>없음</td><td>{3, 5}</td></tr>
+    <tr><td>2</td><td>8</td><td>없음</td><td>{3, 5, 2}</td></tr>
+    <tr><td>8</td><td>2</td><td><b>있음 → true</b></td><td>(2 + 8 = 10)</td></tr>
+  </table>
+  <p>각 값에서 "내 짝을 전에 봤나?"만 O(1)로 묻고 지나가요. 전체를 딱 한 번만 훑어 O(N)에 끝나죠.</p>
+
+  <div class="card">
+    <ul class="plain">
+      <li><b>이럴 때 써요</b></li>
+      <li>"~가 있는지/몇 번 나오는지/중복인지" 조회가 반복될 때 (O(1) 조회)</li>
+      <li>2중 반복문 O(N²)이 시간 초과날 때, 한쪽을 해시로 바꿔 O(N)으로</li>
+      <li>"이름별, 값별로 묶어서 세기"가 필요할 때 (Dictionary)</li>
+    </ul>
+  </div>
+
   <div class="quiz" data-qid="q4-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">참가자 명단과 완주자 명단이 주어지고 "완주하지 못한 한 사람"을 찾아야 해요 (동명이인 존재 가능). 알맞은 도구는 무엇일까요?</span></div>
     <div class="opts">
@@ -606,6 +647,15 @@ students.Sort((a, b) =&gt;
     .ToList();</pre>
   <div class="warn"><b>정렬 안정성</b> : 내장 <code>Array.Sort</code>와 <code>List.Sort</code>는 같은 값의 원래 순서를 보장하지 않는 <b>불안정 정렬</b>이에요. 반대로 LINQ <code>OrderBy</code>/<code>ThenBy</code>는 <b>안정 정렬</b>이라 동점이면 입력 순서를 지켜요. 동점의 순서가 중요한 문제라면 OrderBy를 쓰거나, 비교 기준을 동점까지 끝까지 명시하세요.</div>
   <div class="tip"><strong>숫자를 문자열처럼 정렬하는 함정</strong> : 문자열 "10"은 "9"보다 사전순으로 앞이에요 ("1" &lt; "9"). 숫자 크기로 정렬하려면 <code>int.Parse</code>로 변환한 뒤 비교해야 해요. "가장 큰 수 만들기" 유형에서 자주 등장하는 함정이에요.</div>
+
+  <div class="card">
+    <ul class="plain">
+      <li><b>이럴 때 써요</b></li>
+      <li>"가장 큰/작은", "최대 몇 개", "겹치지 않게" 같은 표현 → 정렬해 두면 그리디나 투 포인터로 이어져요</li>
+      <li>"무엇을 기준으로 줄 세우면 답이 단순해질까?"가 보이는 문제 (정렬은 거의 모든 유형의 전처리)</li>
+      <li>정렬 후 이분 탐색을 쓰려고 할 때 (먼저 정렬해야 탐색이 성립)</li>
+    </ul>
+  </div>
 
   <div class="quiz" data-qid="q5-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">비교 함수 <code>(a, b) =&gt; b.CompareTo(a)</code>로 정렬하면 결과는 어떤 순서일까요?</span></div>
@@ -742,6 +792,17 @@ students.Sort((a, b) =&gt;
     }
 }</pre>
 
+  <h3>경우의 수와 안전한 N</h3>
+  <table>
+    <tr><th>형태</th><th>경우의 수</th><th>대략 안전한 N</th></tr>
+    <tr><td>순열 (N개 전부 줄 세우기)</td><td>N!</td><td>N ≤ 10 (10! ≈ 360만)</td></tr>
+    <tr><td>부분집합 (각 원소 포함/제외)</td><td>2<sup>N</sup></td><td>N ≤ 20 (2<sup>20</sup> ≈ 100만)</td></tr>
+    <tr><td>중복 순열 (각 칸에 M가지)</td><td>M<sup>N</sup></td><td>M<sup>N</sup> ≤ 약 1억일 때</td></tr>
+  </table>
+  <p>완전 탐색은 "경우의 수 x 한 경우 처리 비용"이 1억 안쪽인지부터 따져요. 넘으면 그리디, DP, 이분 탐색 같은 더 빠른 길을 찾아야 한다는 신호예요.</p>
+
+  <div class="warn"><b>자주 하는 실수</b> : 백트래킹에서 <code>current.RemoveAt(...)</code>와 <code>used[i] = false</code> 같은 <b>되돌리기</b>를 빼먹는 거예요. 되돌리지 않으면 한 분기에서 고른 선택이 다음 분기로 새어 나가 엉뚱한 답이 나와요. "선택했으면 반드시 원위치"를 한 쌍으로 기억하세요.</div>
+
   <div class="quiz" data-qid="q7-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">N이 최대 10이고 "모든 순서를 시도해 최적값을 찾아라"라는 문제가 나왔어요. 가장 알맞은 접근은 무엇일까요?</span></div>
     <div class="opts">
@@ -836,6 +897,10 @@ students.Sort((a, b) =&gt;
 }</pre>
   <div class="warn"><b>가장 흔한 버그</b> : 방문 표시를 "큐에서 꺼낼 때" 하면 같은 칸이 큐에 여러 번 들어가 시간 초과나 메모리 초과가 나요. 반드시 <b>큐에 넣을 때</b> 방문(거리) 표시를 하세요.</div>
 
+  <div class="tip"><strong>복잡도</strong> : DFS도 BFS도 정점 V개와 간선 E개를 한 번씩만 보므로 O(V + E)예요. 격자 문제라면 칸 수가 곧 V, 상하좌우 연결이 E라서 사실상 O(칸 수)죠.</div>
+
+  <div class="warn"><b>C# 함정</b> : 재귀 DFS는 정점이 수만~수십만 개로 깊어지면 호출 스택이 넘쳐 <code>StackOverflowException</code>이 날 수 있어요. 깊이가 깊을 것 같으면 재귀 대신 <code>Stack&lt;T&gt;</code>를 쓴 반복 DFS나 BFS로 바꾸세요.</div>
+
   <div class="quiz" data-qid="q8-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">"미로의 시작에서 출구까지 최소 몇 칸 이동해야 하는가?"라는 문제에 알맞은 탐색은 무엇일까요?</span></div>
     <div class="opts">
@@ -892,6 +957,21 @@ meetings.Sort((a, b) =&gt; a.end != b.end
     }
 }</pre>
   <div class="tip"><strong>그리디 문제 신호</strong> : "최대한 많이", "최소 개수로" + 정렬하면 풀릴 것 같은 구조. 일단 "무엇을 기준으로 정렬할까?"부터 고민해 보세요. 그리디 문제의 80%는 정렬 기준 찾기예요.</div>
+
+  <h3>회의 6개로 따라가기</h3>
+  <p>회의 (시작, 끝) = (1,4), (3,5), (0,6), (5,7), (5,9), (8,9). 끝나는 시간 순으로 정렬한 뒤 앞에서부터 담아요.</p>
+  <table>
+    <tr><th>회의 (시작, 끝)</th><th>lastEnd</th><th>담을까? (시작 &gt;= lastEnd)</th></tr>
+    <tr><td>(1, 4)</td><td>없음</td><td>담음 → lastEnd = 4</td></tr>
+    <tr><td>(3, 5)</td><td>4</td><td>3 &lt; 4 라 건너뜀</td></tr>
+    <tr><td>(0, 6)</td><td>4</td><td>0 &lt; 4 라 건너뜀</td></tr>
+    <tr><td>(5, 7)</td><td>4</td><td>담음 → lastEnd = 7</td></tr>
+    <tr><td>(5, 9)</td><td>7</td><td>5 &lt; 7 라 건너뜀</td></tr>
+    <tr><td>(8, 9)</td><td>7</td><td>담음 → lastEnd = 9</td></tr>
+  </table>
+  <p>결과는 <b>3개</b>예요. 끝이 빠른 회의를 먼저 담을수록 뒤에 더 많은 회의를 담을 여지가 생긴다는 게 이 그리디의 핵심이에요.</p>
+
+  <div class="tip"><strong>복잡도</strong> : 정렬 O(N log N) + 한 번 훑기 O(N) = 전체 O(N log N)이에요. 그리디는 보통 정렬 비용이 전부예요.</div>
 
   <div class="quiz" data-qid="q9-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">회의실 배정 문제에서 "끝나는 시간이 빠른 순"으로 정렬하는 이유는 무엇일까요?</span></div>
@@ -963,6 +1043,17 @@ dp[<span class="nm">1</span>] = <span class="nm">1</span>;
       </div>
     </div>
   </div>
+  <h3>dp 배열이 이렇게 채워져요 : 계단 5칸</h3>
+  <table>
+    <tr><th>i (계단)</th><th>dp[i]</th><th>계산</th></tr>
+    <tr><td>1</td><td>1</td><td>초기값</td></tr>
+    <tr><td>2</td><td>2</td><td>초기값</td></tr>
+    <tr><td>3</td><td>3</td><td>dp[2] + dp[1] = 2 + 1</td></tr>
+    <tr><td>4</td><td>5</td><td>dp[3] + dp[2] = 3 + 2</td></tr>
+    <tr><td>5</td><td>8</td><td>dp[4] + dp[3] = 5 + 3</td></tr>
+  </table>
+  <p>작은 칸부터 채워 올라가면 5번째 계단까지 오르는 방법은 <b>8가지</b>예요. 각 칸을 딱 한 번씩만 계산하므로 O(N)이에요.</p>
+
   <div class="tip"><strong>DP 출제 신호</strong> : "방법의 수", "최대/최소 비용", "i번째까지 고려했을 때"라는 표현, 그리고 완전 탐색으로는 경우의 수가 폭발하는 구조예요.</div>
 
   <div class="quiz" data-qid="q10-1">
@@ -1030,6 +1121,10 @@ maxPq.Enqueue(value, -value);</pre>
     pq.Enqueue(mixed, mixed);
     mixCount++;
 }</pre>
+
+  <div class="tip"><strong>복잡도</strong> : 넣기(Enqueue)와 가장 작은 값 빼기(Dequeue)가 각각 O(log N)이에요. "매번 최솟값(또는 최댓값)을 꺼내 처리"를 N번 반복하면 전체 O(N log N)이라, 매번 전체를 훑는 O(N²)보다 훨씬 빨라요.</div>
+
+  <div class="warn"><b>자주 하는 실수</b> : ① <code>Enqueue(요소, 우선순위)</code>는 인자가 둘이에요. 우선순위 자리에 엉뚱한 값을 넣어 정렬 기준이 깨지는 실수가 잦아요. ② 최대 힙을 부호 반전으로 흉내 낼 땐 <b>요소는 원래 값, 우선순위만 음수</b>로 넣으세요. ③ 비었을 때 <code>Peek</code>/<code>Dequeue</code>는 예외가 나니 <code>Count</code>를 먼저 확인하세요.</div>
 
   <div class="quiz" data-qid="q11-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">"매번 가장 작은 값을 꺼내 처리하고 새 값을 추가"를 N번 반복할 때, 힙을 쓰면 전체 복잡도는 어떻게 될까요?</span></div>
@@ -1102,6 +1197,19 @@ maxPq.Enqueue(value, -value);</pre>
     }
 }</pre>
 
+  <h3>두 포인터 따라가기 : 정렬된 [1, 3, 4, 6, 8, 11], target = 10</h3>
+  <table>
+    <tr><th>left, right</th><th>arr[left] + arr[right]</th><th>판단</th></tr>
+    <tr><td>0, 5</td><td>1 + 11 = 12</td><td>크다 → right 한 칸 당김</td></tr>
+    <tr><td>0, 4</td><td>1 + 8 = 9</td><td>작다 → left 한 칸 밈</td></tr>
+    <tr><td>1, 4</td><td>3 + 8 = 11</td><td>크다 → right 한 칸 당김</td></tr>
+    <tr><td>1, 3</td><td>3 + 6 = 9</td><td>작다 → left 한 칸 밈</td></tr>
+    <tr><td>2, 3</td><td>4 + 6 = 10</td><td><b>같다 → 찾음!</b></td></tr>
+  </table>
+  <p>두 포인터가 서로를 향해 한 칸씩만 움직이니 전체를 O(N)에 끝내요. 2중 반복문 O(N²)을 한 줄짜리 규칙으로 대체하는 셈이죠.</p>
+
+  <div class="warn"><b>자주 하는 실수</b> : ① 양 끝 투 포인터는 <b>정렬된 배열</b>에서만 "크면 줄이고 작으면 늘리기"가 성립해요. 정렬 안 됐으면 먼저 정렬하세요. ② 누적 합에서 구간 [l, r] 합은 <code>prefix[r+1] - prefix[l]</code>예요. prefix 배열 크기를 N+1로 잡고 인덱스 한 칸 차이(off-by-one)를 늘 확인하세요.</div>
+
   <div class="quiz" data-qid="q12-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">"길이 10만인 배열에 구간 합 질의가 10만 개" 들어와요. 매 질의를 반복문으로 더하면 어떻게 될까요?</span></div>
     <div class="opts">
@@ -1165,6 +1273,27 @@ pq.Enqueue(start, <span class="nm">0</span>);
   <div class="warn"><b>주의 두 가지</b> : ① 다익스트라는 <b>음수 간선이 있으면 틀려요</b> (그땐 벨만-포드를 써요). ② 거리 합이 <code>int</code> 범위를 쉽게 넘으니 <code>dist</code>는 <code>long</code>으로 두세요.</div>
   <div class="tip"><strong>복잡도</strong> : 정점 V개, 간선 E개일 때 O(E log V)예요. "가중치 있는 그래프 + 최단/최소 비용"이 보이면 다익스트라를 1순위로 떠올리세요.</div>
 
+  <h3>거리(dist)가 이렇게 줄어들어요</h3>
+  <p>간선 1→2(2), 1→3(5), 2→3(1), 2→4(7), 3→4(3). 시작 정점은 1이고, INF는 아직 도달 못 한 상태예요.</p>
+  <table>
+    <tr><th>꺼낸 정점 (거리)</th><th>갱신(이완)</th><th>dist [1] [2] [3] [4]</th></tr>
+    <tr><td>시작</td><td>-</td><td>0 INF INF INF</td></tr>
+    <tr><td>1 (0)</td><td>2를 2로, 3을 5로</td><td>0 2 5 INF</td></tr>
+    <tr><td>2 (2)</td><td>3을 3으로(5→3), 4를 9로</td><td>0 2 3 9</td></tr>
+    <tr><td>3 (3)</td><td>4를 6으로(9→6)</td><td>0 2 3 6</td></tr>
+    <tr><td>4 (6)</td><td>없음</td><td>0 2 3 6</td></tr>
+  </table>
+  <p>항상 "현재까지 거리가 가장 짧은 정점"을 우선순위 큐로 먼저 꺼내 처리하는 게 핵심이에요. 1→2→3→4(2+1+3=6)가 1→3→4(5+3=8)보다 짧다는 걸 자동으로 찾아냈죠.</p>
+
+  <div class="card">
+    <ul class="plain">
+      <li><b>이럴 때 써요</b></li>
+      <li>간선마다 가중치(비용, 시간, 거리)가 다른 그래프에서 최소 비용 경로를 구할 때</li>
+      <li>가중치가 모두 같다면 다익스트라 대신 더 간단한 BFS로 충분해요</li>
+      <li>음수 간선이 있으면 다익스트라는 못 쓰고 벨만-포드를 써요</li>
+    </ul>
+  </div>
+
   <div class="quiz" data-qid="q13-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">간선마다 비용이 다른 그래프에서 한 점부터의 최단 비용을 구할 때 알맞은 알고리즘은 무엇일까요?</span></div>
     <div class="opts">
@@ -1223,8 +1352,30 @@ parent = <span class="kw">new</span> <span class="kw">int</span>[n + <span class
 }</pre>
   <div class="tip"><strong>경로 압축이 핵심이에요</strong> : <code>parent[x] = Find(...)</code>로 찾은 루트를 바로 부모로 갱신하면, 트리가 점점 납작해져 이후 Find가 거의 O(1)이 돼요. 이 한 줄을 빼면 한 줄로 길게 이어진 트리에서 O(N)으로 느려질 수 있어요.</div>
 
+  <h3>parent 배열이 이렇게 변해요 (원소 1~5)</h3>
+  <table>
+    <tr><th>연산</th><th>parent[1] [2] [3] [4] [5]</th><th>설명</th></tr>
+    <tr><td>초기화</td><td>1 2 3 4 5</td><td>모두 자기 자신이 대표</td></tr>
+    <tr><td>Union(1, 2)</td><td>2 2 3 4 5</td><td>1의 부모를 2로</td></tr>
+    <tr><td>Union(3, 4)</td><td>2 2 4 4 5</td><td>3의 부모를 4로</td></tr>
+    <tr><td>Union(2, 3)</td><td>2 4 4 4 5</td><td>2의 루트(2)를 3의 루트(4)에 붙임</td></tr>
+    <tr><td>Find(1)</td><td>4 4 4 4 5</td><td>경로 압축으로 1도 루트 4를 직접 가리킴</td></tr>
+  </table>
+  <p>이제 1, 2, 3, 4 는 대표가 4인 한 그룹이고 5만 따로예요. <code>Find(1) == Find(4)</code> 이므로 같은 그룹이죠. 경로 압축 덕에 트리가 납작해져 다음 Find 는 거의 한 번에 끝나요.</p>
+
+  <div class="tip"><strong>복잡도</strong> : 경로 압축을 적용하면 Find/Union 한 번이 거의 O(1)이에요(정확히는 매우 느리게 자라는 역아커만 함수). 그래서 "같은 그룹인가" 질의가 수십만 번 와도 빠르게 답해요.</div>
+
   <h3>대표 활용 : 사이클 판별</h3>
   <p>간선 (a, b)를 하나씩 추가할 때, <code>Find(a) == Find(b)</code>인데 또 잇는다면 그 간선이 사이클을 만든다는 뜻이에요. 최소 신장 트리(크루스칼)에서 사이클을 거르는 데 그대로 쓰여요.</p>
+
+  <div class="card">
+    <ul class="plain">
+      <li><b>이럴 때 써요</b></li>
+      <li>"두 노드가 연결돼 있나/같은 그룹인가" 질의가 많을 때</li>
+      <li>"그룹(연결 요소)이 몇 개인가" 셀 때</li>
+      <li>간선을 더하며 사이클이 생기는지 판별할 때 (크루스칼 MST)</li>
+    </ul>
+  </div>
 
   <div class="quiz" data-qid="q14-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">"두 도시가 같은 네트워크로 연결되어 있는가?"라는 질의가 수십만 번 들어오는 문제에 알맞은 도구는 무엇일까요?</span></div>
@@ -1276,6 +1427,31 @@ state ^= (<span class="nm">1</span> &lt;&lt; i);              <span class="cm">/
 <span class="cm">// 켜진 비트(원소) 개수는 이렇게 한 번에 셀 수 있어요</span>
 <span class="kw">int</span> cnt = <span class="ty">System</span>.Numerics.<span class="ty">BitOperations</span>.PopCount((<span class="kw">uint</span>)s);</pre>
   <div class="warn"><b>주의</b> : <code>1 &lt;&lt; i</code>는 <code>int</code> 연산이라 i가 31 이상이면 넘쳐요. 원소가 32개를 넘으면 <code>1L &lt;&lt; i</code>처럼 <code>long</code>으로 미세요. 그리고 우선순위 때문에 <code>(state &amp; (1 &lt;&lt; i)) != 0</code>의 괄호를 꼭 챙기세요. 마스크가 <code>long</code>이면 켜진 비트 수도 <code>PopCount((ulong)s)</code> 로 세요.</div>
+
+  <h3>정수 하나가 부분집합 하나 : 원소 [A, B, C]</h3>
+  <p>비트 0은 A, 비트 1은 B, 비트 2는 C예요. s를 0부터 7까지 돌리면 모든 부분집합이 정확히 한 번씩 나와요.</p>
+  <table>
+    <tr><th>s (2진수)</th><th>포함되는 원소</th></tr>
+    <tr><td>0 (000)</td><td>{ } 공집합</td></tr>
+    <tr><td>1 (001)</td><td>{ A }</td></tr>
+    <tr><td>2 (010)</td><td>{ B }</td></tr>
+    <tr><td>3 (011)</td><td>{ A, B }</td></tr>
+    <tr><td>4 (100)</td><td>{ C }</td></tr>
+    <tr><td>5 (101)</td><td>{ A, C }</td></tr>
+    <tr><td>6 (110)</td><td>{ B, C }</td></tr>
+    <tr><td>7 (111)</td><td>{ A, B, C }</td></tr>
+  </table>
+
+  <div class="tip"><strong>복잡도</strong> : 모든 부분집합을 도는 건 O(2<sup>N</sup> x N)이에요. 그래서 N이 20 안팎일 때만 써요(2<sup>20</sup>이 약 100만). N이 더 크면 다른 방법을 찾아야 해요.</div>
+
+  <div class="card">
+    <ul class="plain">
+      <li><b>이럴 때 써요</b></li>
+      <li>N이 작을 때(20 이하) "모든 부분집합 또는 조합을 다 살펴보라"는 문제</li>
+      <li>여러 개의 켜짐/꺼짐 상태를 정수 하나로 묶어 DP 상태로 쓸 때(상태 압축 DP)</li>
+      <li>방문한 정점 집합처럼 "집합"을 빠르게 비교하고 합쳐야 할 때</li>
+    </ul>
+  </div>
 
   <div class="quiz" data-qid="q15-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">정수 <code>state</code>의 i번째 비트가 켜져 있는지 확인하는 올바른 식은 무엇일까요?</span></div>
@@ -1329,6 +1505,20 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
       <li><b>4.</b> 격자 밖 검사(<code>nx &lt; 0 || nx &gt;= n ...</code>)와 종료 조건을 가장 먼저 챙겨요.</li>
     </ul>
   </div>
+
+  <h3>로봇 시뮬레이션 따라가기</h3>
+  <p>3 x 3 격자, 시작 (0,0)에서 동쪽을 보고 있어요. 규칙은 "앞 칸이 격자 안이면 전진, 격자 밖이면 우회전"이에요.</p>
+  <table>
+    <tr><th>단계</th><th>위치 (행, 열)</th><th>방향</th><th>앞 칸</th><th>행동</th></tr>
+    <tr><td>시작</td><td>(0, 0)</td><td>동</td><td>(0, 1) 안</td><td>전진</td></tr>
+    <tr><td>1</td><td>(0, 1)</td><td>동</td><td>(0, 2) 안</td><td>전진</td></tr>
+    <tr><td>2</td><td>(0, 2)</td><td>동</td><td>(0, 3) 밖</td><td>우회전 → 남</td></tr>
+    <tr><td>3</td><td>(0, 2)</td><td>남</td><td>(1, 2) 안</td><td>전진</td></tr>
+    <tr><td>4</td><td>(1, 2)</td><td>남</td><td>(2, 2) 안</td><td>전진</td></tr>
+  </table>
+  <p>방향(dir)과 좌표(행, 열)만 상태로 들고, 규칙을 한 줄씩 그대로 옮기면 돼요. 머릿속으로 한 번 굴려본 표가 곧 코드의 명세서예요.</p>
+
+  <div class="tip"><strong>복잡도</strong> : 보통 한 칸과 한 턴을 상수 시간에 처리하므로 전체는 O(격자 칸 수) 또는 O(시뮬레이션 단계 수)예요. 알고리즘이 아니라 단계 수가 그대로 시간이에요.</div>
 
   <div class="quiz" data-qid="q16-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">C#에서 <code>(-1) % 4</code>의 결과는 무엇일까요?</span></div>
@@ -1432,6 +1622,8 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
     </ul>
   </div>
 
+  <div class="tip"><strong>복잡도</strong> : 최악에는 다익스트라와 같은 O(E log V)예요. 다만 좋은 휴리스틱이 탐색을 목표 쪽으로 끌어당겨, 실제로 꺼내 보는 칸 수가 크게 줄어드는 게 이득이에요. 휴리스틱이 실제 거리를 넘기지 않으면(허용 가능) 최단을 보장해요.</div>
+
   <div class="quiz" data-qid="q18-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">A*에서 휴리스틱 <code>h</code>를 항상 0으로 두면 어떤 알고리즘과 똑같이 동작할까요?</span></div>
     <div class="opts">
@@ -1486,6 +1678,20 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
 }</pre>
   <div class="warn"><b>사이클 판별</b> : 결과 <code>order</code>에 담긴 정점 수가 N보다 적으면, 남은 정점들이 서로 사이클을 이뤄 진입 차수가 끝내 0이 되지 못한 거예요. "순서를 정할 수 없다"는 답은 <code>order.Count &lt; n</code>으로 잡아내요.</div>
 
+  <h3>동작 따라가기 : 1→2, 1→3, 2→4, 3→4, 4→5</h3>
+  <p>처음 진입 차수는 [1:0, 2:1, 3:1, 4:2, 5:1] 이에요. 진입 차수 0인 1만 큐에서 시작해요.</p>
+  <table>
+    <tr><th>꺼낸 정점</th><th>줄어든 진입 차수</th><th>큐 상태</th><th>order</th></tr>
+    <tr><td>1</td><td>2 → 0, 3 → 0</td><td>[2, 3]</td><td>1</td></tr>
+    <tr><td>2</td><td>4 → 1</td><td>[3]</td><td>1 2</td></tr>
+    <tr><td>3</td><td>4 → 0</td><td>[4]</td><td>1 2 3</td></tr>
+    <tr><td>4</td><td>5 → 0</td><td>[5]</td><td>1 2 3 4</td></tr>
+    <tr><td>5</td><td>없음</td><td>[ ]</td><td>1 2 3 4 5</td></tr>
+  </table>
+  <p>진입 차수가 0이 된 정점을 큐에 넣어 순서대로 꺼내면, 선후 관계를 어기지 않는 줄 세우기 <b>1 2 3 4 5</b>가 나와요. 5개 다 담겼으니 사이클도 없어요.</p>
+
+  <div class="tip"><strong>복잡도</strong> : 정점 V개, 간선 E개를 한 번씩만 보므로 O(V + E)예요. 각 정점은 큐에 한 번, 각 간선은 진입 차수를 줄일 때 한 번 쓰여요.</div>
+
   <div class="quiz" data-qid="q19-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">위상 정렬을 적용할 수 있는 그래프는 어떤 것일까요?</span></div>
     <div class="opts">
@@ -1537,6 +1743,25 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
 <span class="cm">// k >= 2 이고 notPrime[k] == false 이면 소수예요</span></pre>
   <div class="tip"><strong>두 가지 최적화</strong> : ① 배수 지우기를 <code>i*i</code>부터 시작해요 (2i, 3i처럼 더 작은 소수의 배수는 이미 지워졌어요). ② 바깥 루프는 <code>i*i &lt;= n</code>까지만 돌아도 충분해요. 이 둘이 체를 빠르게 만들어요.</div>
 
+  <h3>체가 이렇게 걸러내요 : n = 20</h3>
+  <table>
+    <tr><th>단계</th><th>지우는 수</th></tr>
+    <tr><td>i = 2</td><td>4, 6, 8, 10, 12, 14, 16, 18, 20</td></tr>
+    <tr><td>i = 3</td><td>9, 15 (6, 12, 18은 이미 지워짐)</td></tr>
+    <tr><td>i = 4</td><td>이미 지워진 수라 건너뜀, 그리고 4*4 &gt; 20 이라 여기서 멈춤</td></tr>
+    <tr><td>결과</td><td>안 지워진 수 = <b>2, 3, 5, 7, 11, 13, 17, 19</b> (20 이하 소수)</td></tr>
+  </table>
+  <p>각 소수의 배수를 한 번씩만 훑어 지우기 때문에, 하나하나 √N 판정하는 것보다 범위 전체를 훨씬 빠르게 구해요.</p>
+
+  <div class="card">
+    <ul class="plain">
+      <li><b>이럴 때 써요</b></li>
+      <li>"N 이하의 모든 소수", "소수의 개수", "범위 안 소수를 여러 번 조회" 같은 표현 → 에라토스테네스의 체</li>
+      <li>"이 수 하나가 소수인가"만 묻고 수가 클 때 → √N 판정</li>
+      <li>소인수분해나 약수 개수도 체를 변형해 빠르게 구할 수 있어요</li>
+    </ul>
+  </div>
+
   <div class="quiz" data-qid="q20-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">어떤 수 x가 소수인지 하나만 판정할 때, 나눗셈은 어디까지만 해보면 충분할까요?</span></div>
     <div class="opts">
@@ -1582,6 +1807,28 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
 <span class="cm">// 최소공배수 = 두 수의 곱 / 최대공약수</span>
 <span class="kw">static</span> <span class="kw">long</span> Lcm(<span class="kw">long</span> a, <span class="kw">long</span> b) =&gt; a / Gcd(a, b) * b;   <span class="cm">// 곱하기 전에 나눠 오버플로를 피해요</span></pre>
   <div class="warn"><b>오버플로 함정</b> : LCM을 <code>a * b / gcd</code>로 쓰면 <code>a * b</code>가 먼저 계산되며 long 범위를 넘길 수 있어요. <code>a / gcd * b</code>처럼 <b>먼저 나누고 곱하면</b> 중간 값이 작아져 안전해요. (a는 gcd로 항상 나누어떨어지니 정확해요.)</div>
+
+  <h3>동작 과정 따라가기 : GCD(48, 18)</h3>
+  <p>큰 수를 작은 수로 나눈 나머지로 계속 바꿔요. 한 단계마다 (a, b) 가 (b, a % b) 로 옮겨가요.</p>
+  <table>
+    <tr><th>단계</th><th>a</th><th>b</th><th>a % b</th></tr>
+    <tr><td>시작</td><td>48</td><td>18</td><td>12</td></tr>
+    <tr><td>1회</td><td>18</td><td>12</td><td>6</td></tr>
+    <tr><td>2회</td><td>12</td><td>6</td><td>0</td></tr>
+    <tr><td>끝</td><td>6</td><td>0</td><td>b가 0이라 멈춤</td></tr>
+  </table>
+  <p>b가 0이 된 순간의 a, 즉 <b>6</b>이 48과 18의 최대공약수예요. 나머지로 바꿀 때마다 값이 빠르게 줄어드는 게 보이죠.</p>
+
+  <div class="tip"><strong>복잡도</strong> : O(log(min(a, b)))예요. 나머지 연산을 거칠 때마다 값이 빠르게 작아져, 두 수가 아무리 커도 수십 번 안에 끝나요.</div>
+
+  <div class="card">
+    <ul class="plain">
+      <li><b>이럴 때 써요</b></li>
+      <li>"최대공약수", "기약분수로 줄여라", "두 수가 서로소인지 판별" 같은 표현이 보일 때</li>
+      <li>최소공배수가 필요할 때 (LCM = a / GCD x b)</li>
+      <li>분수 계산에서 분자와 분모를 약분해야 할 때</li>
+    </ul>
+  </div>
 
   <div class="quiz" data-qid="q21-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">유클리드 호제법에서 최대공약수가 확정되는 순간은 언제일까요?</span></div>
