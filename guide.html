@@ -198,6 +198,50 @@
   details.acc[open] .body { animation: accOpen 0.25s ease; }
   .read-progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 120; }
   .read-progress span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--purple), #B388FF); transition: width 0.12s linear; }
+
+  /* ===== 16주 커리큘럼 ===== */
+  .diag { margin: 18px 0; }
+  .diag-title { font-size: 16px; color: var(--purple-dark); }
+  .diag-sub { font-size: 14px; color: var(--ink-soft); margin: 4px 0 12px; }
+  .dq { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 9px 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
+  .dq .dqt { font-size: 14.5px; flex: 1; min-width: 200px; }
+  .dq .dopts { display: flex; gap: 6px; }
+  .dq .dopts button { font-family: inherit; font-size: 13px; font-weight: 700; padding: 6px 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--ink-soft); cursor: pointer; }
+  .dq .dopts button.sel { background: var(--purple); color: #fff; border-color: var(--purple); }
+  .diag-result { margin-top: 14px; font-size: 14.5px; font-weight: 700; color: var(--purple-dark); display: none; background: var(--purple-bg); border-radius: 8px; padding: 12px 14px; }
+  .diag-result.show { display: block; }
+
+  .stage { background: var(--card); border: 1px solid var(--line); border-left: 5px solid var(--purple); border-radius: 12px; padding: 18px 20px; margin: 14px 0; transition: box-shadow 0.25s ease; }
+  .stage.intro { border-left-color: #16A34A; }
+  .stage.basic { border-left-color: #2563EB; }
+  .stage.mid { border-left-color: #D97706; }
+  .stage.adv { border-left-color: #8843FF; }
+  .stage.hl { box-shadow: 0 0 0 3px var(--purple-bg); }
+  .stage-head { display: flex; gap: 14px; align-items: flex-start; }
+  .stage-badge { flex-shrink: 0; font-size: 13px; font-weight: 800; color: #fff; padding: 5px 13px; border-radius: 99px; background: var(--purple); }
+  .stage.intro .stage-badge { background: #16A34A; }
+  .stage.basic .stage-badge { background: #2563EB; }
+  .stage.mid .stage-badge { background: #D97706; }
+  .stage.adv .stage-badge { background: #8843FF; }
+  .stage-meta b { display: block; font-size: 15.5px; }
+  .stage-meta span { font-size: 14px; color: var(--ink-soft); }
+  .sbar-wrap { display: flex; align-items: center; gap: 10px; margin: 12px 0; }
+  .sbar { flex: 1; height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; }
+  .sbar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--purple), #B388FF); transition: width 0.8s ease; }
+  .sbar-text { font-size: 12.5px; font-weight: 700; color: var(--purple-dark); white-space: nowrap; }
+  .stage-row { margin: 7px 0; font-size: 14px; }
+  .stage-row b { color: var(--purple-dark); margin-right: 8px; }
+  .stage-row a { display: inline-block; margin: 3px 6px 3px 0; padding: 4px 10px; background: var(--purple-bg); color: var(--purple-dark); text-decoration: none; border-radius: 7px; font-size: 13.5px; font-weight: 600; }
+  .stage-row a:hover { background: var(--purple); color: #fff; }
+  .milestone { margin-top: 10px; font-size: 14px; background: var(--purple-bg); border-radius: 8px; padding: 10px 14px; }
+  .milestone b { color: var(--purple-dark); margin-right: 6px; }
+  .mockset { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+  .mock { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+  .mock-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .mock-head b { font-size: 14.5px; }
+  .mock-time { flex-shrink: 0; font-size: 12px; font-weight: 700; color: var(--purple-dark); background: var(--purple-bg); padding: 3px 10px; border-radius: 99px; }
+  .mock-note { font-size: 13px; color: var(--ink-soft); margin-top: 8px; }
+  @media (max-width: 640px) { .mockset { grid-template-columns: 1fr; } }
   details.acc .body pre { margin-top: 10px; }
 
   /* ===== 체크리스트 ===== */
@@ -272,7 +316,7 @@
   <a class="sib" href="practice.html">예시 문제</a>
   <span class="navsep"></span>
   <a href="#s1">시작하며</a>
-  <a href="#s2">로드맵</a>
+  <a href="#s2">커리큘럼</a>
   <a href="#s3">문제 접근법</a>
   <a href="#s4">시간 배분</a>
   <a href="#s5">C# 세팅</a>
@@ -317,26 +361,64 @@
 
 <!-- ============ 2. 로드맵 ============ -->
 <section id="s2">
-  <h2><span class="num">2</span>4주 준비 로드맵</h2>
-  <p>시험까지 4주가 있다고 가정한 표준 로드맵이에요. 기간이 더 짧으면 각 단계를 비율대로 줄이고, 1주차와 4주차는 절대 건너뛰지 마세요.</p>
-  <div class="timeline">
-    <div class="step">
-      <b>1주차 : 언어 손 풀기 + 기초 자료구조</b>
-      <span>입출력, 문자열 처리, 배열, List, Dictionary를 코드로 막힘없이 다루는 게 목표예요. 쉬운 문제(프로그래머스 Lv.1)를 하루 3~5문제씩 푸세요.</span>
-    </div>
-    <div class="step">
-      <b>2주차 : 핵심 알고리즘 학습</b>
-      <span>정렬, 이분 탐색, DFS와 BFS, 그리디, DP 기초를 유형별로 학습해요. 함께 배포된 "필수 개념 정리" 파일의 개념을 하나씩 읽고, 유형당 2~3문제를 풀어요.</span>
-    </div>
-    <div class="step">
-      <b>3주차 : 유형별 집중 훈련</b>
-      <span>틀린 문제를 다시 풀고, 약한 유형 위주로 보강해요. 이때부터는 풀이를 보기 전에 최소 30분은 스스로 고민하는 습관을 들이세요.</span>
-    </div>
-    <div class="step">
-      <b>4주차 : 실전 모의고사</b>
-      <span>실제 시험과 같은 조건(시간 제한, 검색 금지 여부)으로 모의 테스트를 2~3회 치러요. 시간 배분 감각을 잡는 게 이 주의 목표예요.</span>
-    </div>
+  <h2><span class="num">2</span>단계별 학습 로드맵 (16주 빌드업)</h2>
+  <p>코딩 테스트 대비는 한 번에 끝나지 않아요. <b>입문 → 기초 → 중급 → 심화</b> 네 단계로, 각 4주씩 약 16주에 걸쳐 차곡차곡 쌓는 걸 추천해요. 시간이 부족하면 각 단계를 비율대로 줄이되 순서는 지키세요. 아래 진단으로 내 시작 지점부터 정해 보세요.</p>
+
+  <div class="diag card" id="diag">
+    <b class="diag-title">내 시작 단계 진단</b>
+    <p class="diag-sub">아래 4개에 예/아니오로 답하면 어디부터 시작하면 좋을지 알려드려요.</p>
+    <div class="dq" data-stage="intro"><span class="dqt">1. C# 입출력, 문자열, List와 Dictionary를 막힘없이 다룰 수 있어요</span><span class="dopts"><button type="button" data-v="y">예</button><button type="button" data-v="n">아니오</button></span></div>
+    <div class="dq" data-stage="basic"><span class="dqt">2. 정렬, 이분 탐색, DFS와 BFS를 직접 구현할 수 있어요</span><span class="dopts"><button type="button" data-v="y">예</button><button type="button" data-v="n">아니오</button></span></div>
+    <div class="dq" data-stage="mid"><span class="dqt">3. 그리디와 DP로 점화식을 세워 풀 수 있어요</span><span class="dopts"><button type="button" data-v="y">예</button><button type="button" data-v="n">아니오</button></span></div>
+    <div class="dq" data-stage="adv"><span class="dqt">4. 다익스트라, Union-Find 같은 그래프와 심화 유형도 익숙해요</span><span class="dopts"><button type="button" data-v="y">예</button><button type="button" data-v="n">아니오</button></span></div>
+    <div class="diag-result" id="diagResult"></div>
   </div>
+
+  <div class="stage intro" id="cur-intro">
+    <div class="stage-head"><span class="stage-badge">입문</span><div class="stage-meta"><b>1~4주, 언어와 기초 자료구조</b><span>C# 문법과 기본 자료구조를 손에 붙여 "문제를 코드로 옮기기" 자체에 익숙해지는 단계예요.</span></div></div>
+    <div class="sbar-wrap"><div class="sbar"><i id="bar-intro"></i></div><span class="sbar-text" id="txt-intro">개념 0/8, 문제 0/4</span></div>
+    <div class="stage-row"><b>개념</b> <a href="concepts.html#t1">시간 복잡도</a> <a href="concepts.html#t2">배열과 문자열</a> <a href="concepts.html#t3">스택과 큐</a> <a href="concepts.html#t4">해시</a></div>
+    <div class="stage-row"><b>문제</b> <a href="practice.html#p-bracket">스킬 콤보 판정</a> <a href="practice.html#p-nodup">연속 버프 정리</a> <a href="practice.html#p-finisher">돌아오지 못한 모험가</a> <a href="practice.html#p-pairs">재료 조합 도감</a></div>
+    <div class="milestone"><b>졸업 조건</b> 입출력과 문자열 처리가 손에 익고, 위 4문제를 풀이 없이 스스로 풀 수 있으면 다음 단계로.</div>
+    <details class="acc"><summary>주차별 계획 보기</summary><div class="body"><ul class="plain"><li><b>1주</b> 입출력 빠른 템플릿, 시간 복잡도 감각, 배열과 문자열(StringBuilder)</li><li><b>2주</b> 스택과 큐, 괄호/대기열 패턴</li><li><b>3주</b> 해시(Dictionary로 세기, HashSet로 존재 확인)</li><li><b>4주</b> 쉬운 문제 양치기(하루 3~5문제), 1~3주 복습</li></ul></div></details>
+  </div>
+
+  <div class="stage basic" id="cur-basic">
+    <div class="stage-head"><span class="stage-badge">기초</span><div class="stage-meta"><b>5~8주, 핵심 알고리즘</b><span>코딩 테스트의 절반을 차지하는 정렬, 탐색, 그래프 순회를 유형별로 익혀요.</span></div></div>
+    <div class="sbar-wrap"><div class="sbar"><i id="bar-basic"></i></div><span class="sbar-text" id="txt-basic">개념 0/8, 문제 0/5</span></div>
+    <div class="stage-row"><b>개념</b> <a href="concepts.html#t5">정렬</a> <a href="concepts.html#t6">이분 탐색</a> <a href="concepts.html#t7">완전 탐색</a> <a href="concepts.html#t8">DFS와 BFS</a></div>
+    <div class="stage-row"><b>문제</b> <a href="practice.html#p-largest">최강 전투력 만들기</a> <a href="practice.html#p-kth">구간 랭킹 보드</a> <a href="practice.html#p-mock">NPC 삼인방의 퀴즈 찍기</a> <a href="practice.html#p-gamemap">던전 최단 탈출</a> <a href="practice.html#p-target">마나 부호 조합</a></div>
+    <div class="milestone"><b>졸업 조건</b> 커스텀 정렬 기준을 세우고, BFS로 최단 거리를, 재귀로 완전 탐색을 막힘없이 짤 수 있으면 통과.</div>
+    <details class="acc"><summary>주차별 계획 보기</summary><div class="body"><ul class="plain"><li><b>5주</b> 정렬(커스텀 비교), 이분 탐색(경계 잡기)</li><li><b>6주</b> 완전 탐색과 백트래킹(순열/조합)</li><li><b>7주</b> DFS와 BFS, 격자/그래프 순회</li><li><b>8주</b> 약한 유형 보강, 틀린 문제 다시 풀기</li></ul></div></details>
+  </div>
+
+  <div class="stage mid" id="cur-mid">
+    <div class="stage-head"><span class="stage-badge">중급</span><div class="stage-meta"><b>9~12주, 자주 나오는 패턴</b><span>점화식과 그리디 증명, 자료구조를 활용한 최적화로 한 단계 어려운 문제에 도전해요.</span></div></div>
+    <div class="sbar-wrap"><div class="sbar"><i id="bar-mid"></i></div><span class="sbar-text" id="txt-mid">개념 0/10, 문제 0/5</span></div>
+    <div class="stage-row"><b>개념</b> <a href="concepts.html#t9">그리디</a> <a href="concepts.html#t10">동적 계획법</a> <a href="concepts.html#t11">우선순위 큐</a> <a href="concepts.html#t12">투 포인터와 누적 합</a> <a href="concepts.html#t16">구현과 시뮬레이션</a></div>
+    <div class="stage-row"><b>문제</b> <a href="practice.html#p-pe">여분 무기 빌려주기</a> <a href="practice.html#p-triangle">골드 피라미드</a> <a href="practice.html#p-spicy">포션 연성</a> <a href="practice.html#p-subseq">연속 사냥 구간</a> <a href="practice.html#p-progress">패치 배포 대기열</a></div>
+    <div class="milestone"><b>졸업 조건</b> "dp[i]가 무엇인지" 문장으로 정의하고, 그리디가 통하는 이유를 한 문장으로 설명할 수 있으면 통과.</div>
+    <details class="acc"><summary>주차별 계획 보기</summary><div class="body"><ul class="plain"><li><b>9주</b> 그리디(정렬 후 선택, 통하는 이유 설명)</li><li><b>10주</b> DP(상태 정의 → 점화식 → 초기값)</li><li><b>11주</b> 우선순위 큐, 투 포인터와 누적 합</li><li><b>12주</b> 구현/시뮬레이션, 중급 종합 모의 1회</li></ul></div></details>
+  </div>
+
+  <div class="stage adv" id="cur-adv">
+    <div class="stage-head"><span class="stage-badge">심화</span><div class="stage-meta"><b>13~16주, 그래프 심화와 수학, 실전</b><span>가중치 그래프, 분리 집합, 비트마스킹, 수학까지 채우고 실전 감각으로 마무리해요.</span></div></div>
+    <div class="sbar-wrap"><div class="sbar"><i id="bar-adv"></i></div><span class="sbar-text" id="txt-adv">개념 0/14, 문제 0/2</span></div>
+    <div class="stage-row"><b>개념</b> <a href="concepts.html#t13">다익스트라</a> <a href="concepts.html#t14">Union-Find</a> <a href="concepts.html#t15">비트마스킹</a> <a href="concepts.html#t19">위상 정렬</a> <a href="concepts.html#t18">길찾기(A*)</a> <a href="concepts.html#t20">소수와 체</a> <a href="concepts.html#t21">유클리드 호제법</a></div>
+    <div class="stage-row"><b>문제</b> <a href="practice.html#p-immigration">포탈 검문소</a> <a href="practice.html#p-network">길드 동맹 세기</a></div>
+    <div class="milestone"><b>졸업 조건</b> 문제 유형을 보고 알고리즘을 30초 안에 떠올리고, 시간 제한 안에 구현을 마칠 수 있으면 실전 준비 완료.</div>
+    <details class="acc"><summary>주차별 계획 보기</summary><div class="body"><ul class="plain"><li><b>13주</b> 다익스트라, 위상 정렬(가중치/의존 그래프)</li><li><b>14주</b> Union-Find, 비트마스킹</li><li><b>15주</b> 수학(소수와 체, 유클리드 호제법), 구현 심화</li><li><b>16주</b> 실전 모의고사 2~3회, 약점 마무리</li></ul></div></details>
+  </div>
+
+  <h3>실전 모의고사 세트</h3>
+  <p>각 단계를 마칠 때, 아래 세트를 실제 시험처럼 <b>시간을 재고 검색 없이</b> 한 번에 풀어 보세요. 시간 배분 감각이 합격을 가르는 마지막 한 끗이에요.</p>
+  <div class="mockset">
+    <div class="mock"><div class="mock-head"><b>세트 A (입문)</b><span class="mock-time">권장 60분</span></div><div class="stage-row"><a href="practice.html#p-bracket">스킬 콤보 판정</a> <a href="practice.html#p-nodup">연속 버프 정리</a> <a href="practice.html#p-finisher">돌아오지 못한 모험가</a> <a href="practice.html#p-pairs">재료 조합 도감</a></div></div>
+    <div class="mock"><div class="mock-head"><b>세트 B (기초)</b><span class="mock-time">권장 90분</span></div><div class="stage-row"><a href="practice.html#p-largest">최강 전투력</a> <a href="practice.html#p-kth">구간 랭킹 보드</a> <a href="practice.html#p-mock">NPC 퀴즈 찍기</a> <a href="practice.html#p-gamemap">던전 최단 탈출</a> <a href="practice.html#p-target">마나 부호 조합</a></div></div>
+    <div class="mock"><div class="mock-head"><b>세트 C (중급)</b><span class="mock-time">권장 120분</span></div><div class="stage-row"><a href="practice.html#p-pe">여분 무기 빌려주기</a> <a href="practice.html#p-triangle">골드 피라미드</a> <a href="practice.html#p-spicy">포션 연성</a> <a href="practice.html#p-subseq">연속 사냥 구간</a> <a href="practice.html#p-progress">패치 배포 대기열</a></div></div>
+    <div class="mock"><div class="mock-head"><b>세트 D (심화)</b><span class="mock-time">권장 90분</span></div><div class="stage-row"><a href="practice.html#p-immigration">포탈 검문소</a> <a href="practice.html#p-network">길드 동맹 세기</a></div><p class="mock-note">심화 2문제를 푼 뒤, 앞 단계에서 틀렸던 문제 2~3개를 다시 시간 재고 풀어 마무리하세요.</p></div>
+  </div>
+
   <div class="warn"><b>주의</b> : 개념 공부만 하고 문제를 안 푸는 것이 가장 흔한 실패 패턴이에요. 개념과 문제 풀이의 비율은 2:8 정도가 적당해요.</div>
 </section>
 
@@ -697,6 +779,66 @@ thread.Join();</pre>
 (function () {
   var els = document.querySelectorAll('main .card, main .tip, main .warn, main .timeline .step, details.acc');
   els.forEach(function (el, i) { el.classList.add('reveal'); el.setAttribute('data-reveal-delay', (i % 3) * 55); });
+})();
+
+// ===== 커리큘럼 : 시작 단계 진단 + 단계 진행 추적 =====
+(function () {
+  function readObj(k) { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch (e) { return {}; } }
+
+  // 진단
+  var ans = {}, ORDER = ['intro', 'basic', 'mid', 'adv'], NAME = { intro: '입문', basic: '기초', mid: '중급', adv: '심화' };
+  document.querySelectorAll('#diag .dq').forEach(function (dq) {
+    var st = dq.getAttribute('data-stage');
+    dq.querySelectorAll('.dopts button').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        dq.querySelectorAll('.dopts button').forEach(function (b) { b.classList.toggle('sel', b === btn); });
+        ans[st] = btn.getAttribute('data-v');
+        evalDiag();
+      });
+    });
+  });
+  function evalDiag() {
+    if (ORDER.some(function (s) { return !ans[s]; })) return;
+    var start = null;
+    for (var i = 0; i < ORDER.length; i++) { if (ans[ORDER[i]] === 'n') { start = ORDER[i]; break; } }
+    var res = document.getElementById('diagResult');
+    var card;
+    if (!start) {
+      res.innerHTML = '네 가지 모두 익숙하시네요! 실전 모의고사 세트로 시간 감각을 다듬고 약한 유형만 보강하면 돼요.';
+      card = document.getElementById('cur-adv');
+    } else {
+      res.innerHTML = '추천 시작 단계는 <b>' + NAME[start] + '</b> 단계예요. 아래 ' + NAME[start] + ' 단계부터 차근차근 쌓아 보세요.';
+      card = document.getElementById('cur-' + start);
+    }
+    res.classList.add('show');
+    if (card) {
+      document.querySelectorAll('.stage.hl').forEach(function (s) { s.classList.remove('hl'); });
+      card.classList.add('hl');
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  // 단계 진행 추적 (개념 퀴즈 + 문제 해결 집계)
+  var STAGES = {
+    intro: { qpfx: ['q1', 'q2', 'q3', 'q4'], qtot: 8, probs: ['bracket', 'nodup', 'finisher', 'pairs'] },
+    basic: { qpfx: ['q5', 'q6', 'q7', 'q8'], qtot: 8, probs: ['largest', 'kth', 'mock', 'gamemap', 'target'] },
+    mid: { qpfx: ['q9', 'q10', 'q11', 'q12', 'q16'], qtot: 10, probs: ['pe', 'triangle', 'spicy', 'subseq', 'progress'] },
+    adv: { qpfx: ['q13', 'q14', 'q15', 'q18', 'q19', 'q20', 'q21'], qtot: 14, probs: ['immigration', 'network'] }
+  };
+  function updateStages() {
+    var quiz = readObj('ct_concepts_quiz_v1'), solved = readObj('ct_practice_solved_v1');
+    Object.keys(STAGES).forEach(function (id) {
+      var s = STAGES[id], qd = 0;
+      Object.keys(quiz).forEach(function (qid) { if (s.qpfx.indexOf(qid.split('-')[0]) >= 0) qd++; });
+      var pd = s.probs.filter(function (p) { return solved[p]; }).length;
+      var pct = Math.round((qd + pd) / (s.qtot + s.probs.length) * 100);
+      var bar = document.getElementById('bar-' + id); if (bar) bar.style.width = pct + '%';
+      var txt = document.getElementById('txt-' + id); if (txt) txt.textContent = '개념 ' + qd + '/' + s.qtot + ', 문제 ' + pd + '/' + s.probs.length;
+    });
+  }
+  updateStages();
+  window.addEventListener('focus', updateStages);
+  window.addEventListener('storage', updateStages);
 })();
 </script>
 <script defer src="assets/app.js"></script>
