@@ -58,7 +58,7 @@ pre.has-copy:hover .copy-btn, .copy-btn:focus { opacity: 1; }
 
 /* 스크롤 진입 효과 (등장 후 JS가 클래스 제거 → hover/flash 보존) */
 .reveal { opacity: 0; transform: translateY(20px); }
-.reveal.shown { opacity: 1; transform: translateY(0); transition: opacity 0.55s ease, transform 0.55s ease; }
+.reveal.shown { opacity: 1; transform: translateY(0); transition: opacity 0.4s ease, transform 0.4s ease; }
 @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
 
 /* 키보드 포커스 표시 (사이트 + 런박스 공통). 마우스 클릭엔 안 뜨도록 :focus-visible 사용 */
