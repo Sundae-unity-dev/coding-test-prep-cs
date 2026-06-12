@@ -27,7 +27,8 @@ html[data-theme="dark"] tr:nth-child(even) td { background: rgba(255,255,255,0.0
 html[data-theme="dark"] .warn { background: #33291A; }
 html[data-theme="dark"] details.acc summary:hover { background: rgba(255,255,255,0.05); }
 html[data-theme="dark"] .next-step { background: linear-gradient(135deg, #241C3A 0%, var(--card) 100%); }
-html[data-theme="dark"] .card .lv.easy { background: #16341F; border-color: #235038; }
+html[data-theme="dark"] .card .lv.intro { background: #16341F; border-color: #235038; }
+html[data-theme="dark"] .card .lv.basic { background: #16243A; border-color: #284673; color: #8FB6FF; }
 html[data-theme="dark"] .card .lv.mid  { background: #3A2E14; border-color: #5C4A22; }
 html[data-theme="dark"] .card .lv.hard { background: #2A2342; border-color: #463A68; }
 
