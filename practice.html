@@ -472,6 +472,29 @@
   }
   window.addEventListener('hashchange', jumpToCard);
   jumpToCard();
+
+  // 런박스 프리페치: "문제 풀기"에 hover/focus/touch 인텐트가 생기면 런타임의 큰 자산을 미리 받아
+  // 캐시를 데워 둬요. 인텐트 기반이라 그냥 둘러보는 사용자에겐 부담이 없어요.
+  // (파일명은 WasmFingerprintAssets=false 라 안정적 — .NET 버전을 올리면 이 목록을 갱신하세요.)
+  var warmed = false;
+  function warmRunbox() {
+    if (warmed) return; warmed = true;
+    ['run/_framework/dotnet.js',
+     'run/_framework/dotnet.native.wasm',
+     'run/_framework/System.Private.CoreLib.dll',
+     'run/_framework/Microsoft.CodeAnalysis.CSharp.dll',
+     'run/_framework/Microsoft.CodeAnalysis.dll'].forEach(function (href) {
+      var l = document.createElement('link'); l.rel = 'prefetch'; l.href = href;
+      document.head.appendChild(l);
+    });
+  }
+  cards.forEach(function (c) {
+    var go = c.querySelector('a.go');
+    if (!go) return;
+    ['pointerenter', 'focus', 'touchstart'].forEach(function (ev) {
+      go.addEventListener(ev, warmRunbox, { once: true, passive: true });
+    });
+  });
 })();
 </script>
 <script defer src="assets/app.js"></script>
