@@ -150,6 +150,15 @@
       };
     </script>
     <script defer src="../assets/app.js"></script>
+
+    <!-- 런박스 자산 영구 캐시: 첫 방문 이후 재방문/다른 문제 열기를 네트워크 없이 빠르게 -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+          navigator.serviceWorker.register('service-worker.js').catch(function () {});
+        });
+      }
+    </script>
 </body>
 
 </html>
