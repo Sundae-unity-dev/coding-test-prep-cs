@@ -42,10 +42,10 @@ html[data-theme="dark"] .wrap .note code { background: #2A2342; color: #C3A8FF; 
 
 /* ===== 코드 실행기 (런박스) ===== */
 .rb-page { display: block; }
-.wrap { max-width: 1280px; margin: 0 auto; padding: 28px 22px 70px; }
+.wrap { max-width: 1680px; margin: 0 auto; padding: 28px 28px 70px; }
 
-/* 문제 모드 2단: 왼쪽 문제/제약/예시, 오른쪽(넓게) 코드/버튼/결과 */
-.prob-layout { display: grid; grid-template-columns: minmax(380px, 5fr) 7fr; gap: 26px; align-items: start; }
+/* 문제 모드 2단: 왼쪽 문제/제약/예시(읽기 좋은 폭 고정), 오른쪽 코드가 남는 폭을 채움 */
+.prob-layout { display: grid; grid-template-columns: minmax(360px, 520px) minmax(0, 1fr); gap: 26px; align-items: start; }
 .prob-right .monaco-host { height: 460px; }
 @media (max-width: 900px) { .prob-layout { grid-template-columns: 1fr; gap: 8px; } .prob-right .monaco-host { height: 320px; } }
 .rb-head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
