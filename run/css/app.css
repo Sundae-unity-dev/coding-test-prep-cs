@@ -23,6 +23,10 @@ html[data-theme="dark"] .statement { background: #1C1C2A; color: #E7E7F1; border
 html[data-theme="dark"] .prob-head h1 { color: #E7E7F1; }
 html[data-theme="dark"] table.ex td { background: #1C1C2A; border-color: #2E2E40; }
 html[data-theme="dark"] table.ex pre { color: #E7E7F1; }
+html[data-theme="dark"] table.ex td + td { border-left-color: #2E2E40; }
+html[data-theme="dark"] .constraints { background: #221C38; border-color: #463A68; border-left-color: #9D6BFF; }
+html[data-theme="dark"] .constraints li { color: #E7E7F1; }
+html[data-theme="dark"] .constraints .cons-title { color: #C3A8FF; }
 html[data-theme="dark"] .toolbar .run.ghost { background: #1C1C2A; color: #C3A8FF; border-color: #2E2E40; }
 html[data-theme="dark"] .toolbar .run.ghost:hover:not(:disabled) { background: #2A2342; border-color: #9D6BFF; }
 html[data-theme="dark"] .toolbar .sample { background: #1C1C2A; color: #A4A6BC; border-color: #2E2E40; }
@@ -89,6 +93,11 @@ table.ex { width: 100%; border-collapse: collapse; border: 1px solid #E5E2F0; bo
 table.ex th { background: #8843FF; color: #fff; text-align: left; padding: 8px 12px; font-size: 13px; }
 table.ex td { border-top: 1px solid #E5E2F0; padding: 4px 12px; vertical-align: top; width: 50%; }
 table.ex pre { background: none; color: #1F2230; padding: 6px 0; margin: 0; font-size: 12.5px; }
+table.ex td + td { border-left: 1px solid #E5E2F0; }
+.constraints { background: #F6F3FF; border: 1px solid #E0D6FF; border-left: 4px solid #8843FF; border-radius: 10px; padding: 11px 16px; margin-top: 10px; font-size: 13.5px; }
+.constraints .cons-title { color: #6A2FD0; font-size: 13px; }
+.constraints ul { margin: 6px 0 0; padding-left: 18px; }
+.constraints li { margin: 3px 0; color: #1F2230; }
 
 .toolbar .run.judge { background: #16A34A; }
 .toolbar .run.judge:hover:not(:disabled) { background: #15803D; }

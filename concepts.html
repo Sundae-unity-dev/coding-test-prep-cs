@@ -135,6 +135,9 @@
   th { background: var(--purple); color: #fff; padding: 9px 12px; text-align: left; font-weight: 700; }
   td { padding: 9px 12px; border-top: 1px solid var(--line); }
   tr:nth-child(even) td { background: #FBFAFE; }
+  th + th { border-left: 1px solid rgba(255,255,255,0.28); }
+  td + td { border-left: 1px solid var(--line); }
+  tbody tr:hover td, table tr:hover td { background: var(--purple-bg); }
   td code, p code, li code {
     background: var(--code-inline-bg); color: var(--code-inline-ink);
     padding: 1px 6px; border-radius: 5px;
