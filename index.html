@@ -189,10 +189,7 @@
   .ticker .q .mk { font-weight: 800; opacity: 0.65; }
   @media (prefers-reduced-motion: reduce) { .ticker-track { animation: none; } }
 
-  /* 스크롤 진입 시 떠오르는 효과 (애니메이션 후 JS가 클래스를 떼어 hover에 영향 없게) */
-  .reveal { opacity: 0; transform: translateY(20px); }
-  .reveal.shown { opacity: 1; transform: translateY(0); transition: opacity 0.55s ease, transform 0.55s ease; }
-  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
+  /* 스크롤 진입 효과(.reveal)는 assets/app.css 전역 정의를 사용 (중복 제거) */
 
   @media (max-width: 760px) {
     /* 모바일에선 드롭다운(호버) 대신 최상위 링크만 줄바꿈으로 보여줘요 */
