@@ -156,18 +156,18 @@
   pre .ty { color: #82AAFF; }
   pre .nm { color: #F78C6C; }
 
-  /* ===== 정답 토글 ===== */
-  .reveal { margin-top: 12px; }
-  .reveal > button {
+  /* ===== 정답 토글 (전역 .reveal 스크롤 등장과 분리) ===== */
+  .codesol { margin-top: 12px; }
+  .codesol > button {
     background: var(--card); border: 1.5px solid var(--purple);
     color: var(--purple-dark); font-weight: 700; font-size: 13.5px;
     padding: 8px 16px; border-radius: 9px; cursor: pointer; font-family: inherit;
     transition: all 0.15s;
   }
-  .reveal > button:hover { background: var(--purple); color: #fff; }
-  .reveal .hiddenCode { display: none; }
-  .reveal.open .hiddenCode { display: block; }
-  .reveal.open > button { background: var(--purple); color: #fff; }
+  .codesol > button:hover { background: var(--purple); color: #fff; }
+  .codesol .hiddenCode { display: none; }
+  .codesol.open .hiddenCode { display: block; }
+  .codesol.open > button { background: var(--purple); color: #fff; }
 
   /* ===== 퀴즈 ===== */
   .quiz {
@@ -401,7 +401,7 @@ s.Trim()                     <span class="cm">// 양쪽 공백 제거</span>
   <h3>직접 풀어보기</h3>
   <div class="card">
     <p><b>문제</b> : 문자열 두 개가 애너그램(서로 글자를 재배열한 관계, 예: "listen"과 "silent")인지 판별하는 함수를 작성해 보세요.</p>
-    <div class="reveal">
+    <div class="codesol">
       <button>정답 코드 보기</button>
       <div class="hiddenCode">
         <pre><span class="kw">static</span> <span class="kw">bool</span> IsAnagram(<span class="kw">string</span> a, <span class="kw">string</span> b)
@@ -1034,7 +1034,7 @@ dp[<span class="nm">0</span>] = <span class="nm">0</span>; dp[<span class="nm">1
   <h3>연습 : 계단 오르기</h3>
   <div class="card">
     <p><b>문제</b> : 한 번에 1칸 또는 2칸을 오를 수 있을 때, N번째 계단까지 오르는 방법의 수는 몇 가지일까요?</p>
-    <div class="reveal">
+    <div class="codesol">
       <button>풀이 보기</button>
       <div class="hiddenCode">
         <p style="margin-top:10px; font-size:14.5px;"><b>상태</b> : dp[i] = i번째 계단에 도달하는 방법의 수<br><b>점화식</b> : 마지막 걸음이 1칸이었다면 dp[i-1]에서, 2칸이었다면 dp[i-2]에서 왔으니 dp[i] = dp[i-1] + dp[i-2]<br><b>초기값</b> : dp[1] = 1, dp[2] = 2</p>
@@ -1962,11 +1962,11 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
   });
 
   // ===== 정답 코드 토글 =====
-  document.querySelectorAll('.reveal > button').forEach(function (btn) {
+  document.querySelectorAll('.codesol > button').forEach(function (btn) {
+    var label = btn.textContent;
     btn.addEventListener('click', function () {
-      var box = btn.parentElement;
-      box.classList.toggle('open');
-      btn.textContent = box.classList.contains('open') ? '정답 닫기' : '정답 코드 보기';
+      var open = btn.parentElement.classList.toggle('open');
+      btn.textContent = open ? '접기' : label;
     });
   });
 
