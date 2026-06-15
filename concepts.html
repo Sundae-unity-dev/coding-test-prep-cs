@@ -2006,6 +2006,7 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
         if (quiz.classList.contains('answered')) return;
         quizState[qid] = { correct: b.dataset.ok === '1' };
         saveQuiz();
+        if (window.ctStampActivity) window.ctStampActivity();
         gradeQuiz(quiz, b);
         updateMenuBadges();
       });

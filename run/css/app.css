@@ -134,6 +134,32 @@ table.ex td + td { border-left: 1px solid #E5E2F0; }
 .output.sol { color: #C3E88D; margin-top: 10px; white-space: pre; overflow-x: auto; }
 .verdict .ms, h4.sec .ms { font-size: 12.5px; font-weight: 700; opacity: 0.7; margin-left: 8px; }
 
+/* 다음/이전 네비 */
+.rb-head .rb-nav { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+.rb-head .navbtn { font-size: 13.5px; font-weight: 700; color: #6A2FD0; text-decoration: none; border: 1px solid #E5E2F0; border-radius: 8px; padding: 7px 12px; }
+.rb-head .navbtn:hover { background: #F4EEFF; }
+/* 코드 라벨 + 복사 버튼 */
+.code-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.copybtn { font-size: 12.5px; font-weight: 700; color: #6A2FD0; background: #fff; border: 1px solid #E5E2F0; border-radius: 7px; padding: 5px 12px; cursor: pointer; font-family: inherit; }
+.copybtn:hover { border-color: #8843FF; background: #F4EEFF; }
+/* 직접 입력 실행 박스 */
+.testbox { margin-top: 12px; border: 1px solid #E5E2F0; border-radius: 10px; padding: 0 14px 4px; }
+.testbox summary { cursor: pointer; padding: 11px 2px; font-weight: 700; color: #6A2FD0; font-size: 13.5px; }
+.testbox textarea.stdin { margin: 4px 0 8px; }
+.testbox .run { margin-bottom: 12px; }
+/* 모범답안 풀이 접근 해설 */
+.sol-note { background: #F6F3FF; border-left: 4px solid #8843FF; border-radius: 8px; padding: 11px 15px; margin: 10px 0; font-size: 14.5px; line-height: 1.7; color: #1F2230; }
+.sol-note b { color: #6A2FD0; margin-right: 6px; }
+
+html[data-theme="dark"] .rb-head .navbtn { color: #C3A8FF; border-color: #2E2E40; }
+html[data-theme="dark"] .rb-head .navbtn:hover { background: #2A2342; }
+html[data-theme="dark"] .copybtn { background: #1C1C2A; color: #C3A8FF; border-color: #2E2E40; }
+html[data-theme="dark"] .copybtn:hover { background: #2A2342; border-color: #9D6BFF; }
+html[data-theme="dark"] .testbox { border-color: #2E2E40; }
+html[data-theme="dark"] .testbox summary { color: #C3A8FF; }
+html[data-theme="dark"] .sol-note { background: #221C38; border-left-color: #9D6BFF; color: #E7E7F1; }
+html[data-theme="dark"] .sol-note b { color: #C3A8FF; }
+
 /* ===== Monaco 코드 에디터 ===== */
 .monaco-host { height: 380px; border: 1px solid #2A2A3C; border-radius: 10px; overflow: hidden; }
 .col .monaco-host { height: 460px; }

@@ -114,6 +114,13 @@
     };
   };
 
+  // 학습 활동(스트릭) 기록. 로컬 날짜 기준이라 런박스/개념/홈이 같은 함수를 써서 일자가 일관돼요.
+  function ymd(d) { d = d || new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  window.ctToday = function () { return ymd(); };
+  window.ctStampActivity = function () {
+    try { var k = 'ct_activity_v1', o = JSON.parse(localStorage.getItem(k) || '{}'), t = ymd(); o[t] = (o[t] || 0) + 1; localStorage.setItem(k, JSON.stringify(o)); } catch (e) {}
+  };
+
   function init() { buildControls(); initReveal(); initCopy(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();

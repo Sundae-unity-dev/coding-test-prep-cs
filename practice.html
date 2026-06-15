@@ -84,6 +84,12 @@
   .controls .ctrl-btn { font-family: inherit; font-size: 13px; font-weight: 700; padding: 8px 13px; border: 1px solid var(--line); border-radius: 9px; background: var(--card); color: var(--ink); cursor: pointer; }
   .controls .ctrl-btn.on { background: var(--purple-bg); color: var(--purple-dark); border-color: var(--purple); }
   .controls .ctrl-btn.primary { background: var(--purple); color: #fff; border-color: var(--purple); }
+  .weakpanel { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 16px 0 0; padding: 11px 14px; background: var(--purple-bg); border: 1px solid var(--line); border-radius: 12px; }
+  .weakpanel .wp-title { font-size: 13.5px; color: var(--purple-dark); }
+  .weakpanel .wp-chips { display: inline-flex; flex-wrap: wrap; gap: 7px; }
+  .weakpanel .wp-chip { font-family: inherit; font-size: 12.5px; font-weight: 700; padding: 6px 12px; border: 1px solid var(--purple); border-radius: 999px; background: var(--card); color: var(--purple-dark); cursor: pointer; }
+  .weakpanel .wp-chip:hover { background: var(--purple); color: #fff; }
+  .weakpanel .wp-chip .wp-n { opacity: 0.75; font-weight: 800; }
   .controls .ctrl-count { font-size: 13px; color: var(--ink-soft); margin-left: auto; }
   .card.hidden { display: none; }
   .card .top .done { margin-left: 6px; }
@@ -117,6 +123,8 @@
 
   <div class="howto"><strong>이렇게 풀어요</strong> : 문제를 고르면 코드 실행기(런박스)가 열려요. 문제 설명과 시작 코드가 준비돼 있으니, 직접 작성하고 <b>채점하기</b>를 누르면 공개/숨김 테스트 케이스를 한 번에 채점해 정답 여부를 알려줘요. 막히면 힌트와 모범 답안도 그 안에서 볼 수 있어요. 해결한 문제는 자동으로 표시돼요.</div>
 
+  <div class="weakpanel" id="weakPanel" hidden></div>
+
   <div class="controls">
     <input type="search" id="q" class="ctrl-search" placeholder="문제 제목이나 설명 검색" aria-label="문제 검색">
     <select id="fType" class="ctrl-sel" aria-label="유형"><option value="all">전체 유형</option></select>
@@ -124,6 +132,7 @@
     <div class="seg" id="fSolved"><button type="button" data-v="all" class="on">전체</button><button type="button" data-v="unsolved">미해결</button><button type="button" data-v="solved">해결</button></div>
     <select id="fSort" class="ctrl-sel" aria-label="정렬"><option value="default">기본순</option><option value="level">난이도순</option><option value="title">제목순</option></select>
     <button type="button" id="fBookmark" class="ctrl-btn">⭐ 즐겨찾기</button>
+    <button type="button" id="fReview" class="ctrl-btn">🔁 복습</button>
     <button type="button" id="randBtn" class="ctrl-btn primary">🎲 오늘의 문제</button>
     <span class="ctrl-count" id="shownCount"></span>
   </div>
@@ -330,7 +339,7 @@
 
 <script>
 (function () {
-  var SKEY = 'ct_practice_solved_v1', BKEY = 'ct_practice_bookmarks_v1', DKEY = 'ct_practice_daily_v1';
+  var SKEY = 'ct_practice_solved_v1', BKEY = 'ct_practice_bookmarks_v1', DKEY = 'ct_practice_daily_v1', RKEY = 'ct_review_v1';
   var wrap = document.getElementById('cards');
   var cards = [].slice.call(document.querySelectorAll('.card'));
   var LVRANK = { intro: 0, basic: 1, mid: 2, hard: 3 };
@@ -376,17 +385,40 @@
   var types = []; cards.forEach(function (c) { if (types.indexOf(c.dataset.type) < 0) types.push(c.dataset.type); });
   types.forEach(function (t) { var o = document.createElement('option'); o.value = t; o.textContent = t; fType.appendChild(o); });
 
-  var F = { q: '', type: 'all', level: 'all', solved: 'all', bookmark: false, sort: 'default' };
+  var F = { q: '', type: 'all', level: 'all', solved: 'all', bookmark: false, review: false, sort: 'default' };
 
   function refreshProgress() {
     var solved = readObj(SKEY), done = 0;
     cards.forEach(function (c) { var ok = !!solved[c.dataset.pid]; c.classList.toggle('solved', ok); if (ok) done++; });
     document.getElementById('progFill').style.width = Math.round(done / cards.length * 100) + '%';
     document.getElementById('progText').textContent = done + ' / ' + cards.length + ' 해결';
+    renderWeak();
+  }
+
+  // 약점 유형 추천: 미해결이 많은 유형 상위 3개(틀림/모범답안 열람한 미해결은 가중)
+  function renderWeak() {
+    var solved = readObj(SKEY), review = readObj(RKEY), weakPanel = document.getElementById('weakPanel');
+    var stat = {};
+    cards.forEach(function (c) {
+      var t = c.dataset.type, pid = c.dataset.pid;
+      if (!stat[t]) stat[t] = { unsolved: 0, weak: 0 };
+      if (!solved[pid]) { stat[t].unsolved++; var rf = review[pid]; stat[t].weak += (rf && (rf.f || rf.s)) ? 2 : 1; }
+    });
+    var arr = Object.keys(stat).filter(function (t) { return stat[t].unsolved > 0; });
+    arr.sort(function (a, b) { return stat[b].weak - stat[a].weak || stat[b].unsolved - stat[a].unsolved; });
+    var top = arr.slice(0, 3);
+    if (!top.length) { weakPanel.hidden = true; return; }
+    weakPanel.hidden = false;
+    var html = '<b class="wp-title">이 유형을 더 풀어봐요</b><span class="wp-chips">';
+    top.forEach(function (t) { html += '<button type="button" class="wp-chip" data-t="' + t + '">' + t + ' <span class="wp-n">' + stat[t].unsolved + '</span></button>'; });
+    weakPanel.innerHTML = html + '</span>';
+    weakPanel.querySelectorAll('.wp-chip').forEach(function (b) {
+      b.addEventListener('click', function () { F.type = b.getAttribute('data-t'); fType.value = F.type; applyFilters(); wrap.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    });
   }
 
   function applyFilters() {
-    var solved = readObj(SKEY), bm = readObj(BKEY), q = F.q.toLowerCase().trim(), shown = 0;
+    var solved = readObj(SKEY), bm = readObj(BKEY), review = readObj(RKEY), q = F.q.toLowerCase().trim(), shown = 0;
     cards.forEach(function (c) {
       var pid = c.dataset.pid, vis = true;
       if (q && c.textContent.toLowerCase().indexOf(q) < 0) vis = false;
@@ -395,6 +427,7 @@
       if (F.solved === 'solved' && !solved[pid]) vis = false;
       if (F.solved === 'unsolved' && solved[pid]) vis = false;
       if (F.bookmark && !bm[pid]) vis = false;
+      if (F.review) { var rf = review[pid]; if (!(rf && (rf.f || rf.s)) || solved[pid]) vis = false; }
       c.classList.toggle('hidden', !vis);
       if (vis) shown++;
     });
@@ -413,11 +446,11 @@
   }
 
   function resetFilters() {
-    F = { q: '', type: 'all', level: 'all', solved: 'all', bookmark: false, sort: 'default' };
+    F = { q: '', type: 'all', level: 'all', solved: 'all', bookmark: false, review: false, sort: 'default' };
     document.getElementById('q').value = '';
     fType.value = 'all'; document.getElementById('fLevel').value = 'all'; document.getElementById('fSort').value = 'default';
     seg.querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b.dataset.v === 'all'); });
-    bmBtn.classList.remove('on');
+    bmBtn.classList.remove('on'); rvBtn.classList.remove('on');
     applyFilters();
   }
 
@@ -433,14 +466,13 @@
   });
   var bmBtn = document.getElementById('fBookmark');
   bmBtn.addEventListener('click', function () { F.bookmark = !F.bookmark; bmBtn.classList.toggle('on', F.bookmark); applyFilters(); });
+  var rvBtn = document.getElementById('fReview');
+  rvBtn.addEventListener('click', function () { F.review = !F.review; rvBtn.classList.toggle('on', F.review); applyFilters(); });
 
   // 오늘의 문제: 날짜 시드 결정적 선택(미해결 우선). 같은 날엔 같은 문제.
   document.getElementById('randBtn').addEventListener('click', function () {
-    var solved = readObj(SKEY);
-    var pool = cards.filter(function (c) { return !solved[c.dataset.pid]; });
-    if (!pool.length) pool = cards.slice();
     var d = new Date(), seed = d.getFullYear() * 372 + (d.getMonth() + 1) * 31 + d.getDate();
-    var pick = pool[seed % pool.length];
+    var pick = cards[seed % cards.length];  // 홈 대시보드와 동일한 순서/시드로 같은 문제 선택
     resetFilters();
     pick.scrollIntoView({ behavior: 'smooth', block: 'center' });
     pick.classList.remove('flash'); void pick.offsetWidth; pick.classList.add('flash');
@@ -475,7 +507,7 @@
 
   // 런박스 프리페치: "문제 풀기"에 hover/focus/touch 인텐트가 생기면 런타임의 큰 자산을 미리 받아
   // 캐시를 데워 둬요. 인텐트 기반이라 그냥 둘러보는 사용자에겐 부담이 없어요.
-  // (파일명은 WasmFingerprintAssets=false 라 안정적 — .NET 버전을 올리면 이 목록을 갱신하세요.)
+  // (파일명은 WasmFingerprintAssets=false 라 안정적. .NET 버전을 올리면 이 목록을 갱신하세요.)
   var warmed = false;
   function warmRunbox() {
     if (warmed) return; warmed = true;

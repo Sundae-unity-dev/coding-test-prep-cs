@@ -7,7 +7,7 @@
     <title>C# 코드 실행기</title>
     <base href="/coding-test-prep-cs/run/" />
     <script>(function(){try{var t=localStorage.getItem('ctprep_theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
-    <link href="_framework/dotnet.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-Afsdd/2EwEc7dSwx4vch7HAJEiK2ze3EL7lEFCnsRhQ=" />
+    <link href="_framework/dotnet.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-QnPIqFlRjVhiIf8zkmKsUnfip2+8yZd7kCCh18/agpY=" />
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="../assets/app.css" />
     <link rel="stylesheet" href="css/app.css" />
@@ -91,7 +91,7 @@
             }
           });
         },
-        init: function (elementId, value) {
+        init: function (elementId, value, saveId) {
           return window.ctEditor._loadMonaco().then(function () {
             window.ctEditor._registerCsharp();
             var el = document.getElementById(elementId);
@@ -117,9 +117,21 @@
             var ed = window.ctEditor._ed;
             ed.addAction({ id: 'ct-judge', label: '채점하기', keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter], run: function () { var b = document.querySelector('.run.judge'); if (b && !b.disabled) b.click(); } });
             ed.addAction({ id: 'ct-check', label: '오류 체크하기', keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.Quote], run: function () { var b = document.querySelector('.run.check'); if (b && !b.disabled) b.click(); } });
+            // 문제별 코드 자동저장(디바운스). saveId(문제 id)가 있을 때만.
+            window.ctEditor._saveId = saveId || null;
+            if (saveId) {
+              var _t = null;
+              ed.getModel().onDidChangeContent(function () {
+                clearTimeout(_t);
+                _t = setTimeout(function () {
+                  try { var m = JSON.parse(localStorage.getItem('ct_code_v1') || '{}'); m[saveId] = ed.getValue(); localStorage.setItem('ct_code_v1', JSON.stringify(m)); } catch (e) {}
+                }, 600);
+              });
+            }
           }).catch(function (e) { console.error('ctEditor init', e); });
         },
         getValue: function () { return window.ctEditor._ed ? window.ctEditor._ed.getValue() : null; },
+        copy: function () { try { navigator.clipboard.writeText((window.ctEditor._ed ? window.ctEditor._ed.getValue() : '') || ''); return true; } catch (e) { return false; } },
         setValue: function (v) { if (window.ctEditor._ed) window.ctEditor._ed.setValue(v || ''); },
         setMarkers: function (diags) {
           if (!window.ctEditor._ed || !window.monaco) return;
