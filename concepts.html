@@ -980,6 +980,8 @@ meetings.Sort((a, b) =&gt; a.end != b.end
 
   <div class="tip"><strong>복잡도</strong> : 정렬 O(N log N) + 한 번 훑기 O(N) = 전체 O(N log N)이에요. 그리디는 보통 정렬 비용이 전부예요.</div>
 
+  <div class="warn"><b>자주 하는 실수</b> : ① 그리디가 성립하는지 확인하지 않고 "큰 것부터" 식으로 바로 적용해요. 배수 관계가 깨진 거스름돈처럼 일부 케이스만 틀리면 전제가 무너진 신호이니 DP를 의심하세요. ② 정렬 기준을 잘못 잡아요. 회의실 배정은 "끝나는 시간"이 기준인데 "시작 시간"이나 "회의 길이"로 정렬하면 틀려요. 무엇을 기준으로 정렬할지부터 정하세요. ③ 동점 처리를 빠뜨려요. 1순위가 같을 때의 2순위 정렬을 정하지 않으면 입력 순서에 따라 답이 흔들려요.</div>
+
   <div class="quiz" data-qid="q9-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">회의실 배정 문제에서 "끝나는 시간이 빠른 순"으로 정렬하는 이유는 무엇일까요?</span></div>
     <div class="opts">

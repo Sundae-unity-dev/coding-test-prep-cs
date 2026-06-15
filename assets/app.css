@@ -18,6 +18,7 @@ html[data-theme="dark"] {
   --nav-bg: rgba(18,18,28,0.92);
   --code-inline-bg: #2A2342; --code-inline-ink: #C3A8FF;
   --shadow: rgba(0,0,0,0.55);
+  --green: #5FD08A; --amber: #E6AE4D;
   --green-bg: #17341F; --red-bg: #3A1E1E;
 }
 html[data-theme="dark"] body { background: var(--bg); color: var(--ink); }
@@ -60,6 +61,11 @@ pre.has-copy:hover .copy-btn, .copy-btn:focus { opacity: 1; }
 .reveal { opacity: 0; transform: translateY(20px); }
 .reveal.shown { opacity: 1; transform: translateY(0); transition: opacity 0.4s ease, transform 0.4s ease; }
 @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
+
+/* 좁은 화면에서 넓은 표는 가로 스크롤 (셀이 으스러지거나 페이지가 넘치지 않게) */
+@media (max-width: 560px) {
+  .topic table, main table, .stage table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+}
 
 /* 키보드 포커스 표시 (사이트 + 런박스 공통). 마우스 클릭엔 안 뜨도록 :focus-visible 사용 */
 a:focus-visible, button:focus-visible, input:focus-visible,
