@@ -7,7 +7,7 @@
     <title>C# 코드 실행기</title>
     <base href="/coding-test-prep-cs/run/" />
     <script>(function(){try{var t=localStorage.getItem('ctprep_theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
-    <link href="_framework/dotnet.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-QnPIqFlRjVhiIf8zkmKsUnfip2+8yZd7kCCh18/agpY=" />
+    <link href="_framework/dotnet.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-sWfN9Q29lSEnadEm8fLwewiOQaVGrnfiS4nQyPjjhxc=" />
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="../assets/app.css" />
     <link rel="stylesheet" href="css/app.css" />
@@ -98,7 +98,8 @@
             if (!el) return;
             if (window.ctEditor._ed) { window.ctEditor._ed.dispose(); window.ctEditor._ed = null; }
             var initTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'vs-dark' : 'vs';
-            var initFont = parseInt(localStorage.getItem('ctrun_font') || '14', 10) || 14;
+            var initFont = parseInt(localStorage.getItem('ctrun_font') || '16', 10) || 16;
+            var initFam = (localStorage.getItem('ctrun_fontfamily') || '').trim();
             window.ctEditor._ed = monaco.editor.create(el, {
               value: value || '',
               language: 'csharp',
@@ -111,7 +112,7 @@
               scrollBeyondLastLine: false,
               lineNumbers: 'on',
               renderLineHighlight: 'line',
-              fontFamily: "'Cascadia Code','Consolas',monospace"
+              fontFamily: (initFam ? initFam + ', ' : '') + "'Cascadia Code','Consolas',monospace"
             });
             // 단축키: Ctrl+Enter 채점, Ctrl+' 오류 체크 (버튼 DOM 클릭으로 Blazor 핸들러 호출)
             var ed = window.ctEditor._ed;
@@ -155,9 +156,55 @@
         setFontSize: function (delta) {
           if (!window.ctEditor._ed || !window.monaco) return;
           var cur = window.ctEditor._ed.getOption(monaco.editor.EditorOption.fontSize);
-          var n = Math.max(11, Math.min(22, Math.round(cur) + delta));
+          var n = Math.max(11, Math.min(24, Math.round(cur) + delta));
           window.ctEditor._ed.updateOptions({ fontSize: n });
           try { localStorage.setItem('ctrun_font', n); } catch (e) {}
+        },
+        setFontFamily: function (f) {
+          f = (f || '').trim();
+          if (window.ctEditor._ed) window.ctEditor._ed.updateOptions({ fontFamily: (f ? f + ', ' : '') + "'Cascadia Code','Consolas',monospace" });
+          try { localStorage.setItem('ctrun_fontfamily', f); } catch (e) {}
+        },
+        buildFontPicker: function (slotId) {
+          var slot = document.getElementById(slotId); if (!slot || slot.dataset.built) return; slot.dataset.built = '1';
+          var saved = (localStorage.getItem('ctrun_fontfamily') || '').trim();
+          var presets = ['기본', 'D2Coding', 'Consolas', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', 'Nanum Gothic Coding'];
+          var sel = document.createElement('select'); sel.className = 'fontsel'; sel.title = '에디터 글꼴';
+          presets.forEach(function (p) { var o = document.createElement('option'); o.value = (p === '기본' ? '' : p); o.textContent = p; sel.appendChild(o); });
+          var co = document.createElement('option'); co.value = '__c'; co.textContent = '직접 입력...'; sel.appendChild(co);
+          var inp = document.createElement('input'); inp.className = 'fontcustom'; inp.placeholder = '글꼴 이름'; inp.style.display = 'none';
+          if (saved) { if (presets.indexOf(saved) >= 0) sel.value = saved; else { sel.value = '__c'; inp.style.display = ''; inp.value = saved; } }
+          sel.addEventListener('change', function () { if (sel.value === '__c') { inp.style.display = ''; inp.focus(); } else { inp.style.display = 'none'; window.ctEditor.setFontFamily(sel.value); } });
+          inp.addEventListener('change', function () { window.ctEditor.setFontFamily(inp.value); });
+          inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') window.ctEditor.setFontFamily(inp.value); });
+          slot.appendChild(sel); slot.appendChild(inp);
+        },
+        _diff: null,
+        showDiff: function (mine, solution) {
+          var host = document.getElementById('diffHost'); if (!host || !window.monaco) return;
+          host.style.display = 'block';
+          if (window.ctEditor._diff) { window.ctEditor._diff.dispose(); window.ctEditor._diff = null; }
+          var theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'vs-dark' : 'vs';
+          var de = monaco.editor.createDiffEditor(host, { theme: theme, readOnly: true, automaticLayout: true, minimap: { enabled: false }, fontSize: 13, renderSideBySide: true });
+          de.setModel({ original: monaco.editor.createModel(mine || '', 'csharp'), modified: monaco.editor.createModel(solution || '', 'csharp') });
+          window.ctEditor._diff = de;
+        },
+        closeDiff: function () {
+          if (window.ctEditor._diff) { window.ctEditor._diff.dispose(); window.ctEditor._diff = null; }
+          var host = document.getElementById('diffHost'); if (host) { host.style.display = 'none'; host.innerHTML = ''; }
+        },
+        buildTimer: function (slotId, minutes) {
+          var slot = document.getElementById(slotId); if (!slot || slot.dataset.built) return; slot.dataset.built = '1';
+          var total = (parseInt(minutes, 10) || 30) * 60, left = total, iv = null, running = false;
+          slot.innerHTML = '<span class="tm-time"></span><button type="button" class="tm-btn tm-start">시작</button><button type="button" class="tm-btn tm-reset">리셋</button>';
+          var disp = slot.querySelector('.tm-time'), startBtn = slot.querySelector('.tm-start'), resetBtn = slot.querySelector('.tm-reset');
+          function fmt(s) { var m = Math.floor(s / 60), ss = s % 60; return (m < 10 ? '0' : '') + m + ':' + (ss < 10 ? '0' : '') + ss; }
+          function render() { disp.textContent = left <= 0 ? '시간 종료' : fmt(left); slot.classList.toggle('tm-over', left <= 0); }
+          function stop() { running = false; startBtn.textContent = '시작'; if (iv) { clearInterval(iv); iv = null; } }
+          function tick() { if (left > 0) { left--; render(); if (left <= 0) stop(); } }
+          startBtn.addEventListener('click', function () { if (running) { stop(); } else { if (left <= 0) { left = total; } running = true; startBtn.textContent = '정지'; iv = setInterval(tick, 1000); } });
+          resetBtn.addEventListener('click', function () { stop(); left = total; slot.classList.remove('tm-over'); render(); });
+          render();
         }
       };
     </script>

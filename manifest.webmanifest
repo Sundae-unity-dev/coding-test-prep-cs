@@ -1,0 +1,15 @@
+{
+  "name": "Elice Coding Camp",
+  "short_name": "Coding Camp",
+  "description": "브라우저에서 바로 C# 코딩 테스트를 연습하고 채점받는 학습 사이트",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#FAFAFD",
+  "theme_color": "#8843FF",
+  "lang": "ko",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" },
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }
+  ]
+}

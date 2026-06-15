@@ -4,6 +4,11 @@
   var root = document.documentElement;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // 사이트 셸 서비스 워커 등록(설치/오프라인). 런박스(/run/)는 자체 SW를 쓰므로 제외.
+  if ('serviceWorker' in navigator && location.pathname.indexOf('/run/') < 0) {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('/coding-test-prep-cs/sw.js').catch(function () {}); });
+  }
+
   function curTheme() { return root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'; }
   function setTheme(t) {
     root.setAttribute('data-theme', t);
