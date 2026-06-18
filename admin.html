@@ -120,11 +120,14 @@
 
   var MEMBERS = [];
   function keys(o) { return Object.keys(o); }
+  // 인코딩이 깨진 레코드(대체문자 U+FFFD 포함)는 가려요. 정상 브라우저는 UTF-8이라 여기 안 걸립니다.
+  function garbled(s) { return /�/.test(String(s == null ? '' : s)); }
 
   // 같은 이름은 한 멤버로 합쳐요(여러 번 방문하거나 다른 기기로 와도 한 사람으로).
   function buildMembers() {
     var map = {};
     (DATA.progress || []).forEach(function (p) {
+      if (garbled(p.name)) return;
       var key = (p.name || '').trim() || '(이름없음)';
       var m = map[key] || (map[key] = { name: key, vids: {}, visits: 0, totalSec: 0, solved: {}, concepts: {}, firstSeen: null, lastSeen: null, lastPage: '', lastPageAt: null });
       m.vids[String(p.vid)] = 1;
@@ -145,7 +148,7 @@
     var totalSolved = 0, totalSec = 0;
     MEMBERS.forEach(function (m) { totalSolved += keys(m.solved).length; totalSec += m.totalSec; });
     document.getElementById('cards').innerHTML =
-      stat(MEMBERS.length, '멤버') + stat(totalSolved, '푼 문제(누적)') + stat(fmtSec(totalSec), '총 학습시간') + stat((DATA.code || []).length, '코드 제출');
+      stat(MEMBERS.length, '멤버') + stat(totalSolved, '푼 문제(누적)') + stat(fmtSec(totalSec), '총 학습시간') + stat((DATA.code || []).filter(function (c) { return !garbled(c.name); }).length, '코드 제출');
     renderRows((document.getElementById('search').value || ''));
   }
 
