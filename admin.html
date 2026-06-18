@@ -44,6 +44,29 @@
   .muted { color:var(--ink-soft); font-size:12.5px; }
   .tl { font-size:12.5px; line-height:1.7; }
   .tl b { color:var(--purple-dark); }
+  .tabs { display:flex; gap:4px; border-bottom:1px solid var(--line); margin-bottom:14px; flex-wrap:wrap; }
+  .tab { background:transparent; border:none; padding:8px 14px; font-size:13px; font-weight:700; color:var(--ink-soft); cursor:pointer; border-bottom:2px solid transparent; }
+  .tab.on { color:var(--purple-dark); border-bottom-color:var(--purple); }
+  .tabpane { display:none; }
+  .tabpane.on { display:block; }
+  .statgrid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+  .mstat { background:var(--purple-bg); border-radius:10px; padding:12px; text-align:center; }
+  .mstat .mn { font-size:20px; font-weight:800; color:var(--purple-dark); }
+  .mstat .ml { font-size:11.5px; color:var(--ink-soft); margin-top:2px; }
+  .pcard { border:1px solid var(--line); border-radius:10px; padding:11px 13px; margin-bottom:9px; }
+  .pcard .ph { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+  .pcard .ptitle { font-weight:700; font-size:13.5px; }
+  .status { font-size:11.5px; font-weight:800; padding:2px 9px; border-radius:999px; white-space:nowrap; }
+  .status.done { background:var(--green-bg,#E6F6EC); color:#1F9D55; }
+  .status.try { background:var(--purple-bg); color:var(--purple-dark); }
+  .pmeta { font-size:12.5px; color:var(--ink-soft); margin-top:7px; display:flex; align-items:center; flex-wrap:wrap; gap:4px; }
+  .trail { display:inline-flex; gap:3px; flex-wrap:wrap; }
+  .pbadge { width:17px; height:17px; border-radius:5px; font-size:10.5px; font-weight:800; display:inline-flex; align-items:center; justify-content:center; color:#fff; }
+  .pbadge.ok { background:#1F9D55; } .pbadge.no { background:#E5484D; }
+  .pcode { margin-top:9px; }
+  .pcode summary { cursor:pointer; font-size:12.5px; color:var(--purple-dark); font-weight:700; }
+  .pcode pre { margin:8px 0 0; padding:12px; overflow-x:auto; font-size:12.5px; line-height:1.5; background:#1B1B28; color:#E7E7F1; font-family:'Cascadia Code','Consolas',monospace; border-radius:8px; }
+  @media (max-width:560px){ .statgrid { grid-template-columns:repeat(2,1fr); } }
 </style>
 </head>
 <body>
@@ -175,7 +198,7 @@
       tr.addEventListener('click', function () {
         var open = dtr.style.display !== 'none';
         dtr.style.display = open ? 'none' : '';
-        if (!open && !dtd.dataset.built) { dtd.innerHTML = detailHtml(m); dtd.dataset.built = '1'; }
+        if (!open && !dtd.dataset.built) { dtd.innerHTML = detailHtml(m); bindTabs(dtd); dtd.dataset.built = '1'; }
       });
       rows.appendChild(tr); rows.appendChild(dtr);
     });
@@ -183,33 +206,129 @@
 
   function stat(n, l) { return '<div class="stat"><div class="n">' + esc(n) + '</div><div class="l">' + esc(l) + '</div></div>'; }
 
+  // 멤버가 손댄 문제를 pid로 묶어요: attempts(시도 이력) + code(최신 코드) + solved 결합.
+  function buildProblems(m) {
+    var codeByPid = {};
+    (DATA.code || []).filter(function (c) { return m.vids[String(c.vid)]; }).forEach(function (c) {
+      var k = String(c.pid);
+      if (!codeByPid[k] || new Date(c.updated || 0) > new Date(codeByPid[k].updated || 0)) codeByPid[k] = c;
+    });
+    var probs = {};
+    function ensure(pid, title) {
+      var k = String(pid);
+      if (!probs[k]) probs[k] = { pid: k, title: title || k, attempts: [], solved: false, lastAt: null };
+      if (title && probs[k].title === k) probs[k].title = title;
+      return probs[k];
+    }
+    (DATA.attempts || []).filter(function (a) { return m.vids[String(a.vid)]; })
+      .sort(function (a, b) { return new Date(a.time || 0) - new Date(b.time || 0); })
+      .forEach(function (a) {
+        var p = ensure(a.pid, a.title), ok = a.passed === '통과';
+        p.attempts.push(ok); if (ok) p.solved = true;
+        var t = new Date(a.time || 0); if (!p.lastAt || t > p.lastAt) p.lastAt = t;
+      });
+    keys(codeByPid).forEach(function (k) {
+      var c = codeByPid[k], p = ensure(k, c.title);
+      if (c.passed === '통과') p.solved = true;
+      var t = new Date(c.updated || 0); if (!p.lastAt || t > p.lastAt) p.lastAt = t;
+      p.code = c.code;
+    });
+    keys(m.solved).forEach(function (k) { ensure(k).solved = true; });
+    return keys(probs).map(function (k) { return probs[k]; }).sort(function (a, b) { return (b.lastAt || 0) - (a.lastAt || 0); });
+  }
+
+  function miniStat(n, l) { return '<div class="mstat"><div class="mn">' + esc(n) + '</div><div class="ml">' + esc(l) + '</div></div>'; }
+
   function detailHtml(m) {
-    var codes = (DATA.code || []).filter(function (c) { return m.vids[String(c.vid)]; })
-      .sort(function (a, b) { return new Date(b.updated || 0) - new Date(a.updated || 0); });
-    var evs = (DATA.events || []).filter(function (e) { return m.vids[String(e.vid)]; })
-      .sort(function (a, b) { return new Date(b.time || 0) - new Date(a.time || 0); }).slice(0, 30);
-    var sv = keys(m.solved), cs = keys(m.concepts);
+    var problems = buildProblems(m);
+    var attempted = problems.length;
+    var solvedN = problems.filter(function (p) { return p.solved; }).length;
+    var totalAtt = problems.reduce(function (s, p) { return s + p.attempts.length; }, 0);
+    var rate = attempted ? Math.round(solvedN / attempted * 100) : 0;
+    var hasAtt = totalAtt > 0;
 
     var h = '<div class="dwrap">';
-    h += '<div class="dsec"><h4>요약</h4><div class="muted">처음 방문 ' + esc(fmtTime(m.firstSeen ? m.firstSeen.toISOString() : '')) + ' / 누적 방문 ' + m.visits + '회 / 학습시간 ' + esc(fmtSec(m.totalSec)) + ' / 접속 기기 ' + keys(m.vids).length + '대</div></div>';
-    h += '<div class="dsec"><h4>푼 문제 (' + sv.length + ')</h4>' + (sv.length ? '<div class="chips">' + sv.map(function (x) { return '<span class="chip">' + esc(x) + '</span>'; }).join('') : '<span class="muted">아직 없음</span>') + '</div>';
-    h += '<div class="dsec"><h4>열람한 개념 (' + cs.length + ')</h4>' + (cs.length ? '<div class="chips">' + cs.map(function (x) { return '<span class="chip">' + esc(x) + '</span>'; }).join('') : '<span class="muted">아직 없음</span>') + '</div>';
-    h += '<div class="dsec"><h4>작성 코드 (' + codes.length + ')</h4>';
-    if (!codes.length) h += '<span class="muted">아직 없음</span>';
-    else codes.forEach(function (c) {
-      h += '<div class="codecard"><div class="ch"><span>' + esc(c.title || c.pid) + '</span><span class="' + (c.passed === '통과' ? 'pass' : 'fail') + '">' + esc(c.passed) + ' / ' + esc(fmtTime(c.updated)) + '</span></div><pre>' + esc(c.code) + '</pre></div>';
+    h += '<div class="tabs">' +
+      '<button class="tab on" data-tab="overview">개요</button>' +
+      '<button class="tab" data-tab="problems">문제별 (' + attempted + ')</button>' +
+      '<button class="tab" data-tab="concepts">개념 (' + keys(m.concepts).length + ')</button>' +
+      '<button class="tab" data-tab="timeline">타임라인</button>' +
+      '</div>';
+
+    // 개요
+    h += '<div class="tabpane on" data-pane="overview">';
+    h += '<div class="muted" style="margin-bottom:12px;">처음 방문 ' + esc(fmtTime(m.firstSeen ? m.firstSeen.toISOString() : '')) + ' / 누적 방문 ' + m.visits + '회 / 학습시간 ' + esc(fmtSec(m.totalSec)) + ' / 접속 기기 ' + keys(m.vids).length + '대</div>';
+    h += '<div class="statgrid">' + miniStat(attempted, '시도한 문제') + miniStat(solvedN, '해결') + miniStat(rate + '%', '정답률') + miniStat(hasAtt ? totalAtt : '-', '총 채점 횟수') + '</div>';
+    if (!hasAtt) h += '<div class="muted" style="margin-top:8px;">시도 횟수와 오답 이력은 서버 강화(재배포) 후 채점부터 쌓여요.</div>';
+    h += '</div>';
+
+    // 문제별
+    h += '<div class="tabpane" data-pane="problems">';
+    if (!problems.length) h += '<span class="muted">아직 시도한 문제가 없어요.</span>';
+    else problems.forEach(function (p) {
+      h += '<div class="pcard"><div class="ph"><span class="ptitle">' + esc(p.title) + '</span><span class="status ' + (p.solved ? 'done' : 'try') + '">' + (p.solved ? '완료' : '시도중') + '</span></div>';
+      h += '<div class="pmeta">';
+      if (p.attempts.length) {
+        h += '시도 ' + p.attempts.length + '회 <span class="trail">' + p.attempts.map(function (ok) { return '<span class="pbadge ' + (ok ? 'ok' : 'no') + '" title="' + (ok ? '통과' : '실패') + '">' + (ok ? 'O' : 'X') + '</span>'; }).join('') + '</span>';
+      } else h += '<span class="muted">시도 이력 없음</span>';
+      if (p.lastAt) h += '<span class="muted">마지막 ' + esc(fmtTime(p.lastAt.toISOString())) + '</span>';
+      h += '</div>';
+      if (p.code) h += '<details class="pcode"><summary>코드 보기</summary><pre>' + esc(p.code) + '</pre></details>';
+      h += '</div>';
     });
     h += '</div>';
-    if (evs.length) {
-      h += '<div class="dsec"><h4>활동 기록</h4><div class="tl">';
-      evs.forEach(function (e) {
-        var label = e.type === 'solved' ? '풀이' : (e.type === 'concept' ? '개념' : (e.type === 'join' ? '입장' : e.type));
-        h += '<div><b>' + esc(label) + '</b> ' + esc(e.info || '') + ' <span class="muted">(' + esc(fmtTime(e.time)) + ')</span></div>';
-      });
-      h += '</div></div>';
-    }
+
+    // 개념
+    h += '<div class="tabpane" data-pane="concepts">';
+    var cev = {};
+    (DATA.events || []).filter(function (e) { return m.vids[String(e.vid)] && e.type === 'concept'; }).forEach(function (e) {
+      var k = e.info || '', t = new Date(e.time || 0);
+      if (!cev[k]) cev[k] = { title: k, n: 0, last: null };
+      cev[k].n++; if (!cev[k].last || t > cev[k].last) cev[k].last = t;
+    });
+    var clist = keys(cev).map(function (k) { return cev[k]; }).sort(function (a, b) { return (b.last || 0) - (a.last || 0); });
+    if (clist.length) {
+      h += '<div class="tl">';
+      clist.forEach(function (c) { h += '<div><b>' + esc(c.title || '(개념)') + '</b> <span class="muted">' + c.n + '회 열람, 최근 ' + esc(fmtTime(c.last.toISOString())) + '</span></div>'; });
+      h += '</div>';
+    } else if (keys(m.concepts).length) {
+      h += '<div class="chips">' + keys(m.concepts).map(function (x) { return '<span class="chip">' + esc(x) + '</span>'; }).join('') + '</div>';
+    } else h += '<span class="muted">아직 열람한 개념이 없어요.</span>';
+    h += '</div>';
+
+    // 타임라인
+    h += '<div class="tabpane" data-pane="timeline">';
+    var tl = [];
+    (DATA.events || []).filter(function (e) { return m.vids[String(e.vid)]; }).forEach(function (e) {
+      var label = e.type === 'solved' ? '풀이' : (e.type === 'concept' ? '개념' : (e.type === 'join' ? '입장' : e.type));
+      tl.push({ t: new Date(e.time || 0), label: label, info: e.info || '' });
+    });
+    (DATA.attempts || []).filter(function (a) { return m.vids[String(a.vid)]; }).forEach(function (a) {
+      tl.push({ t: new Date(a.time || 0), label: '채점', info: (a.title || a.pid || '') + ' (' + (a.passed || '') + ')' });
+    });
+    tl.sort(function (a, b) { return b.t - a.t; });
+    if (tl.length) {
+      h += '<div class="tl">';
+      tl.slice(0, 50).forEach(function (x) { h += '<div><b>' + esc(x.label) + '</b> ' + esc(x.info) + ' <span class="muted">(' + esc(fmtTime(x.t.toISOString())) + ')</span></div>'; });
+      h += '</div>';
+    } else h += '<span class="muted">활동 기록이 없어요.</span>';
+    h += '</div>';
+
     h += '</div>';
     return h;
+  }
+
+  // 상세 안에서 탭 전환(멤버별 독립). 멤버 행 토글과 안 겹치게 클릭 전파 차단.
+  function bindTabs(root) {
+    var tabs = root.querySelectorAll('.tab');
+    [].forEach.call(tabs, function (t) {
+      t.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        var name = t.getAttribute('data-tab');
+        [].forEach.call(root.querySelectorAll('.tab'), function (x) { x.classList.toggle('on', x === t); });
+        [].forEach.call(root.querySelectorAll('.tabpane'), function (p) { p.classList.toggle('on', p.getAttribute('data-pane') === name); });
+      });
+    });
   }
 
   document.getElementById('loginBtn').addEventListener('click', function () { load(document.getElementById('pw').value.trim()); });
