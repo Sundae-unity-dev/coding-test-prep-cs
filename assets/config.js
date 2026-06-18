@@ -5,5 +5,5 @@
  *  2) 비워두면 추적 기능이 완전히 꺼진 상태로(사이트는 그대로) 동작합니다.
  *  3) 관리자 비밀번호는 사이트가 아니라 Apps Script 안(ADMIN_PW)에 둡니다.
  */
-window.CT_ENDPOINT = '';
+window.CT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxs1-3gopMCQFPXWngwfQ0hwGgiToKMyz2moHVcTQdirEZrB-FgyeQ9jGV-gqy6hyeFTw/exec';
 window.CT_BASE = '/coding-test-prep-cs/';
