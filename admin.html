@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>관리자 - Elice Coding Camp</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="assets/app.css">
+<script>(function(){try{var t=localStorage.getItem('ctprep_theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<style>
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:Pretendard,-apple-system,'Malgun Gothic',sans-serif; }
+  .wrap { max-width:1040px; margin:0 auto; padding:28px 18px 80px; }
+  h1 { font-size:23px; margin:6px 0 2px; }
+  .sub { color:var(--ink-soft); font-size:13.5px; margin-bottom:22px; }
+  .gate { max-width:360px; margin:60px auto; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:26px 24px; box-shadow:0 12px 40px var(--shadow); }
+  .gate h2 { font-size:18px; margin:0 0 14px; }
+  .gate input { width:100%; box-sizing:border-box; padding:11px 13px; font-size:15px; border:1px solid var(--line); border-radius:10px; background:var(--bg); color:var(--ink); margin-bottom:12px; }
+  .gate button, .bar button { padding:10px 16px; font-size:14px; font-weight:800; color:#fff; background:var(--purple); border:none; border-radius:10px; cursor:pointer; }
+  .gate button { width:100%; }
+  .err { color:#E5484D; font-size:13px; min-height:18px; margin-bottom:6px; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:18px; }
+  .stat { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 18px; box-shadow:0 6px 18px var(--shadow); }
+  .stat .n { font-size:26px; font-weight:800; color:var(--purple-dark); }
+  .stat .l { font-size:12.5px; color:var(--ink-soft); margin-top:3px; }
+  .bar { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .bar .grow { flex:1; }
+  .bar .ghost { background:transparent; color:var(--purple-dark); border:1px solid var(--line); }
+  table { width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  th, td { padding:11px 13px; text-align:left; font-size:13.5px; border-bottom:1px solid var(--line); }
+  th { background:var(--purple-bg); color:var(--purple-dark); font-size:12.5px; font-weight:800; }
+  tr.row { cursor:pointer; }
+  tr.row:hover td { background:rgba(136,67,255,0.06); }
+  td.num { text-align:right; font-variant-numeric:tabular-nums; }
+  .detail td { background:var(--bg); }
+  .dwrap { display:grid; gap:14px; padding:6px 2px; }
+  .dsec h4 { margin:0 0 6px; font-size:13.5px; color:var(--purple-dark); }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; }
+  .chip { background:var(--purple-bg); color:var(--purple-dark); border-radius:999px; padding:3px 11px; font-size:12px; font-weight:700; }
+  .codecard { border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-bottom:10px; }
+  .codecard .ch { display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:var(--purple-bg); font-size:12.5px; font-weight:700; }
+  .codecard .ch .pass { color:#1F9D55; } .codecard .ch .fail { color:#E5484D; }
+  .codecard pre { margin:0; padding:12px; overflow-x:auto; font-size:12.5px; line-height:1.5; background:#1B1B28; color:#E7E7F1; font-family:'Cascadia Code','Consolas',monospace; }
+  .muted { color:var(--ink-soft); font-size:12.5px; }
+  .tl { font-size:12.5px; line-height:1.7; }
+  .tl b { color:var(--purple-dark); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="gate" class="gate">
+    <h2>관리자 로그인</h2>
+    <div id="gateErr" class="err"></div>
+    <input id="pw" type="password" placeholder="비밀번호" autocomplete="off">
+    <button id="loginBtn" type="button">들어가기</button>
+  </div>
+
+  <div id="dash" style="display:none;">
+    <h1>학습 진행 현황</h1>
+    <div class="sub">방문자별 진행도입니다. 행을 누르면 푼 문제와 작성한 코드를 볼 수 있어요.</div>
+    <div id="cards" class="cards"></div>
+    <div class="bar">
+      <div class="grow"></div>
+      <button id="refreshBtn" type="button" class="ghost">새로고침</button>
+    </div>
+    <table>
+      <thead><tr>
+        <th>이름</th><th>최근 접속</th><th class="num">방문</th><th class="num">학습시간</th>
+        <th class="num">푼 문제</th><th class="num">개념</th><th>마지막 위치</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div id="empty" class="muted" style="margin-top:14px;display:none;">아직 기록이 없어요. 누군가 사이트에 들어와 활동하면 여기에 나타납니다.</div>
+  </div>
+</div>
+
+<script src="assets/config.js"></script>
+<script src="assets/app.js"></script>
+<script>
+(function () {
+  var DATA = null, PW = '';
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+  function num(v) { var n = Number(v); return isNaN(n) ? 0 : n; }
+  function fmtSec(s) { s = num(s); if (s < 60) return s + '초'; var m = Math.floor(s / 60); if (m < 60) return m + '분'; var h = Math.floor(m / 60); return h + '시간 ' + (m % 60) + '분'; }
+  function fmtTime(iso) {
+    if (!iso) return '-';
+    var d = new Date(iso); if (isNaN(d)) return '-';
+    var now = new Date(), diff = (now - d) / 1000;
+    if (diff < 60) return '방금';
+    if (diff < 3600) return Math.floor(diff / 60) + '분 전';
+    if (diff < 86400) return Math.floor(diff / 3600) + '시간 전';
+    if (diff < 86400 * 7) return Math.floor(diff / 86400) + '일 전';
+    return (d.getMonth() + 1) + '월 ' + d.getDate() + '일';
+  }
+  function csvCount(s) { return String(s || '').split(',').filter(String).length; }
+
+  function showErr(m) { var e = document.getElementById('gateErr'); e.textContent = m || ''; }
+
+  function load(pw) {
+    PW = pw;
+    var old = document.getElementById('jsonp'); if (old) old.remove();
+    var s = document.createElement('script');
+    s.id = 'jsonp';
+    var url = window.CT_ENDPOINT;
+    if (!url) { showErr('assets/config.js 에 서버 주소(CT_ENDPOINT)가 아직 비어 있어요.'); return; }
+    s.src = url + (url.indexOf('?') < 0 ? '?' : '&') + 'token=' + encodeURIComponent(pw) + '&callback=ctAdminData&_=' + Date.now();
+    s.onerror = function () { showErr('서버에 연결하지 못했어요. 주소를 확인해 주세요.'); };
+    document.body.appendChild(s);
+  }
+
+  window.ctAdminData = function (d) {
+    if (!d || d.error) { showErr('비밀번호가 맞지 않아요.'); return; }
+    DATA = d;
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('dash').style.display = 'block';
+    render();
+  };
+
+  function render() {
+    var prog = (DATA.progress || []).slice().sort(function (a, b) { return new Date(b.lastSeen || 0) - new Date(a.lastSeen || 0); });
+    var totalSolved = 0, totalSec = 0;
+    prog.forEach(function (p) { totalSolved += num(p.solvedCount); totalSec += num(p.totalSec); });
+    document.getElementById('cards').innerHTML =
+      stat(prog.length, '방문자') + stat(totalSolved, '푼 문제(누적)') + stat(fmtSec(totalSec), '총 학습시간') + stat((DATA.code || []).length, '코드 제출');
+
+    var rows = document.getElementById('rows');
+    rows.innerHTML = '';
+    document.getElementById('empty').style.display = prog.length ? 'none' : 'block';
+    prog.forEach(function (p, i) {
+      var tr = document.createElement('tr');
+      tr.className = 'row';
+      tr.innerHTML = '<td><b>' + esc(p.name || '(이름없음)') + '</b></td>' +
+        '<td>' + esc(fmtTime(p.lastSeen)) + '</td>' +
+        '<td class="num">' + num(p.visits) + '</td>' +
+        '<td class="num">' + esc(fmtSec(p.totalSec)) + '</td>' +
+        '<td class="num">' + num(p.solvedCount) + '</td>' +
+        '<td class="num">' + csvCount(p.concepts) + '</td>' +
+        '<td>' + esc(p.lastPage || '-') + '</td>';
+      var dtr = document.createElement('tr');
+      dtr.className = 'detail'; dtr.style.display = 'none';
+      var dtd = document.createElement('td'); dtd.colSpan = 7;
+      dtr.appendChild(dtd);
+      tr.addEventListener('click', function () {
+        var open = dtr.style.display !== 'none';
+        dtr.style.display = open ? 'none' : '';
+        if (!open && !dtd.dataset.built) { dtd.innerHTML = detailHtml(p); dtd.dataset.built = '1'; }
+      });
+      rows.appendChild(tr); rows.appendChild(dtr);
+    });
+  }
+
+  function stat(n, l) { return '<div class="stat"><div class="n">' + esc(n) + '</div><div class="l">' + esc(l) + '</div></div>'; }
+
+  function detailHtml(p) {
+    var codes = (DATA.code || []).filter(function (c) { return String(c.vid) === String(p.vid); })
+      .sort(function (a, b) { return new Date(b.updated || 0) - new Date(a.updated || 0); });
+    var evs = (DATA.events || []).filter(function (e) { return String(e.vid) === String(p.vid); })
+      .sort(function (a, b) { return new Date(b.time || 0) - new Date(a.time || 0); }).slice(0, 20);
+
+    var h = '<div class="dwrap">';
+    h += '<div class="dsec"><h4>요약</h4><div class="muted">처음 방문 ' + esc(fmtTime(p.firstSeen)) + ' / 누적 방문 ' + num(p.visits) + '회 / 학습시간 ' + esc(fmtSec(p.totalSec)) + '</div></div>';
+
+    var sv = String(p.solvedIds || '').split(',').filter(String);
+    h += '<div class="dsec"><h4>푼 문제 (' + sv.length + ')</h4>' + (sv.length ? '<div class="chips">' + sv.map(function (x) { return '<span class="chip">' + esc(x) + '</span>'; }).join('') : '<span class="muted">아직 없음</span>') + '</div>';
+
+    var cs = String(p.concepts || '').split(',').filter(String);
+    h += '<div class="dsec"><h4>열람한 개념 (' + cs.length + ')</h4>' + (cs.length ? '<div class="chips">' + cs.map(function (x) { return '<span class="chip">' + esc(x) + '</span>'; }).join('') : '<span class="muted">아직 없음</span>') + '</div>';
+
+    h += '<div class="dsec"><h4>작성 코드 (' + codes.length + ')</h4>';
+    if (!codes.length) h += '<span class="muted">아직 없음</span>';
+    else codes.forEach(function (c) {
+      h += '<div class="codecard"><div class="ch"><span>' + esc(c.title || c.pid) + '</span><span class="' + (c.passed === '통과' ? 'pass' : 'fail') + '">' + esc(c.passed) + ' / ' + esc(fmtTime(c.updated)) + '</span></div><pre>' + esc(c.code) + '</pre></div>';
+    });
+    h += '</div>';
+
+    if (evs.length) {
+      h += '<div class="dsec"><h4>최근 활동</h4><div class="tl">';
+      evs.forEach(function (e) {
+        var label = e.type === 'solved' ? '풀이' : (e.type === 'concept' ? '개념' : (e.type === 'join' ? '입장' : e.type));
+        h += '<div><b>' + esc(label) + '</b> ' + esc(e.info || '') + ' <span class="muted">(' + esc(fmtTime(e.time)) + ')</span></div>';
+      });
+      h += '</div></div>';
+    }
+    h += '</div>';
+    return h;
+  }
+
+  document.getElementById('loginBtn').addEventListener('click', function () { load(document.getElementById('pw').value.trim()); });
+  document.getElementById('pw').addEventListener('keydown', function (e) { if (e.key === 'Enter') load(this.value.trim()); });
+  document.getElementById('refreshBtn').addEventListener('click', function () { load(PW); });
+})();
+</script>
+</body>
+</html>
