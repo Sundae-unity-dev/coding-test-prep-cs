@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>내 진행 - Elice Coding Camp</title>
+<meta name="description" content="내 코딩 테스트 학습 진행도: 푼 문제, 연속 학습, 단계별 진행을 한눈에.">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#8843FF">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="assets/app.css">
+<script>(function(){try{var t=localStorage.getItem('ctprep_theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<style>
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:Pretendard,-apple-system,'Malgun Gothic',sans-serif; }
+  nav { position:sticky; top:0; z-index:100; display:flex; align-items:center; gap:18px; padding:12px 22px; background:var(--nav-bg); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); }
+  nav a { color:var(--ink-soft); text-decoration:none; font-size:14px; font-weight:600; }
+  nav a:hover { color:var(--purple-dark); }
+  nav a.on { color:var(--purple-dark); }
+  .sitebrand { display:flex; align-items:center; gap:8px; font-weight:800; color:var(--ink); font-size:15px; margin-right:auto; }
+  .sitebrand .mark { background:var(--purple); color:#fff; border-radius:7px; padding:2px 7px; font-size:13px; }
+  .wrap { max-width:920px; margin:0 auto; padding:30px 18px 80px; }
+  h1 { font-size:25px; margin:4px 0 4px; }
+  .hello { color:var(--ink-soft); font-size:14.5px; margin-bottom:24px; }
+  .hello b { color:var(--purple-dark); }
+  .cards { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:24px; }
+  .stat { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px 18px; box-shadow:0 6px 18px var(--shadow); }
+  .stat .n { font-size:25px; font-weight:800; color:var(--purple-dark); }
+  .stat .l { font-size:12.5px; color:var(--ink-soft); margin-top:3px; }
+  .sec { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:20px 22px; margin-bottom:18px; box-shadow:0 6px 18px var(--shadow); }
+  .sec h2 { font-size:16px; margin:0 0 14px; }
+  .tier { margin-bottom:12px; }
+  .tier:last-child { margin-bottom:0; }
+  .tier .tl { display:flex; justify-content:space-between; font-size:13px; margin-bottom:5px; }
+  .tier .tl b { font-weight:700; }
+  .tier .tl .v { color:var(--ink-soft); font-variant-numeric:tabular-nums; }
+  .bar { height:9px; background:var(--purple-bg); border-radius:999px; overflow:hidden; }
+  .bar i { display:block; height:100%; background:linear-gradient(90deg,var(--purple),var(--purple-dark)); border-radius:999px; transition:width .5s ease; }
+  .cal { display:flex; gap:6px; flex-wrap:wrap; }
+  .cal .day { width:30px; text-align:center; }
+  .cal .box { width:30px; height:30px; border-radius:8px; background:var(--purple-bg); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--ink-soft); }
+  .cal .box.on { background:var(--purple); border-color:var(--purple); color:#fff; font-weight:800; }
+  .cal .dl { font-size:10px; color:var(--ink-soft); margin-top:3px; }
+  .go { display:flex; flex-wrap:wrap; gap:10px; }
+  .go a { text-decoration:none; font-size:14px; font-weight:700; padding:11px 18px; border-radius:11px; }
+  .go a.primary { background:var(--purple); color:#fff; }
+  .go a.ghost { background:transparent; color:var(--purple-dark); border:1px solid var(--line); }
+  .note { font-size:12px; color:var(--ink-soft); margin-top:18px; text-align:center; }
+  footer { text-align:center; color:var(--ink-soft); font-size:12.5px; padding:24px 18px 40px; }
+  @media (max-width:560px){ .cards { grid-template-columns:repeat(2,1fr); } }
+</style>
+</head>
+<body>
+<nav>
+  <a class="sitebrand" href="index.html"><span class="mark">C#</span>Elice Coding Camp</a>
+  <a href="guide.html">준비 가이드</a>
+  <a href="concepts.html">개념 정리</a>
+  <a href="practice.html">예시 문제</a>
+  <a class="on" href="progress.html">내 진행</a>
+</nav>
+
+<div class="wrap">
+  <h1>내 학습 진행</h1>
+  <div class="hello" id="hello">지금까지의 학습 기록이에요.</div>
+
+  <div class="cards">
+    <div class="stat"><div class="n" id="cSolve">0 / 32</div><div class="l">푼 문제</div></div>
+    <div class="stat"><div class="n" id="cStreak">0일</div><div class="l">연속 학습</div></div>
+    <div class="stat"><div class="n" id="cQuiz">0 / 40</div><div class="l">개념 퀴즈</div></div>
+    <div class="stat"><div class="n" id="cReview">0</div><div class="l">복습 대기</div></div>
+  </div>
+
+  <div class="sec">
+    <h2>단계별 진행</h2>
+    <div id="tiers"></div>
+  </div>
+
+  <div class="sec">
+    <h2>최근 2주 학습</h2>
+    <div class="cal" id="cal"></div>
+  </div>
+
+  <div class="sec">
+    <h2>이어서 하기</h2>
+    <div class="go">
+      <a class="primary" href="practice.html">문제 풀러 가기</a>
+      <a class="ghost" href="concepts.html">개념 보기</a>
+      <a class="ghost" href="guide.html">준비 가이드</a>
+      <a class="ghost" id="reviewLink" href="practice.html">복습할 문제 보기</a>
+    </div>
+  </div>
+
+  <div class="note">이 진행 기록은 지금 쓰는 브라우저에 저장돼요. 다른 기기에서는 따로 쌓여요.</div>
+</div>
+
+<footer>Elice Coding Camp | C# 코딩 테스트 준비자료 | Unity 트랙 수강생용</footer>
+
+<script defer src="assets/config.js"></script>
+<script defer src="assets/tracker.js"></script>
+<script defer src="assets/app.js"></script>
+<script>
+(function () {
+  var TIERS = {
+    '입문': ['hpturn', 'goldsum', 'topscore', 'average', 'countchar', 'reverse', 'treasure', 'evensum'],
+    '기초': ['bracket', 'nodup', 'finisher', 'pairs', 'mock', 'kth', 'largest', 'pe'],
+    '중급': ['bsearch', 'triangle', 'prefixsum', 'subseq', 'spicy', 'gamemap', 'target', 'progress'],
+    '심화': ['immigration', 'dijkstra', 'astar', 'network', 'topo', 'knapsack', 'subsets', 'gcdlcm']
+  };
+  function rd(k) { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch (e) { return {}; } }
+  function ymd(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+
+  var solved = rd('ct_practice_solved_v1');
+  var activity = rd('ct_activity_v1');
+  var quiz = rd('ct_concepts_quiz_v1');
+  var review = rd('ct_review_v1');
+  var visitor = rd('ct_visitor_v1');
+
+  var solvedN = Object.keys(solved).filter(function (k) { return solved[k]; }).length;
+  var quizN = Object.keys(quiz).length;
+  var reviewN = Object.keys(review).filter(function (k) { var r = review[k]; return r && (r.f || r.s); }).length;
+
+  // 연속 학습일: 오늘(없으면 어제)부터 거슬러 연속 기록
+  var d = new Date(); if (!activity[ymd(d)]) d.setDate(d.getDate() - 1);
+  var streak = 0; while (activity[ymd(d)]) { streak++; d.setDate(d.getDate() - 1); }
+
+  if (visitor && visitor.name) document.getElementById('hello').innerHTML = '<b>' + String(visitor.name).replace(/[<>&]/g, '') + '</b>님, 지금까지의 학습 기록이에요.';
+
+  document.getElementById('cSolve').textContent = solvedN + ' / 32';
+  document.getElementById('cStreak').textContent = streak + '일';
+  document.getElementById('cQuiz').textContent = quizN + ' / 40';
+  document.getElementById('cReview').textContent = reviewN;
+  document.getElementById('reviewLink').textContent = reviewN ? ('복습할 문제 ' + reviewN + '개 보기') : '복습할 문제 보기';
+
+  // 단계별 진행
+  var th = '';
+  Object.keys(TIERS).forEach(function (name) {
+    var ids = TIERS[name], done = ids.filter(function (id) { return solved[id]; }).length;
+    var pct = Math.round(done / ids.length * 100);
+    th += '<div class="tier"><div class="tl"><b>' + name + '</b><span class="v">' + done + ' / ' + ids.length + '</span></div><div class="bar"><i style="width:' + pct + '%"></i></div></div>';
+  });
+  document.getElementById('tiers').innerHTML = th;
+
+  // 최근 14일 캘린더
+  var cal = '', wd = ['일', '월', '화', '수', '목', '금', '토'];
+  for (var i = 13; i >= 0; i--) {
+    var dd = new Date(); dd.setDate(dd.getDate() - i);
+    var on = activity[ymd(dd)] ? ' on' : '';
+    cal += '<div class="day"><div class="box' + on + '">' + (on ? dd.getDate() : '') + '</div><div class="dl">' + wd[dd.getDay()] + '</div></div>';
+  }
+  document.getElementById('cal').innerHTML = cal;
+})();
+</script>
+</body>
+</html>
