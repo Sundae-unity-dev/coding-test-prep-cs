@@ -67,6 +67,24 @@
   .pcode summary { cursor:pointer; font-size:12.5px; color:var(--purple-dark); font-weight:700; }
   .pcode pre { margin:8px 0 0; padding:12px; overflow-x:auto; font-size:12.5px; line-height:1.5; background:#1B1B28; color:#E7E7F1; font-family:'Cascadia Code','Consolas',monospace; border-radius:8px; }
   @media (max-width:560px){ .statgrid { grid-template-columns:repeat(2,1fr); } }
+  .viewtabs { display:flex; gap:6px; margin-bottom:14px; }
+  .vtab { background:transparent; border:1px solid var(--line); border-radius:9px; padding:7px 16px; font-size:13px; font-weight:700; color:var(--ink-soft); cursor:pointer; }
+  .vtab.on { background:var(--purple); color:#fff; border-color:var(--purple); }
+  .fsel { padding:9px 11px; font-size:13px; border:1px solid var(--line); border-radius:10px; background:var(--card); color:var(--ink); }
+  .alertpanel { background:var(--red-bg,#FDECEC); border:1px solid #E7B6B6; border-radius:12px; padding:14px 16px; margin-bottom:14px; }
+  .alertpanel h4 { margin:0 0 9px; font-size:14px; color:#C7382F; }
+  .arow { font-size:13px; padding:3px 0; }
+  .fchip { font-size:11px; font-weight:800; padding:2px 8px; border-radius:999px; margin:0 2px; }
+  .fchip.idle { background:#E6E6EE; color:#555B6E; }
+  .fchip.stuck { background:#FCE4C7; color:#9A6112; }
+  .fchip.low { background:#FBD7D7; color:#C7382F; }
+  .sbadge { font-size:11px; font-weight:800; padding:2px 9px; border-radius:999px; }
+  .sbadge.active { background:var(--green-bg,#E6F6EC); color:#1F9D55; }
+  .sbadge.attn { background:#FBD7D7; color:#C7382F; }
+  .sbadge.idle { background:#E6E6EE; color:#555B6E; }
+  #memHead th[data-sort] { cursor:pointer; user-select:none; }
+  #memHead th[data-dir="1"]::after { content:" \25B2"; font-size:9px; }
+  #memHead th[data-dir="-1"]::after { content:" \25BC"; font-size:9px; }
 </style>
 </head>
 <body>
@@ -82,19 +100,52 @@
     <h1>학습 진행 현황</h1>
     <div class="sub">멤버(이름)별로 묶어서 보여드려요. 행을 누르면 그 멤버의 푼 문제 / 개념 / 작성 코드 / 활동을 한 번에 볼 수 있어요.</div>
     <div id="cards" class="cards"></div>
-    <div class="bar">
-      <input id="search" type="text" placeholder="멤버 이름 검색..." autocomplete="off">
-      <div class="grow"></div>
-      <button id="refreshBtn" type="button" class="ghost">새로고침</button>
+    <div class="viewtabs">
+      <button class="vtab on" type="button" data-view="members">멤버</button>
+      <button class="vtab" type="button" data-view="problems">문제별 난이도</button>
     </div>
-    <table>
-      <thead><tr>
-        <th>멤버</th><th>최근 접속</th><th class="num">방문</th><th class="num">학습시간</th>
-        <th class="num">푼 문제</th><th class="num">개념</th><th>마지막 위치</th>
-      </tr></thead>
-      <tbody id="rows"></tbody>
-    </table>
-    <div id="empty" class="muted" style="margin-top:14px;display:none;">아직 기록이 없어요. 누군가 사이트에 들어와 활동하면 여기에 나타납니다.</div>
+
+    <div id="viewMembers">
+      <div id="alertBox"></div>
+      <div class="bar">
+        <input id="search" type="text" placeholder="멤버 이름 검색..." autocomplete="off">
+        <select id="filter" class="fsel">
+          <option value="all">전체</option>
+          <option value="active">활성(최근 7일)</option>
+          <option value="inactive">비활성</option>
+          <option value="alert">주의 필요</option>
+        </select>
+        <div class="grow"></div>
+        <button id="csvBtn" type="button" class="ghost">CSV 내보내기</button>
+        <button id="refreshBtn" type="button" class="ghost">새로고침</button>
+      </div>
+      <table>
+        <thead><tr id="memHead">
+          <th data-sort="name">멤버</th>
+          <th data-sort="last" class="num">최근 접속</th>
+          <th data-sort="visits" class="num">방문</th>
+          <th data-sort="time" class="num">학습시간</th>
+          <th data-sort="solved" class="num">푼 문제</th>
+          <th data-sort="rate" class="num">정답률</th>
+          <th data-sort="concepts" class="num">개념</th>
+          <th>상태</th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div id="empty" class="muted" style="margin-top:14px;display:none;">아직 기록이 없어요. 누군가 사이트에 들어와 활동하면 여기에 나타납니다.</div>
+    </div>
+
+    <div id="viewProblems" style="display:none;">
+      <div class="sub" style="margin-bottom:12px;">전체 학생 기준 문제별 난이도예요. 해결률이 낮은(어려운) 순으로 정렬됩니다.</div>
+      <table>
+        <thead><tr>
+          <th>문제</th><th class="num">시도 학생</th><th class="num">해결 학생</th>
+          <th class="num">해결률</th><th class="num">총 시도</th><th class="num">평균 시도</th>
+        </tr></thead>
+        <tbody id="probRows"></tbody>
+      </table>
+      <div id="probEmpty" class="muted" style="margin-top:14px;display:none;">아직 문제 풀이 기록이 없어요.</div>
+    </div>
   </div>
 </div>
 
@@ -166,34 +217,106 @@
     MEMBERS = keys(map).map(function (k) { return map[k]; }).sort(function (a, b) { return (b.lastSeen || 0) - (a.lastSeen || 0); });
   }
 
-  function render() {
-    buildMembers();
-    var totalSolved = 0, totalSec = 0;
-    MEMBERS.forEach(function (m) { totalSolved += keys(m.solved).length; totalSec += m.totalSec; });
-    document.getElementById('cards').innerHTML =
-      stat(MEMBERS.length, '멤버') + stat(totalSolved, '푼 문제(누적)') + stat(fmtSec(totalSec), '총 학습시간') + stat((DATA.code || []).filter(function (c) { return !garbled(c.name); }).length, '코드 제출');
-    renderRows((document.getElementById('search').value || ''));
+  var SORT = { key: 'last', dir: -1 };
+
+  // 멤버별 지표(시도/해결/정답률 + 주의 플래그). buildProblems 재사용.
+  function metrics(m) {
+    if (m._met) return m._met;
+    var probs = buildProblems(m);
+    var attempted = probs.length;
+    var solvedN = probs.filter(function (p) { return p.solved; }).length;
+    var totalAtt = probs.reduce(function (s, p) { return s + p.attempts.length; }, 0);
+    var rate = attempted ? Math.round(solvedN / attempted * 100) : 0;
+    var stuck = probs.filter(function (p) { return !p.solved && p.attempts.length >= 5; });
+    var daysIdle = m.lastSeen ? Math.floor((Date.now() - m.lastSeen.getTime()) / 86400000) : 999;
+    var idle = daysIdle >= 7;
+    var struggle = [];
+    if (stuck.length) struggle.push('막힘');
+    if (attempted >= 3 && rate < 50) struggle.push('정답률 낮음');
+    var flags = struggle.slice(); if (idle) flags.push('비활성');
+    m._met = { attempted: attempted, solvedN: solvedN, totalAtt: totalAtt, rate: rate, stuck: stuck, daysIdle: daysIdle, idle: idle, struggle: struggle, flags: flags, active: !idle };
+    return m._met;
   }
 
-  function renderRows(filter) {
+  function statusText(m) { var x = m._met; return x.struggle.length ? '주의' : (x.idle ? '비활성' : '활성'); }
+  function statusBadge(m) { var x = m._met; return '<span class="sbadge ' + (x.struggle.length ? 'attn' : (x.idle ? 'idle' : 'active')) + '">' + statusText(m) + '</span>'; }
+
+  function render() {
+    buildMembers();
+    MEMBERS.forEach(function (m) { m._met = null; metrics(m); });
+    var active = 0, alertN = 0, totalSolved = 0;
+    MEMBERS.forEach(function (m) { var x = m._met; if (x.active) active++; if (x.flags.length) alertN++; totalSolved += x.solvedN; });
+    document.getElementById('cards').innerHTML =
+      stat(MEMBERS.length, '멤버') + stat(active, '활성(7일)') + stat(alertN, '주의 필요') + stat(totalSolved, '누적 푼 문제');
+    renderAlerts();
+    renderRows();
+    renderProblems();
+    updateSortArrows();
+  }
+
+  function renderAlerts() {
+    var box = document.getElementById('alertBox');
+    var flagged = MEMBERS.filter(function (m) { return m._met.flags.length; })
+      .sort(function (a, b) { return b._met.flags.length - a._met.flags.length; });
+    if (!flagged.length) { box.innerHTML = ''; return; }
+    var h = '<div class="alertpanel"><h4>주의가 필요한 학생 (' + flagged.length + ')</h4>';
+    flagged.forEach(function (m) {
+      h += '<div class="arow"><b>' + esc(m.name) + '</b> ' +
+        m._met.flags.map(function (f) { return '<span class="fchip ' + (f === '비활성' ? 'idle' : (f === '막힘' ? 'stuck' : 'low')) + '">' + esc(f) + '</span>'; }).join('') +
+        ' <span class="muted">' + esc(alertReason(m)) + '</span></div>';
+    });
+    h += '</div>';
+    box.innerHTML = h;
+  }
+  function alertReason(m) {
+    var x = m._met, parts = [];
+    if (x.idle) parts.push(x.daysIdle > 900 ? '접속 기록 없음' : x.daysIdle + '일째 미접속');
+    if (x.stuck.length) parts.push(x.stuck.length + '문제에서 막힘(5회 이상 미해결)');
+    if (x.attempted >= 3 && x.rate < 50) parts.push('정답률 ' + x.rate + '%');
+    return parts.join(' / ');
+  }
+
+  function sortVal(m, key) {
+    var x = m._met;
+    if (key === 'name') return m.name.toLowerCase();
+    if (key === 'last') return m.lastSeen ? m.lastSeen.getTime() : 0;
+    if (key === 'visits') return m.visits;
+    if (key === 'time') return m.totalSec;
+    if (key === 'solved') return x.solvedN;
+    if (key === 'rate') return x.rate;
+    if (key === 'concepts') return keys(m.concepts).length;
+    return 0;
+  }
+
+  function renderRows() {
     var rows = document.getElementById('rows');
     rows.innerHTML = '';
-    var f = (filter || '').toLowerCase().trim();
-    var list = MEMBERS.filter(function (m) { return !f || m.name.toLowerCase().indexOf(f) >= 0; });
+    var f = (document.getElementById('search').value || '').toLowerCase().trim();
+    var filt = document.getElementById('filter').value;
+    var list = MEMBERS.filter(function (m) {
+      if (f && m.name.toLowerCase().indexOf(f) < 0) return false;
+      if (filt === 'active' && !m._met.active) return false;
+      if (filt === 'inactive' && m._met.active) return false;
+      if (filt === 'alert' && !m._met.flags.length) return false;
+      return true;
+    });
+    list.sort(function (a, b) { var va = sortVal(a, SORT.key), vb = sortVal(b, SORT.key); return va < vb ? -SORT.dir : (va > vb ? SORT.dir : 0); });
     document.getElementById('empty').style.display = list.length ? 'none' : 'block';
     list.forEach(function (m) {
+      var x = m._met;
       var tr = document.createElement('tr');
       tr.className = 'row';
       tr.innerHTML = '<td><b>' + esc(m.name) + '</b></td>' +
-        '<td>' + esc(fmtTime(m.lastSeen ? m.lastSeen.toISOString() : '')) + '</td>' +
+        '<td class="num">' + esc(fmtTime(m.lastSeen ? m.lastSeen.toISOString() : '')) + '</td>' +
         '<td class="num">' + m.visits + '</td>' +
         '<td class="num">' + esc(fmtSec(m.totalSec)) + '</td>' +
-        '<td class="num">' + keys(m.solved).length + '</td>' +
+        '<td class="num">' + x.solvedN + '</td>' +
+        '<td class="num">' + (x.attempted ? x.rate + '%' : '-') + '</td>' +
         '<td class="num">' + keys(m.concepts).length + '</td>' +
-        '<td>' + esc(m.lastPage || '-') + '</td>';
+        '<td>' + statusBadge(m) + '</td>';
       var dtr = document.createElement('tr');
       dtr.className = 'detail'; dtr.style.display = 'none';
-      var dtd = document.createElement('td'); dtd.colSpan = 7;
+      var dtd = document.createElement('td'); dtd.colSpan = 8;
       dtr.appendChild(dtd);
       tr.addEventListener('click', function () {
         var open = dtr.style.display !== 'none';
@@ -202,6 +325,57 @@
       });
       rows.appendChild(tr); rows.appendChild(dtr);
     });
+  }
+
+  function updateSortArrows() {
+    [].forEach.call(document.querySelectorAll('#memHead th[data-sort]'), function (th) {
+      if (th.getAttribute('data-sort') === SORT.key) th.setAttribute('data-dir', String(SORT.dir)); else th.removeAttribute('data-dir');
+    });
+  }
+
+  // 문제별 난이도(전체 학생 집계). 해결률 낮은 순.
+  function buildProblemStats() {
+    var agg = {};
+    MEMBERS.forEach(function (m) {
+      buildProblems(m).forEach(function (p) {
+        var a = agg[p.pid] || (agg[p.pid] = { pid: p.pid, title: p.title, students: 0, solvedStudents: 0, totalAtt: 0 });
+        if (p.title && a.title === a.pid) a.title = p.title;
+        a.students++; if (p.solved) a.solvedStudents++; a.totalAtt += p.attempts.length;
+      });
+    });
+    return keys(agg).map(function (k) {
+      var a = agg[k]; a.rate = a.students ? Math.round(a.solvedStudents / a.students * 100) : 0; a.avg = a.students ? a.totalAtt / a.students : 0; return a;
+    }).sort(function (a, b) { return a.rate - b.rate || b.totalAtt - a.totalAtt; });
+  }
+  function renderProblems() {
+    var stats = buildProblemStats();
+    var tb = document.getElementById('probRows'); tb.innerHTML = '';
+    document.getElementById('probEmpty').style.display = stats.length ? 'none' : 'block';
+    stats.forEach(function (a) {
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td><b>' + esc(a.title) + '</b></td>' +
+        '<td class="num">' + a.students + '</td>' +
+        '<td class="num">' + a.solvedStudents + '</td>' +
+        '<td class="num">' + a.rate + '%</td>' +
+        '<td class="num">' + a.totalAtt + '</td>' +
+        '<td class="num">' + (a.totalAtt ? a.avg.toFixed(1) : '-') + '</td>';
+      tb.appendChild(tr);
+    });
+  }
+
+  // CSV 내보내기 (엑셀 한글 위해 BOM 추가)
+  function csvCell(v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; }
+  function exportCsv() {
+    var head = ['이름', '최근접속', '방문', '학습시간(초)', '시도한문제', '해결', '정답률(%)', '총채점', '개념수', '상태'];
+    var lines = [head.map(csvCell).join(',')];
+    MEMBERS.forEach(function (m) {
+      var x = m._met;
+      lines.push([m.name, m.lastSeen ? m.lastSeen.toISOString() : '', m.visits, m.totalSec, x.attempted, x.solvedN, x.rate, x.totalAtt, keys(m.concepts).length, statusText(m)].map(csvCell).join(','));
+    });
+    var d = new Date(), ymd = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    var blob = new Blob([String.fromCharCode(0xFEFF) + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = '학습기록_' + ymd + '.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
   }
 
   function stat(n, l) { return '<div class="stat"><div class="n">' + esc(n) + '</div><div class="l">' + esc(l) + '</div></div>'; }
@@ -334,7 +508,24 @@
   document.getElementById('loginBtn').addEventListener('click', function () { load(document.getElementById('pw').value.trim()); });
   document.getElementById('pw').addEventListener('keydown', function (e) { if (e.key === 'Enter') load(this.value.trim()); });
   document.getElementById('refreshBtn').addEventListener('click', function () { load(PW); });
-  document.getElementById('search').addEventListener('input', function () { renderRows(this.value); });
+  document.getElementById('search').addEventListener('input', function () { renderRows(); });
+  document.getElementById('filter').addEventListener('change', function () { renderRows(); });
+  document.getElementById('csvBtn').addEventListener('click', function () { exportCsv(); });
+  [].forEach.call(document.querySelectorAll('.vtab'), function (b) {
+    b.addEventListener('click', function () {
+      [].forEach.call(document.querySelectorAll('.vtab'), function (x) { x.classList.toggle('on', x === b); });
+      var v = b.getAttribute('data-view');
+      document.getElementById('viewMembers').style.display = v === 'members' ? '' : 'none';
+      document.getElementById('viewProblems').style.display = v === 'problems' ? '' : 'none';
+    });
+  });
+  [].forEach.call(document.querySelectorAll('#memHead th[data-sort]'), function (th) {
+    th.addEventListener('click', function () {
+      var k = th.getAttribute('data-sort');
+      if (SORT.key === k) SORT.dir = -SORT.dir; else { SORT.key = k; SORT.dir = (k === 'name' ? 1 : -1); }
+      renderRows(); updateSortArrows();
+    });
+  });
 })();
 </script>
 </body>
