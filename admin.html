@@ -25,6 +25,7 @@
   .bar { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
   .bar .grow { flex:1; }
   .bar .ghost { background:transparent; color:var(--purple-dark); border:1px solid var(--line); }
+  .bar input { padding:9px 13px; font-size:13.5px; border:1px solid var(--line); border-radius:10px; background:var(--card); color:var(--ink); min-width:200px; }
   table { width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
   th, td { padding:11px 13px; text-align:left; font-size:13.5px; border-bottom:1px solid var(--line); }
   th { background:var(--purple-bg); color:var(--purple-dark); font-size:12.5px; font-weight:800; }
@@ -56,15 +57,16 @@
 
   <div id="dash" style="display:none;">
     <h1>학습 진행 현황</h1>
-    <div class="sub">방문자별 진행도입니다. 행을 누르면 푼 문제와 작성한 코드를 볼 수 있어요.</div>
+    <div class="sub">멤버(이름)별로 묶어서 보여드려요. 행을 누르면 그 멤버의 푼 문제 / 개념 / 작성 코드 / 활동을 한 번에 볼 수 있어요.</div>
     <div id="cards" class="cards"></div>
     <div class="bar">
+      <input id="search" type="text" placeholder="멤버 이름 검색..." autocomplete="off">
       <div class="grow"></div>
       <button id="refreshBtn" type="button" class="ghost">새로고침</button>
     </div>
     <table>
       <thead><tr>
-        <th>이름</th><th>최근 접속</th><th class="num">방문</th><th class="num">학습시간</th>
+        <th>멤버</th><th>최근 접속</th><th class="num">방문</th><th class="num">학습시간</th>
         <th class="num">푼 문제</th><th class="num">개념</th><th>마지막 위치</th>
       </tr></thead>
       <tbody id="rows"></tbody>
@@ -116,26 +118,53 @@
     render();
   };
 
-  function render() {
-    var prog = (DATA.progress || []).slice().sort(function (a, b) { return new Date(b.lastSeen || 0) - new Date(a.lastSeen || 0); });
-    var totalSolved = 0, totalSec = 0;
-    prog.forEach(function (p) { totalSolved += num(p.solvedCount); totalSec += num(p.totalSec); });
-    document.getElementById('cards').innerHTML =
-      stat(prog.length, '방문자') + stat(totalSolved, '푼 문제(누적)') + stat(fmtSec(totalSec), '총 학습시간') + stat((DATA.code || []).length, '코드 제출');
+  var MEMBERS = [];
+  function keys(o) { return Object.keys(o); }
 
+  // 같은 이름은 한 멤버로 합쳐요(여러 번 방문하거나 다른 기기로 와도 한 사람으로).
+  function buildMembers() {
+    var map = {};
+    (DATA.progress || []).forEach(function (p) {
+      var key = (p.name || '').trim() || '(이름없음)';
+      var m = map[key] || (map[key] = { name: key, vids: {}, visits: 0, totalSec: 0, solved: {}, concepts: {}, firstSeen: null, lastSeen: null, lastPage: '', lastPageAt: null });
+      m.vids[String(p.vid)] = 1;
+      m.visits += num(p.visits);
+      m.totalSec += num(p.totalSec);
+      String(p.solvedIds || '').split(',').filter(String).forEach(function (x) { m.solved[x] = 1; });
+      String(p.concepts || '').split(',').filter(String).forEach(function (x) { m.concepts[x] = 1; });
+      var fs = p.firstSeen ? new Date(p.firstSeen) : null, ls = p.lastSeen ? new Date(p.lastSeen) : null;
+      if (fs && (!m.firstSeen || fs < m.firstSeen)) m.firstSeen = fs;
+      if (ls && (!m.lastSeen || ls > m.lastSeen)) m.lastSeen = ls;
+      if (ls && p.lastPage && (!m.lastPageAt || ls > m.lastPageAt)) { m.lastPage = p.lastPage; m.lastPageAt = ls; }
+    });
+    MEMBERS = keys(map).map(function (k) { return map[k]; }).sort(function (a, b) { return (b.lastSeen || 0) - (a.lastSeen || 0); });
+  }
+
+  function render() {
+    buildMembers();
+    var totalSolved = 0, totalSec = 0;
+    MEMBERS.forEach(function (m) { totalSolved += keys(m.solved).length; totalSec += m.totalSec; });
+    document.getElementById('cards').innerHTML =
+      stat(MEMBERS.length, '멤버') + stat(totalSolved, '푼 문제(누적)') + stat(fmtSec(totalSec), '총 학습시간') + stat((DATA.code || []).length, '코드 제출');
+    renderRows((document.getElementById('search').value || ''));
+  }
+
+  function renderRows(filter) {
     var rows = document.getElementById('rows');
     rows.innerHTML = '';
-    document.getElementById('empty').style.display = prog.length ? 'none' : 'block';
-    prog.forEach(function (p, i) {
+    var f = (filter || '').toLowerCase().trim();
+    var list = MEMBERS.filter(function (m) { return !f || m.name.toLowerCase().indexOf(f) >= 0; });
+    document.getElementById('empty').style.display = list.length ? 'none' : 'block';
+    list.forEach(function (m) {
       var tr = document.createElement('tr');
       tr.className = 'row';
-      tr.innerHTML = '<td><b>' + esc(p.name || '(이름없음)') + '</b></td>' +
-        '<td>' + esc(fmtTime(p.lastSeen)) + '</td>' +
-        '<td class="num">' + num(p.visits) + '</td>' +
-        '<td class="num">' + esc(fmtSec(p.totalSec)) + '</td>' +
-        '<td class="num">' + num(p.solvedCount) + '</td>' +
-        '<td class="num">' + csvCount(p.concepts) + '</td>' +
-        '<td>' + esc(p.lastPage || '-') + '</td>';
+      tr.innerHTML = '<td><b>' + esc(m.name) + '</b></td>' +
+        '<td>' + esc(fmtTime(m.lastSeen ? m.lastSeen.toISOString() : '')) + '</td>' +
+        '<td class="num">' + m.visits + '</td>' +
+        '<td class="num">' + esc(fmtSec(m.totalSec)) + '</td>' +
+        '<td class="num">' + keys(m.solved).length + '</td>' +
+        '<td class="num">' + keys(m.concepts).length + '</td>' +
+        '<td>' + esc(m.lastPage || '-') + '</td>';
       var dtr = document.createElement('tr');
       dtr.className = 'detail'; dtr.style.display = 'none';
       var dtd = document.createElement('td'); dtd.colSpan = 7;
@@ -143,7 +172,7 @@
       tr.addEventListener('click', function () {
         var open = dtr.style.display !== 'none';
         dtr.style.display = open ? 'none' : '';
-        if (!open && !dtd.dataset.built) { dtd.innerHTML = detailHtml(p); dtd.dataset.built = '1'; }
+        if (!open && !dtd.dataset.built) { dtd.innerHTML = detailHtml(m); dtd.dataset.built = '1'; }
       });
       rows.appendChild(tr); rows.appendChild(dtr);
     });
@@ -151,30 +180,25 @@
 
   function stat(n, l) { return '<div class="stat"><div class="n">' + esc(n) + '</div><div class="l">' + esc(l) + '</div></div>'; }
 
-  function detailHtml(p) {
-    var codes = (DATA.code || []).filter(function (c) { return String(c.vid) === String(p.vid); })
+  function detailHtml(m) {
+    var codes = (DATA.code || []).filter(function (c) { return m.vids[String(c.vid)]; })
       .sort(function (a, b) { return new Date(b.updated || 0) - new Date(a.updated || 0); });
-    var evs = (DATA.events || []).filter(function (e) { return String(e.vid) === String(p.vid); })
-      .sort(function (a, b) { return new Date(b.time || 0) - new Date(a.time || 0); }).slice(0, 20);
+    var evs = (DATA.events || []).filter(function (e) { return m.vids[String(e.vid)]; })
+      .sort(function (a, b) { return new Date(b.time || 0) - new Date(a.time || 0); }).slice(0, 30);
+    var sv = keys(m.solved), cs = keys(m.concepts);
 
     var h = '<div class="dwrap">';
-    h += '<div class="dsec"><h4>요약</h4><div class="muted">처음 방문 ' + esc(fmtTime(p.firstSeen)) + ' / 누적 방문 ' + num(p.visits) + '회 / 학습시간 ' + esc(fmtSec(p.totalSec)) + '</div></div>';
-
-    var sv = String(p.solvedIds || '').split(',').filter(String);
+    h += '<div class="dsec"><h4>요약</h4><div class="muted">처음 방문 ' + esc(fmtTime(m.firstSeen ? m.firstSeen.toISOString() : '')) + ' / 누적 방문 ' + m.visits + '회 / 학습시간 ' + esc(fmtSec(m.totalSec)) + ' / 접속 기기 ' + keys(m.vids).length + '대</div></div>';
     h += '<div class="dsec"><h4>푼 문제 (' + sv.length + ')</h4>' + (sv.length ? '<div class="chips">' + sv.map(function (x) { return '<span class="chip">' + esc(x) + '</span>'; }).join('') : '<span class="muted">아직 없음</span>') + '</div>';
-
-    var cs = String(p.concepts || '').split(',').filter(String);
     h += '<div class="dsec"><h4>열람한 개념 (' + cs.length + ')</h4>' + (cs.length ? '<div class="chips">' + cs.map(function (x) { return '<span class="chip">' + esc(x) + '</span>'; }).join('') : '<span class="muted">아직 없음</span>') + '</div>';
-
     h += '<div class="dsec"><h4>작성 코드 (' + codes.length + ')</h4>';
     if (!codes.length) h += '<span class="muted">아직 없음</span>';
     else codes.forEach(function (c) {
       h += '<div class="codecard"><div class="ch"><span>' + esc(c.title || c.pid) + '</span><span class="' + (c.passed === '통과' ? 'pass' : 'fail') + '">' + esc(c.passed) + ' / ' + esc(fmtTime(c.updated)) + '</span></div><pre>' + esc(c.code) + '</pre></div>';
     });
     h += '</div>';
-
     if (evs.length) {
-      h += '<div class="dsec"><h4>최근 활동</h4><div class="tl">';
+      h += '<div class="dsec"><h4>활동 기록</h4><div class="tl">';
       evs.forEach(function (e) {
         var label = e.type === 'solved' ? '풀이' : (e.type === 'concept' ? '개념' : (e.type === 'join' ? '입장' : e.type));
         h += '<div><b>' + esc(label) + '</b> ' + esc(e.info || '') + ' <span class="muted">(' + esc(fmtTime(e.time)) + ')</span></div>';
@@ -188,6 +212,7 @@
   document.getElementById('loginBtn').addEventListener('click', function () { load(document.getElementById('pw').value.trim()); });
   document.getElementById('pw').addEventListener('keydown', function (e) { if (e.key === 'Enter') load(this.value.trim()); });
   document.getElementById('refreshBtn').addEventListener('click', function () { load(PW); });
+  document.getElementById('search').addEventListener('input', function () { renderRows(this.value); });
 })();
 </script>
 </body>
