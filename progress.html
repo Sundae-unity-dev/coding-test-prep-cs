@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>내 진행 - Elice Coding Camp</title>
-<meta name="description" content="내 코딩 테스트 학습 진행도: 푼 문제, 연속 학습, 단계별 진행을 한눈에.">
+<title>마이페이지 - Elice Coding Camp</title>
+<meta name="description" content="마이페이지: 푼 문제, 연속 학습, 단계별 진행, 모의고사 기록을 한눈에.">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#8843FF">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
@@ -41,6 +41,14 @@
   .cal .box { width:30px; height:30px; border-radius:8px; background:var(--purple-bg); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--ink-soft); }
   .cal .box.on { background:var(--purple); border-color:var(--purple); color:#fff; font-weight:800; }
   .cal .dl { font-size:10px; color:var(--ink-soft); margin-top:3px; }
+  .exrow { display:flex; align-items:center; gap:10px; font-size:13px; padding:8px 10px; border-radius:8px; }
+  .exrow:nth-child(even) { background:var(--purple-bg); }
+  .exd { color:var(--ink-soft); min-width:96px; }
+  .exlv { color:var(--purple-dark); font-weight:700; min-width:64px; }
+  .exsc { font-weight:800; flex:1; }
+  .ext { color:var(--ink-soft); font-variant-numeric:tabular-nums; }
+  .exempty { font-size:13.5px; color:var(--ink-soft); }
+  .exempty a { color:var(--purple-dark); font-weight:700; text-decoration:none; }
   .go { display:flex; flex-wrap:wrap; gap:10px; }
   .go a { text-decoration:none; font-size:14px; font-weight:700; padding:11px 18px; border-radius:11px; }
   .go a.primary { background:var(--purple); color:#fff; }
@@ -57,11 +65,11 @@
   <a href="concepts.html">개념 정리</a>
   <a href="practice.html">예시 문제</a>
   <a href="gichul.html">기출 문제</a>
-  <a class="on" href="progress.html">내 진행</a>
+  <a class="on" href="progress.html">마이페이지</a>
 </nav>
 
 <div class="wrap">
-  <h1>내 학습 진행</h1>
+  <h1>마이페이지</h1>
   <div class="hello" id="hello">지금까지의 학습 기록이에요.</div>
 
   <div class="cards">
@@ -79,6 +87,11 @@
   <div class="sec">
     <h2>최근 2주 학습</h2>
     <div class="cal" id="cal"></div>
+  </div>
+
+  <div class="sec">
+    <h2>모의고사 기록</h2>
+    <div id="examHist"></div>
   </div>
 
   <div class="sec">
@@ -148,6 +161,19 @@
     cal += '<div class="day"><div class="box' + on + '">' + (on ? dd.getDate() : '') + '</div><div class="dl">' + wd[dd.getDay()] + '</div></div>';
   }
   document.getElementById('cal').innerHTML = cal;
+
+  // 모의고사 기록 (ExamView가 localStorage ct_exam_history_v1 에 저장한 배열)
+  var exams = [];
+  try { exams = JSON.parse(localStorage.getItem('ct_exam_history_v1')) || []; if (!Array.isArray(exams)) exams = []; } catch (e) { exams = []; }
+  var ehBox = document.getElementById('examHist');
+  if (!exams.length) {
+    ehBox.innerHTML = '<div class="exempty">아직 모의고사 기록이 없어요. <a href="run/?mode=exam" target="_blank" rel="noopener">모의고사 보러 가기 →</a></div>';
+  } else {
+    ehBox.innerHTML = exams.slice(0, 8).map(function (h) {
+      var s = h.Sec || 0, mm = String(Math.floor(s / 60)).padStart(2, '0'), ss = String(s % 60).padStart(2, '0');
+      return '<div class="exrow"><span class="exd">' + (h.Date || '') + '</span><span class="exlv">' + (h.Lv || '') + '</span><span class="exsc">' + (h.P || 0) + ' / ' + (h.N || 0) + ' 통과</span><span class="ext">' + mm + ':' + ss + '</span></div>';
+    }).join('');
+  }
 })();
 </script>
 </body>

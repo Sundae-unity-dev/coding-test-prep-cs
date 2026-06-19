@@ -73,13 +73,13 @@
   aside .menu button {
     display: flex; align-items: center; gap: 8px;
     width: 100%; text-align: left;
-    background: none; border: none; cursor: pointer;
+    background: var(--card); border: 1.5px solid var(--line); cursor: pointer;
     font-family: inherit; font-size: 14px; font-weight: 600;
     color: var(--ink-soft); padding: 9px 10px; border-radius: 9px;
-    transition: all 0.12s;
+    margin-bottom: 5px; transition: all 0.12s;
   }
-  aside .menu button:hover { background: var(--purple-bg); color: var(--purple-dark); }
-  aside .menu button.active { background: var(--purple); color: #fff; }
+  aside .menu button:hover { background: var(--purple-bg); color: var(--purple-dark); border-color: var(--purple); }
+  aside .menu button.active { background: var(--purple); color: #fff; border-color: var(--purple); }
   aside .menu button .qdone {
     margin-left: auto; font-size: 11px; font-weight: 700;
     color: var(--green); flex-shrink: 0;
@@ -89,7 +89,7 @@
   aside .nores { font-size: 13px; color: var(--ink-soft); padding: 14px 12px; display: none; }
 
   /* ===== 본문 ===== */
-  main { flex: 1; min-width: 0; padding: 36px 44px 90px; max-width: 1080px; }
+  main { flex: 1; min-width: 0; padding: 36px 52px 90px; max-width: 1280px; }
   .topic { display: none; }
   .topic.show { display: block; animation: fade 0.34s cubic-bezier(0.22,0.61,0.36,1); }
   @keyframes fade { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
@@ -250,7 +250,7 @@
     <h1>코딩 테스트 필수 개념</h1>
     <p>C# 기준 | 퀴즈 진행 상황 자동 저장</p>
     <div class="links">
-      <a href="guide.html">준비 가이드</a> <a href="practice.html">예시 문제</a> <a href="gichul.html">기출 문제</a> <a href="progress.html">내 진행</a>
+      <a href="guide.html">준비 가이드</a> <a href="practice.html">예시 문제</a> <a href="gichul.html">기출 문제</a> <a href="progress.html">마이페이지</a>
     </div>
   </div>
   <div class="search">
@@ -336,6 +336,16 @@
 }</pre>
 
   <div class="warn"><b>자주 하는 실수</b> : ① 문제의 N 최대값을 안 보고 코딩을 시작해 다 짠 뒤 시간 초과를 만나요. 항상 제약부터 읽고 허용 복잡도를 역산하세요. ② 반복문 안의 <code>list.Contains</code>, <code>list.IndexOf</code>, 문자열 <code>+=</code> 누적 같은 "숨은 O(N)"을 못 보고 넘어가요. ③ 시간뿐 아니라 재귀 깊이와 메모리도 복잡도의 일부예요.</div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 코드를 짜기 전에 제한 시간 안에 도는지 가늠할 때예요.</li>
+      <li><b>복잡도</b> : 입력 N과 제한 시간으로 허용 복잡도를 역산해요. 1초가 대략 1억 연산이에요.</li>
+      <li><b>핵심</b> : 반복문 중첩 깊이와 입력 크기로 빅오를 읽어요.</li>
+      <li><b>실수 주의</b> : 상수와 낮은 차수는 무시하되, N이 작으면 O(2^N)도 통과한다는 점을 기억하세요.</li>
+    </ul>
+  </div>
 
   <div class="quiz" data-qid="q1-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">N이 최대 100,000인 문제에서 시간 안에 통과할 가능성이 가장 높은 복잡도는 무엇일까요?</span></div>
@@ -423,6 +433,16 @@ s.Trim()                     <span class="cm">// 양쪽 공백 제거</span>
     </div>
   </div>
 
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 순서가 있는 데이터를 다루는 거의 모든 문제의 기본 도구예요.</li>
+      <li><b>복잡도</b> : 인덱스 접근 O(1), 끝에 추가 O(1) 분할상환, 중간 삽입과 삭제는 O(N).</li>
+      <li><b>핵심</b> : 문자열은 불변이라 자주 이어 붙일 때는 StringBuilder를 써요.</li>
+      <li><b>실수 주의</b> : 반복문 안에서 문자열을 + 로 계속 이으면 전체 O(N^2)이 되어 느려져요.</li>
+    </ul>
+  </div>
+
   <div class="quiz" data-qid="q2-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">반복문 안에서 문자열을 수천 번 이어 붙여야 할 때 가장 적절한 도구는 무엇일까요?</span></div>
     <div class="opts">
@@ -502,6 +522,16 @@ s.Trim()                     <span class="cm">// 양쪽 공백 제거</span>
       <li><b>이럴 때 써요</b></li>
       <li><b>스택</b> : "직전 것과 비교", "되돌리기", "괄호 짝 맞추기", "가장 최근 것부터" 같은 표현이 보일 때</li>
       <li><b>큐</b> : "들어온 순서대로 처리", "대기열", "한 칸씩 퍼져 나가기"(BFS) 같은 표현이 보일 때</li>
+    </ul>
+  </div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 짝 맞추기와 되돌리기는 스택, 순서대로 처리와 BFS는 큐예요.</li>
+      <li><b>복잡도</b> : push, pop, enqueue, dequeue 모두 O(1).</li>
+      <li><b>핵심</b> : 괄호와 수식, DFS는 스택, 레벨 순회와 최단 거리는 큐로 풀어요.</li>
+      <li><b>실수 주의</b> : 비어 있을 때 Peek 또는 Pop 은 예외가 나니 Count 를 먼저 확인하세요.</li>
     </ul>
   </div>
 
@@ -591,6 +621,16 @@ s.Trim()                     <span class="cm">// 양쪽 공백 제거</span>
     </ul>
   </div>
 
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 빠른 존재 확인, 개수 세기, 중복 제거가 필요할 때예요.</li>
+      <li><b>복잡도</b> : 평균 O(1) 로 넣고 찾아요.</li>
+      <li><b>핵심</b> : 개수가 필요하면 Dictionary, 존재 여부만이면 HashSet 을 써요.</li>
+      <li><b>실수 주의</b> : 없는 키를 바로 접근하면 예외가 나요. TryGetValue 나 ContainsKey 로 막으세요.</li>
+    </ul>
+  </div>
+
   <div class="quiz" data-qid="q4-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">참가자 명단과 완주자 명단이 주어지고 "완주하지 못한 한 사람"을 찾아야 해요 (동명이인 존재 가능). 알맞은 도구는 무엇일까요?</span></div>
     <div class="opts">
@@ -664,6 +704,16 @@ students.Sort((a, b) =&gt;
     </ul>
   </div>
 
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 비교, 그리디, 이분 탐색의 전처리로 거의 항상 쓰여요.</li>
+      <li><b>복잡도</b> : O(N log N).</li>
+      <li><b>핵심</b> : 기준이 여러 개면 커스텀 비교(첫 기준이 같을 때 둘째 기준)를 만들어요.</li>
+      <li><b>실수 주의</b> : 합 비교에서 int 오버플로, 문자열 숫자의 사전순 함정을 조심하세요.</li>
+    </ul>
+  </div>
+
   <div class="quiz" data-qid="q5-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">비교 함수 <code>(a, b) =&gt; b.CompareTo(a)</code>로 정렬하면 결과는 어떤 순서일까요?</span></div>
     <div class="opts">
@@ -726,6 +776,16 @@ students.Sort((a, b) =&gt;
 }
 <span class="cm">// 종료 시 lo가 조건을 만족하는 최소값이에요</span></pre>
   <div class="tip"><strong>이럴 때 써요</strong> : "최소값의 최대화", "최대값의 최소화", 답의 범위가 10억을 넘는 문제는 파라메트릭 서치를 의심하세요.</div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 정렬된 데이터에서 위치를 찾거나, 답을 정해두고 가능 여부를 판정하는 파라메트릭 서치에 써요.</li>
+      <li><b>복잡도</b> : O(log N).</li>
+      <li><b>핵심</b> : lo 와 hi 경계, 그리고 종료 조건을 명확히 정해요.</li>
+      <li><b>실수 주의</b> : mid 계산과 경계 갱신을 잘못하면 무한 루프나 한 칸 차이(off-by-one)가 생겨요.</li>
+    </ul>
+  </div>
 
   <div class="quiz" data-qid="q6-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">이분 탐색을 쓰기 위한 전제 조건은 무엇일까요?</span></div>
@@ -809,6 +869,16 @@ students.Sort((a, b) =&gt;
   <p>완전 탐색은 "경우의 수 x 한 경우 처리 비용"이 1억 안쪽인지부터 따져요. 넘으면 그리디, DP, 이분 탐색 같은 더 빠른 길을 찾아야 한다는 신호예요.</p>
 
   <div class="warn"><b>자주 하는 실수</b> : 백트래킹에서 <code>current.RemoveAt(...)</code>와 <code>used[i] = false</code> 같은 <b>되돌리기</b>를 빼먹는 거예요. 되돌리지 않으면 한 분기에서 고른 선택이 다음 분기로 새어 나가 엉뚱한 답이 나와요. "선택했으면 반드시 원위치"를 한 쌍으로 기억하세요.</div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 입력이 작아 모든 경우를 다 봐도 시간 안에 끝날 때예요.</li>
+      <li><b>복잡도</b> : 경우의 수에 비례해요. 순열은 N!, 부분집합은 2^N.</li>
+      <li><b>핵심</b> : 백트래킹으로 가망 없는 가지를 일찍 잘라요.</li>
+      <li><b>실수 주의</b> : 가지치기 없이 큰 N 은 시간 초과예요. 방문 표시와 상태 복원을 빠뜨리지 마세요.</li>
+    </ul>
+  </div>
 
   <div class="quiz" data-qid="q7-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">N이 최대 10이고 "모든 순서를 시도해 최적값을 찾아라"라는 문제가 나왔어요. 가장 알맞은 접근은 무엇일까요?</span></div>
@@ -908,6 +978,16 @@ students.Sort((a, b) =&gt;
 
   <div class="warn"><b>C# 함정</b> : 재귀 DFS는 정점이 수만~수십만 개로 깊어지면 호출 스택이 넘쳐 <code>StackOverflowException</code>이 날 수 있어요. 깊이가 깊을 것 같으면 재귀 대신 <code>Stack&lt;T&gt;</code>를 쓴 반복 DFS나 BFS로 바꾸세요.</div>
 
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 그래프와 격자 탐색, 연결 요소 세기, 가중치 없는 최단 거리에 써요.</li>
+      <li><b>복잡도</b> : O(V + E), 격자에서는 O(N x M).</li>
+      <li><b>핵심</b> : 가중치 없는 최단 거리는 BFS, 깊이와 경로 탐색은 DFS 예요.</li>
+      <li><b>실수 주의</b> : 방문 표시는 큐에 넣을 때 해야 같은 칸을 두 번 넣지 않아요.</li>
+    </ul>
+  </div>
+
   <div class="quiz" data-qid="q8-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">"미로의 시작에서 출구까지 최소 몇 칸 이동해야 하는가?"라는 문제에 알맞은 탐색은 무엇일까요?</span></div>
     <div class="opts">
@@ -981,6 +1061,16 @@ meetings.Sort((a, b) =&gt; a.end != b.end
   <div class="tip"><strong>복잡도</strong> : 정렬 O(N log N) + 한 번 훑기 O(N) = 전체 O(N log N)이에요. 그리디는 보통 정렬 비용이 전부예요.</div>
 
   <div class="warn"><b>자주 하는 실수</b> : ① 그리디가 성립하는지 확인하지 않고 "큰 것부터" 식으로 바로 적용해요. 배수 관계가 깨진 거스름돈처럼 일부 케이스만 틀리면 전제가 무너진 신호이니 DP를 의심하세요. ② 정렬 기준을 잘못 잡아요. 회의실 배정은 "끝나는 시간"이 기준인데 "시작 시간"이나 "회의 길이"로 정렬하면 틀려요. 무엇을 기준으로 정렬할지부터 정하세요. ③ 동점 처리를 빠뜨려요. 1순위가 같을 때의 2순위 정렬을 정하지 않으면 입력 순서에 따라 답이 흔들려요.</div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 매 순간 최선을 고르는 것이 전체 최적이 될 때예요.</li>
+      <li><b>복잡도</b> : 보통 정렬 O(N log N) 뒤 한 번 순회.</li>
+      <li><b>핵심</b> : 정렬 기준(예를 들어 끝나는 시각)이 풀이의 전부예요.</li>
+      <li><b>실수 주의</b> : 그리디가 항상 옳다고 단정하지 말고 작은 반례로 먼저 확인하세요.</li>
+    </ul>
+  </div>
 
   <div class="quiz" data-qid="q9-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">회의실 배정 문제에서 "끝나는 시간이 빠른 순"으로 정렬하는 이유는 무엇일까요?</span></div>
@@ -1065,6 +1155,16 @@ dp[<span class="nm">1</span>] = <span class="nm">1</span>;
 
   <div class="tip"><strong>이럴 때 써요</strong> : "방법의 수", "최대/최소 비용", "i번째까지 고려했을 때"라는 표현, 그리고 완전 탐색으로는 경우의 수가 폭발하는 구조예요.</div>
 
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 부분 문제가 겹치고 최적 부분 구조가 있을 때예요.</li>
+      <li><b>복잡도</b> : 상태 수 곱하기 전이 비용.</li>
+      <li><b>핵심</b> : 상태 정의, 점화식, 초기값과 계산 순서를 차례로 정해요.</li>
+      <li><b>실수 주의</b> : 상태나 초기값을 잘못 잡거나 메모이제이션을 빠뜨리면 지수로 폭발해요.</li>
+    </ul>
+  </div>
+
   <div class="quiz" data-qid="q10-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">DP가 단순 재귀보다 빠른 근본적인 이유는 무엇일까요?</span></div>
     <div class="opts">
@@ -1134,6 +1234,16 @@ maxPq.Enqueue(value, -value);</pre>
   <div class="tip"><strong>복잡도</strong> : 넣기(Enqueue)와 가장 작은 값 빼기(Dequeue)가 각각 O(log N)이에요. "매번 최솟값(또는 최댓값)을 꺼내 처리"를 N번 반복하면 전체 O(N log N)이라, 매번 전체를 훑는 O(N²)보다 훨씬 빨라요.</div>
 
   <div class="warn"><b>자주 하는 실수</b> : ① <code>Enqueue(요소, 우선순위)</code>는 인자가 둘이에요. 우선순위 자리에 엉뚱한 값을 넣어 정렬 기준이 깨지는 실수가 잦아요. ② 최대 힙을 부호 반전으로 흉내 낼 땐 <b>요소는 원래 값, 우선순위만 음수</b>로 넣으세요. ③ 비었을 때 <code>Peek</code>/<code>Dequeue</code>는 예외가 나니 <code>Count</code>를 먼저 확인하세요.</div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 가장 작은(또는 큰) 값을 반복해서 꺼내야 할 때예요.</li>
+      <li><b>복잡도</b> : 넣기와 꺼내기가 각각 O(log N).</li>
+      <li><b>핵심</b> : C# 는 PriorityQueue(요소, 우선순위), 최대 힙은 우선순위 부호를 뒤집어요.</li>
+      <li><b>실수 주의</b> : 빈 큐에서 Peek 또는 Dequeue, 우선순위 인자 혼동을 조심하세요.</li>
+    </ul>
+  </div>
 
   <div class="quiz" data-qid="q11-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">"매번 가장 작은 값을 꺼내 처리하고 새 값을 추가"를 N번 반복할 때, 힙을 쓰면 전체 복잡도는 어떻게 될까요?</span></div>
@@ -1219,6 +1329,16 @@ maxPq.Enqueue(value, -value);</pre>
 
   <div class="warn"><b>자주 하는 실수</b> : ① 양 끝 투 포인터는 <b>정렬된 배열</b>에서만 "크면 줄이고 작으면 늘리기"가 성립해요. 정렬 안 됐으면 먼저 정렬하세요. ② 누적 합에서 구간 [l, r] 합은 <code>prefix[r+1] - prefix[l]</code>예요. prefix 배열 크기를 N+1로 잡고 인덱스 한 칸 차이(off-by-one)를 늘 확인하세요.</div>
 
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 연속 부분 배열이나 구간 합 질의가 보이면 떠올려요.</li>
+      <li><b>복잡도</b> : O(N), 누적 합을 전처리하면 질의당 O(1).</li>
+      <li><b>핵심</b> : 양 끝(정렬된 배열) 또는 같은 방향(슬라이딩 윈도우), 구간 합은 prefix[r+1] - prefix[l].</li>
+      <li><b>실수 주의</b> : 양 끝 투 포인터는 정렬이 전제예요. 인덱스 한 칸 차이와 long 을 확인하세요.</li>
+    </ul>
+  </div>
+
   <div class="quiz" data-qid="q12-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">"길이 10만인 배열에 구간 합 질의가 10만 개" 들어와요. 매 질의를 반복문으로 더하면 어떻게 될까요?</span></div>
     <div class="opts">
@@ -1300,6 +1420,16 @@ pq.Enqueue(start, <span class="nm">0</span>);
       <li>간선마다 가중치(비용, 시간, 거리)가 다른 그래프에서 최소 비용 경로를 구할 때</li>
       <li>가중치가 모두 같다면 다익스트라 대신 더 간단한 BFS로 충분해요</li>
       <li>음수 간선이 있으면 다익스트라는 못 쓰고 벨만-포드를 써요</li>
+    </ul>
+  </div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 음수 간선이 없는 가중 그래프의 최단 거리예요.</li>
+      <li><b>복잡도</b> : O(E log V).</li>
+      <li><b>핵심</b> : 우선순위 큐로 가장 가까운 정점부터 확정하고, 거리는 long 으로 둬요.</li>
+      <li><b>실수 주의</b> : 이미 더 짧게 확정된 정점은 건너뛰고, 음수 간선에는 쓸 수 없어요.</li>
     </ul>
   </div>
 
@@ -1386,6 +1516,16 @@ parent = <span class="kw">new</span> <span class="kw">int</span>[n + <span class
     </ul>
   </div>
 
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 연결 여부, 연결 요소 개수, 사이클 판정에 써요.</li>
+      <li><b>복잡도</b> : 경로 압축을 쓰면 사실상 O(1) 에 가까워요.</li>
+      <li><b>핵심</b> : Find(경로 압축) 와 Union 으로 루트를 비교해요.</li>
+      <li><b>실수 주의</b> : 경로 압축을 빼면 느려지고, 합칠 때는 루트끼리 이어야 해요.</li>
+    </ul>
+  </div>
+
   <div class="quiz" data-qid="q14-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">"두 도시가 같은 네트워크로 연결되어 있는가?"라는 질의가 수십만 번 들어오는 문제에 알맞은 도구는 무엇일까요?</span></div>
     <div class="opts">
@@ -1462,6 +1602,16 @@ state ^= (<span class="nm">1</span> &lt;&lt; i);              <span class="cm">/
     </ul>
   </div>
 
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 원소가 20개 이하인 작은 집합의 상태를 정수 하나로 표현할 때예요.</li>
+      <li><b>복잡도</b> : 모든 부분집합을 보면 2^N.</li>
+      <li><b>핵심</b> : i번째 비트는 (mask >> i) &amp; 1, 켜기는 mask | (1 &lt;&lt; i).</li>
+      <li><b>실수 주의</b> : 연산자 우선순위 괄호를 빠뜨리기 쉽고, 1 &lt;&lt; i 가 31 이상이면 1L 을 쓰세요.</li>
+    </ul>
+  </div>
+
   <div class="quiz" data-qid="q15-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">정수 <code>state</code>의 i번째 비트가 켜져 있는지 확인하는 올바른 식은 무엇일까요?</span></div>
     <div class="opts">
@@ -1528,6 +1678,16 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
   <p>방향(dir)과 좌표(행, 열)만 상태로 들고, 규칙을 한 줄씩 그대로 옮기면 돼요. 머릿속으로 한 번 굴려본 표가 곧 코드의 명세서예요.</p>
 
   <div class="tip"><strong>복잡도</strong> : 보통 한 칸과 한 턴을 상수 시간에 처리하므로 전체는 O(격자 칸 수) 또는 O(시뮬레이션 단계 수)예요. 알고리즘이 아니라 단계 수가 그대로 시간이에요.</div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 정해진 규칙을 정확히 따라가야 하는 문제예요.</li>
+      <li><b>복잡도</b> : 시뮬레이션 단계 수에 비례해요.</li>
+      <li><b>핵심</b> : 방향 배열(dx, dy)과 작은 보조 함수로 단계를 나눠요.</li>
+      <li><b>실수 주의</b> : 경계와 회전, 인덱스 실수가 잦으니 작은 예시로 손으로 따라가 보세요.</li>
+    </ul>
+  </div>
 
   <div class="quiz" data-qid="q16-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">C#에서 <code>(-1) % 4</code>의 결과는 무엇일까요?</span></div>
@@ -1633,6 +1793,16 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
 
   <div class="tip"><strong>복잡도</strong> : 최악에는 다익스트라와 같은 O(E log V)예요. 다만 좋은 휴리스틱이 탐색을 목표 쪽으로 끌어당겨, 실제로 꺼내 보는 칸 수가 크게 줄어드는 게 이득이에요. 휴리스틱이 실제 거리를 넘기지 않으면(허용 가능) 최단을 보장해요.</div>
 
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 칸마다 드는 비용이 다른 격자의 최단 비용이에요.</li>
+      <li><b>복잡도</b> : 다익스트라류로 O(칸 수 곱하기 log).</li>
+      <li><b>핵심</b> : 비용이 1 이 아니면 BFS 가 아니라 다익스트라 또는 A*(f = g + h)를 써요.</li>
+      <li><b>실수 주의</b> : 비용이 다른데 BFS 를 쓰거나, 방문 확정 시점을 잘못 잡지 마세요.</li>
+    </ul>
+  </div>
+
   <div class="quiz" data-qid="q18-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">A*에서 휴리스틱 <code>h</code>를 항상 0으로 두면 어떤 알고리즘과 똑같이 동작할까요?</span></div>
     <div class="opts">
@@ -1700,6 +1870,16 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
   <p>진입 차수가 0이 된 정점을 큐에 넣어 순서대로 꺼내면, 선후 관계를 어기지 않는 줄 세우기 <b>1 2 3 4 5</b>가 나와요. 5개 다 담겼으니 사이클도 없어요.</p>
 
   <div class="tip"><strong>복잡도</strong> : 정점 V개, 간선 E개를 한 번씩만 보므로 O(V + E)예요. 각 정점은 큐에 한 번, 각 간선은 진입 차수를 줄일 때 한 번 쓰여요.</div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 선후 관계가 있는 작업의 순서를 정할 때예요.</li>
+      <li><b>복잡도</b> : O(V + E).</li>
+      <li><b>핵심</b> : 진입 차수 0 인 것부터 처리하고, 사전순이 필요하면 우선순위 큐를 써요.</li>
+      <li><b>실수 주의</b> : 끝까지 다 빼지 못하면 순환이라 -1, 진입 차수 갱신을 빠뜨리지 마세요.</li>
+    </ul>
+  </div>
 
   <div class="quiz" data-qid="q19-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">위상 정렬을 적용할 수 있는 그래프는 어떤 것일까요?</span></div>
@@ -1771,6 +1951,16 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
     </ul>
   </div>
 
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 일정 범위 안의 소수를 여러 개 판정할 때예요.</li>
+      <li><b>복잡도</b> : 체는 O(N log log N), 한 수 판정은 O(루트 N).</li>
+      <li><b>핵심</b> : 2부터 배수를 지우고, 지우기는 i*i 부터 시작해요.</li>
+      <li><b>실수 주의</b> : 0 과 1 처리를 빠뜨리기 쉽고, 단일 판정은 루트 N 까지만 보면 돼요.</li>
+    </ul>
+  </div>
+
   <div class="quiz" data-qid="q20-1">
     <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">어떤 수 x가 소수인지 하나만 판정할 때, 나눗셈은 어디까지만 해보면 충분할까요?</span></div>
     <div class="opts">
@@ -1836,6 +2026,16 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
       <li>"최대공약수", "기약분수로 줄여라", "두 수가 서로소인지 판별" 같은 표현이 보일 때</li>
       <li>최소공배수가 필요할 때 (LCM = a / GCD x b)</li>
       <li>분수 계산에서 분자와 분모를 약분해야 할 때</li>
+    </ul>
+  </div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 두 수의 최대공약수와 최소공배수가 필요할 때예요.</li>
+      <li><b>복잡도</b> : O(log min(a, b)).</li>
+      <li><b>핵심</b> : gcd(a, b) = gcd(b, a % b), lcm 은 a / gcd 에 b 를 곱해 구해요.</li>
+      <li><b>실수 주의</b> : lcm 은 커지기 쉬우니 a / gcd 를 먼저 하고 long 을 쓰세요.</li>
     </ul>
   </div>
 

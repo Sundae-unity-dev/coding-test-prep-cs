@@ -1,7 +1,7 @@
 // 런박스 영구 캐시 서비스 워커.
 // 런박스를 재빌드/배포할 때마다 아래 VERSION 을 반드시 바꿔주세요.
 // (그래야 새 빌드가 캐시되고 옛 캐시가 삭제됩니다. 같은 VERSION 안에서는 자산이 한 빌드로 일관되게 유지돼 버전 섞임이 없어요.)
-const VERSION = 'ctrun-cache-2026-06-19c';
+const VERSION = 'ctrun-cache-2026-06-20a';
 const SCOPE = '/coding-test-prep-cs/run/';
 const INDEX = SCOPE + 'index.html';
 
@@ -27,13 +27,26 @@ self.addEventListener('fetch', function (e) {
 
   e.respondWith((async function () {
     var cache = await caches.open(VERSION);
+
+    // 페이지 진입(네비게이션)은 network-first: 온라인이면 항상 최신 index.html 을 받아
+    // 옛 빌드(예: 지난 베타 화면)가 캐시에 남아 보이는 일을 막아요. 오프라인이면 캐시로 폴백.
+    if (navigate) {
+      try {
+        var fresh = await fetch(INDEX, { cache: 'no-store' });
+        if (fresh && fresh.ok) { cache.put(key, fresh.clone()); return fresh; }
+      } catch (err) { }
+      var cached = await cache.match(key);
+      return cached || Response.error();
+    }
+
+    // 정적 자산(_framework 등, 빌드별 불변)은 cache-first 로 빠르게.
     var hit = await cache.match(key);
-    if (hit) return hit;                                    // 캐시 우선(같은 VERSION = 한 빌드)
+    if (hit) return hit;
     try {
-      var resp = await fetch(navigate ? INDEX : req);
+      var resp = await fetch(req);
       if (resp && resp.ok) cache.put(key, resp.clone());
       return resp;
-    } catch (err) {
+    } catch (err2) {
       var fb = await cache.match(key);
       return fb || Response.error();
     }

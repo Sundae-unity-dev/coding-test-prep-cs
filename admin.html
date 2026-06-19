@@ -246,8 +246,9 @@
     MEMBERS.forEach(function (m) { m._met = null; metrics(m); });
     var active = 0, alertN = 0, totalSolved = 0;
     MEMBERS.forEach(function (m) { var x = m._met; if (x.active) active++; if (x.flags.length) alertN++; totalSolved += x.solvedN; });
+    var examTotal = (DATA.exams || []).length;
     document.getElementById('cards').innerHTML =
-      stat(MEMBERS.length, '멤버') + stat(active, '활성(7일)') + stat(alertN, '주의 필요') + stat(totalSolved, '누적 푼 문제');
+      stat(MEMBERS.length, '멤버') + stat(active, '활성(7일)') + stat(alertN, '주의 필요') + stat(totalSolved, '누적 푼 문제') + stat(examTotal, '모의고사 응시');
     renderAlerts();
     renderRows();
     renderProblems();
@@ -413,8 +414,17 @@
 
   function miniStat(n, l) { return '<div class="mstat"><div class="mn">' + esc(n) + '</div><div class="ml">' + esc(l) + '</div></div>'; }
 
+  // 멤버의 모의고사 응시 기록(최근순). 서버(exams 시트)가 없으면 빈 배열.
+  function buildExams(m) {
+    if (!DATA.exams) return [];
+    return DATA.exams.filter(function (x) { return m.vids[String(x.vid)]; })
+      .map(function (x) { return { time: x.time, level: x.level, count: Number(x.count) || 0, passed: Number(x.passed) || 0, minutes: Number(x.minutes) || 0, usedSec: Number(x.usedSec) || 0 }; })
+      .sort(function (a, b) { return new Date(b.time || 0) - new Date(a.time || 0); });
+  }
+
   function detailHtml(m) {
     var problems = buildProblems(m);
+    var exams = buildExams(m);
     var attempted = problems.length;
     var solvedN = problems.filter(function (p) { return p.solved; }).length;
     var totalAtt = problems.reduce(function (s, p) { return s + p.attempts.length; }, 0);
@@ -426,6 +436,7 @@
       '<button class="tab on" data-tab="overview">개요</button>' +
       '<button class="tab" data-tab="problems">문제별 (' + attempted + ')</button>' +
       '<button class="tab" data-tab="concepts">개념 (' + keys(m.concepts).length + ')</button>' +
+      '<button class="tab" data-tab="exams">모의고사 (' + exams.length + ')</button>' +
       '<button class="tab" data-tab="timeline">타임라인</button>' +
       '</div>';
 
@@ -434,6 +445,7 @@
     h += '<div class="muted" style="margin-bottom:12px;">처음 방문 ' + esc(fmtTime(m.firstSeen ? m.firstSeen.toISOString() : '')) + ' / 누적 방문 ' + m.visits + '회 / 학습시간 ' + esc(fmtSec(m.totalSec)) + ' / 접속 기기 ' + keys(m.vids).length + '대</div>';
     h += '<div class="statgrid">' + miniStat(attempted, '시도한 문제') + miniStat(solvedN, '해결') + miniStat(rate + '%', '정답률') + miniStat(hasAtt ? totalAtt : '-', '총 채점 횟수') + '</div>';
     if (!hasAtt) h += '<div class="muted" style="margin-top:8px;">시도 횟수와 오답 이력은 서버 강화(재배포) 후 채점부터 쌓여요.</div>';
+    if (exams.length) h += '<div class="muted" style="margin-top:8px;">모의고사 ' + exams.length + '회, 최근 ' + exams[0].passed + ' / ' + exams[0].count + ' 통과 (' + esc(exams[0].level || '전체') + ')</div>';
     h += '</div>';
 
     // 문제별
@@ -470,6 +482,16 @@
     } else h += '<span class="muted">아직 열람한 개념이 없어요.</span>';
     h += '</div>';
 
+    // 모의고사
+    h += '<div class="tabpane" data-pane="exams">';
+    if (!exams.length) h += '<span class="muted">아직 모의고사 응시 기록이 없어요.' + (DATA.exams ? '' : ' 모의고사 저장은 서버 재배포 후부터 쌓여요.') + '</span>';
+    else {
+      h += '<div class="tl">';
+      exams.forEach(function (x) { h += '<div><b>' + esc(x.level || '전체') + '</b> ' + x.passed + ' / ' + x.count + ' 통과 <span class="muted">' + esc(fmtSec(x.usedSec)) + ' 사용, 제한 ' + x.minutes + '분, ' + esc(fmtTime(x.time)) + '</span></div>'; });
+      h += '</div>';
+    }
+    h += '</div>';
+
     // 타임라인
     h += '<div class="tabpane" data-pane="timeline">';
     var tl = [];
@@ -480,6 +502,7 @@
     (DATA.attempts || []).filter(function (a) { return m.vids[String(a.vid)]; }).forEach(function (a) {
       tl.push({ t: new Date(a.time || 0), label: '채점', info: (a.title || a.pid || '') + ' (' + (a.passed || '') + ')' });
     });
+    exams.forEach(function (x) { tl.push({ t: new Date(x.time || 0), label: '모의고사', info: (x.level || '전체') + ' ' + x.passed + '/' + x.count + ' 통과' }); });
     tl.sort(function (a, b) { return b.t - a.t; });
     if (tl.length) {
       h += '<div class="tl">';
