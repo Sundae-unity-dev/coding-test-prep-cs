@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>기출 유형 문제 (C#)</title>
+<script>(function(){try{var t=localStorage.getItem('ctprep_theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<link rel="stylesheet" href="assets/app.css">
+<style>
+  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+  :root {
+    --purple: #8843FF; --purple-dark: #6A2FD0; --purple-bg: #F4EEFF;
+    --ink: #1F2230; --ink-soft: #555B6E; --line: #E5E2F0; --bg: #FAFAFD;
+    --card: #FFFFFF; --green: #16A34A; --amber: #D97706;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.7; word-break: keep-all; overflow-wrap: break-word; }
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--nav-bg, rgba(255,255,255,0.85)); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; gap: 8px; padding: 0 20px; height: 56px;
+  }
+  nav a { color: var(--ink-soft); text-decoration: none; font-size: 13.5px; font-weight: 700; padding: 7px 13px; border-radius: 8px; transition: all 0.15s; }
+  nav a:hover { background: var(--purple-bg); color: var(--purple-dark); }
+  nav a.active { color: var(--purple-dark); background: var(--purple-bg); }
+  .sitebrand { display: flex; align-items: center; gap: 9px; font-weight: 800; font-size: 15px; color: var(--ink); text-decoration: none; flex-shrink: 0; margin-right: auto; }
+  .sitebrand:hover { background: none; color: var(--purple-dark); }
+  .sitebrand .mark { width: 28px; height: 28px; border-radius: 8px; color: #fff; background: linear-gradient(135deg, #6A2FD0, #8843FF); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; }
+
+  header.hero {
+    background: linear-gradient(135deg, #3B1B7E 0%, #6A2FD0 55%, #8843FF 100%);
+    color: #fff; text-align: center; padding: 56px 24px 48px;
+  }
+  header.hero .badge { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); padding: 4px 14px; border-radius: 99px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
+  header.hero h1 { font-size: 31px; font-weight: 800; margin-bottom: 12px; }
+  header.hero p { font-size: 15.5px; opacity: 0.9; max-width: 660px; margin: 0 auto; }
+
+  main { max-width: 1180px; margin: 0 auto; padding: 26px 20px 80px; }
+
+  .notebox { background: var(--purple-bg); border-left: 4px solid var(--purple); border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 4px 0 22px; font-size: 14px; }
+  .notebox strong { color: var(--purple-dark); }
+
+  .sec-title { display: flex; align-items: baseline; gap: 10px; margin: 30px 0 6px; }
+  .sec-title h2 { font-size: 20px; font-weight: 800; }
+  .sec-title .sub { font-size: 13px; color: var(--ink-soft); font-weight: 600; }
+  .sec-title:first-of-type { margin-top: 8px; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; margin-top: 14px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; display: flex; flex-direction: column; transition: all 0.15s; }
+  .card:hover { border-color: var(--purple); box-shadow: 0 8px 22px rgba(60,30,130,0.08); }
+  .card .top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+  .card .tag { font-size: 11.5px; font-weight: 800; color: #fff; background: var(--purple); padding: 3px 10px; border-radius: 99px; }
+  .card .lv { font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 99px; border: 1px solid var(--line); color: var(--ink-soft); }
+  .card .lv.intro { color: var(--green); border-color: #BBE7CC; background: #EFFAF3; }
+  .card .lv.basic { color: #2563EB; border-color: #C7D7FB; background: #EFF4FE; }
+  .card .lv.mid { color: var(--amber); border-color: #F3D9A8; background: #FEF6E9; }
+  .card .lv.hard { color: #DC2626; border-color: #F4C2C2; background: #FDECEC; }
+  .card h3 { font-size: 16.5px; font-weight: 800; margin-bottom: 7px; }
+  .card p { font-size: 13.5px; color: var(--ink-soft); flex: 1; margin-bottom: 14px; }
+  .card .go { align-self: flex-start; font-size: 13.5px; font-weight: 800; color: #fff; background: var(--purple); text-decoration: none; padding: 8px 16px; border-radius: 9px; transition: background 0.15s; }
+  .card .go:hover { background: var(--purple-dark); }
+
+  footer { text-align: center; color: var(--ink-soft); font-size: 13px; padding: 26px 20px 50px; }
+</style>
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon-192.png">
+</head>
+<body>
+
+<nav>
+  <a class="sitebrand" href="index.html"><span class="mark">C#</span>Elice Coding Camp</a>
+  <a href="guide.html">준비 가이드</a>
+  <a href="concepts.html">개념 정리</a>
+  <a href="practice.html">예시 문제</a>
+  <a href="gichul.html" class="active">기출 문제</a>
+  <a href="progress.html">내 진행</a>
+  <a href="run/?mode=exam" target="_blank" rel="noopener">모의고사</a>
+</nav>
+
+<header class="hero">
+  <div class="badge">실전 대비</div>
+  <h1>기출 유형 문제</h1>
+  <p>실제 코딩 테스트에 자주 나오는 유형(카카오 블라인드, 삼성 SW역량테스트, 빈출 핵심 알고리즘)을 본떠 직접 만든 문제예요. 사이트 안에서 바로 채점되고, 모의고사에도 함께 출제돼요.</p>
+</header>
+
+<main>
+
+  <div class="notebox"><strong>안내</strong> : 원문 저작권 보호를 위해 실제 기출 지문을 그대로 옮기지 않고, 같은 알고리즘과 풀이 감각을 익힐 수 있도록 새로 만든 문제예요. 진짜 기출 원본을 풀고 싶다면 백준(BOJ)이나 프로그래머스의 해당 유형을 함께 풀어 보면 좋아요.</div>
+
+  <div class="sec-title"><h2>카카오 블라인드 스타일</h2><span class="sub">문자열 처리와 꼼꼼한 구현 중심</span></div>
+  <div class="cards">
+    <div class="card">
+      <div class="top"><span class="tag">해시</span><span class="lv mid">중급</span></div>
+      <h3>신고 누적 정지 집계</h3>
+      <p>여러 명이 서로를 신고하고, k번 이상 신고당하면 정지돼요. 정지된 사람을 신고한 모두에게 안내 메일 수를 집계해요.</p>
+      <a class="go" href="run/?problem=report" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+    <div class="card">
+      <div class="top"><span class="tag">문자열</span><span class="lv mid">중급</span></div>
+      <h3>반복 패턴 압축 최소 길이</h3>
+      <p>문자열을 여러 단위 길이로 잘라 연속 반복을 (횟수)(조각)으로 줄였을 때 만들 수 있는 가장 짧은 길이를 구해요.</p>
+      <a class="go" href="run/?problem=compress" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+    <div class="card">
+      <div class="top"><span class="tag">구현</span><span class="lv basic">기초</span></div>
+      <h3>한 손 키패드 입력</h3>
+      <p>키패드에서 두 엄지의 거리를 비교해 더 가까운 손으로 누르는 과정을 시뮬레이션해요. 거리가 같으면 주로 쓰는 손을 써요.</p>
+      <a class="go" href="run/?problem=keypad" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+  </div>
+
+  <div class="sec-title"><h2>삼성 SW역량테스트 스타일</h2><span class="sub">시뮬레이션, 완전 탐색, BFS/DFS</span></div>
+  <div class="cards">
+    <div class="card">
+      <div class="top"><span class="tag">DFS / BFS</span><span class="lv mid">중급</span></div>
+      <h3>섬 묶음 세기</h3>
+      <p>0과 1의 지도에서 상하좌우로 이어진 땅을 한 섬으로 묶어, 섬의 개수와 각 섬의 크기를 오름차순으로 구해요.</p>
+      <a class="go" href="run/?problem=complex" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+    <div class="card">
+      <div class="top"><span class="tag">백트래킹</span><span class="lv hard">심화</span></div>
+      <h3>퀸 배치 경우의 수</h3>
+      <p>N x N 체스판에 퀸 N개를 서로 공격하지 못하게 놓는 방법의 수를 백트래킹으로 세요.</p>
+      <a class="go" href="run/?problem=nqueen" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+    <div class="card">
+      <div class="top"><span class="tag">DP</span><span class="lv basic">기초</span></div>
+      <h3>2 x n 바닥 채우기</h3>
+      <p>2 x n 바닥을 1 x 2, 2 x 1 타일로 채우는 방법의 수를 점화식으로 구해요. 나머지 연산을 함께 연습해요.</p>
+      <a class="go" href="run/?problem=tilings" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+  </div>
+
+  <div class="sec-title"><h2>빈출 핵심 유형</h2><span class="sub">어느 시험에서나 자주 나오는 기본기</span></div>
+  <div class="cards">
+    <div class="card">
+      <div class="top"><span class="tag">DP</span><span class="lv mid">중급</span></div>
+      <h3>최소 동전 거스름돈</h3>
+      <p>여러 동전으로 금액 k를 만드는 최소 동전 개수를 구해요. 만들 수 없으면 -1을 출력하는 DP예요.</p>
+      <a class="go" href="run/?problem=coinmin" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+    <div class="card">
+      <div class="top"><span class="tag">스택 / 큐</span><span class="lv basic">기초</span></div>
+      <h3>원형 탈락 순서</h3>
+      <p>둥글게 앉은 사람들에서 K번째를 차례로 제거하는 순서를 큐로 시뮬레이션하는 요세푸스 유형이에요.</p>
+      <a class="go" href="run/?problem=josephus" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+    <div class="card">
+      <div class="top"><span class="tag">DP</span><span class="lv hard">심화</span></div>
+      <h3>문자열 교정 비용</h3>
+      <p>한 문자열을 다른 문자열로 바꾸는 데 드는 최소 편집 횟수(삽입, 삭제, 교체)를 구하는 편집 거리 문제예요.</p>
+      <a class="go" href="run/?problem=editdist" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+  </div>
+
+</main>
+
+<footer>기출 유형 문제 | C# 기준 | 채점은 코드 실행기 안에서 바로 이루어져요.</footer>
+
+<script defer src="assets/config.js"></script>
+<script defer src="assets/tracker.js"></script>
+<script defer src="assets/app.js"></script>
+</body>
+</html>
