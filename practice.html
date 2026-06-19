@@ -111,22 +111,29 @@
   <a href="guide.html">준비 가이드</a>
   <a href="concepts.html">개념 정리</a>
   <a href="progress.html">내 진행</a>
+  <a href="run/?mode=exam" target="_blank" rel="noopener">모의고사</a>
 </nav>
 
 <header class="hero">
   <div class="badge">Unity 트랙 수강생용</div>
   <h1>예시 문제로 손에 익히기</h1>
-  <p>코딩 테스트 빈출 유형을 게임 세계관으로 직접 만든 32문제예요. 입문부터 심화까지 4단계로 나뉘어 있고, 문제마다 제약 조건과 힌트, C# 모범 답안이 함께 있어요. "문제 풀기"를 누르면 코드 실행기가 열리고, 거기서 코드를 작성해 "채점하기"를 누르면 테스트 케이스를 모두 만족하는지 바로 판정돼요.</p>
+  <p>코딩 테스트 빈출 유형을 게임 세계관으로 직접 만든 48문제예요. 입문부터 심화까지 4단계로 나뉘어 있고, 문제마다 제약 조건과 힌트, C# 모범 답안이 함께 있어요. "문제 풀기"를 누르면 코드 실행기가 열리고, 거기서 코드를 작성해 "채점하기"를 누르면 테스트 케이스를 모두 만족하는지 바로 판정돼요.</p>
 </header>
 
 <main>
 
   <div class="progress-wrap">
     <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
-    <div class="progress-text" id="progText">0 / 32 해결</div>
+    <div class="progress-text" id="progText">0 / 48 해결</div>
   </div>
 
   <div class="howto"><strong>이렇게 풀어요</strong> : 문제를 고르면 코드 실행기(런박스)가 열려요. 문제 설명과 시작 코드가 준비돼 있으니, 직접 작성하고 <b>채점하기</b>를 누르면 공개/숨김 테스트 케이스를 한 번에 채점해 정답 여부를 알려줘요. 막히면 힌트와 모범 답안도 그 안에서 볼 수 있어요. 해결한 문제는 자동으로 표시돼요.</div>
+
+  <a class="examcta" href="run/?mode=exam" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:12px;margin:14px 0 2px;padding:16px 20px;border-radius:14px;background:linear-gradient(135deg,#3B1B7E,#6A2FD0 60%,#8843FF);color:#fff;text-decoration:none;box-shadow:0 6px 18px rgba(106,47,208,0.25);">
+    <span style="font-size:24px;">🧪</span>
+    <span style="flex:1;"><b style="font-size:16px;">모의고사 보기</b><br><span style="font-size:13.5px;opacity:0.9;">문제 수와 제한 시간을 직접 정해 실전처럼 풀어요. 문제는 은행에서 무작위로 출제돼요.</span></span>
+    <span style="font-size:18px;font-weight:800;">→</span>
+  </a>
 
   <div class="weakpanel" id="weakPanel" hidden></div>
 
@@ -334,6 +341,102 @@
       <h2>32. 톱니바퀴 동기화</h2>
       <p>톱니 수들의 최대공약수와 최소공배수를 구해요. 유클리드 호제법이에요.</p>
       <a class="go" href="run/?problem=gcdlcm" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="digitsum">
+      <div class="top"><span class="tag">수학</span><span class="lv intro">입문</span><span class="done">해결 ✓</span></div>
+      <h2>33. 주문 코드의 마나 합</h2>
+      <p>아주 큰 정수의 각 자리 숫자를 더해요. 문자열로 읽어 한 글자씩 더하는 연습이에요.</p>
+      <a class="go" href="run/?problem=digitsum" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="maxidx">
+      <div class="top"><span class="tag">배열</span><span class="lv intro">입문</span><span class="done">해결 ✓</span></div>
+      <h2>34. 랭킹 1위 슬롯</h2>
+      <p>가장 높은 점수를 낸 슬롯 번호를 찾아요. 최댓값의 위치를 추적하는 연습이에요.</p>
+      <a class="go" href="run/?problem=maxidx" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="vowel">
+      <div class="top"><span class="tag">문자열</span><span class="lv intro">입문</span><span class="done">해결 ✓</span></div>
+      <h2>35. 주문서의 모음</h2>
+      <p>문자열에서 모음(a, e, i, o, u)의 개수를 세요. 한 글자씩 비교하는 기본기예요.</p>
+      <a class="go" href="run/?problem=vowel" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="divisors">
+      <div class="top"><span class="tag">수학</span><span class="lv intro">입문</span><span class="done">해결 ✓</span></div>
+      <h2>36. 보스의 약점 수</h2>
+      <p>N의 약수 개수를 구해요. 제곱근까지만 보며 약수를 짝으로 세는 기법이에요.</p>
+      <a class="go" href="run/?problem=divisors" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="palindrome">
+      <div class="top"><span class="tag">문자열</span><span class="lv basic">기초</span><span class="done">해결 ✓</span></div>
+      <h2>37. 앞뒤가 같은 고대어</h2>
+      <p>문자열이 회문인지 판별해요. 양 끝에서 가운데로 좁혀가며 비교해요.</p>
+      <a class="go" href="run/?problem=palindrome" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="freqmode">
+      <div class="top"><span class="tag">해시</span><span class="lv basic">기초</span><span class="done">해결 ✓</span></div>
+      <h2>38. 가장 자주 나온 몬스터</h2>
+      <p>가장 많이 등장한 값을 찾아요(동률이면 작은 값). Dictionary로 빈도를 세요.</p>
+      <a class="go" href="run/?problem=freqmode" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="coins">
+      <div class="top"><span class="tag">그리디</span><span class="lv basic">기초</span><span class="done">해결 ✓</span></div>
+      <h2>39. 골드 교환 최소 코인</h2>
+      <p>거스름돈을 최소 코인 수로 거슬러요. 큰 동전부터 쓰는 그리디 기본 문제예요.</p>
+      <a class="go" href="run/?problem=coins" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="rle">
+      <div class="top"><span class="tag">문자열</span><span class="lv basic">기초</span><span class="done">해결 ✓</span></div>
+      <h2>40. 사냥 로그 압축</h2>
+      <p>연속한 같은 문자를 (문자)(개수)로 압축해요. 구간을 묶어 세는 연습이에요.</p>
+      <a class="go" href="run/?problem=rle" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="window">
+      <div class="top"><span class="tag">투 포인터</span><span class="lv mid">중급</span><span class="done">해결 ✓</span></div>
+      <h2>41. 연속 k턴 최대 데미지</h2>
+      <p>연속한 k개의 최대 합을 구해요. 창을 밀며 합을 갱신하는 슬라이딩 윈도우예요.</p>
+      <a class="go" href="run/?problem=window" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="climb">
+      <div class="top"><span class="tag">DP</span><span class="lv mid">중급</span><span class="done">해결 ✓</span></div>
+      <h2>42. 점프 경로의 수</h2>
+      <p>1칸 또는 2칸씩 오르는 경로 수를 구해요. 피보나치 점화식과 나머지 연산이에요.</p>
+      <a class="go" href="run/?problem=climb" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="pairsum">
+      <div class="top"><span class="tag">해시</span><span class="lv mid">중급</span><span class="done">해결 ✓</span></div>
+      <h2>43. 시너지 콤보 쌍</h2>
+      <p>두 수의 합이 K인 쌍의 개수를 세요. Dictionary로 한 번에 훑는 기법이에요.</p>
+      <a class="go" href="run/?problem=pairsum" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="meeting">
+      <div class="top"><span class="tag">그리디</span><span class="lv mid">중급</span><span class="done">해결 ✓</span></div>
+      <h2>44. 하루 최대 던전 클리어</h2>
+      <p>겹치지 않게 고를 수 있는 최대 일정 수를 구해요. 끝시각 정렬 그리디예요.</p>
+      <a class="go" href="run/?problem=meeting" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="lcs">
+      <div class="top"><span class="tag">DP</span><span class="lv hard">심화</span><span class="done">해결 ✓</span></div>
+      <h2>45. 두 스킬트리의 공통 흐름</h2>
+      <p>두 문자열의 최장 공통 부분 수열 길이를 구해요. 2차원 DP의 대표 문제예요.</p>
+      <a class="go" href="run/?problem=lcs" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="lis">
+      <div class="top"><span class="tag">이분 탐색</span><span class="lv hard">심화</span><span class="done">해결 ✓</span></div>
+      <h2>46. 가장 긴 성장 구간</h2>
+      <p>최장 증가 부분 수열 길이를 구해요. 꼬리값 배열과 이분 탐색으로 빠르게 풀어요.</p>
+      <a class="go" href="run/?problem=lis" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="mst">
+      <div class="top"><span class="tag">Union-Find</span><span class="lv hard">심화</span><span class="done">해결 ✓</span></div>
+      <h2>47. 최소 비용 길드 연결망</h2>
+      <p>모두를 잇는 최소 비용을 구해요. 간선 정렬과 Union-Find로 푸는 크루스칼 MST예요.</p>
+      <a class="go" href="run/?problem=mst" target="_blank" rel="noopener">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="coinways">
+      <div class="top"><span class="tag">DP</span><span class="lv hard">심화</span><span class="done">해결 ✓</span></div>
+      <h2>48. 골드 조합 가짓수</h2>
+      <p>금액을 만드는 동전 조합의 수를 구해요. 순서를 구별하지 않는 조합 DP예요.</p>
+      <a class="go" href="run/?problem=coinways" target="_blank" rel="noopener">문제 풀기 →</a>
     </div>
   </div>
   <button class="reset" id="resetBtn">해결 기록 초기화</button>
