@@ -65,7 +65,7 @@
   <div class="hello" id="hello">지금까지의 학습 기록이에요.</div>
 
   <div class="cards">
-    <div class="stat"><div class="n" id="cSolve">0 / 32</div><div class="l">푼 문제</div></div>
+    <div class="stat"><div class="n" id="cSolve">0 / 57</div><div class="l">푼 문제</div></div>
     <div class="stat"><div class="n" id="cStreak">0일</div><div class="l">연속 학습</div></div>
     <div class="stat"><div class="n" id="cQuiz">0 / 40</div><div class="l">개념 퀴즈</div></div>
     <div class="stat"><div class="n" id="cReview">0</div><div class="l">복습 대기</div></div>
@@ -96,17 +96,16 @@
 
 <footer>Elice Coding Camp | C# 코딩 테스트 준비자료 | Unity 트랙 수강생용</footer>
 
+<script src="assets/problems.js"></script>
 <script defer src="assets/config.js"></script>
 <script defer src="assets/tracker.js"></script>
 <script defer src="assets/app.js"></script>
 <script>
 (function () {
-  var TIERS = {
-    '입문': ['hpturn', 'goldsum', 'topscore', 'average', 'countchar', 'reverse', 'treasure', 'evensum'],
-    '기초': ['bracket', 'nodup', 'finisher', 'pairs', 'mock', 'kth', 'largest', 'pe'],
-    '중급': ['bsearch', 'triangle', 'prefixsum', 'subseq', 'spicy', 'gamemap', 'target', 'progress'],
-    '심화': ['immigration', 'dijkstra', 'astar', 'network', 'topo', 'knapsack', 'subsets', 'gcdlcm']
-  };
+  // 단계별 문제 묶음을 단일 소스(assets/problems.js)에서 만들어 진행도와 항상 일치시켜요.
+  var TIERS = { '입문': [], '기초': [], '중급': [], '심화': [] };
+  (window.CT_PROBLEMS || []).forEach(function (p) { if (TIERS[p.lv]) TIERS[p.lv].push(p.id); });
+  var TOTAL = (window.CT_PROBLEMS || []).length;
   function rd(k) { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch (e) { return {}; } }
   function ymd(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 
@@ -126,7 +125,7 @@
 
   if (visitor && visitor.name) document.getElementById('hello').innerHTML = '<b>' + String(visitor.name).replace(/[<>&]/g, '') + '</b>님, 지금까지의 학습 기록이에요.';
 
-  document.getElementById('cSolve').textContent = solvedN + ' / 32';
+  document.getElementById('cSolve').textContent = solvedN + ' / ' + TOTAL;
   document.getElementById('cStreak').textContent = streak + '일';
   document.getElementById('cQuiz').textContent = quizN + ' / 40';
   document.getElementById('cReview').textContent = reviewN;

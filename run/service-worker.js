@@ -1,7 +1,7 @@
 // 런박스 영구 캐시 서비스 워커.
 // 런박스를 재빌드/배포할 때마다 아래 VERSION 을 반드시 바꿔주세요.
 // (그래야 새 빌드가 캐시되고 옛 캐시가 삭제됩니다. 같은 VERSION 안에서는 자산이 한 빌드로 일관되게 유지돼 버전 섞임이 없어요.)
-const VERSION = 'ctrun-cache-2026-06-19b';
+const VERSION = 'ctrun-cache-2026-06-19c';
 const SCOPE = '/coding-test-prep-cs/run/';
 const INDEX = SCOPE + 'index.html';
 
