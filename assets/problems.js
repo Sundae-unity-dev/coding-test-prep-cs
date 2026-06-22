@@ -56,6 +56,13 @@ window.CT_PROBLEMS = [
   { id: 'lis', t: '가장 긴 성장 구간', lv: '심화' },
   { id: 'mst', t: '최소 비용 길드 연결망', lv: '심화' },
   { id: 'coinways', t: '골드 조합 가짓수', lv: '심화' },
+  // 추가 예시 문제 2
+  { id: 'secondmax', t: '두 번째로 강한 적', lv: '입문' },
+  { id: 'caesar', t: '자리 옮김 암호', lv: '입문' },
+  { id: 'stockprofit', t: '물약 시세 차익', lv: '기초' },
+  { id: 'longestuniq', t: '겹치지 않는 최장 구간', lv: '중급' },
+  { id: 'rotate', t: '지도 90도 회전', lv: '중급' },
+  { id: 'floyd', t: '모든 거점 최단 거리', lv: '심화' },
   // 기출 유형 문제(gichul.html)
   { id: 'report', t: '신고 누적 정지 집계', lv: '중급', g: true },
   { id: 'compress', t: '반복 패턴 압축 최소 길이', lv: '중급', g: true },

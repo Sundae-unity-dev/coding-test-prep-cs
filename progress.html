@@ -47,6 +47,7 @@
   .exlv { color:var(--purple-dark); font-weight:700; min-width:64px; }
   .exsc { font-weight:800; flex:1; }
   .ext { color:var(--ink-soft); font-variant-numeric:tabular-nums; }
+  .exsum { font-size:13px; font-weight:800; color:var(--purple-dark); margin-bottom:8px; padding:6px 10px; background:var(--purple-bg); border-radius:8px; }
   .exempty { font-size:13.5px; color:var(--ink-soft); }
   .exempty a { color:var(--purple-dark); font-weight:700; text-decoration:none; }
   .go { display:flex; flex-wrap:wrap; gap:10px; }
@@ -73,7 +74,7 @@
   <div class="hello" id="hello">지금까지의 학습 기록이에요.</div>
 
   <div class="cards">
-    <div class="stat"><div class="n" id="cSolve">0 / 57</div><div class="l">푼 문제</div></div>
+    <div class="stat"><div class="n" id="cSolve">0 / 63</div><div class="l">푼 문제</div></div>
     <div class="stat"><div class="n" id="cStreak">0일</div><div class="l">연속 학습</div></div>
     <div class="stat"><div class="n" id="cQuiz">0 / 40</div><div class="l">개념 퀴즈</div></div>
     <div class="stat"><div class="n" id="cReview">0</div><div class="l">복습 대기</div></div>
@@ -169,10 +170,14 @@
   if (!exams.length) {
     ehBox.innerHTML = '<div class="exempty">아직 모의고사 기록이 없어요. <a href="run/?mode=exam" target="_blank" rel="noopener">모의고사 보러 가기 →</a></div>';
   } else {
-    ehBox.innerHTML = exams.slice(0, 8).map(function (h) {
+    var pcts = exams.map(function (h) { return h.N ? Math.round((h.P || 0) * 100 / h.N) : 0; });
+    var best = Math.max.apply(null, pcts);
+    var avg = Math.round(pcts.reduce(function (a, b) { return a + b; }, 0) / pcts.length);
+    var rows = exams.slice(0, 8).map(function (h) {
       var s = h.Sec || 0, mm = String(Math.floor(s / 60)).padStart(2, '0'), ss = String(s % 60).padStart(2, '0');
       return '<div class="exrow"><span class="exd">' + (h.Date || '') + '</span><span class="exlv">' + (h.Lv || '') + '</span><span class="exsc">' + (h.P || 0) + ' / ' + (h.N || 0) + ' 통과</span><span class="ext">' + mm + ':' + ss + '</span></div>';
     }).join('');
+    ehBox.innerHTML = '<div class="exsum">응시 ' + exams.length + '회, 최고 ' + best + '점, 평균 ' + avg + '점</div>' + rows;
   }
 })();
 </script>

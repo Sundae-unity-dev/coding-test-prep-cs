@@ -2248,19 +2248,20 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
   }
 })();
 </script>
+<script src="assets/problems.js"></script>
 <script>
 // ===== 개념 → 예시 문제 연결 + 사이드바 진행 =====
 (function () {
   function readObj(k) { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch (e) { return {}; } }
   var SOLVED = readObj('ct_practice_solved_v1');
   var MAP = {
-    t2: [['pairs', '재료 조합 도감'], ['nodup', '연속 버프 정리'], ['goldsum', '전리품 골드 합산'], ['countchar', '주문서의 룬 세기'], ['treasure', '보물 지도 칸 세기']],
+    t2: [['pairs', '재료 조합 도감'], ['nodup', '연속 버프 정리'], ['goldsum', '전리품 골드 합산'], ['countchar', '주문서의 룬 세기'], ['treasure', '보물 지도 칸 세기'], ['secondmax', '두 번째로 강한 적'], ['caesar', '자리 옮김 암호']],
     t3: [['bracket', '스킬 콤보 판정']], t4: [['finisher', '던전에서 돌아오지 못한 모험가']],
     t5: [['kth', '구간 랭킹 보드'], ['largest', '최강 전투력 만들기']], t6: [['immigration', '포탈 검문소'], ['bsearch', '강화 등급 집계']],
     t7: [['mock', 'NPC 삼인방의 퀴즈 찍기']], t8: [['gamemap', '던전 최단 탈출'], ['target', '마나 부호 조합']],
-    t9: [['pe', '여분 무기 빌려주기']], t10: [['triangle', '골드 피라미드'], ['knapsack', '원정대 보급 배낭']], t11: [['spicy', '포션 연성']],
-    t12: [['subseq', '연속 사냥 구간'], ['prefixsum', '구간 보상 합']], t13: [['dijkstra', '성채 최단 보급로']], t14: [['network', '길드 동맹 세기']],
-    t15: [['subsets', '스킬 조합 최대 효율']], t16: [['progress', '패치 배포 대기열'], ['hpturn', '몬스터 사냥 턴 수']],
+    t9: [['pe', '여분 무기 빌려주기'], ['stockprofit', '물약 시세 차익']], t10: [['triangle', '골드 피라미드'], ['knapsack', '원정대 보급 배낭']], t11: [['spicy', '포션 연성']],
+    t12: [['subseq', '연속 사냥 구간'], ['prefixsum', '구간 보상 합'], ['longestuniq', '겹치지 않는 최장 구간']], t13: [['dijkstra', '성채 최단 보급로'], ['floyd', '모든 거점 최단 거리']], t14: [['network', '길드 동맹 세기']],
+    t15: [['subsets', '스킬 조합 최대 효율']], t16: [['progress', '패치 배포 대기열'], ['hpturn', '몬스터 사냥 턴 수'], ['rotate', '지도 90도 회전']],
     t18: [['astar', '미로 최소 마나 탈출']], t19: [['topo', '연구 해금 순서']], t21: [['gcdlcm', '톱니바퀴 동기화']]
   };
   Object.keys(MAP).forEach(function (tid) {
@@ -2277,7 +2278,7 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
   var qn = Object.keys(readObj('ct_concepts_quiz_v1')).length;
   var sn = Object.keys(SOLVED).filter(function (k) { return SOLVED[k]; }).length;
   var brandP = document.querySelector('aside .brand p');
-  if (brandP) { var d = document.createElement('div'); d.className = 'side-progress'; d.textContent = '퀴즈 ' + qn + '/40, 문제 ' + sn + '/32 진행 중'; brandP.parentNode.insertBefore(d, brandP.nextSibling); }
+  if (brandP) { var d = document.createElement('div'); d.className = 'side-progress'; d.textContent = '퀴즈 ' + qn + '/' + document.querySelectorAll('.quiz').length + ', 문제 ' + sn + '/' + ((window.CT_PROBLEMS || []).length || 63) + ' 진행 중'; brandP.parentNode.insertBefore(d, brandP.nextSibling); }
 })();
 </script>
 <script defer src="assets/config.js"></script>
