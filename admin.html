@@ -155,7 +155,7 @@
 (function () {
   var DATA = null, PW = '';
 
-  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]; }); }
   function num(v) { var n = Number(v); return isNaN(n) ? 0 : n; }
   function fmtSec(s) { s = num(s); if (s < 60) return s + '초'; var m = Math.floor(s / 60); if (m < 60) return m + '분'; var h = Math.floor(m / 60); return h + '시간 ' + (m % 60) + '분'; }
   function fmtTime(iso) {

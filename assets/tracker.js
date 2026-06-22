@@ -55,16 +55,16 @@
     h.textContent = '환영합니다';
     h.setAttribute('style', 'font-size:19px;font-weight:800;margin-bottom:6px;');
     var p = document.createElement('div');
-    p.textContent = '학습 진행도 저장을 위해 이름(또는 닉네임)을 적어 주세요.';
+    p.textContent = '학습 진행도 저장을 위해 별명(닉네임)을 적어 주세요. 실명은 권장하지 않아요.';
     p.setAttribute('style', 'font-size:13.5px;color:var(--ink-soft,#555B6E);line-height:1.55;margin-bottom:16px;');
     var inp = document.createElement('input');
-    inp.type = 'text'; inp.maxLength = 24; inp.placeholder = '예: 홍길동';
+    inp.type = 'text'; inp.maxLength = 24; inp.placeholder = '예: 코딩왕, 별명';
     inp.setAttribute('style', 'width:100%;box-sizing:border-box;padding:11px 13px;font-size:15px;border:1px solid var(--line,#E5E2F0);border-radius:10px;background:var(--bg,#FAFAFD);color:var(--ink,#1F2230);outline:none;margin-bottom:14px;');
     var btn = document.createElement('button');
     btn.textContent = '시작하기';
     btn.setAttribute('style', 'width:100%;padding:12px;font-size:15px;font-weight:800;color:#fff;background:var(--purple,#8843FF);border:none;border-radius:10px;cursor:pointer;');
     var note = document.createElement('div');
-    note.textContent = '이름은 진행도 구분 용도로만 쓰여요.';
+    note.textContent = '진행도 구분 용도로만 쓰여요. 실명 대신 별명을 권장해요.';
     note.setAttribute('style', 'font-size:11.5px;color:var(--ink-soft,#888);text-align:center;margin-top:10px;');
     function done() {
       var name = (inp.value || '').trim();
