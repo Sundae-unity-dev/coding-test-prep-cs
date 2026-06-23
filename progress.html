@@ -168,7 +168,7 @@
   try { exams = JSON.parse(localStorage.getItem('ct_exam_history_v1')) || []; if (!Array.isArray(exams)) exams = []; } catch (e) { exams = []; }
   var ehBox = document.getElementById('examHist');
   if (!exams.length) {
-    ehBox.innerHTML = '<div class="exempty">아직 모의고사 기록이 없어요. <a href="run/?mode=exam" target="_blank" rel="noopener">모의고사 보러 가기 →</a></div>';
+    ehBox.innerHTML = '<div class="exempty">아직 모의고사 기록이 없어요. <a href="run/?mode=exam">모의고사 보러 가기 →</a></div>';
   } else {
     var pcts = exams.map(function (h) { return h.N ? Math.round((h.P || 0) * 100 / h.N) : 0; });
     var best = Math.max.apply(null, pcts);

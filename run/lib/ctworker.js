@@ -10,7 +10,15 @@ var PYODIDE_BASE = 'https://cdn.jsdelivr.net/pyodide/' + PYODIDE_VERSION + '/ful
 function ensurePython() {
   if (PY) return Promise.resolve();
   importScripts(PYODIDE_BASE + 'pyodide.js');
-  return loadPyodide({ indexURL: PYODIDE_BASE }).then(function (p) { PY = p; });
+  return loadPyodide({ indexURL: PYODIDE_BASE }).then(function (p) {
+    PY = p;
+    // 워밍업: 자주 쓰는 표준 라이브러리와 실행 경로를 한 번 미리 돌려 둔다.
+    // 이렇게 해두면 첫 채점에서 추가 로딩 없이 곧바로 실행된다(한 번 받으면 바로 진행).
+    try {
+      PY.runPython('import sys, io, heapq, math, collections, bisect, itertools, functools, re');
+      runPython('print(1)', '');
+    } catch (e) {}
+  });
 }
 
 // 사용자 Python 코드를 새 네임스페이스에서 실행한다.

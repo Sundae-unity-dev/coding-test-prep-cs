@@ -45,6 +45,15 @@ window.ctPoly = {
     return !r.timeout && !!r.ok;
   },
 
+  // 백그라운드 예열: 페이지가 뜨면 미리 받아 둬서, 언어를 바꿀 때 기다리지 않게 한다.
+  // C# 사용에는 영향을 주지 않도록 결과를 기다리지 않는다(워커가 별도 스레드).
+  _warmed: {},
+  warm: function (lang) {
+    if (this._warmed[lang]) return;
+    this._warmed[lang] = true;
+    try { this.ensure(lang); } catch (e) {}
+  },
+
   // 자유/직접 실행: { output, error } 를 JSON 문자열로 돌려준다.
   run: async function (lang, code, stdin) {
     var r = await this._call({ id: ++this._seq, type: 'run', lang: lang, code: code, stdin: stdin || '' }, 12000);
