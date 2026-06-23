@@ -76,6 +76,11 @@ summary:focus-visible, [tabindex]:focus-visible {
   border-radius: 4px;
 }
 
+/* ===== 마이페이지 버튼 (우측 상단) ===== */
+.mypage-link { display: inline-flex; align-items: center; gap: 5px; padding: 6px 14px; border-radius: 999px; background: var(--purple); color: #fff !important; font-weight: 800 !important; box-shadow: 0 3px 10px rgba(136, 67, 255, 0.3); white-space: nowrap; }
+.mypage-link::before { content: "👤"; font-size: 12px; }
+.mypage-link:hover { background: var(--purple-dark); color: #fff !important; }
+
 /* ===== 브랜드 로고 (엘리스 트랙) ===== */
 .brandlogo { height: 22px; width: auto; vertical-align: middle; display: inline-block; }
 .brandsub { font-weight: 800; margin-left: 9px; vertical-align: middle; letter-spacing: -0.01em; }

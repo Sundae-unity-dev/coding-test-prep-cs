@@ -61,7 +61,6 @@
   nav .navsep { width: 1px; height: 20px; background: var(--line); margin: 0 10px; flex-shrink: 0; }
   nav a.sib { color: var(--purple-dark); font-weight: 700; }
   .sitebrand { display: flex; align-items: center; gap: 9px; font-weight: 800; font-size: 15px; color: var(--ink, #1F2230); text-decoration: none; flex-shrink: 0; margin-right: 14px; }
-  .sitebrand .mark { width: 28px; height: 28px; border-radius: 8px; color: #fff; background: linear-gradient(135deg, #6A2FD0, #8843FF); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; }
   .sitebrand:hover { color: var(--purple-dark, #6A2FD0); }
 
   /* ===== 히어로 ===== */
@@ -326,11 +325,10 @@
 <body>
 
 <nav id="topnav">
-  <a class="sitebrand" href="index.html"><img class="brandlogo" src="assets/elicetrack.png" alt="Elice Track"><span class="brandsub">코딩 테스트</span></a>
+  <a class="sitebrand" href="index.html"><img class="brandlogo" src="assets/elicetrack.png" alt="Elice Track"><span class="brandsub">Coding Test</span></a>
   <a class="sib" href="concepts.html">개념 정리</a>
   <a class="sib" href="practice.html">예시 문제</a>
   <a class="sib" href="gichul.html">기출 문제</a>
-  <a class="sib" href="progress.html">마이페이지</a>
   <span class="navsep"></span>
   <a href="#s1">시작하며</a>
   <a href="#s2">커리큘럼</a>
@@ -340,6 +338,7 @@
   <a href="#s6">실수 모음</a>
   <a href="#s7">체크리스트</a>
   <a href="#s8">연습 사이트</a>
+  <a class="mypage-link" style="position:fixed;top:11px;right:16px;z-index:300" href="progress.html">마이페이지</a>
 </nav>
 <div class="read-progress"><span id="readbar"></span></div>
 
