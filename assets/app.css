@@ -75,3 +75,8 @@ summary:focus-visible, [tabindex]:focus-visible {
   outline-offset: 2px;
   border-radius: 4px;
 }
+
+/* ===== 브랜드 로고 (엘리스 트랙) ===== */
+.brandlogo { height: 22px; width: auto; vertical-align: middle; display: inline-block; }
+.brandsub { font-weight: 800; margin-left: 9px; vertical-align: middle; letter-spacing: -0.01em; }
+html[data-theme="dark"] .brandlogo { filter: brightness(1.25); }

@@ -1,7 +1,7 @@
 {
   "name": "Elice Coding Camp",
   "short_name": "Coding Camp",
-  "description": "브라우저에서 바로 C# 코딩 테스트를 연습하고 채점받는 학습 사이트",
+  "description": "브라우저에서 바로 여러 언어로 코딩 테스트를 연습하고 채점받는 학습 사이트 (엘리스 트랙)",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",

@@ -87,8 +87,58 @@ function judgePython(code, tests) {
   return { allPassed: passed === tests.length, passed: passed, total: tests.length, cases: cases, compileError: null };
 }
 
+// ===== JavaScript =====
+// node 환경을 흉내낸다: require('fs').readFileSync(0,'utf8') 로 stdin, console.log 로 출력.
+// 이렇게 해야 사이트에서의 실행과 로컬 node 검증이 같은 코드로 동작한다.
+function runJs(code, stdin) {
+  var out = [];
+  function emit(args) {
+    var parts = [];
+    for (var i = 0; i < args.length; i++) parts.push(String(args[i]));
+    out.push(parts.join(' ') + '\n');
+  }
+  var fakeConsole = {
+    log: function () { emit(arguments); },
+    error: function () {}, warn: function () {}, info: function () {}, debug: function () {}
+  };
+  var fakeProcess = {
+    stdout: { write: function (s) { out.push(String(s)); } },
+    stderr: { write: function () {} },
+    argv: ['node', 'main.js'], env: {}, exit: function () {}
+  };
+  function fakeRequire(m) {
+    if (m === 'fs') return { readFileSync: function () { return stdin || ''; } };
+    throw new Error("이 실행기는 require('" + m + "') 를 지원하지 않아요. 입력은 require('fs').readFileSync(0, 'utf8') 로 받으세요.");
+  }
+  // require/console/process 만 주입한다. input/print 같은 흔한 변수명을 매개변수로 넣으면
+  // 사용자 코드의 `const input = ...` 선언과 충돌(strict 모드 SyntaxError)하므로 넣지 않는다.
+  try {
+    var fn = new Function('require', 'console', 'process', '"use strict";\n' + code);
+    fn(fakeRequire, fakeConsole, fakeProcess);
+  } catch (e) {
+    return { output: out.join(''), error: (e && e.message) ? e.message : String(e) };
+  }
+  return { output: out.join(''), error: null };
+}
+
+function judgeJs(code, tests) {
+  // 문법 오류는 전체 컴파일 오류로 한 번에 안내
+  try { new Function('"use strict";\n' + code); }
+  catch (e) { if (e instanceof SyntaxError) return { allPassed: false, passed: 0, total: tests.length, cases: [], compileError: e.message }; }
+  var cases = [], passed = 0;
+  for (var i = 0; i < tests.length; i++) {
+    var t = tests[i];
+    var r = runJs(code, t.input);
+    var ok = !r.error && norm(r.output) === norm(t.expected);
+    if (ok) passed++;
+    cases.push({ index: i + 1, passed: ok, sample: !!t.sample, input: t.input, expected: t.expected, actual: r.output || '', error: r.error });
+  }
+  return { allPassed: passed === tests.length, passed: passed, total: tests.length, cases: cases, compileError: null };
+}
+
 function ensure(lang) {
   if (lang === 'python') return ensurePython();
+  if (lang === 'javascript') return Promise.resolve();  // 브라우저 내장이라 받을 게 없음
   return Promise.reject(new Error('아직 준비되지 않은 언어예요: ' + lang));
 }
 
@@ -98,14 +148,11 @@ self.onmessage = function (e) {
     if (m.type === 'ensure') {
       self.postMessage({ id: id, ok: true });
     } else if (m.type === 'run') {
-      if (m.lang === 'python') {
-        var r = runPython(m.code, m.stdin);
-        self.postMessage({ id: id, output: r.output, error: r.error });
-      }
+      var r = m.lang === 'python' ? runPython(m.code, m.stdin) : runJs(m.code, m.stdin);
+      self.postMessage({ id: id, output: r.output, error: r.error });
     } else if (m.type === 'judge') {
-      if (m.lang === 'python') {
-        self.postMessage({ id: id, result: judgePython(m.code, m.tests) });
-      }
+      var result = m.lang === 'python' ? judgePython(m.code, m.tests) : judgeJs(m.code, m.tests);
+      self.postMessage({ id: id, result: result });
     }
   }).catch(function (err) {
     self.postMessage({ id: id, error: String((err && err.message) || err) });
