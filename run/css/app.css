@@ -325,6 +325,20 @@ code {
     text-align: end;
 }
 
+/* ===== 언어 선택 바 ===== */
+.lang-bar { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; margin: 2px 0 14px; }
+.lang-bar .lang-label { font-size: 12.5px; font-weight: 700; color: #8A8FA3; margin-right: 2px; }
+.langbtn { font-family: inherit; font-size: 13px; font-weight: 700; color: #6A2FD0; background: #fff; border: 1.5px solid #E5E2F0; border-radius: 999px; padding: 6px 14px; cursor: pointer; transition: background .12s, border-color .12s, color .12s; }
+.langbtn:hover { border-color: #8843FF; background: #F4EEFF; }
+.langbtn.active { background: #8843FF; border-color: #8843FF; color: #fff; }
+.langbtn:disabled { opacity: .5; cursor: default; }
+.poly-status { font-size: 12.5px; color: #6A2FD0; background: #F4EEFF; border: 1px solid #E5D9FF; border-radius: 8px; padding: 8px 12px; margin: 0 0 12px; }
+html[data-theme="dark"] .lang-bar .lang-label { color: #8B8DA6; }
+html[data-theme="dark"] .langbtn { background: #1C1C2A; color: #C3A8FF; border-color: #2E2E40; }
+html[data-theme="dark"] .langbtn:hover { background: #2A2342; border-color: #9D6BFF; }
+html[data-theme="dark"] .langbtn.active { background: #9D6BFF; border-color: #9D6BFF; color: #fff; }
+html[data-theme="dark"] .poly-status { background: #1C1C2A; color: #C3A8FF; border-color: #2E2E40; }
+
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }

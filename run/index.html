@@ -7,7 +7,7 @@
     <title>C# 코드 실행기</title>
     <base href="/coding-test-prep-cs/run/" />
     <script>(function(){try{var t=localStorage.getItem('ctprep_theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
-    <link href="_framework/dotnet.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-K5RTrNRZzohJe9WK8/UGXmdohSozRhE6Mhuq3wr3cxM=" />
+    <link href="_framework/dotnet.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-YouKDCmXtvogzZscbBTllXjc88/xictmsLcRxKTM3Is=" />
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="../assets/app.css" />
     <link rel="stylesheet" href="css/app.css" />
@@ -40,6 +40,9 @@
         <span class="dismiss">🗙</span>
     </div>
     <script src="_framework/blazor.webassembly.66stpp682q.js"></script>
+
+    <!-- 다국어 실행 엔진(C# 외 언어는 워커에 위임) -->
+    <script src="lib/ctpoly.js"></script>
 
     <!-- Monaco 코드 에디터 (CDN). C# 문법 강조 + 자동완성 + 줄번호 + 오류 밑줄 -->
     <script>
@@ -125,7 +128,7 @@
               ed.getModel().onDidChangeContent(function () {
                 clearTimeout(_t);
                 _t = setTimeout(function () {
-                  try { var m = JSON.parse(localStorage.getItem('ct_code_v1') || '{}'); m[saveId] = ed.getValue(); localStorage.setItem('ct_code_v1', JSON.stringify(m)); } catch (e) {}
+                  try { var m = JSON.parse(localStorage.getItem('ct_code_v1') || '{}'); var lk = (window.ctEditor._lang && window.ctEditor._lang !== 'csharp') ? (saveId + '::' + window.ctEditor._lang) : saveId; m[lk] = ed.getValue(); localStorage.setItem('ct_code_v1', JSON.stringify(m)); } catch (e) {}
                 }, 600);
               });
             }
@@ -134,6 +137,23 @@
         getValue: function () { return window.ctEditor._ed ? window.ctEditor._ed.getValue() : null; },
         copy: function () { try { navigator.clipboard.writeText((window.ctEditor._ed ? window.ctEditor._ed.getValue() : '') || ''); return true; } catch (e) { return false; } },
         setValue: function (v) { if (window.ctEditor._ed) window.ctEditor._ed.setValue(v || ''); },
+        _lang: 'csharp',
+        // 에디터 문법 강조 언어를 바꾼다(csharp/python/javascript/java). 자동저장 키도 언어별로 분리.
+        setLanguage: function (lang, saveId) {
+          window.ctEditor._lang = lang || 'csharp';
+          if (!window.ctEditor._ed || !window.monaco) return;
+          monaco.editor.setModelLanguage(window.ctEditor._ed.getModel(), window.ctEditor._lang);
+          window.ctEditor._saveId = saveId || window.ctEditor._saveId;
+        },
+        // 문제별 + 언어별로 저장해 둔 코드를 읽는다(없으면 null). 키: "<id>" 는 C#(하위호환), "<id>::lang" 는 그 외.
+        loadSaved: function (saveId, lang) {
+          try {
+            var m = JSON.parse(localStorage.getItem('ct_code_v1') || '{}');
+            var key = (lang && lang !== 'csharp') ? (saveId + '::' + lang) : saveId;
+            var v = m[key];
+            return (typeof v === 'string' && v.length) ? v : null;
+          } catch (e) { return null; }
+        },
         setMarkers: function (diags) {
           if (!window.ctEditor._ed || !window.monaco) return;
           var model = window.ctEditor._ed.getModel();
@@ -180,13 +200,14 @@
           slot.appendChild(sel); slot.appendChild(inp);
         },
         _diff: null,
-        showDiff: function (mine, solution) {
+        showDiff: function (mine, solution, lang) {
           var host = document.getElementById('diffHost'); if (!host || !window.monaco) return;
+          lang = lang || window.ctEditor._lang || 'csharp';
           host.style.display = 'block';
           if (window.ctEditor._diff) { window.ctEditor._diff.dispose(); window.ctEditor._diff = null; }
           var theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'vs-dark' : 'vs';
           var de = monaco.editor.createDiffEditor(host, { theme: theme, readOnly: true, automaticLayout: true, minimap: { enabled: false }, fontSize: 13, renderSideBySide: true });
-          de.setModel({ original: monaco.editor.createModel(mine || '', 'csharp'), modified: monaco.editor.createModel(solution || '', 'csharp') });
+          de.setModel({ original: monaco.editor.createModel(mine || '', lang), modified: monaco.editor.createModel(solution || '', lang) });
           window.ctEditor._diff = de;
         },
         closeDiff: function () {
