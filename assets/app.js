@@ -126,6 +126,47 @@
     try { var k = 'ct_activity_v1', o = JSON.parse(localStorage.getItem(k) || '{}'), t = ymd(); o[t] = (o[t] || 0) + 1; localStorage.setItem(k, JSON.stringify(o)); } catch (e) {}
   };
 
+  // 주간 리더보드 로더 (공개 board 엔드포인트 JSONP, 5분 캐시). progress/index 공용.
+  // opts.limit = 표시 개수(기본 20). 방문자 이름이 있고 그 순위가 표시 범위 밖이면 내 순위를 한 줄 덧붙임.
+  window.ctLeaderboard = function (box, opts) {
+    if (!box) return;
+    opts = opts || {};
+    var limit = opts.limit || 20;
+    function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+    function row(r, rk, meName) {
+      var medal = rk === 1 ? '🥇' : rk === 2 ? '🥈' : rk === 3 ? '🥉' : rk;
+      var meCls = (meName && r.name === meName) ? ' lb-me' : '';
+      return '<div class="lb-row' + meCls + '"><span class="lb-rank' + (rk <= 3 ? ' top' : '') + '">' + medal + '</span><span class="lb-name">' + esc(r.name) + '</span><span class="lb-xp">' + (r.weekXp || 0) + ' XP</span></div>';
+    }
+    var EP = (window.CT_ENDPOINT || '').trim();
+    if (!EP) { box.innerHTML = '<div class="lb-empty">리더보드는 학습 추적이 설정된 환경에서 표시돼요.</div>'; return; }
+    var wk = (window.ctGamify && window.ctGamify.isoWeek) ? window.ctGamify.isoWeek() : '';
+    var me = ''; try { me = (JSON.parse(localStorage.getItem('ct_visitor_v1')) || {}).name || ''; } catch (e) {}
+    function render(list) {
+      if (!list || !list.length) { box.innerHTML = '<div class="lb-empty">이번 주 기록이 아직 없어요. 문제를 풀어 XP를 쌓아 보세요.</div>'; return; }
+      var html = list.slice(0, limit).map(function (r, i) { return row(r, i + 1, me); }).join('');
+      if (me) { // 내가 표시 범위 밖이면 내 순위를 한 줄 덧붙여 동기 부여
+        var myIdx = -1; for (var j = 0; j < list.length; j++) { if (list[j].name === me) { myIdx = j; break; } }
+        if (myIdx >= limit) html += row(list[myIdx], myIdx + 1, me);
+      }
+      box.innerHTML = html;
+    }
+    var cache; try { cache = JSON.parse(localStorage.getItem('ct_board_cache_v1')); } catch (e) {}
+    if (cache && cache.wk === wk && (Date.now() - cache.at) < 300000) { render(cache.data); return; }
+    box.innerHTML = '<div class="lb-empty">리더보드 불러오는 중...</div>';
+    var done = false;
+    window.ctBoardCb = function (res) {
+      done = true;
+      if (res && res.board) { try { localStorage.setItem('ct_board_cache_v1', JSON.stringify({ at: Date.now(), wk: wk, data: res.board })); } catch (e) {} render(res.board); }
+      else { box.innerHTML = '<div class="lb-empty">리더보드는 곧 열려요. (서버 업데이트가 필요할 수 있어요)</div>'; }
+    };
+    var s = document.createElement('script');
+    s.src = EP + (EP.indexOf('?') >= 0 ? '&' : '?') + 'board=week&wk=' + encodeURIComponent(wk) + '&callback=ctBoardCb';
+    s.onerror = function () { if (!done) box.innerHTML = '<div class="lb-empty">리더보드를 불러오지 못했어요.</div>'; };
+    document.body.appendChild(s);
+    setTimeout(function () { if (!done) box.innerHTML = '<div class="lb-empty">리더보드 응답이 늦어요. 잠시 후 다시 열어 주세요.</div>'; }, 8000);
+  };
+
   function init() { buildControls(); initReveal(); initCopy(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();

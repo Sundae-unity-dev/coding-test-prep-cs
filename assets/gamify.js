@@ -100,13 +100,19 @@
       write('ct_xp_seen_v1', { init: true, solved: curSolved, quiz: curQuiz, exams: curExams });
       return;
     }
-    var pm = problemsMap(), add = 0;
+    var pm = problemsMap(), add = 0, newSolved = 0, newQuiz = 0;
     var ps = {}; (seen.solved || []).forEach(function (x) { ps[x] = 1; });
-    curSolved.forEach(function (id) { if (!ps[id]) { var p = pm[id]; add += (p && TIER_XP[p.lv]) || DEFAULT_TIER_XP; } });
+    curSolved.forEach(function (id) { if (!ps[id]) { var p = pm[id]; add += (p && TIER_XP[p.lv]) || DEFAULT_TIER_XP; newSolved++; } });
     var pq = {}; (seen.quiz || []).forEach(function (x) { pq[x] = 1; });
-    curQuiz.forEach(function (id) { if (!pq[id]) add += QUIZ_XP; });
+    curQuiz.forEach(function (id) { if (!pq[id]) { add += QUIZ_XP; newQuiz++; } });
     if (curExams > (seen.exams || 0)) add += (curExams - (seen.exams || 0)) * EXAM_BASE;
-    if (add > 0) { var log = readObj('ct_xp_log_v1'); var t = today(); log[t] = (log[t] || 0) + add; write('ct_xp_log_v1', log); }
+    var t = today();
+    if (add > 0) { var log = readObj('ct_xp_log_v1'); log[t] = (log[t] || 0) + add; write('ct_xp_log_v1', log); }
+    // 오늘의 퀘스트용: 새로 완료된 문제/퀴즈 수를 날짜별로 적립(날짜 키라 자동으로 매일 리셋)
+    if (newSolved > 0 || newQuiz > 0) {
+      var ql = readObj('ct_quest_log_v1'), q = ql[t] || { solved: 0, quiz: 0 };
+      q.solved += newSolved; q.quiz += newQuiz; ql[t] = q; write('ct_quest_log_v1', ql);
+    }
     write('ct_xp_seen_v1', { init: true, solved: curSolved, quiz: curQuiz, exams: curExams });
   }
 
@@ -166,12 +172,14 @@
   function summary() {
     var xp = lifetimeXp(), li = levelInfo(xp), st = computeStreak();
     var log = readObj('ct_xp_log_v1'), todayXp = log[today()] || 0;
+    var ql = readObj('ct_quest_log_v1'), qToday = ql[today()] || { solved: 0, quiz: 0 };
     var goal = parseInt(localStorage.getItem('ct_daily_goal_v1') || '20', 10) || 20;
     var earned = readObj('ct_badges_v1');
     var badges = BADGES.map(function (b) { return { id: b.id, e: b.e, t: b.t, d: b.d, earned: earned[b.id] || null }; });
     return {
       xp: xp, level: li.level, levelTitle: li.title, xpInLevel: li.xpInLevel, xpForNext: li.xpForNext, levelPct: li.levelPct,
       streak: st.streak, freezes: st.freezes, todayXp: todayXp, dailyGoal: goal, goalMet: todayXp >= goal,
+      todaySolved: qToday.solved || 0, todayQuiz: qToday.quiz || 0,
       badges: badges, earnedCount: badges.filter(function (b) { return b.earned; }).length, totalBadges: BADGES.length
     };
   }

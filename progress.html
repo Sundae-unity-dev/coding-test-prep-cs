@@ -76,14 +76,7 @@
   footer { text-align:center; color:var(--ink-soft); font-size:12.5px; padding:24px 18px 40px; }
   .gbtn { font-family:inherit; border:1px solid var(--line); background:var(--card); color:var(--purple-dark); border-radius:7px; padding:3px 10px; font-weight:800; cursor:pointer; }
   .gbtn:hover { border-color:var(--purple); }
-  .lb-empty { font-size:13.5px; color:var(--ink-soft); }
-  .lb-row { display:flex; align-items:center; gap:12px; padding:9px 11px; border-radius:9px; font-size:14px; }
-  .lb-row:nth-child(even) { background:var(--purple-bg); }
-  .lb-row.lb-me { background:var(--purple-bg); border:1px solid var(--purple); font-weight:800; }
-  .lb-rank { width:30px; text-align:center; font-weight:800; color:var(--ink-soft); }
-  .lb-rank.top { font-size:16px; }
-  .lb-name { flex:1; }
-  .lb-xp { font-weight:800; color:var(--purple-dark); font-variant-numeric:tabular-nums; }
+  /* 리더보드 스타일(.lb-*)은 assets/app.css 공용 정의 사용 */
   @media (max-width:760px){ .grid2 { grid-template-columns:1fr; } }
   @media (max-width:560px){ .cards { grid-template-columns:repeat(2,1fr); } .hero { flex-direction:column; align-items:flex-start; } }
 </style>
@@ -281,36 +274,9 @@
   });
 </script>
 <script>
-  // 주간 리더보드: 공개 board 엔드포인트(토큰 불필요, 닉네임+주간XP만)를 JSONP 로 불러옴. 5분 캐시.
+  // 주간 리더보드: app.js 의 공용 로더(window.ctLeaderboard)를 사용. 마이페이지는 전체(20명)를 표시.
   document.addEventListener('DOMContentLoaded', function () {
-    var box = document.getElementById('board'); if (!box) return;
-    function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
-    var EP = (window.CT_ENDPOINT || '').trim();
-    if (!EP) { box.innerHTML = '<div class="lb-empty">리더보드는 학습 추적이 설정된 환경에서 표시돼요.</div>'; return; }
-    var wk = (window.ctGamify && window.ctGamify.isoWeek) ? window.ctGamify.isoWeek() : '';
-    var me = ''; try { me = (JSON.parse(localStorage.getItem('ct_visitor_v1')) || {}).name || ''; } catch (e) {}
-    function render(list) {
-      if (!list || !list.length) { box.innerHTML = '<div class="lb-empty">이번 주 기록이 아직 없어요. 문제를 풀어 XP를 쌓아 보세요.</div>'; return; }
-      box.innerHTML = list.slice(0, 20).map(function (r, i) {
-        var rk = i + 1, medal = rk === 1 ? '🥇' : rk === 2 ? '🥈' : rk === 3 ? '🥉' : rk;
-        var meCls = (me && r.name === me) ? ' lb-me' : '';
-        return '<div class="lb-row' + meCls + '"><span class="lb-rank' + (rk <= 3 ? ' top' : '') + '">' + medal + '</span><span class="lb-name">' + esc(r.name) + '</span><span class="lb-xp">' + (r.weekXp || 0) + ' XP</span></div>';
-      }).join('');
-    }
-    var cache; try { cache = JSON.parse(localStorage.getItem('ct_board_cache_v1')); } catch (e) {}
-    if (cache && cache.wk === wk && (Date.now() - cache.at) < 300000) { render(cache.data); return; }
-    box.innerHTML = '<div class="lb-empty">리더보드 불러오는 중...</div>';
-    var done = false;
-    window.ctBoardCb = function (res) {
-      done = true;
-      if (res && res.board) { try { localStorage.setItem('ct_board_cache_v1', JSON.stringify({ at: Date.now(), wk: wk, data: res.board })); } catch (e) {} render(res.board); }
-      else { box.innerHTML = '<div class="lb-empty">리더보드는 곧 열려요. (서버 업데이트가 필요할 수 있어요)</div>'; }
-    };
-    var s = document.createElement('script');
-    s.src = EP + (EP.indexOf('?') >= 0 ? '&' : '?') + 'board=week&wk=' + encodeURIComponent(wk) + '&callback=ctBoardCb';
-    s.onerror = function () { if (!done) box.innerHTML = '<div class="lb-empty">리더보드를 불러오지 못했어요.</div>'; };
-    document.body.appendChild(s);
-    setTimeout(function () { if (!done) box.innerHTML = '<div class="lb-empty">리더보드 응답이 늦어요. 잠시 후 다시 열어 주세요.</div>'; }, 8000);
+    if (window.ctLeaderboard) window.ctLeaderboard(document.getElementById('board'), { limit: 20 });
   });
 </script>
 </body>

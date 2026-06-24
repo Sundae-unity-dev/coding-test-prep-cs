@@ -169,6 +169,22 @@
   .daily-card .dc-go { align-self: flex-start; margin-top: 2px; font-size: 14px; font-weight: 800; background: rgba(255, 255, 255, 0.18); border: 1px solid rgba(255, 255, 255, 0.45); padding: 10px 17px; border-radius: 11px; }
   @media (max-width: 760px) { .dash-extra { grid-template-columns: 1fr; } }
 
+  /* 오늘의 퀘스트(데일리 체크리스트) + 이번 주 리더보드 (대시보드 두 번째 줄) */
+  .quest, .board-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; box-shadow: 0 6px 18px var(--shadow); }
+  .quest .q-head, .board-card .b-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 15px; font-weight: 800; margin-bottom: 13px; }
+  .quest .q-count { font-size: 12.5px; font-weight: 700; color: var(--ink-soft); }
+  .board-card .b-head a { font-size: 12.5px; font-weight: 700; color: var(--purple-dark); text-decoration: none; }
+  .board-card .b-head a:hover { text-decoration: underline; }
+  .q-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+  .q-item { display: flex; align-items: center; gap: 11px; font-size: 14px; }
+  .q-item .q-mark { width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; border: 2px solid var(--line); background: var(--card); color: var(--ink-soft); }
+  .q-item.done .q-mark { background: linear-gradient(135deg, #16A34A, #22C55E); border-color: #16A34A; color: #fff; }
+  .q-item .q-tx { flex: 1; min-width: 0; }
+  .q-item.done .q-tx { color: var(--ink-soft); text-decoration: line-through; }
+  .q-item .q-xp { font-size: 12px; font-weight: 800; color: #E8590C; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+  .quest .q-all { margin-top: 13px; font-size: 13px; font-weight: 800; color: var(--green, #16A34A); }
+  .quest .q-tip { margin-top: 13px; font-size: 12.5px; color: var(--ink-soft); }
+
   .sec-title { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
   .sec-sub { color: var(--ink-soft); font-size: 14.5px; margin-bottom: 24px; }
 
@@ -337,6 +353,16 @@
     <div class="dash-extra">
       <div class="streak" id="streakBox"></div>
       <a class="daily-card" id="dailyCard" href="practice.html"><span class="dc-top">🎲 오늘의 문제</span><b class="dc-title" id="dailyTitle">문제 풀러 가기</b><span class="dc-go">지금 풀기 →</span></a>
+    </div>
+    <div class="dash-extra">
+      <div class="quest" id="questBox">
+        <div class="q-head"><span>🎯 오늘의 퀘스트</span><span class="q-count" id="questCount"></span></div>
+        <ul class="q-list" id="questList"></ul>
+      </div>
+      <div class="board-card">
+        <div class="b-head"><span>🏆 이번 주 리더보드</span><a href="progress.html">전체 보기 →</a></div>
+        <div id="board"></div>
+      </div>
     </div>
     <p class="dash-cta" id="dashCta" style="display:none;">아직 시작 전이에요. <a href="guide.html">준비 가이드부터 시작해 보세요 →</a></p>
   </section>
@@ -531,6 +557,30 @@
       '<span class="gb-row">' + recent + '</span>' +
       '<a class="gb-link" href="progress.html">마이페이지에서 모두 보기 →</a></div>';
     box.hidden = false;
+  });
+</script>
+<script>
+  // 이번 주 리더보드(상위 5명 + 내 순위) + 오늘의 퀘스트(데일리 리셋). app.js/gamify.js 는 defer 라 준비 완료 상태.
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.ctLeaderboard) window.ctLeaderboard(document.getElementById('board'), { limit: 5 });
+
+    var list = document.getElementById('questList');
+    if (!list || !window.ctGamify) return;
+    var g = window.ctGamify.summary();
+    var quests = [
+      { done: g.todaySolved >= 1, tx: '문제 1개 풀기' },
+      { done: g.todayQuiz >= 1, tx: '개념 퀴즈 1개 풀기' },
+      { done: g.goalMet, tx: '오늘 목표 달성', xp: g.todayXp + ' / ' + g.dailyGoal + ' XP' }
+    ];
+    var doneN = quests.filter(function (q) { return q.done; }).length;
+    list.innerHTML = quests.map(function (q) {
+      return '<li class="q-item' + (q.done ? ' done' : '') + '"><span class="q-mark">' + (q.done ? '✓' : '') + '</span>' +
+        '<span class="q-tx">' + q.tx + '</span>' + (q.xp ? '<span class="q-xp">' + q.xp + '</span>' : '') + '</li>';
+    }).join('') +
+      (doneN === quests.length
+        ? '<div class="q-all">오늘 퀘스트를 모두 끝냈어요! 내일 또 이어가요 🎉</div>'
+        : '<div class="q-tip">매일 조금씩 풀면 연속 학습과 XP가 쌓여요.</div>');
+    document.getElementById('questCount').textContent = doneN + ' / ' + quests.length + ' 완료';
   });
 </script>
 </body>
