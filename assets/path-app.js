@@ -6,7 +6,6 @@
   function readObj(k) { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch (e) { return {}; } }
   function write(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
-  function norm(s) { return String(s).toLowerCase().replace(/\s+/g, ''); }
 
   var ALL = window.CT_PROBLEMS || [];
   var CONCEPTS = window.CT_CONCEPTS || [];
@@ -105,9 +104,11 @@
     panel.innerHTML = '<div class="lp-empty"><span class="big">👈</span>왼쪽 길에서 <b>개념(📖)</b>을 골라<br>그 개념을 이해했는지 확인하는 문제를 풀어요.<br>' + cta + '</div>';
   }
 
-  function blankify(text) {
-    // 빈칸(___)을 강조 표시로
-    return esc(text).replace(/_{2,}/g, '<span class="blank">&nbsp;</span>');
+  function blankify(text, slotId) {
+    // 빈칸(___)을 강조 표시(slotId 가 있으면 칩을 넣는 슬롯)로
+    return esc(text).replace(/_{2,}/g, function () {
+      return '<span class="blank' + (slotId ? ' slot' : '') + '"' + (slotId ? ' id="' + slotId + '"' : '') + '>&nbsp;</span>';
+    });
   }
 
   function renderPanel() {
@@ -118,12 +119,12 @@
     var q = L[curIdx], stored = isCorrect(activeTid, curIdx);
     var pct = Math.round(got * 100 / total);
 
-    var body;
-    if (q.type === 'fill') {
-      var val = stored ? esc((q.answer && q.answer[0]) || '') : '';
-      body = '<div class="qz-fill">' +
-        '<input id="lpInput" type="text" autocomplete="off" placeholder="정답을 입력하세요" value="' + val + '"' + (stored ? ' disabled class="correct"' : '') + '>' +
-        '<button class="chk" id="lpChk"' + (stored ? ' disabled' : '') + '>확인</button></div>';
+    var body, isFill = q.type === 'fill';
+    if (isFill) {
+      body = '<div class="qz-fill-hint">보기를 빈칸에 끌어다 놓거나, 눌러서 넣어 보세요.</div>' +
+        '<div class="qz-chips" id="lpChips">' + q.o.map(function (o, oi) {
+          return '<button class="chip" type="button" data-o="' + oi + '" draggable="true">' + esc(o) + '</button>';
+        }).join('') + '</div>';
     } else {
       body = '<div class="qz-opts">' + q.o.map(function (o, oi) {
         var cls = stored && oi === q.a ? ' class="correct"' : '';
@@ -135,7 +136,7 @@
       '<div class="lp-head"><h2>📖 ' + esc(c.t) + '</h2><button class="lp-close" id="lpClose" aria-label="닫기">×</button></div>' +
       '<div class="lp-sub">개념을 이해했는지 확인하는 문제예요. 다 맞히면 레슨이 완료돼요. <a href="concepts.html#' + activeTid + '">개념 자세히 보기 →</a></div>' +
       '<div class="lp-prog"><span class="bar"><i style="width:' + pct + '%"></i></span><span class="n">' + got + ' / ' + total + ' 정답</span></div>' +
-      '<div class="qz-q"><div class="qq"><span class="qn">Q' + (curIdx + 1) + '.</span>' + blankify(q.q) + '</div>' + body +
+      '<div class="qz-q"><div class="qq"><span class="qn">Q' + (curIdx + 1) + '.</span>' + blankify(q.q, isFill ? 'lpBlank' : null) + '</div>' + body +
       '<div class="qz-ex' + (stored ? ' show' : '') + '" id="lpEx"><b>정답</b> : ' + esc(q.e) + '</div></div>' +
       '<div class="lp-nav"><button id="lpPrev"' + (curIdx === 0 ? ' disabled' : '') + '>← 이전</button>' +
       '<button class="next" id="lpNext"' + (curIdx === total - 1 ? ' disabled' : '') + '>다음 →</button></div>' +
@@ -144,10 +145,39 @@
     document.getElementById('lpClose').onclick = closePanel;
     document.getElementById('lpPrev').onclick = function () { if (curIdx > 0) { curIdx--; renderPanel(); } };
     document.getElementById('lpNext').onclick = function () { if (curIdx < total - 1) { curIdx++; renderPanel(); } };
-    if (q.type === 'fill') {
-      var inp = document.getElementById('lpInput'), chk = document.getElementById('lpChk');
-      if (chk) chk.onclick = function () { gradeFill(inp); };
-      if (inp && !stored) inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') gradeFill(inp); });
+
+    if (isFill) {
+      var blank = document.getElementById('lpBlank');
+      var chips = [].slice.call(panel.querySelectorAll('.chip'));
+      if (stored) {
+        if (blank) { blank.textContent = q.o[q.a]; blank.classList.add('filled', 'correct'); }
+        chips.forEach(function (c) { c.disabled = true; });
+      } else {
+        var placeFill = function (oi) {
+          if (isNaN(oi) || !q.o[oi] || (chips[oi] && chips[oi].disabled)) return;
+          if (blank) { blank.textContent = q.o[oi]; blank.classList.add('filled'); }
+          var ex2 = document.getElementById('lpEx'); if (ex2) ex2.classList.add('show');
+          if (oi === q.a) {
+            if (blank) { blank.classList.remove('wrong'); blank.classList.add('correct'); }
+            chips.forEach(function (c) { c.disabled = true; });
+            var p = pq(); p[activeTid + '-' + curIdx] = true; write('ct_path_quiz_v1', p);
+            afterCorrect();
+          } else {
+            if (blank) { blank.classList.add('wrong'); }
+            if (chips[oi]) { chips[oi].disabled = true; chips[oi].classList.add('used'); }
+          }
+        };
+        chips.forEach(function (c) {
+          var oi = +c.getAttribute('data-o');
+          c.onclick = function () { placeFill(oi); };
+          c.addEventListener('dragstart', function (e) { e.dataTransfer.setData('text/plain', String(oi)); });
+        });
+        if (blank) {
+          blank.addEventListener('dragover', function (e) { e.preventDefault(); blank.classList.add('drop'); });
+          blank.addEventListener('dragleave', function () { blank.classList.remove('drop'); });
+          blank.addEventListener('drop', function (e) { e.preventDefault(); blank.classList.remove('drop'); placeFill(parseInt(e.dataTransfer.getData('text/plain'), 10)); });
+        }
+      }
     } else if (!stored) {
       [].slice.call(panel.querySelectorAll('.qz-opts button')).forEach(function (b) {
         b.onclick = function () { gradeMc(b, q, +b.getAttribute('data-o')); };
@@ -189,22 +219,6 @@
       if (ex) ex.classList.add('show');
     }
   }
-  function gradeFill(inp) {
-    if (!inp) return;
-    var q = qList(activeTid)[curIdx], ex = document.getElementById('lpEx');
-    var ok = (q.answer || []).some(function (a) { return norm(a) === norm(inp.value); });
-    if (ok) {
-      inp.classList.remove('wrong'); inp.classList.add('correct'); inp.disabled = true;
-      var chk = document.getElementById('lpChk'); if (chk) chk.disabled = true;
-      var p = pq(); p[activeTid + '-' + curIdx] = true; write('ct_path_quiz_v1', p);
-      if (ex) ex.classList.add('show');
-      afterCorrect();
-    } else {
-      inp.classList.add('wrong');
-      if (ex) ex.classList.add('show');
-    }
-  }
-
   function openLesson(tid) {
     if (!qList(tid).length) return;
     activeTid = tid;

@@ -87,20 +87,26 @@
   .lp-prog .n { font-size:13px; font-weight:800; color:var(--purple-dark); white-space:nowrap; }
   .qz-q .qq { font-weight:700; font-size:17px; margin-bottom:16px; line-height:1.6; }
   .qz-q .qq .qn { color:var(--purple-dark); margin-right:8px; }
-  .qz-q .qq .blank { color:var(--purple-dark); font-weight:800; border-bottom:2px solid var(--purple); padding:0 14px; }
+  .qz-q .qq .blank { color:var(--purple-dark); font-weight:800; }
+  .qz-q .qq .blank.slot { display:inline-block; min-width:64px; text-align:center; border-bottom:2px dashed var(--purple); padding:1px 12px; vertical-align:bottom; }
+  .qz-q .qq .blank.slot.filled { border-bottom-style:solid; }
+  .qz-q .qq .blank.slot.correct { color:#16A34A; border-color:#16A34A; }
+  .qz-q .qq .blank.slot.wrong { color:#E0526A; border-color:#E0526A; }
+  .qz-q .qq .blank.slot.drop { background:var(--purple-bg); border-radius:6px 6px 0 0; }
   .qz-opts { display:flex; flex-direction:column; gap:10px; }
   .qz-opts button { text-align:left; font-family:inherit; font-size:15px; padding:14px 16px; border:1.5px solid var(--line); background:var(--card); color:var(--ink); border-radius:11px; cursor:pointer; transition:border-color .12s, background .12s; }
   .qz-opts button:hover:not(:disabled) { border-color:var(--purple); background:var(--purple-bg); }
   .qz-opts button:disabled { cursor:default; }
   .qz-opts button.correct { border-color:#16A34A; background:var(--green-bg,#E7F8EE); font-weight:700; }
   .qz-opts button.wrong { border-color:#E0526A; background:var(--red-bg,#FBECEE); }
-  .qz-fill { display:flex; gap:8px; flex-wrap:wrap; }
-  .qz-fill input { flex:1; min-width:160px; font-family:inherit; font-size:15px; padding:13px 15px; border:1.5px solid var(--line); border-radius:11px; background:var(--card); color:var(--ink); outline:none; }
-  .qz-fill input:focus { border-color:var(--purple); }
-  .qz-fill input.correct { border-color:#16A34A; background:var(--green-bg,#E7F8EE); }
-  .qz-fill input.wrong { border-color:#E0526A; background:var(--red-bg,#FBECEE); }
-  .qz-fill .chk { font-family:inherit; font-weight:800; font-size:14px; padding:0 20px; border:none; border-radius:11px; background:var(--purple); color:#fff; cursor:pointer; }
-  .qz-fill .chk:disabled { opacity:.5; cursor:default; }
+  /* 빈칸 채우기: 보기 칩을 빈칸에 넣기(탭 또는 드래그) */
+  .qz-fill-hint { font-size:12.5px; color:var(--ink-soft); margin-bottom:12px; }
+  .qz-chips { display:flex; flex-wrap:wrap; gap:10px; }
+  .qz-chips .chip { font-family:inherit; font-size:15px; font-weight:800; padding:11px 18px; border:1.5px solid var(--purple); background:var(--purple-bg); color:var(--purple-dark); border-radius:999px; cursor:grab; transition:background .12s,color .12s,opacity .12s; }
+  .qz-chips .chip:hover:not(:disabled) { background:var(--purple); color:#fff; }
+  .qz-chips .chip:active:not(:disabled) { cursor:grabbing; }
+  .qz-chips .chip:disabled { cursor:default; }
+  .qz-chips .chip.used { opacity:.35; }
   .qz-ex { font-size:13.5px; color:var(--ink-soft); line-height:1.6; margin-top:14px; padding:12px 14px; background:var(--purple-bg); border-radius:10px; display:none; }
   .qz-ex.show { display:block; }
   .qz-ex b { color:var(--purple-dark); }
@@ -116,14 +122,17 @@
 </style>
 </head>
 <body>
-<nav>
+<nav class="sitenav">
   <a class="sitebrand" href="index.html"><img class="brandlogo" src="assets/elicetrack.png" alt="Elice Track"><span class="brandsub">Coding Test</span></a>
-  <a href="guide.html">준비 가이드</a>
-  <a href="concepts.html">개념 정리</a>
-  <a href="practice.html">예시 문제</a>
-  <a class="on" href="path.html">학습 경로</a>
-  <a href="gichul.html">기출 문제</a>
-  <a class="mypage-link" style="margin-left:auto" href="progress.html">마이페이지</a>
+  <div class="nav-links">
+    <a href="guide.html">준비 가이드</a>
+    <a href="concepts.html">개념 정리</a>
+    <a class="on" href="path.html">학습 경로</a>
+    <a href="practice.html">예시 문제</a>
+    <a href="gichul.html">기출 문제</a>
+    <a href="run/?mode=exam">모의고사</a>
+  </div>
+  <a class="mypage-link" href="progress.html">마이페이지</a>
 </nav>
 
 <div class="wrap">

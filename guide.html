@@ -37,27 +37,7 @@
   pre, code { word-break: normal; overflow-wrap: normal; }
 
   /* ===== 상단 내비게이션 ===== */
-  nav {
-    position: sticky; top: 0; z-index: 100;
-    background: var(--nav-bg);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--line);
-    display: flex; align-items: center; gap: 4px;
-    padding: 0 20px; height: 56px;
-    overflow-x: auto; white-space: nowrap;
-  }
-  nav a {
-    color: var(--ink-soft); text-decoration: none;
-    font-size: 14px; font-weight: 600;
-    padding: 6px 12px; border-radius: 8px;
-    transition: all 0.15s;
-  }
-  nav a:hover { background: var(--purple-bg); color: var(--purple); }
-  nav a.active { background: var(--purple); color: #fff; }
-  nav .navsep { width: 1px; height: 20px; background: var(--line); margin: 0 10px; flex-shrink: 0; }
-  nav a.sib { color: var(--purple-dark); font-weight: 700; }
-  .sitebrand { display: flex; align-items: center; gap: 9px; font-weight: 800; font-size: 15px; color: var(--ink, #1F2230); text-decoration: none; flex-shrink: 0; margin-right: 14px; }
-  .sitebrand:hover { color: var(--purple-dark, #6A2FD0); }
+  /* 상단 네비는 assets/app.css 의 공용 .sitenav 사용 */
 
   /* ===== 히어로 ===== */
   header.hero {
@@ -320,22 +300,17 @@
 </head>
 <body>
 
-<nav id="topnav">
+<nav class="sitenav">
   <a class="sitebrand" href="index.html"><img class="brandlogo" src="assets/elicetrack.png" alt="Elice Track"><span class="brandsub">Coding Test</span></a>
-  <a class="sib" href="concepts.html">개념 정리</a>
-  <a class="sib" href="practice.html">예시 문제</a>
-  <a class="sib" href="path.html">학습 경로</a>
-  <a class="sib" href="gichul.html">기출 문제</a>
-  <span class="navsep"></span>
-  <a href="#s1">시작하며</a>
-  <a href="#s2">커리큘럼</a>
-  <a href="#s3">문제 접근법</a>
-  <a href="#s4">시간 배분</a>
-  <a href="#s5">기본 세팅</a>
-  <a href="#s6">실수 모음</a>
-  <a href="#s7">체크리스트</a>
-  <a href="#s8">연습 사이트</a>
-  <a class="mypage-link" style="position:fixed;top:11px;right:16px;z-index:300" href="progress.html">마이페이지</a>
+  <div class="nav-links">
+    <a class="on" href="guide.html">준비 가이드</a>
+    <a href="concepts.html">개념 정리</a>
+    <a href="path.html">학습 경로</a>
+    <a href="practice.html">예시 문제</a>
+    <a href="gichul.html">기출 문제</a>
+    <a href="run/?mode=exam">모의고사</a>
+  </div>
+  <a class="mypage-link" href="progress.html">마이페이지</a>
 </nav>
 <div class="read-progress"><span id="readbar"></span></div>
 

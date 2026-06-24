@@ -29,16 +29,19 @@
   body {
     font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif;
     background: var(--bg); color: var(--ink); line-height: 1.7;
-    display: flex; min-height: 100vh;
+    min-height: 100vh;
     word-break: keep-all; overflow-wrap: break-word;
   }
   pre, code { word-break: normal; overflow-wrap: normal; }
+
+  /* 상단 네비(공용 .sitenav) 아래로 사이드바 + 본문 2단 */
+  .cc-layout { display: flex; align-items: flex-start; }
 
   /* ===== 사이드바 ===== */
   aside {
     width: 300px; flex-shrink: 0;
     background: var(--card); border-right: 1px solid var(--line);
-    position: sticky; top: 0; height: 100vh;
+    position: sticky; top: 56px; height: calc(100vh - 56px);
     display: flex; flex-direction: column;
   }
   aside .brand {
@@ -75,9 +78,9 @@
     display: flex; align-items: center; gap: 8px;
     width: 100%; text-align: left;
     background: var(--card); border: 1.5px solid var(--line); cursor: pointer;
-    font-family: inherit; font-size: 14px; font-weight: 600;
-    color: var(--ink-soft); padding: 9px 10px; border-radius: 9px;
-    margin-bottom: 5px; transition: all 0.12s;
+    font-family: inherit; font-size: 15.5px; font-weight: 700;
+    color: var(--ink); padding: 13px 14px; border-radius: 11px;
+    margin-bottom: 7px; transition: all 0.12s;
   }
   aside .menu button:hover { background: var(--purple-bg); color: var(--purple-dark); border-color: var(--purple); }
   aside .menu button.active { background: var(--purple); color: #fff; border-color: var(--purple); }
@@ -238,11 +241,11 @@
   .pager button:disabled { opacity: 0.35; cursor: default; }
 
   @media (max-width: 860px) {
-    body { flex-direction: column; }
+    .cc-layout { flex-direction: column; }
     aside { width: 100%; height: auto; position: static; }
-    aside .menu { display: flex; flex-wrap: wrap; gap: 4px; padding: 10px; }
+    aside .menu { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; }
     aside .menu .grp { display: none; }
-    aside .menu button { width: auto; }
+    aside .menu button { width: auto; font-size: 14px; padding: 9px 12px; }
     main { padding: 24px 18px 70px; }
   }
 </style>
@@ -253,14 +256,24 @@
 </head>
 <body>
 
+<nav class="sitenav">
+  <a class="sitebrand" href="index.html"><img class="brandlogo" src="assets/elicetrack.png" alt="Elice Track"><span class="brandsub">Coding Test</span></a>
+  <div class="nav-links">
+    <a href="guide.html">준비 가이드</a>
+    <a class="on" href="concepts.html">개념 정리</a>
+    <a href="path.html">학습 경로</a>
+    <a href="practice.html">예시 문제</a>
+    <a href="gichul.html">기출 문제</a>
+    <a href="run/?mode=exam">모의고사</a>
+  </div>
+  <a class="mypage-link" href="progress.html">마이페이지</a>
+</nav>
+
+<div class="cc-layout">
 <aside>
   <div class="brand">
-    <a class="sitebrand" href="index.html"><img class="brandlogo" src="assets/elicetrack.png" alt="Elice Track"><span class="brandsub">Coding Test</span></a>
     <h1>Core Concepts for Coding Tests</h1>
     <p>여러 언어 지원 | 퀴즈 진행 상황 자동 저장</p>
-    <div class="links">
-      <a href="guide.html">준비 가이드</a> <a href="practice.html">예시 문제</a> <a href="path.html">학습 경로</a> <a href="gichul.html">기출 문제</a> <a class="mypage-link" href="progress.html">마이페이지</a>
-    </div>
   </div>
   <div class="search">
     <input type="text" id="searchBox" placeholder="개념 검색 (예: 정렬, BFS, DP)">
@@ -2130,6 +2143,7 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
 </div>
 
 </main>
+</div>
 
 <script>
 (function () {

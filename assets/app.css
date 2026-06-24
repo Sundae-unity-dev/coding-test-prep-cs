@@ -81,8 +81,20 @@ summary:focus-visible, [tabindex]:focus-visible {
    !important 는 일부 페이지의 .links a 등 더 구체적인 셀렉터가 배경을 덮어
    알약이 깨지는(흰 글씨가 안 보이는) 것을 막기 위함. */
 .mypage-link { display: inline-flex; align-items: center; gap: 5px; padding: 6px 14px; border-radius: 999px; background: #6A2FD0 !important; color: #fff !important; font-weight: 800 !important; text-decoration: none !important; box-shadow: 0 3px 10px rgba(136, 67, 255, 0.3); white-space: nowrap; }
-.mypage-link::before { content: "👤"; font-size: 12px; }
+.mypage-link::before { content: "🐰"; font-size: 12px; }
 .mypage-link:hover { background: #581FB0 !important; color: #fff !important; }
+
+/* ===== 공용 상단 네비 (전 페이지 통일: 브랜드 좌 / 링크 중앙 / 마이페이지 우) ===== */
+.sitenav { position: sticky; top: 0; z-index: 50; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; padding: 10px 22px; background: var(--nav-bg); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.sitenav .sitebrand { justify-self: start; display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--ink); font-size: 15px; text-decoration: none; white-space: nowrap; }
+.sitenav .nav-links { justify-self: center; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; justify-content: center; }
+.sitenav .nav-links a { color: var(--ink-soft); text-decoration: none; font-size: 14.5px; font-weight: 600; padding: 7px 13px; border-radius: 9px; white-space: nowrap; transition: color .12s, background .12s; }
+.sitenav .nav-links a:hover, .sitenav .nav-links a.on { color: var(--purple-dark); background: var(--purple-bg); }
+.sitenav .mypage-link { justify-self: end; }
+@media (max-width: 880px) {
+  .sitenav { grid-template-columns: auto auto; justify-content: space-between; row-gap: 8px; }
+  .sitenav .nav-links { grid-column: 1 / -1; order: 3; }
+}
 
 /* 모바일: 섹션 네비(드롭다운 없는 일반 nav)는 줄바꿈해 가로 오버플로 방지 */
 @media (max-width: 560px) {
