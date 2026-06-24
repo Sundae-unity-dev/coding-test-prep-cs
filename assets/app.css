@@ -95,7 +95,7 @@ summary:focus-visible, [tabindex]:focus-visible {
 /* 다크 모드: 보라 워드마크가 어두운 배경에 묻히므로 또렷한 흰색으로 렌더 */
 html[data-theme="dark"] .brandlogo { filter: brightness(0) invert(1); }
 
-/* ===== 연속 학습 불꽃 효과(이글이글) ===== */
+/* 연속 학습 불꽃 깜빡임 키프레임(메인 페이지 streak 호버 시 .sk-fire 가 사용) */
 @keyframes ctFlame {
   0%, 100% { transform: scale(1) rotate(-3deg); }
   20% { transform: scale(1.16) translateY(-1px) rotate(3deg); }
@@ -103,6 +103,3 @@ html[data-theme="dark"] .brandlogo { filter: brightness(0) invert(1); }
   65% { transform: scale(1.1) translateY(-1px) rotate(2deg); }
   85% { transform: scale(1.03) rotate(-1deg); }
 }
-.flame { display: inline-block; transform-origin: 50% 90%; animation: ctFlame 0.85s ease-in-out infinite; filter: drop-shadow(0 0 5px rgba(255, 140, 0, 0.8)) drop-shadow(0 0 10px rgba(255, 70, 0, 0.45)); }
-.flame.hot { animation-duration: 0.6s; filter: drop-shadow(0 0 6px rgba(255, 150, 0, 0.9)) drop-shadow(0 0 13px rgba(255, 50, 0, 0.6)); }
-@media (prefers-reduced-motion: reduce) { .flame { animation: none; } }
