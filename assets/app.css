@@ -77,9 +77,17 @@ summary:focus-visible, [tabindex]:focus-visible {
 }
 
 /* ===== 마이페이지 버튼 (우측 상단) ===== */
-.mypage-link { display: inline-flex; align-items: center; gap: 5px; padding: 6px 14px; border-radius: 999px; background: var(--purple); color: #fff !important; font-weight: 800 !important; box-shadow: 0 3px 10px rgba(136, 67, 255, 0.3); white-space: nowrap; }
+/* 고정 짙은 보라(#6A2FD0) + 흰 글씨 = 라이트/다크 모두 대비 약 7:1(WCAG AAA).
+   !important 는 일부 페이지의 .links a 등 더 구체적인 셀렉터가 배경을 덮어
+   알약이 깨지는(흰 글씨가 안 보이는) 것을 막기 위함. */
+.mypage-link { display: inline-flex; align-items: center; gap: 5px; padding: 6px 14px; border-radius: 999px; background: #6A2FD0 !important; color: #fff !important; font-weight: 800 !important; box-shadow: 0 3px 10px rgba(136, 67, 255, 0.3); white-space: nowrap; }
 .mypage-link::before { content: "👤"; font-size: 12px; }
-.mypage-link:hover { background: var(--purple-dark); color: #fff !important; }
+.mypage-link:hover { background: #581FB0 !important; color: #fff !important; }
+
+/* 모바일: 섹션 네비(드롭다운 없는 일반 nav)는 줄바꿈해 가로 오버플로 방지 */
+@media (max-width: 560px) {
+  nav:not(#topnav):not(:has(.dropdown)) { flex-wrap: wrap; height: auto; row-gap: 5px; padding-top: 9px; padding-bottom: 9px; }
+}
 
 /* ===== 브랜드 로고 (엘리스 트랙) ===== */
 .brandlogo { height: 22px; width: auto; vertical-align: middle; display: inline-block; }

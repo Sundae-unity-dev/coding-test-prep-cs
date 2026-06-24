@@ -83,7 +83,8 @@ html[data-theme="dark"] .wrap .note code { background: #2A2342; color: #C3A8FF; 
     font-family: Consolas, 'D2Coding', monospace; font-size: 13px; line-height: 1.55; margin: 0;
 }
 .output.err { color: #FF8B8B; }
-.wrap .note { font-size: 13px; color: #9AA0B5; margin-top: 18px; }
+.wrap .note { font-size: 13px; color: #6B7180; margin-top: 18px; }
+html[data-theme="dark"] .wrap .note { color: #A4A6BC; }
 .wrap .note code { color: #6A2FD0; background: #EFEAFB; padding: 1px 6px; border-radius: 5px; }
 
 @media (max-width: 820px) { .grid { grid-template-columns: 1fr; } .wrap textarea.code { min-height: 300px; } }
