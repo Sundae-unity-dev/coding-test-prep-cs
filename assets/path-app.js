@@ -17,7 +17,8 @@
   TIERS.forEach(function (t) { CONCEPTS.filter(function (c) { return c.lv === t; }).forEach(function (c) { orderedLessons.push(c); }); });
 
   var pathRoot = document.getElementById('pathRoot');
-  var panel = document.getElementById('lessonPanel');
+  var ov = document.getElementById('qzOv');
+  var panel = document.getElementById('qzBox');
   var activeTid = null, curIdx = 0;
 
   function qList(tid) { return QUIZ[tid] || []; }
@@ -36,7 +37,7 @@
 
   // ===== 왼쪽 경로 =====
   var gi = 0;
-  function wind() { var off = Math.round(Math.sin(gi * 0.8) * 30); gi++; return off; }
+  function wind() { var off = Math.round(Math.sin(gi * 0.8) * 60); gi++; return off; }
   var currentKey = null;
 
   function lessonNode(c) {
@@ -96,14 +97,7 @@
       '<span>전체 진행</span><span class="pbar"><i style="width:' + pct + '%"></i></span><b>' + totDone + ' / ' + tot + '</b>';
   }
 
-  // ===== 오른쪽 풀이 패널 =====
-  function renderEmpty() {
-    var nx = firstIncompleteLesson();
-    var cta = nx ? '<button class="start" data-open="' + nx.id + '">지금 할 차례: ' + esc(nx.t) + ' 시작하기</button>'
-                 : '<div style="margin-top:14px;font-weight:800;color:var(--purple-dark);">모든 개념 레슨을 끝냈어요! 🎉</div>';
-    panel.innerHTML = '<div class="lp-empty"><span class="big">👈</span>왼쪽 길에서 <b>개념(📖)</b>을 골라<br>그 개념을 이해했는지 확인하는 문제를 풀어요.<br>' + cta + '</div>';
-  }
-
+  // ===== 문제 풀이 모달(창) =====
   function blankify(text, slotId) {
     // 빈칸(___)을 강조 표시(slotId 가 있으면 칩을 넣는 슬롯)로
     return esc(text).replace(/_{2,}/g, function () {
@@ -113,7 +107,7 @@
 
   function renderPanel() {
     var c = conceptOf(activeTid), L = qList(activeTid);
-    if (!c || !L.length) { renderEmpty(); return; }
+    if (!c || !L.length) { closePanel(); return; }
     var total = L.length, got = correctCount(activeTid);
     if (curIdx < 0) curIdx = 0; if (curIdx > total - 1) curIdx = total - 1;
     var q = L[curIdx], stored = isCorrect(activeTid, curIdx);
@@ -224,22 +218,24 @@
     activeTid = tid;
     var L = qList(tid); curIdx = 0;
     for (var i = 0; i < L.length; i++) { if (!isCorrect(tid, i)) { curIdx = i; break; } }
+    ov.classList.add('on');
     build(); renderPanel();
-    if (window.matchMedia && window.matchMedia('(max-width:860px)').matches) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
-  function closePanel() { activeTid = null; build(); renderEmpty(); }
+  function closePanel() { ov.classList.remove('on'); activeTid = null; build(); }
 
-  // 왼쪽 경로의 개념 노드 클릭 -> 패널 열기 (JS 없으면 concepts 로 이동)
+  // 경로의 개념 노드 클릭 -> 풀이 창 열기 (JS 없으면 concepts 로 이동)
   pathRoot.addEventListener('click', function (e) {
     var a = e.target.closest('.pcircle[data-lesson]'); if (!a) return;
     e.preventDefault(); openLesson(a.getAttribute('data-lesson'));
   });
-  // 시작/다음 개념 버튼 (패널 내)
+  // 다음 개념 버튼 (창 내)
   panel.addEventListener('click', function (e) {
     var b = e.target.closest('[data-open]'); if (!b) return;
     openLesson(b.getAttribute('data-open'));
   });
+  // 배경 클릭 / Esc 로 창 닫기
+  ov.addEventListener('click', function (e) { if (e.target === ov) closePanel(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && ov.classList.contains('on')) closePanel(); });
 
   build();
-  renderEmpty();
 })();

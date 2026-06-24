@@ -273,7 +273,6 @@
 <aside>
   <div class="brand">
     <h1>Core Concepts for Coding Tests</h1>
-    <p>여러 언어 지원 | 퀴즈 진행 상황 자동 저장</p>
   </div>
   <div class="search">
     <input type="text" id="searchBox" placeholder="개념 검색 (예: 정렬, BFS, DP)">
@@ -2301,8 +2300,8 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
   });
   var qn = Object.keys(readObj('ct_concepts_quiz_v1')).length;
   var sn = Object.keys(SOLVED).filter(function (k) { return SOLVED[k]; }).length;
-  var brandP = document.querySelector('aside .brand p');
-  if (brandP) { var d = document.createElement('div'); d.className = 'side-progress'; d.textContent = '퀴즈 ' + qn + '/' + document.querySelectorAll('.quiz').length + ', 문제 ' + sn + '/' + ((window.CT_PROBLEMS || []).length || 63) + ' 진행 중'; brandP.parentNode.insertBefore(d, brandP.nextSibling); }
+  var brandEl = document.querySelector('aside .brand');
+  if (brandEl) { var d = document.createElement('div'); d.className = 'side-progress'; d.textContent = '퀴즈 ' + qn + '/' + document.querySelectorAll('.quiz').length + ', 문제 ' + sn + '/' + ((window.CT_PROBLEMS || []).length || 63) + ' 진행 중'; brandEl.appendChild(d); }
 })();
 </script>
 <script src="assets/concept-code.js"></script>
