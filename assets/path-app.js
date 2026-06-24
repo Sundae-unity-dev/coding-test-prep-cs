@@ -20,6 +20,15 @@
   var ov = document.getElementById('qzOv');
   var panel = document.getElementById('qzBox');
   var activeTid = null, curIdx = 0;
+  var WEEKS = { '입문': '1~4주차', '기초': '5~8주차', '중급': '9~12주차', '심화': '13~16주차' };
+  var orderState = {};   // 순서 맞추기: 문제별 표시 순서(셔플)를 세션 동안 고정
+  var animatedOnce = false;
+  function shuffleIdx(n) {
+    var a = []; for (var i = 0; i < n; i++) a.push(i);
+    for (var i = n - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; }
+    if (a.every(function (v, i) { return v === i; }) && n > 1) a.push(a.shift());
+    return a;
+  }
 
   function qList(tid) { return QUIZ[tid] || []; }
   function pq() { return readObj('ct_path_quiz_v1'); }
@@ -78,7 +87,7 @@
       var ps = examples.filter(function (p) { return p.lv === t; });
       if (!cs.length && !ps.length) return;
       var ld = cs.filter(lessonDone).length, pd = ps.filter(function (p) { return solved[p.id]; }).length;
-      html += '<div class="pt-head"><span class="pt-name">' + t + '</span><span class="pt-prog">개념 ' + ld + '/' + cs.length + ', 문제 ' + pd + '/' + ps.length + '</span></div>';
+      html += '<div class="pt-head"><span class="pt-name">' + t + '</span>' + (WEEKS[t] ? '<span class="pt-week">' + WEEKS[t] + '</span>' : '') + '<span class="pt-prog">개념 ' + ld + '/' + cs.length + ', 문제 ' + pd + '/' + ps.length + '</span></div>';
       var nodes = cs.map(lessonNode).concat(ps.map(function (p) { seq++; return probNode(p, seq, solved); }));
       html += '<div class="ptrack">' + nodes.join('') + '</div>';
     });
@@ -88,6 +97,10 @@
       html += '<div class="ptrack">' + gichul.map(function (p) { seq++; return probNode(p, seq, solved); }).join('') + '</div>';
     }
     pathRoot.innerHTML = html;
+    if (!animatedOnce) { // 최초 1회만 노드 stagger 페이드 인(이후 재빌드는 깜빡임 방지로 미적용)
+      animatedOnce = true;
+      [].slice.call(pathRoot.querySelectorAll('.pnode')).forEach(function (n, i) { n.style.animationDelay = (Math.min(i, 36) * 0.028) + 's'; n.classList.add('pop'); });
+    }
 
     var lTot = CONCEPTS.filter(function (c) { return qList(c.id).length; }).length;
     var lDone = CONCEPTS.filter(lessonDone).length;
@@ -105,20 +118,43 @@
     });
   }
 
+  function markCorrect() { var p = pq(); p[activeTid + '-' + curIdx] = true; write('ct_path_quiz_v1', p); showEx(); afterCorrect(); }
+  function showEx() { var ex = document.getElementById('lpEx'); if (ex) ex.classList.add('show'); }
+
   function renderPanel() {
     var c = conceptOf(activeTid), L = qList(activeTid);
     if (!c || !L.length) { closePanel(); return; }
     var total = L.length, got = correctCount(activeTid);
     if (curIdx < 0) curIdx = 0; if (curIdx > total - 1) curIdx = total - 1;
-    var q = L[curIdx], stored = isCorrect(activeTid, curIdx);
-    var pct = Math.round(got * 100 / total);
+    var q = L[curIdx], stored = isCorrect(activeTid, curIdx), t = q.type || 'mc';
+    var pct = Math.round(got * 100 / total), key = activeTid + '-' + curIdx;
+    var tag = { fill: '빈칸 채우기', ox: '참 / 거짓', multi: '복수 정답', order: '순서 맞추기' }[t] || '객관식';
 
-    var body, isFill = q.type === 'fill';
-    if (isFill) {
+    var body;
+    if (t === 'fill') {
       body = '<div class="qz-fill-hint">보기를 빈칸에 끌어다 놓거나, 눌러서 넣어 보세요.</div>' +
         '<div class="qz-chips" id="lpChips">' + q.o.map(function (o, oi) {
           return '<button class="chip" type="button" data-o="' + oi + '" draggable="true">' + esc(o) + '</button>';
         }).join('') + '</div>';
+    } else if (t === 'ox') {
+      body = '<div class="qz-opts ox">' +
+        '<button data-o="0"' + (stored ? ' disabled' : '') + (stored && q.a === 0 ? ' class="correct"' : '') + '><b>O</b><span>참</span></button>' +
+        '<button data-o="1"' + (stored ? ' disabled' : '') + (stored && q.a === 1 ? ' class="correct"' : '') + '><b>X</b><span>거짓</span></button></div>';
+    } else if (t === 'multi') {
+      body = '<div class="qz-fill-hint">맞는 것을 모두 고른 뒤 확인을 눌러요.</div>' +
+        '<div class="qz-multi" id="lpMulti">' + q.o.map(function (o, oi) {
+          var sel = stored && q.a.indexOf(oi) >= 0 ? ' sel correct' : '';
+          return '<button class="mopt' + sel + '" type="button" data-o="' + oi + '"' + (stored ? ' disabled' : '') + '>' + esc(o) + '</button>';
+        }).join('') + '</div><div class="qz-actions"><button class="chk" id="lpMultiChk"' + (stored ? ' disabled' : '') + '>확인</button></div>';
+    } else if (t === 'order') {
+      if (!orderState[key]) orderState[key] = shuffleIdx(q.o.length);
+      var disp = stored ? q.o.map(function (_, i) { return i; }) : orderState[key];
+      body = '<div class="qz-fill-hint">↑ ↓ 로 올바른 순서를 맞춘 뒤 확인을 눌러요.</div>' +
+        '<div class="qz-order' + (stored ? ' done' : '') + '" id="lpOrder">' + disp.map(function (oi, pos) {
+          return '<div class="oitem" data-oi="' + oi + '"><span class="onum">' + (pos + 1) + '</span><span class="otx">' + esc(q.o[oi]) + '</span>' +
+            '<span class="obtns"><button class="oup" type="button"' + (pos === 0 || stored ? ' disabled' : '') + '>↑</button>' +
+            '<button class="odn" type="button"' + (pos === disp.length - 1 || stored ? ' disabled' : '') + '>↓</button></span></div>';
+        }).join('') + '</div><div class="qz-actions"><button class="chk" id="lpOrderChk"' + (stored ? ' disabled' : '') + '>확인</button></div>';
     } else {
       body = '<div class="qz-opts">' + q.o.map(function (o, oi) {
         var cls = stored && oi === q.a ? ' class="correct"' : '';
@@ -130,7 +166,7 @@
       '<div class="lp-head"><h2>📖 ' + esc(c.t) + '</h2><button class="lp-close" id="lpClose" aria-label="닫기">×</button></div>' +
       '<div class="lp-sub">개념을 이해했는지 확인하는 문제예요. 다 맞히면 레슨이 완료돼요. <a href="concepts.html#' + activeTid + '">개념 자세히 보기 →</a></div>' +
       '<div class="lp-prog"><span class="bar"><i style="width:' + pct + '%"></i></span><span class="n">' + got + ' / ' + total + ' 정답</span></div>' +
-      '<div class="qz-q"><div class="qq"><span class="qn">Q' + (curIdx + 1) + '.</span>' + blankify(q.q, isFill ? 'lpBlank' : null) + '</div>' + body +
+      '<div class="qz-q"><div class="qq"><span class="qn">Q' + (curIdx + 1) + '.</span><span class="qtag">' + tag + '</span>' + blankify(q.q, t === 'fill' ? 'lpBlank' : null) + '</div>' + body +
       '<div class="qz-ex' + (stored ? ' show' : '') + '" id="lpEx"><b>정답</b> : ' + esc(q.e) + '</div></div>' +
       '<div class="lp-nav"><button id="lpPrev"' + (curIdx === 0 ? ' disabled' : '') + '>← 이전</button>' +
       '<button class="next" id="lpNext"' + (curIdx === total - 1 ? ' disabled' : '') + '>다음 →</button></div>' +
@@ -140,44 +176,79 @@
     document.getElementById('lpPrev').onclick = function () { if (curIdx > 0) { curIdx--; renderPanel(); } };
     document.getElementById('lpNext').onclick = function () { if (curIdx < total - 1) { curIdx++; renderPanel(); } };
 
-    if (isFill) {
-      var blank = document.getElementById('lpBlank');
-      var chips = [].slice.call(panel.querySelectorAll('.chip'));
-      if (stored) {
-        if (blank) { blank.textContent = q.o[q.a]; blank.classList.add('filled', 'correct'); }
-        chips.forEach(function (c) { c.disabled = true; });
-      } else {
-        var placeFill = function (oi) {
-          if (isNaN(oi) || !q.o[oi] || (chips[oi] && chips[oi].disabled)) return;
-          if (blank) { blank.textContent = q.o[oi]; blank.classList.add('filled'); }
-          var ex2 = document.getElementById('lpEx'); if (ex2) ex2.classList.add('show');
-          if (oi === q.a) {
-            if (blank) { blank.classList.remove('wrong'); blank.classList.add('correct'); }
-            chips.forEach(function (c) { c.disabled = true; });
-            var p = pq(); p[activeTid + '-' + curIdx] = true; write('ct_path_quiz_v1', p);
-            afterCorrect();
-          } else {
-            if (blank) { blank.classList.add('wrong'); }
-            if (chips[oi]) { chips[oi].disabled = true; chips[oi].classList.add('used'); }
-          }
-        };
-        chips.forEach(function (c) {
-          var oi = +c.getAttribute('data-o');
-          c.onclick = function () { placeFill(oi); };
-          c.addEventListener('dragstart', function (e) { e.dataTransfer.setData('text/plain', String(oi)); });
-        });
-        if (blank) {
-          blank.addEventListener('dragover', function (e) { e.preventDefault(); blank.classList.add('drop'); });
-          blank.addEventListener('dragleave', function () { blank.classList.remove('drop'); });
-          blank.addEventListener('drop', function (e) { e.preventDefault(); blank.classList.remove('drop'); placeFill(parseInt(e.dataTransfer.getData('text/plain'), 10)); });
-        }
-      }
-    } else if (!stored) {
+    if (stored) { maybeDone(); return; }
+
+    if (t === 'fill') wireFill(q);
+    else if (t === 'multi') wireMulti(q, key);
+    else if (t === 'order') wireOrder(q, key);
+    else { // mc, ox
       [].slice.call(panel.querySelectorAll('.qz-opts button')).forEach(function (b) {
         b.onclick = function () { gradeMc(b, q, +b.getAttribute('data-o')); };
       });
     }
     maybeDone();
+  }
+
+  function wireFill(q) {
+    var blank = document.getElementById('lpBlank');
+    var chips = [].slice.call(panel.querySelectorAll('.chip'));
+    var placeFill = function (oi) {
+      if (isNaN(oi) || !q.o[oi] || (chips[oi] && chips[oi].disabled)) return;
+      if (blank) { blank.textContent = q.o[oi]; blank.classList.add('filled'); }
+      showEx();
+      if (oi === q.a) { if (blank) { blank.classList.remove('wrong'); blank.classList.add('correct'); } chips.forEach(function (c) { c.disabled = true; }); markCorrect(); }
+      else { if (blank) blank.classList.add('wrong'); if (chips[oi]) { chips[oi].disabled = true; chips[oi].classList.add('used'); } }
+    };
+    chips.forEach(function (c) {
+      var oi = +c.getAttribute('data-o');
+      c.onclick = function () { placeFill(oi); };
+      c.addEventListener('dragstart', function (e) { e.dataTransfer.setData('text/plain', String(oi)); });
+    });
+    if (blank) {
+      blank.addEventListener('dragover', function (e) { e.preventDefault(); blank.classList.add('drop'); });
+      blank.addEventListener('dragleave', function () { blank.classList.remove('drop'); });
+      blank.addEventListener('drop', function (e) { e.preventDefault(); blank.classList.remove('drop'); placeFill(parseInt(e.dataTransfer.getData('text/plain'), 10)); });
+    }
+  }
+
+  function wireMulti(q, key) {
+    var sel = {};
+    var opts = [].slice.call(panel.querySelectorAll('.mopt'));
+    opts.forEach(function (b) {
+      var oi = +b.getAttribute('data-o');
+      b.onclick = function () { if (sel[oi]) { delete sel[oi]; b.classList.remove('sel'); } else { sel[oi] = 1; b.classList.add('sel'); } b.classList.remove('wrong'); };
+    });
+    document.getElementById('lpMultiChk').onclick = function () {
+      var chosen = Object.keys(sel).map(Number).sort(function (a, b) { return a - b; });
+      var ans = q.a.slice().sort(function (a, b) { return a - b; });
+      showEx();
+      if (chosen.length === ans.length && chosen.every(function (v, i) { return v === ans[i]; })) {
+        opts.forEach(function (b) { b.disabled = true; if (q.a.indexOf(+b.getAttribute('data-o')) >= 0) b.classList.add('correct'); });
+        document.getElementById('lpMultiChk').disabled = true; markCorrect();
+      } else {
+        opts.forEach(function (b) { if (sel[+b.getAttribute('data-o')] && q.a.indexOf(+b.getAttribute('data-o')) < 0) b.classList.add('wrong'); });
+      }
+    };
+  }
+
+  function wireOrder(q, key) {
+    var el = document.getElementById('lpOrder');
+    function refresh() { var items = [].slice.call(el.children); items.forEach(function (it, i) { it.querySelector('.onum').textContent = i + 1; it.querySelector('.oup').disabled = (i === 0); it.querySelector('.odn').disabled = (i === items.length - 1); }); }
+    el.addEventListener('click', function (e) {
+      var up = e.target.closest('.oup'), dn = e.target.closest('.odn'); if (!up && !dn) return;
+      var it = e.target.closest('.oitem');
+      if (up && it.previousElementSibling) el.insertBefore(it, it.previousElementSibling);
+      else if (dn && it.nextElementSibling) el.insertBefore(it.nextElementSibling, it);
+      refresh();
+    });
+    document.getElementById('lpOrderChk').onclick = function () {
+      var cur = [].slice.call(el.children).map(function (it) { return +it.getAttribute('data-oi'); });
+      showEx();
+      if (cur.every(function (v, i) { return v === i; })) {
+        el.classList.add('done'); [].slice.call(el.querySelectorAll('button')).forEach(function (b) { b.disabled = true; });
+        document.getElementById('lpOrderChk').disabled = true; markCorrect();
+      } else { el.classList.add('shake'); setTimeout(function () { el.classList.remove('shake'); }, 400); }
+    };
   }
 
   function afterCorrect() {

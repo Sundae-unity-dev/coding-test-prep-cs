@@ -69,7 +69,44 @@
   .qz-ov { position:fixed; inset:0; background:rgba(20,16,40,.6); display:none; align-items:center; justify-content:center; z-index:500; padding:18px; }
   .qz-ov.on { display:flex; animation:qzFade .18s ease; }
   @keyframes qzFade { from{opacity:0} to{opacity:1} }
-  .qz { background:var(--card); border:1px solid var(--line); border-radius:20px; max-width:640px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 24px 60px rgba(0,0,0,.4); padding:28px 30px 30px; }
+  .qz { background:var(--card); border:1px solid var(--line); border-radius:20px; width:min(96vw,1100px); max-width:none; max-height:92vh; overflow-y:auto; box-shadow:0 24px 60px rgba(0,0,0,.4); padding:32px 40px 36px; animation:qzPop .26s cubic-bezier(.2,.7,.3,1); }
+  @keyframes qzPop { from{ opacity:0; transform:translateY(28px) scale(.97); } to{ opacity:1; transform:none; } }
+  .qz-q .qq .qtag { display:inline-block; font-size:11.5px; font-weight:800; color:var(--purple-dark); background:var(--purple-bg); border-radius:999px; padding:2px 10px; margin-right:8px; vertical-align:middle; }
+  /* O/X 큰 버튼 */
+  .qz-opts.ox { flex-direction:row; gap:14px; }
+  .qz-opts.ox button { flex:1; flex-direction:column; align-items:center; gap:4px; padding:26px 16px; }
+  .qz-opts.ox button b { font-size:38px; color:var(--purple-dark); line-height:1; }
+  .qz-opts.ox button span { font-size:14px; font-weight:700; color:var(--ink-soft); }
+  .qz-opts.ox button.correct b { color:#16A34A; }
+  .qz-opts.ox button.wrong b { color:#E0526A; }
+  /* 복수 정답 */
+  .qz-multi { display:flex; flex-direction:column; gap:10px; }
+  .qz-multi .mopt { display:flex; align-items:center; gap:11px; text-align:left; font-family:inherit; font-size:15.5px; padding:14px 16px; border:1.5px solid var(--line); background:var(--card); color:var(--ink); border-radius:12px; cursor:pointer; transition:border-color .12s,background .12s; }
+  .qz-multi .mopt::before { content:''; width:20px; height:20px; border-radius:6px; border:2px solid var(--line); flex-shrink:0; }
+  .qz-multi .mopt:hover:not(:disabled) { border-color:var(--purple); }
+  .qz-multi .mopt.sel { border-color:var(--purple); background:var(--purple-bg); }
+  .qz-multi .mopt.sel::before { background:var(--purple); border-color:var(--purple); }
+  .qz-multi .mopt.correct { border-color:#16A34A; background:var(--green-bg,#E7F8EE); }
+  .qz-multi .mopt.wrong { border-color:#E0526A; background:var(--red-bg,#FBECEE); }
+  /* 순서 맞추기 */
+  .qz-order { display:flex; flex-direction:column; gap:8px; }
+  .qz-order.shake { animation:qzShake .4s; }
+  @keyframes qzShake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  .oitem { display:flex; align-items:center; gap:12px; padding:12px 14px; border:1.5px solid var(--line); background:var(--card); border-radius:12px; }
+  .qz-order.done .oitem { border-color:#16A34A; background:var(--green-bg,#E7F8EE); }
+  .oitem .onum { width:24px; height:24px; flex-shrink:0; border-radius:50%; background:var(--purple-bg); color:var(--purple-dark); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; }
+  .oitem .otx { flex:1; font-size:15px; }
+  .oitem .obtns { display:flex; gap:5px; flex-shrink:0; }
+  .oitem .obtns button { width:32px; height:32px; border:1px solid var(--line); background:var(--card); border-radius:8px; cursor:pointer; font-size:14px; color:var(--ink); }
+  .oitem .obtns button:disabled { opacity:.3; cursor:default; }
+  .qz-actions { margin-top:16px; }
+  .qz-actions .chk { font-family:inherit; font-weight:800; font-size:14px; padding:12px 24px; border:none; border-radius:11px; background:var(--purple); color:#fff; cursor:pointer; }
+  .qz-actions .chk:disabled { opacity:.5; cursor:default; }
+  /* 단계 주차 라벨 + 노드 등장 */
+  .pt-week { font-size:12px; font-weight:800; color:#fff; background:var(--purple); border-radius:999px; padding:3px 11px; }
+  .pnode.pop { animation:nodeFade .5s both; }
+  @keyframes nodeFade { from{ opacity:0; } to{ opacity:1; } }
+  @media (prefers-reduced-motion: reduce){ .qz { animation:none; } .pnode.pop { animation:none; } .qz-order.shake { animation:none; } }
   .lp-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
   .lp-head h2 { font-size:23px; margin:0; }
   .lp-sub { font-size:13px; color:var(--ink-soft); margin:5px 0 18px; }
