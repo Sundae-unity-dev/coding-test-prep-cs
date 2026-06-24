@@ -74,6 +74,8 @@
   .go a.ghost { background:transparent; color:var(--purple-dark); border:1px solid var(--line); }
   .note { font-size:12px; color:var(--ink-soft); margin-top:18px; text-align:center; }
   footer { text-align:center; color:var(--ink-soft); font-size:12.5px; padding:24px 18px 40px; }
+  .gbtn { font-family:inherit; border:1px solid var(--line); background:var(--card); color:var(--purple-dark); border-radius:7px; padding:3px 10px; font-weight:800; cursor:pointer; }
+  .gbtn:hover { border-color:var(--purple); }
   @media (max-width:760px){ .grid2 { grid-template-columns:1fr; } }
   @media (max-width:560px){ .cards { grid-template-columns:repeat(2,1fr); } .hero { flex-direction:column; align-items:flex-start; } }
 </style>
@@ -114,6 +116,11 @@
     <div class="stat"><div class="ico">🔁</div><div class="n" id="cReview">0</div><div class="l">복습 대기</div></div>
   </div>
 
+  <div class="sec">
+    <h2>🎮 레벨 &amp; 오늘 목표</h2>
+    <div id="gamiLevel"></div>
+  </div>
+
   <div class="grid2">
     <div class="sec">
       <h2>📊 단계별 진행</h2>
@@ -123,6 +130,12 @@
       <h2>🗓 최근 2주 학습</h2>
       <div class="cal" id="cal"></div>
     </div>
+  </div>
+
+  <div class="sec">
+    <h2>🏅 배지 <span id="gbCount" style="font-size:13px;color:var(--ink-soft);font-weight:700;"></span></h2>
+    <div class="ct-badges" id="gamiBadges"></div>
+    <div id="gamiFreeze" style="margin-top:12px;"></div>
   </div>
 
   <div class="sec">
@@ -146,6 +159,7 @@
 <footer>Elice Track 코딩 테스트 준비자료 | 엘리스 트랙 수강생용</footer>
 
 <script src="assets/problems.js"></script>
+<script defer src="assets/gamify.js"></script>
 <script defer src="assets/config.js"></script>
 <script defer src="assets/tracker.js"></script>
 <script defer src="assets/app.js"></script>
@@ -221,6 +235,36 @@
     ehBox.innerHTML = '<div class="exsum">응시 ' + exams.length + '회, 최고 ' + best + '점, 평균 ' + avg + '점</div>' + rows;
   }
 })();
+</script>
+<script>
+  // 게이미피케이션 패널(레벨/XP, 오늘 목표 조절, 배지 갤러리, 스트릭 프리즈)
+  document.addEventListener('DOMContentLoaded', function () {
+    if (!window.ctGamify) return;
+    function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+    function render() {
+      var g = window.ctGamify.summary();
+      var lvl = document.getElementById('gamiLevel');
+      var goalPct = Math.min(100, Math.round(g.todayXp * 100 / g.dailyGoal));
+      lvl.innerHTML =
+        '<div class="ct-level" style="margin-bottom:16px;"><div class="lv-badge"><small>LV</small><b>' + g.level + '</b></div>' +
+        '<div class="lv-body"><div class="lv-top"><span class="lv-title">' + esc(g.levelTitle) + '</span><span class="lv-xp">누적 ' + g.xp + ' XP</span></div>' +
+        '<div class="lv-bar"><i style="width:' + g.levelPct + '%"></i></div>' +
+        '<div class="lv-top" style="margin-top:5px;"><span class="lv-xp">다음 레벨까지 ' + (g.xpForNext - g.xpInLevel) + ' XP</span></div></div></div>' +
+        '<div class="gg-top" style="display:flex;justify-content:space-between;align-items:baseline;font-size:13px;margin-bottom:6px;"><span style="font-weight:700;">오늘 목표</span><b style="color:#E8590C;font-variant-numeric:tabular-nums;">' + g.todayXp + ' / ' + g.dailyGoal + ' XP</b></div>' +
+        '<div style="height:9px;background:var(--purple-bg);border-radius:999px;overflow:hidden;"><i style="display:block;height:100%;width:' + goalPct + '%;background:linear-gradient(90deg,#F97316,#FB923C);border-radius:999px;transition:width .6s;"></i></div>' +
+        '<div style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;color:var(--ink-soft);">목표 조절 <button class="gbtn" data-d="-5">-5</button><b>' + g.dailyGoal + '</b><button class="gbtn" data-d="5">+5</button> XP/일' + (g.goalMet ? ' <span style="color:var(--green);font-weight:800;margin-left:6px;">오늘 달성!</span>' : '') + '</div>';
+      [].slice.call(lvl.querySelectorAll('.gbtn')).forEach(function (btn) {
+        btn.addEventListener('click', function () { window.ctGamify.setDailyGoal(g.dailyGoal + parseInt(btn.getAttribute('data-d'), 10)); render(); });
+      });
+      var bb = document.getElementById('gamiBadges');
+      bb.innerHTML = g.badges.map(function (b) {
+        return '<div class="ct-badge ' + (b.earned ? 'earned' : 'locked') + '" title="' + esc(b.d) + '"><div class="bg-e">' + b.e + '</div><div class="bg-t">' + esc(b.t) + '</div></div>';
+      }).join('');
+      document.getElementById('gbCount').textContent = g.earnedCount + ' / ' + g.totalBadges;
+      document.getElementById('gamiFreeze').innerHTML = '<span class="ct-freeze">❄️ 스트릭 프리즈 ' + g.freezes + '개</span> <span style="font-size:12.5px;color:var(--ink-soft);">7일 연속마다 1개가 쌓여, 하루 빠져도 연속을 지켜줘요.</span>';
+    }
+    render();
+  });
 </script>
 </body>
 </html>

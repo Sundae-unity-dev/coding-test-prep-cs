@@ -103,3 +103,38 @@ html[data-theme="dark"] .brandlogo { filter: brightness(0) invert(1); }
   65% { transform: scale(1.1) translateY(-1px) rotate(2deg); }
   85% { transform: scale(1.03) rotate(-1deg); }
 }
+
+/* ===== 게이미피케이션 (gamify.js) ===== */
+/* 토스트 */
+.ct-toasts { position: fixed; right: 16px; bottom: 16px; z-index: 4000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+.ct-toast { display: flex; align-items: center; gap: 10px; background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--purple); border-radius: 12px; padding: 11px 15px; box-shadow: 0 10px 28px var(--shadow); opacity: 0; transform: translateY(10px); transition: opacity 0.3s ease, transform 0.3s ease; max-width: 320px; }
+.ct-toast.in { opacity: 1; transform: translateY(0); }
+.ct-toast-e { font-size: 22px; flex-shrink: 0; }
+.ct-toast-tx { display: flex; flex-direction: column; line-height: 1.35; }
+.ct-toast-tx b { font-size: 14px; font-weight: 800; color: var(--ink); }
+.ct-toast-tx span { font-size: 12.5px; color: var(--ink-soft); }
+
+/* 레벨 바 */
+.ct-level { display: flex; align-items: center; gap: 12px; }
+.ct-level .lv-badge { flex-shrink: 0; width: 46px; height: 46px; border-radius: 12px; background: linear-gradient(135deg, var(--purple), #6A2FD0); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 800; line-height: 1; }
+.ct-level .lv-badge small { font-size: 9px; opacity: 0.9; font-weight: 700; }
+.ct-level .lv-badge b { font-size: 18px; }
+.ct-level .lv-body { flex: 1; min-width: 0; }
+.ct-level .lv-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 13px; }
+.ct-level .lv-title { font-weight: 800; color: var(--ink); }
+.ct-level .lv-xp { color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.ct-level .lv-bar { height: 9px; background: var(--purple-bg); border-radius: 999px; overflow: hidden; margin-top: 6px; }
+.ct-level .lv-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--purple), var(--purple-dark)); border-radius: 999px; transition: width 0.7s ease; }
+
+/* 배지 그리드 */
+.ct-badges { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px; }
+.ct-badge { text-align: center; padding: 13px 8px; border-radius: 13px; border: 1px solid var(--line); background: var(--card); }
+.ct-badge .bg-e { font-size: 26px; line-height: 1; }
+.ct-badge .bg-t { font-size: 11.5px; font-weight: 700; color: var(--ink); margin-top: 6px; }
+.ct-badge.locked { opacity: 0.42; filter: grayscale(0.85); }
+.ct-badge.earned { border-color: var(--purple); background: var(--purple-bg); }
+
+/* 프리즈 칩 */
+.ct-freeze { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 700; color: var(--purple-dark); background: var(--purple-bg); border: 1px solid var(--line); border-radius: 999px; padding: 4px 11px; }
+
+@media (prefers-reduced-motion: reduce) { .ct-toast { transition: none; } .ct-level .lv-bar i { transition: none; } }
