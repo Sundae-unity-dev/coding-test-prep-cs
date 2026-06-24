@@ -23,8 +23,13 @@
   // ===== 정준 기록 소스 =====
   function solvedIds() { var s = readObj('ct_practice_solved_v1'); return Object.keys(s).filter(function (k) { return s[k]; }); }
   function quizCorrectIds() {
+    // 개념정리 퀴즈(qN-M) + 학습경로 미니퀴즈(tN-i). 키 패턴이 달라 충돌하지 않는다.
+    var ids = [];
     var q = readObj('ct_concepts_quiz_v1');
-    return Object.keys(q).filter(function (k) { var v = q[k]; return v === true || (v && v.correct); });
+    Object.keys(q).forEach(function (k) { var v = q[k]; if (v === true || (v && v.correct)) ids.push(k); });
+    var p = readObj('ct_path_quiz_v1');
+    Object.keys(p).forEach(function (k) { var v = p[k]; if (v === true || (v && v.correct)) ids.push(k); });
+    return ids;
   }
   function exams() { return readArr('ct_exam_history_v1'); }
   function activity() { return readObj('ct_activity_v1'); }

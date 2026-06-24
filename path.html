@@ -62,6 +62,36 @@
   .plegend .d-cur { background:linear-gradient(135deg,var(--purple),var(--purple-dark)); }
 
   footer { text-align:center; color:var(--ink-soft); font-size:12.5px; padding:24px 18px 40px; }
+
+  /* 개념 미니퀴즈 모달 */
+  .qz-ov { position:fixed; inset:0; background:rgba(20,16,40,.55); display:none; align-items:center; justify-content:center; z-index:500; padding:18px; }
+  .qz-ov.on { display:flex; }
+  .qz { background:var(--card); border:1px solid var(--line); border-radius:18px; max-width:560px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 50px rgba(0,0,0,.3); padding:24px 26px 26px; }
+  .qz-h { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+  .qz-h h2 { font-size:19px; margin:0; }
+  .qz-close { background:none; border:none; font-size:24px; line-height:1; cursor:pointer; color:var(--ink-soft); padding:0 2px; }
+  .qz-close:hover { color:var(--purple-dark); }
+  .qz-sub { font-size:13px; color:var(--ink-soft); margin:4px 0 14px; }
+  .qz-sub a { color:var(--purple-dark); font-weight:700; text-decoration:none; }
+  .qz-sub a:hover { text-decoration:underline; }
+  .qz-prog { height:7px; background:var(--purple-bg); border-radius:999px; overflow:hidden; margin-bottom:18px; }
+  .qz-prog i { display:block; height:100%; width:0; background:linear-gradient(90deg,var(--purple),var(--purple-dark)); border-radius:999px; transition:width .4s ease; }
+  .qz-q { margin-bottom:18px; }
+  .qz-q .qq { font-weight:700; font-size:14.5px; margin-bottom:10px; line-height:1.5; }
+  .qz-q .qq .qn { color:var(--purple-dark); margin-right:7px; }
+  .qz-opts { display:flex; flex-direction:column; gap:8px; }
+  .qz-opts button { text-align:left; font-family:inherit; font-size:14px; padding:11px 14px; border:1.5px solid var(--line); background:var(--card); color:var(--ink); border-radius:10px; cursor:pointer; transition:border-color .12s, background .12s; }
+  .qz-opts button:hover:not(:disabled) { border-color:var(--purple); background:var(--purple-bg); }
+  .qz-opts button:disabled { cursor:default; }
+  .qz-opts button.correct { border-color:#16A34A; background:var(--green-bg,#E7F8EE); color:var(--ink); font-weight:700; }
+  .qz-opts button.wrong { border-color:#E0526A; background:var(--red-bg,#FBECEE); }
+  .qz-ex { font-size:13px; color:var(--ink-soft); line-height:1.55; margin-top:9px; padding:10px 13px; background:var(--purple-bg); border-radius:9px; display:none; }
+  .qz-ex.show { display:block; }
+  .qz-ex b { color:var(--purple-dark); }
+  .qz-done { margin-top:6px; padding:14px; text-align:center; background:var(--purple-bg); border-radius:12px; }
+  .qz-done .big { font-size:17px; font-weight:800; color:var(--purple-dark); }
+  .qz-done .sm { font-size:13px; color:var(--ink-soft); margin-top:4px; }
+  @media (prefers-reduced-motion: reduce){ .qz-prog i { transition:none; } }
 </style>
 </head>
 <body>
@@ -89,91 +119,16 @@
   <div id="pathRoot"></div>
 </div>
 
+<div class="qz-ov" id="qzOv"><div class="qz" id="qzBox" role="dialog" aria-modal="true"></div></div>
+
 <footer>Elice Track 코딩 테스트 준비자료 | 엘리스 트랙 수강생용</footer>
 
 <script src="assets/problems.js"></script>
+<script src="assets/concept-quiz.js"></script>
 <script defer src="assets/config.js"></script>
 <script defer src="assets/tracker.js"></script>
 <script defer src="assets/app.js"></script>
 <script defer src="assets/gamify.js"></script>
-<script>
-(function () {
-  function readObj(k) { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch (e) { return {}; } }
-  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
-  var ALL = window.CT_PROBLEMS || [];
-  var CONCEPTS = window.CT_CONCEPTS || [];
-  var solved = readObj('ct_practice_solved_v1');
-  var quiz = readObj('ct_concepts_quiz_v1');
-  var TIERS = ['입문', '기초', '중급', '심화'];
-  var examples = ALL.filter(function (p) { return !p.g; });
-  var gichul = ALL.filter(function (p) { return p.g; });
-
-  // 개념 레슨 진척: 해당 주제(tN)의 퀴즈(qN-1, qN-2) 중 답한 개수(맞/틀 무관, 사이트 공통 "완료" 기준).
-  // 퀴즈는 한 번 답하면 잠겨 재시도가 없으므로 "정답"이 아니라 "응답"을 완료 신호로 쓴다.
-  function lessonAnswered(c) {
-    var pre = 'q' + c.id.slice(1) + '-', n = 0;
-    for (var k in quiz) { if (quiz.hasOwnProperty(k) && k.indexOf(pre) === 0 && quiz[k]) n++; }
-    return n > 2 ? 2 : n;
-  }
-  function lessonDone(c) { return lessonAnswered(c) >= 2; }
-
-  // 전체를 한 줄로(단계별: 개념 레슨 → 그 단계 문제) 늘어놓고 첫 미완료를 "지금 할 차례"로 표시
-  var seqNodes = [];
-  TIERS.forEach(function (t) {
-    CONCEPTS.filter(function (c) { return c.lv === t; }).forEach(function (c) { seqNodes.push({ k: 'L', c: c }); });
-    examples.filter(function (p) { return p.lv === t; }).forEach(function (p) { seqNodes.push({ k: 'P', p: p }); });
-  });
-  gichul.forEach(function (p) { seqNodes.push({ k: 'P', p: p }); });
-  function nodeDone(nd) { return nd.k === 'L' ? lessonDone(nd.c) : !!solved[nd.p.id]; }
-  function nodeKey(nd) { return nd.k === 'L' ? 'L:' + nd.c.id : 'P:' + nd.p.id; }
-  var currentKey = null;
-  for (var i = 0; i < seqNodes.length; i++) { if (!nodeDone(seqNodes[i])) { currentKey = nodeKey(seqNodes[i]); break; } }
-
-  var gi = 0; // 굽이(winding) 인덱스. 모든 노드를 가로질러 연속으로 구불구불
-  function wind() { var off = Math.round(Math.sin(gi * 0.8) * 70); gi++; return off; }
-
-  function lessonNode(c) {
-    var ans = lessonAnswered(c), done = ans >= 2;
-    var cur = ('L:' + c.id) === currentKey;
-    var cls = 'lesson ' + (done ? 'done' : (cur ? 'current' : 'todo'));
-    var now = cur ? '<span class="pnow">지금 배우기</span>' : '';
-    return '<div class="pnode ' + cls + '" style="transform:translateX(' + wind() + 'px)">' +
-      '<a class="pcircle" href="concepts.html#' + c.id + '" title="개념: ' + esc(c.t) + '">' + (done ? '✓' : '📖') + '</a>' +
-      '<span class="plabel">개념: ' + esc(c.t) + '</span><span class="pquiz">퀴즈 ' + ans + '/2</span>' + now + '</div>';
-  }
-  function probNode(p, seq) {
-    var done = !!solved[p.id], cur = ('P:' + p.id) === currentKey;
-    var cls = done ? 'done' : (cur ? 'current' : 'todo');
-    var now = cur ? '<span class="pnow">지금 도전</span>' : '';
-    return '<div class="pnode ' + cls + '" style="transform:translateX(' + wind() + 'px)">' +
-      '<a class="pcircle" href="run/?problem=' + encodeURIComponent(p.id) + '" title="문제: ' + esc(p.t) + '">' + (done ? '✓' : seq) + '</a>' +
-      '<span class="plabel">' + esc(p.t) + '</span>' + now + '</div>';
-  }
-
-  var html = '', seq = 0;
-  TIERS.forEach(function (t) {
-    var cs = CONCEPTS.filter(function (c) { return c.lv === t; });
-    var ps = examples.filter(function (p) { return p.lv === t; });
-    if (!cs.length && !ps.length) return;
-    var ld = cs.filter(lessonDone).length, pd = ps.filter(function (p) { return solved[p.id]; }).length;
-    html += '<div class="pt-head"><span class="pt-name">' + t + '</span><span class="pt-prog">개념 ' + ld + '/' + cs.length + ', 문제 ' + pd + '/' + ps.length + '</span></div>';
-    var nodes = cs.map(lessonNode).concat(ps.map(function (p) { seq++; return probNode(p, seq); }));
-    html += '<div class="ptrack">' + nodes.join('') + '</div>';
-  });
-  if (gichul.length) {
-    var gdone = gichul.filter(function (p) { return solved[p.id]; }).length;
-    html += '<div class="pt-head"><span class="pt-name">기출 변형</span><span class="pt-prog">문제 ' + gdone + '/' + gichul.length + '</span></div>';
-    html += '<div class="ptrack">' + gichul.map(function (p) { seq++; return probNode(p, seq); }).join('') + '</div>';
-  }
-  document.getElementById('pathRoot').innerHTML = html;
-
-  // 전체 진행: 개념 레슨 + 예시 문제 합산
-  var lTot = CONCEPTS.length, lDone = CONCEPTS.filter(lessonDone).length;
-  var pTot = examples.length, pDone = examples.filter(function (p) { return solved[p.id]; }).length;
-  var totDone = lDone + pDone, tot = lTot + pTot, pct = tot ? Math.round(totDone * 100 / tot) : 0;
-  document.getElementById('poverall').innerHTML =
-    '<span>전체 진행</span><span class="pbar"><i style="width:' + pct + '%"></i></span><b>' + totDone + ' / ' + tot + '</b>';
-})();
-</script>
+<script defer src="assets/path-app.js"></script>
 </body>
 </html>

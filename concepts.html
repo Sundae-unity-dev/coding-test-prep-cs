@@ -36,7 +36,7 @@
 
   /* ===== 사이드바 ===== */
   aside {
-    width: 264px; flex-shrink: 0;
+    width: 300px; flex-shrink: 0;
     background: var(--card); border-right: 1px solid var(--line);
     position: sticky; top: 0; height: 100vh;
     display: flex; flex-direction: column;
@@ -49,14 +49,16 @@
   aside .brand .sitebrand:hover { color: var(--purple-dark); }
   aside .brand h1 { font-size: 16.5px; font-weight: 800; color: var(--purple-dark); }
   aside .brand p { font-size: 12.5px; color: var(--ink-soft); margin-top: 2px; }
-  aside .brand .links { display: flex; gap: 6px; margin-top: 12px; }
+  /* 페이지 링크는 2열 그리드, 마이페이지 알약은 아래 한 줄을 통째로 차지(튀어나옴 방지) */
+  aside .brand .links { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 12px; }
   aside .brand .links a {
-    flex: 1; text-align: center; text-decoration: none;
+    text-align: center; text-decoration: none;
     font-size: 12.5px; font-weight: 700; color: var(--purple-dark);
     background: var(--purple-bg); border: 1px solid var(--line);
     border-radius: 8px; padding: 7px 4px; transition: all 0.15s;
   }
   aside .brand .links a:hover { background: var(--purple); color: #fff; border-color: var(--purple); }
+  aside .brand .links a.mypage-link { grid-column: 1 / -1; justify-content: center; padding: 8px 14px; }
   aside .search { padding: 12px 14px; border-bottom: 1px solid var(--line); }
   aside .search input {
     width: 100%; padding: 9px 12px;
@@ -154,6 +156,14 @@
   pre .st { color: #C3E88D; }
   pre .ty { color: #82AAFF; }
   pre .nm { color: #F78C6C; }
+
+  /* 다국어 코드 토글 (C# / Python / JavaScript) */
+  .mlcode { margin-top: 12px; }
+  .ml-tabs { display: flex; gap: 4px; }
+  .ml-tabs button { font-family: inherit; font-size: 12.5px; font-weight: 700; padding: 5px 14px; border: 1px solid var(--line); border-bottom: none; background: var(--card); color: var(--ink-soft); border-radius: 9px 9px 0 0; cursor: pointer; transition: color 0.12s; }
+  .ml-tabs button:hover { color: var(--purple-dark); }
+  .ml-tabs button.on { background: var(--code-bg); color: #fff; border-color: var(--code-bg); }
+  .mlcode pre { margin-top: 0; border-top-left-radius: 0; }
 
   /* ===== 정답 토글 (전역 .reveal 스크롤 등장과 분리) ===== */
   .codesol { margin-top: 12px; }
@@ -2281,6 +2291,8 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
   if (brandP) { var d = document.createElement('div'); d.className = 'side-progress'; d.textContent = '퀴즈 ' + qn + '/' + document.querySelectorAll('.quiz').length + ', 문제 ' + sn + '/' + ((window.CT_PROBLEMS || []).length || 63) + ' 진행 중'; brandP.parentNode.insertBefore(d, brandP.nextSibling); }
 })();
 </script>
+<script src="assets/concept-code.js"></script>
+<script defer src="assets/concept-ml.js"></script>
 <script defer src="assets/config.js"></script>
 <script defer src="assets/tracker.js"></script>
 <script defer src="assets/app.js"></script>
