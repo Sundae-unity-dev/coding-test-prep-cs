@@ -18,7 +18,7 @@
   nav a:hover { color:var(--purple-dark); }
   nav a.on { color:var(--purple-dark); }
   .sitebrand { display:flex; align-items:center; gap:8px; font-weight:800; color:var(--ink); font-size:15px; }
-  .wrap { max-width:720px; margin:0 auto; padding:24px 18px 90px; }
+  .wrap { max-width:1080px; margin:0 auto; padding:24px 18px 90px; }
 
   .phead { text-align:center; margin-bottom:18px; }
   .phead h1 { font-size:26px; margin:0 0 6px; }
@@ -28,29 +28,36 @@
   .poverall .pbar i { display:block; height:100%; background:linear-gradient(90deg,var(--purple),var(--purple-dark)); border-radius:999px; }
   .poverall b { color:var(--purple-dark); }
 
-  .pt-head { display:flex; align-items:center; gap:10px; justify-content:center; margin:26px 0 6px; }
-  .pt-name { font-size:16px; font-weight:800; padding:4px 14px; border-radius:999px; background:var(--purple-bg); color:var(--purple-dark); }
-  .pt-prog { font-size:12.5px; color:var(--ink-soft); font-weight:700; }
+  /* 2단: 왼쪽 경로 + 오른쪽 풀이 패널 */
+  .path-layout { display:grid; grid-template-columns:300px 1fr; gap:24px; align-items:start; margin-top:8px; }
+  .path-col { min-width:0; }
+  .lesson-col { position:sticky; top:74px; background:var(--card); border:1px solid var(--line); border-radius:18px; padding:24px 26px; min-height:440px; box-shadow:0 8px 24px var(--shadow); }
+  @media (max-width:860px){ .path-layout { grid-template-columns:1fr; } .lesson-col { position:static; } }
 
-  .ptrack { position:relative; padding:10px 0; }
-  .ptrack::before { content:''; position:absolute; left:50%; top:18px; bottom:18px; width:3px; background:var(--line); transform:translateX(-50%); border-radius:2px; }
+  .pt-head { display:flex; align-items:center; gap:10px; justify-content:center; margin:22px 0 6px; }
+  .pt-name { font-size:15px; font-weight:800; padding:4px 13px; border-radius:999px; background:var(--purple-bg); color:var(--purple-dark); }
+  .pt-prog { font-size:12px; color:var(--ink-soft); font-weight:700; }
+
+  .ptrack { position:relative; padding:8px 0; }
+  .ptrack::before { content:''; position:absolute; left:50%; top:16px; bottom:16px; width:3px; background:var(--line); transform:translateX(-50%); border-radius:2px; }
   .pnode { position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; width:max-content; margin:0 auto; }
-  .pnode + .pnode { margin-top:14px; }
-  .pcircle { width:58px; height:58px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:17px; text-decoration:none; border:3px solid var(--line); background:var(--card); color:var(--ink-soft); box-shadow:0 4px 10px var(--shadow); transition:transform .15s ease; }
-  .pcircle:hover { transform:scale(1.07); }
+  .pnode + .pnode { margin-top:12px; }
+  .pcircle { width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px; text-decoration:none; border:3px solid var(--line); background:var(--card); color:var(--ink-soft); box-shadow:0 4px 10px var(--shadow); transition:transform .15s ease; cursor:pointer; }
+  .pcircle:hover { transform:scale(1.08); }
   .pnode.done .pcircle { background:linear-gradient(135deg,#16A34A,#22C55E); border-color:#16A34A; color:#fff; }
   .pnode.current .pcircle { background:linear-gradient(135deg,var(--purple),var(--purple-dark)); border-color:var(--purple); color:#fff; animation:pPulse 1.5s ease-in-out infinite; }
-  .plabel { font-size:12px; color:var(--ink-soft); margin-top:5px; max-width:150px; text-align:center; line-height:1.3; }
+  .pnode.active .pcircle { box-shadow:0 0 0 4px var(--purple-bg), 0 4px 10px var(--shadow); }
+  .plabel { font-size:11.5px; color:var(--ink-soft); margin-top:5px; max-width:120px; text-align:center; line-height:1.3; }
   .pnode.current .plabel { color:var(--purple-dark); font-weight:800; }
-  .pnow { font-size:11px; font-weight:800; color:#fff; background:var(--purple); border-radius:999px; padding:2px 10px; margin-top:5px; }
-  @keyframes pPulse { 0%,100%{ box-shadow:0 0 0 0 rgba(136,67,255,.5); } 50%{ box-shadow:0 0 0 9px rgba(136,67,255,0); } }
+  .pnow { font-size:10.5px; font-weight:800; color:#fff; background:var(--purple); border-radius:999px; padding:2px 9px; margin-top:4px; }
+  @keyframes pPulse { 0%,100%{ box-shadow:0 0 0 0 rgba(136,67,255,.5); } 50%{ box-shadow:0 0 0 8px rgba(136,67,255,0); } }
   @media (prefers-reduced-motion: reduce){ .pnode.current .pcircle{ animation:none; } }
 
   /* 개념 레슨 노드: 문제(회색 원)와 구분되게 보라 톤 + 📖 */
-  .pnode.lesson .pcircle { font-size:22px; }
+  .pnode.lesson .pcircle { font-size:20px; }
   .pnode.lesson.todo .pcircle { background:var(--purple-bg); border-color:var(--purple); color:var(--purple-dark); }
   .pnode.lesson .plabel { color:var(--purple-dark); font-weight:700; }
-  .pquiz { font-size:10.5px; font-weight:800; color:var(--purple-dark); background:var(--purple-bg); border:1px solid var(--line); border-radius:999px; padding:1px 9px; margin-top:4px; }
+  .pquiz { font-size:10px; font-weight:800; color:var(--purple-dark); background:var(--purple-bg); border:1px solid var(--line); border-radius:999px; padding:1px 8px; margin-top:4px; }
   .pnode.lesson.done .pquiz { color:var(--green,#16A34A); }
 
   /* 범례 */
@@ -63,35 +70,49 @@
 
   footer { text-align:center; color:var(--ink-soft); font-size:12.5px; padding:24px 18px 40px; }
 
-  /* 개념 미니퀴즈 모달 */
-  .qz-ov { position:fixed; inset:0; background:rgba(20,16,40,.55); display:none; align-items:center; justify-content:center; z-index:500; padding:18px; }
-  .qz-ov.on { display:flex; }
-  .qz { background:var(--card); border:1px solid var(--line); border-radius:18px; max-width:560px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 50px rgba(0,0,0,.3); padding:24px 26px 26px; }
-  .qz-h { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
-  .qz-h h2 { font-size:19px; margin:0; }
-  .qz-close { background:none; border:none; font-size:24px; line-height:1; cursor:pointer; color:var(--ink-soft); padding:0 2px; }
-  .qz-close:hover { color:var(--purple-dark); }
-  .qz-sub { font-size:13px; color:var(--ink-soft); margin:4px 0 14px; }
-  .qz-sub a { color:var(--purple-dark); font-weight:700; text-decoration:none; }
-  .qz-sub a:hover { text-decoration:underline; }
-  .qz-prog { height:7px; background:var(--purple-bg); border-radius:999px; overflow:hidden; margin-bottom:18px; }
-  .qz-prog i { display:block; height:100%; width:0; background:linear-gradient(90deg,var(--purple),var(--purple-dark)); border-radius:999px; transition:width .4s ease; }
-  .qz-q { margin-bottom:18px; }
-  .qz-q .qq { font-weight:700; font-size:14.5px; margin-bottom:10px; line-height:1.5; }
-  .qz-q .qq .qn { color:var(--purple-dark); margin-right:7px; }
-  .qz-opts { display:flex; flex-direction:column; gap:8px; }
-  .qz-opts button { text-align:left; font-family:inherit; font-size:14px; padding:11px 14px; border:1.5px solid var(--line); background:var(--card); color:var(--ink); border-radius:10px; cursor:pointer; transition:border-color .12s, background .12s; }
+  /* 오른쪽 풀이 패널 */
+  .lp-empty { color:var(--ink-soft); font-size:15px; text-align:center; padding:54px 10px; line-height:1.7; }
+  .lp-empty .big { font-size:34px; display:block; margin-bottom:10px; }
+  .lp-empty .start { display:inline-block; margin-top:16px; font-weight:800; font-size:14.5px; padding:11px 20px; border-radius:11px; background:var(--purple); color:#fff; border:none; font-family:inherit; cursor:pointer; }
+  .lp-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+  .lp-head h2 { font-size:21px; margin:0; }
+  .lp-sub { font-size:13px; color:var(--ink-soft); margin:4px 0 16px; }
+  .lp-sub a { color:var(--purple-dark); font-weight:700; text-decoration:none; }
+  .lp-sub a:hover { text-decoration:underline; }
+  .lp-close { background:none; border:none; font-size:24px; line-height:1; cursor:pointer; color:var(--ink-soft); }
+  .lp-close:hover { color:var(--purple-dark); }
+  .lp-prog { display:flex; align-items:center; gap:10px; margin-bottom:20px; }
+  .lp-prog .bar { flex:1; height:8px; background:var(--purple-bg); border-radius:999px; overflow:hidden; }
+  .lp-prog .bar i { display:block; height:100%; width:0; background:linear-gradient(90deg,var(--purple),var(--purple-dark)); border-radius:999px; transition:width .4s ease; }
+  .lp-prog .n { font-size:13px; font-weight:800; color:var(--purple-dark); white-space:nowrap; }
+  .qz-q .qq { font-weight:700; font-size:17px; margin-bottom:16px; line-height:1.6; }
+  .qz-q .qq .qn { color:var(--purple-dark); margin-right:8px; }
+  .qz-q .qq .blank { color:var(--purple-dark); font-weight:800; border-bottom:2px solid var(--purple); padding:0 14px; }
+  .qz-opts { display:flex; flex-direction:column; gap:10px; }
+  .qz-opts button { text-align:left; font-family:inherit; font-size:15px; padding:14px 16px; border:1.5px solid var(--line); background:var(--card); color:var(--ink); border-radius:11px; cursor:pointer; transition:border-color .12s, background .12s; }
   .qz-opts button:hover:not(:disabled) { border-color:var(--purple); background:var(--purple-bg); }
   .qz-opts button:disabled { cursor:default; }
-  .qz-opts button.correct { border-color:#16A34A; background:var(--green-bg,#E7F8EE); color:var(--ink); font-weight:700; }
+  .qz-opts button.correct { border-color:#16A34A; background:var(--green-bg,#E7F8EE); font-weight:700; }
   .qz-opts button.wrong { border-color:#E0526A; background:var(--red-bg,#FBECEE); }
-  .qz-ex { font-size:13px; color:var(--ink-soft); line-height:1.55; margin-top:9px; padding:10px 13px; background:var(--purple-bg); border-radius:9px; display:none; }
+  .qz-fill { display:flex; gap:8px; flex-wrap:wrap; }
+  .qz-fill input { flex:1; min-width:160px; font-family:inherit; font-size:15px; padding:13px 15px; border:1.5px solid var(--line); border-radius:11px; background:var(--card); color:var(--ink); outline:none; }
+  .qz-fill input:focus { border-color:var(--purple); }
+  .qz-fill input.correct { border-color:#16A34A; background:var(--green-bg,#E7F8EE); }
+  .qz-fill input.wrong { border-color:#E0526A; background:var(--red-bg,#FBECEE); }
+  .qz-fill .chk { font-family:inherit; font-weight:800; font-size:14px; padding:0 20px; border:none; border-radius:11px; background:var(--purple); color:#fff; cursor:pointer; }
+  .qz-fill .chk:disabled { opacity:.5; cursor:default; }
+  .qz-ex { font-size:13.5px; color:var(--ink-soft); line-height:1.6; margin-top:14px; padding:12px 14px; background:var(--purple-bg); border-radius:10px; display:none; }
   .qz-ex.show { display:block; }
   .qz-ex b { color:var(--purple-dark); }
-  .qz-done { margin-top:6px; padding:14px; text-align:center; background:var(--purple-bg); border-radius:12px; }
-  .qz-done .big { font-size:17px; font-weight:800; color:var(--purple-dark); }
-  .qz-done .sm { font-size:13px; color:var(--ink-soft); margin-top:4px; }
-  @media (prefers-reduced-motion: reduce){ .qz-prog i { transition:none; } }
+  .lp-nav { display:flex; justify-content:space-between; gap:10px; margin-top:22px; }
+  .lp-nav button { font-family:inherit; font-weight:700; font-size:14px; padding:10px 18px; border-radius:10px; border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer; }
+  .lp-nav button:disabled { opacity:.4; cursor:default; }
+  .lp-nav .next { background:var(--purple); color:#fff; border-color:var(--purple); }
+  .qz-done { margin-top:18px; padding:18px; text-align:center; background:var(--purple-bg); border-radius:14px; }
+  .qz-done .big { font-size:19px; font-weight:800; color:var(--purple-dark); }
+  .qz-done .sm { font-size:13.5px; color:var(--ink-soft); margin-top:5px; }
+  .qz-done .nextlesson { display:inline-block; margin-top:12px; font-weight:800; font-size:14px; padding:10px 18px; border-radius:10px; background:var(--purple); color:#fff; border:none; font-family:inherit; cursor:pointer; }
+  @media (prefers-reduced-motion: reduce){ .lp-prog .bar i { transition:none; } }
 </style>
 </head>
 <body>
@@ -108,7 +129,7 @@
 <div class="wrap">
   <header class="phead">
     <h1>학습 경로</h1>
-    <p>개념을 한 입씩 배우고 바로 문제로 이어 풀며, 입문부터 심화까지 길을 따라 정복해요.</p>
+    <p>왼쪽 길에서 개념을 고르면, 오른쪽에서 그 개념을 이해했는지 확인하는 문제를 풀어요.</p>
     <div class="poverall" id="poverall"></div>
     <div class="plegend">
       <span><i class="dot d-lesson"></i>📖 개념 레슨</span>
@@ -116,10 +137,11 @@
       <span><i class="dot d-done"></i>완료</span>
     </div>
   </header>
-  <div id="pathRoot"></div>
+  <div class="path-layout">
+    <aside class="path-col" id="pathRoot"></aside>
+    <section class="lesson-col" id="lessonPanel"></section>
+  </div>
 </div>
-
-<div class="qz-ov" id="qzOv"><div class="qz" id="qzBox" role="dialog" aria-modal="true"></div></div>
 
 <footer>Elice Track 코딩 테스트 준비자료 | 엘리스 트랙 수강생용</footer>
 
