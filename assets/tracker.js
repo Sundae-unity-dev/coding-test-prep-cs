@@ -119,11 +119,22 @@
     window.addEventListener('pagehide', flush);
   }
 
+  // 주간 XP 전송(공개 리더보드용). gamify.js 준비 후 1회 + 이탈 시.
+  function sendXp() {
+    try {
+      if (!window.ctGamify || !window.ctGamify.weekly) return;
+      var w = window.ctGamify.weekly();
+      window.ctTrack('xp', { week: w.weekKey, weekXp: w.weekXp, totalXp: w.totalXp });
+    } catch (e) {}
+  }
+
   function init() {
     ensureVisitor(function () {
       window.ctTrack('visit', { page: pageName() });
       startConceptObserver();
       startHeartbeat();
+      setTimeout(sendXp, 2000);                 // gamify 준비될 시간을 주고 전송
+      window.addEventListener('pagehide', sendXp);
     });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

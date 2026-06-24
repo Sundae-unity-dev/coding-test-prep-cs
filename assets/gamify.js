@@ -178,6 +178,25 @@
 
   function setDailyGoal(n) { n = Math.max(5, Math.min(200, parseInt(n, 10) || 20)); try { localStorage.setItem('ct_daily_goal_v1', String(n)); } catch (e) {} return n; }
 
+  // 주간 XP(공개 리더보드용). ISO 주 단위.
+  function isoWeek(d) {
+    d = d || new Date();
+    var t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    var day = t.getUTCDay() || 7;
+    t.setUTCDate(t.getUTCDate() + 4 - day);
+    var ys = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+    var wk = Math.ceil((((t - ys) / 86400000) + 1) / 7);
+    return t.getUTCFullYear() + '-W' + String(wk).padStart(2, '0');
+  }
+  function weekly() {
+    var log = readObj('ct_xp_log_v1'), wk = isoWeek(), sum = 0;
+    Object.keys(log).forEach(function (d) {
+      var p = d.split('-');
+      if (p.length === 3 && isoWeek(new Date(+p[0], +p[1] - 1, +p[2])) === wk) sum += log[d];
+    });
+    return { weekKey: wk, weekXp: sum, totalXp: lifetimeXp() };
+  }
+
   // ===== 로드 시 1회 실행: reconcile + 배지 평가 + 토스트 알림(중복 방지) =====
   function run() {
     reconcile();
@@ -195,7 +214,7 @@
     write('ct_gamify_announce_v1', ann);
   }
 
-  window.ctGamify = { summary: summary, setDailyGoal: setDailyGoal, computeStreak: computeStreak, lifetimeXp: lifetimeXp, BADGES: BADGES, _run: run };
+  window.ctGamify = { summary: summary, setDailyGoal: setDailyGoal, computeStreak: computeStreak, lifetimeXp: lifetimeXp, weekly: weekly, isoWeek: isoWeek, BADGES: BADGES, _run: run };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
   else run();
