@@ -1,7 +1,7 @@
 // 사이트 셸 서비스 워커. 설치(PWA) + 오프라인. 정적 페이지/자산을 stale-while-revalidate로 캐시.
 // 런박스(/run/)는 자체 SW(service-worker.js)가 더 구체적 스코프로 담당하므로 여기선 건드리지 않아요.
 var BASE = '/coding-test-prep-cs/';
-var CACHE = 'ctcamp-shell-v17';
+var CACHE = 'ctcamp-shell-v18';
 var SHELL = [
   BASE, BASE + 'index.html', BASE + 'guide.html', BASE + 'concepts.html', BASE + 'practice.html', BASE + 'gichul.html', BASE + 'progress.html',
   BASE + 'assets/app.css', BASE + 'assets/app.js', BASE + 'assets/config.js', BASE + 'assets/tracker.js', BASE + 'assets/problems.js',
