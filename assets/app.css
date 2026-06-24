@@ -84,4 +84,5 @@ summary:focus-visible, [tabindex]:focus-visible {
 /* ===== 브랜드 로고 (엘리스 트랙) ===== */
 .brandlogo { height: 22px; width: auto; vertical-align: middle; display: inline-block; }
 .brandsub { font-weight: 800; margin-left: 9px; vertical-align: middle; letter-spacing: -0.01em; }
-html[data-theme="dark"] .brandlogo { filter: brightness(1.25); }
+/* 다크 모드: 보라 워드마크가 어두운 배경에 묻히므로 또렷한 흰색으로 렌더 */
+html[data-theme="dark"] .brandlogo { filter: brightness(0) invert(1); }
