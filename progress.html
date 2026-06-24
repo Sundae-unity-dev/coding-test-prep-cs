@@ -43,6 +43,11 @@
   .stat .ico { font-size:18px; margin-bottom:7px; }
   .stat .n { font-size:24px; font-weight:800; color:var(--purple-dark); font-variant-numeric:tabular-nums; }
   .stat .l { font-size:12.5px; color:var(--ink-soft); margin-top:2px; }
+  /* 연속 학습 활성 시 은은한 잉걸불 글로우 + 따뜻한 숫자색 */
+  .streakcard.active { animation:ctEmber 1.6s ease-in-out infinite; }
+  .streakcard.active .n { color:#E8590C; }
+  @keyframes ctEmber { 0%,100%{ box-shadow:0 6px 18px var(--shadow); } 50%{ box-shadow:0 6px 18px var(--shadow), 0 0 16px 1px rgba(255,110,0,.22); } }
+  @media (prefers-reduced-motion: reduce){ .streakcard.active { animation:none; } }
 
   .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
   .sec { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:20px 22px; margin-bottom:16px; box-shadow:0 6px 18px var(--shadow); }
@@ -109,7 +114,7 @@
 
   <div class="cards">
     <div class="stat"><div class="ico">🧩</div><div class="n" id="cSolve">0 / 63</div><div class="l">푼 문제</div></div>
-    <div class="stat"><div class="ico">🔥</div><div class="n" id="cStreak">0일</div><div class="l">연속 학습</div></div>
+    <div class="stat streakcard"><div class="ico" id="streakIco">🔥</div><div class="n" id="cStreak">0일</div><div class="l">연속 학습</div></div>
     <div class="stat"><div class="ico">📘</div><div class="n" id="cQuiz">0 / 40</div><div class="l">개념 퀴즈</div></div>
     <div class="stat"><div class="ico">🔁</div><div class="n" id="cReview">0</div><div class="l">복습 대기</div></div>
   </div>
@@ -176,6 +181,13 @@
 
   document.getElementById('cSolve').textContent = solvedN + ' / ' + TOTAL;
   document.getElementById('cStreak').textContent = streak + '일';
+  // 연속 학습 중이면 불꽃이 이글이글 타게(7일 이상이면 더 강하게)
+  if (streak > 0) {
+    var si = document.getElementById('streakIco');
+    if (si) si.className = 'ico flame' + (streak >= 7 ? ' hot' : '');
+    var sc = document.querySelector('.streakcard');
+    if (sc) sc.classList.add('active');
+  }
   document.getElementById('cQuiz').textContent = quizN + ' / 40';
   document.getElementById('cReview').textContent = reviewN;
   document.getElementById('reviewLink').textContent = reviewN ? ('복습할 문제 ' + reviewN + '개 보기') : '복습할 문제 보기';

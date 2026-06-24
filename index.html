@@ -35,12 +35,6 @@
     font-weight: 800; font-size: 16px; color: var(--ink); text-decoration: none;
     justify-self: start;
   }
-  nav .brand .mark {
-    width: 30px; height: 30px; border-radius: 8px; color: #fff;
-    background: linear-gradient(135deg, #6A2FD0, #8843FF);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 15px; font-weight: 800;
-  }
   nav .links { display: flex; gap: 2px; align-items: center; justify-self: center; list-style: none; }
   nav .links > li { position: relative; }
   nav .links > li > a {
@@ -463,7 +457,8 @@
       while (act[ymd(d)]) { s++; d.setDate(d.getDate() - 1); }
       var dots = '';
       for (var i = 13; i >= 0; i--) { var dd = new Date(); dd.setDate(dd.getDate() - i); dots += '<span class="sd' + (act[ymd(dd)] ? ' on' : '') + '" title="' + ymd(dd) + '"></span>'; }
-      document.getElementById('streakBox').innerHTML = '<div class="sk-num">🔥 연속 학습 <b>' + s + '</b>일</div><div class="sk-cal">' + dots + '</div>';
+      var fire = s > 0 ? '<span class="flame' + (s >= 7 ? ' hot' : '') + '">🔥</span>' : '🔥';
+      document.getElementById('streakBox').innerHTML = '<div class="sk-num">' + fire + ' 연속 학습 <b>' + s + '</b>일</div><div class="sk-cal">' + dots + '</div>';
     })();
 
     // 오늘의 문제 (practice 와 동일한 날짜 시드 + 동일 순서)
