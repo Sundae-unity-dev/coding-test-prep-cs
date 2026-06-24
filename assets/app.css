@@ -80,7 +80,7 @@ summary:focus-visible, [tabindex]:focus-visible {
 /* 고정 짙은 보라(#6A2FD0) + 흰 글씨 = 라이트/다크 모두 대비 약 7:1(WCAG AAA).
    !important 는 일부 페이지의 .links a 등 더 구체적인 셀렉터가 배경을 덮어
    알약이 깨지는(흰 글씨가 안 보이는) 것을 막기 위함. */
-.mypage-link { display: inline-flex; align-items: center; gap: 5px; padding: 6px 14px; border-radius: 999px; background: #6A2FD0 !important; color: #fff !important; font-weight: 800 !important; box-shadow: 0 3px 10px rgba(136, 67, 255, 0.3); white-space: nowrap; }
+.mypage-link { display: inline-flex; align-items: center; gap: 5px; padding: 6px 14px; border-radius: 999px; background: #6A2FD0 !important; color: #fff !important; font-weight: 800 !important; text-decoration: none !important; box-shadow: 0 3px 10px rgba(136, 67, 255, 0.3); white-space: nowrap; }
 .mypage-link::before { content: "👤"; font-size: 12px; }
 .mypage-link:hover { background: #581FB0 !important; color: #fff !important; }
 
