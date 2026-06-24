@@ -82,7 +82,28 @@
   .next-step .row a.line:hover { background: var(--purple-bg); }
 
   /* ===== 공통 레이아웃 ===== */
-  main { max-width: 1000px; margin: 0 auto; padding: 24px 20px 80px; }
+  main { max-width: 1120px; margin: 0 auto; padding: 24px 20px 80px; display: grid; grid-template-columns: 230px 1fr; gap: 30px; align-items: start; }
+  .guide-content { min-width: 0; }
+  .guide-content section, #diag { scroll-margin-top: 66px; }
+  /* 로드맵식 사이드 목차(섹션 바로가기) */
+  .guide-toc { position: sticky; top: 70px; align-self: start; }
+  .guide-toc .toc-title { font-size: 12px; font-weight: 800; color: var(--ink-soft); letter-spacing: .06em; margin: 0 0 10px 4px; }
+  .guide-toc .toc-list { position: relative; }
+  .guide-toc .toc-list::before { content: ''; position: absolute; left: 23px; top: 18px; bottom: 18px; width: 2px; background: var(--line); }
+  .guide-toc a { position: relative; display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 10px; text-decoration: none; color: var(--ink-soft); font-size: 13.5px; font-weight: 600; transition: background .12s, color .12s; }
+  .guide-toc a .tnum { position: relative; z-index: 1; width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%; background: var(--card); color: var(--purple-dark); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; border: 1.5px solid var(--line); transition: all .12s; }
+  .guide-toc a:hover { background: var(--purple-bg); color: var(--purple-dark); }
+  .guide-toc a.active { background: var(--purple-bg); color: var(--purple-dark); font-weight: 800; }
+  .guide-toc a.active .tnum { background: var(--purple); color: #fff; border-color: var(--purple); }
+  @media (max-width: 860px) {
+    main { grid-template-columns: 1fr; gap: 10px; }
+    .guide-toc { position: sticky; top: 52px; z-index: 20; background: var(--bg); margin: 0 -20px 6px; padding: 8px 14px; border-bottom: 1px solid var(--line); }
+    .guide-toc .toc-title { display: none; }
+    .guide-toc .toc-list { display: flex; gap: 6px; overflow-x: auto; }
+    .guide-toc .toc-list::before { display: none; }
+    .guide-toc a { white-space: nowrap; padding: 6px 10px; }
+    .guide-toc a .tnum { width: 20px; height: 20px; }
+  }
   section { margin-top: 56px; scroll-margin-top: 76px; }
   section > h2 {
     font-size: 24px; font-weight: 800;
@@ -325,6 +346,20 @@
 </header>
 
 <main>
+<aside class="guide-toc">
+  <div class="toc-title">로드맵</div>
+  <nav class="toc-list">
+    <a href="#s1"><span class="tnum">1</span>평가 기준</a>
+    <a href="#s2"><span class="tnum">2</span>학습 로드맵</a>
+    <a href="#s3"><span class="tnum">3</span>문제 접근법</a>
+    <a href="#s4"><span class="tnum">4</span>시간 배분</a>
+    <a href="#s5"><span class="tnum">5</span>기본 세팅</a>
+    <a href="#s6"><span class="tnum">6</span>자주 하는 실수</a>
+    <a href="#s7"><span class="tnum">7</span>시험 전 체크리스트</a>
+    <a href="#s8"><span class="tnum">8</span>추천 사이트</a>
+  </nav>
+</aside>
+<div class="guide-content">
 
 <!-- ============ 1. 시작하며 ============ -->
 <section id="s1">
@@ -695,6 +730,7 @@ thread.Join();</pre>
   </div>
 </section>
 
+</div>
 </main>
 
 <footer>
@@ -743,7 +779,7 @@ thread.Join();</pre>
 
 // ===== 내비게이션 : 현재 섹션 하이라이트 =====
 (function () {
-  var links = document.querySelectorAll('#topnav a[href^="#"]');
+  var links = document.querySelectorAll('.guide-toc a[href^="#"]');
   var sections = Array.prototype.map.call(links, function (a) {
     return document.querySelector(a.getAttribute('href'));
   });
