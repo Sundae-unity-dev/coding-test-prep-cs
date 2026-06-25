@@ -115,7 +115,7 @@
               scrollBeyondLastLine: false,
               lineNumbers: 'on',
               renderLineHighlight: 'line',
-              fontFamily: (initFam ? initFam + ', ' : '') + "'Cascadia Code','Consolas',monospace"
+              fontFamily: (initFam ? initFam + ', ' : '') + "'Elice Digital Coding','Cascadia Code','Consolas',monospace"
             });
             // 단축키: Ctrl+Enter 채점, Ctrl+' 오류 체크 (버튼 DOM 클릭으로 Blazor 핸들러 호출)
             var ed = window.ctEditor._ed;
@@ -182,13 +182,13 @@
         },
         setFontFamily: function (f) {
           f = (f || '').trim();
-          if (window.ctEditor._ed) window.ctEditor._ed.updateOptions({ fontFamily: (f ? f + ', ' : '') + "'Cascadia Code','Consolas',monospace" });
+          if (window.ctEditor._ed) window.ctEditor._ed.updateOptions({ fontFamily: (f ? f + ', ' : '') + "'Elice Digital Coding','Cascadia Code','Consolas',monospace" });
           try { localStorage.setItem('ctrun_fontfamily', f); } catch (e) {}
         },
         buildFontPicker: function (slotId) {
           var slot = document.getElementById(slotId); if (!slot || slot.dataset.built) return; slot.dataset.built = '1';
           var saved = (localStorage.getItem('ctrun_fontfamily') || '').trim();
-          var presets = ['기본', 'D2Coding', 'Consolas', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', 'Nanum Gothic Coding'];
+          var presets = ['기본', 'Elice Digital Coding', 'D2Coding', 'Consolas', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', 'Nanum Gothic Coding'];
           var sel = document.createElement('select'); sel.className = 'fontsel'; sel.title = '에디터 글꼴';
           presets.forEach(function (p) { var o = document.createElement('option'); o.value = (p === '기본' ? '' : p); o.textContent = p; sel.appendChild(o); });
           var co = document.createElement('option'); co.value = '__c'; co.textContent = '직접 입력...'; sel.appendChild(co);
