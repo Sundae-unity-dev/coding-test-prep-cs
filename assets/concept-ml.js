@@ -53,11 +53,16 @@
       });
       var np = document.createElement('pre'); np.className = 'ml-pre';
       wrap.appendChild(tabs); wrap.appendChild(np);
-      // 예시 코드는 노션 토글처럼 접어 두고, 눌러서 펼친다
-      var det = document.createElement('details'); det.className = 'ex-toggle';
-      var sum = document.createElement('summary'); sum.innerHTML = '<span class="ex-ic">💻</span> 예시 코드 보기';
-      det.appendChild(sum); det.appendChild(wrap);
-      pre.parentNode.replaceChild(det, pre);
+      // 이미 '정답 코드 보기'(.codesol) 토글 안에 있는 코드는 또 접지 않고 다국어 탭만 보여줌.
+      if (pre.closest('.codesol')) {
+        pre.parentNode.replaceChild(wrap, pre);
+      } else {
+        // 그 외 예시 코드는 노션 토글처럼 접어 두고, 눌러서 펼친다
+        var det = document.createElement('details'); det.className = 'ex-toggle';
+        var sum = document.createElement('summary'); sum.innerHTML = '<span class="ex-ic">💻</span> 예시 코드 보기';
+        det.appendChild(sum); det.appendChild(wrap);
+        pre.parentNode.replaceChild(det, pre);
+      }
       blocks.push({ pre: np, html: html, btns: btns });
     });
   });
