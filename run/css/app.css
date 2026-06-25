@@ -21,6 +21,7 @@ html[data-theme="dark"] .col label { color: #C3A8FF; }
 html[data-theme="dark"] .status, html[data-theme="dark"] .hint-box { background: #33291A; }
 html[data-theme="dark"] .statement { background: #1C1C2A; color: #E7E7F1; border-color: #2E2E40; }
 html[data-theme="dark"] .prob-head h1 { color: #E7E7F1; }
+html[data-theme="dark"] .prob-head .lv { color: #C9CBDD; border-color: #3A3A50; background: #232333; }
 html[data-theme="dark"] table.ex td { background: #1C1C2A; border-color: #2E2E40; }
 html[data-theme="dark"] table.ex pre { color: #E7E7F1; }
 html[data-theme="dark"] table.ex td + td { border-left-color: #2E2E40; }
