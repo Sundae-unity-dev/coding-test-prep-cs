@@ -152,7 +152,7 @@
       box.innerHTML = html;
     }
     var cache; try { cache = JSON.parse(localStorage.getItem('ct_board_cache_v1')); } catch (e) {}
-    if (cache && cache.wk === wk && (Date.now() - cache.at) < 300000) { render(cache.data); return; }
+    if (!opts.force && cache && cache.wk === wk && (Date.now() - cache.at) < 300000) { render(cache.data); return; }
     box.innerHTML = '<div class="lb-empty">리더보드 불러오는 중...</div>';
     var done = false;
     window.ctBoardCb = function (res) {

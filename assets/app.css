@@ -187,3 +187,10 @@ html[data-theme="dark"] .streak-alert .sa-tx b { color: #FF9A52; }
 .streak-alert .sa-fz { color: var(--ink-soft); font-weight: 700; font-size: 12.5px; }
 .streak-alert .sa-go { margin-left: auto; background: var(--purple); color: #fff !important; text-decoration: none !important; padding: 7px 14px; border-radius: 999px; font-weight: 800; font-size: 13px; white-space: nowrap; }
 .streak-alert .sa-go:hover { background: var(--purple-dark); }
+
+/* 리더보드 새로고침 버튼 (홈 board-card / 마이페이지 주간 리더보드 공용) */
+.b-actions { display: inline-flex; align-items: center; gap: 10px; }
+.lb-h2 { display: flex; align-items: center; gap: 10px; }
+.b-refresh { background: none; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; color: var(--ink-soft); font-size: 15px; line-height: 1; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; transition: color .12s, border-color .12s, transform .3s; flex-shrink: 0; }
+.b-refresh:hover { color: var(--purple-dark); border-color: var(--purple); }
+.b-refresh:active { transform: rotate(180deg); }

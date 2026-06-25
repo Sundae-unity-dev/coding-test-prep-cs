@@ -293,7 +293,7 @@
         <ul class="q-list" id="questList"></ul>
       </div>
       <div class="board-card">
-        <div class="b-head"><span>🏆 이번 주 리더보드</span><a href="progress.html">전체 보기 →</a></div>
+        <div class="b-head"><span>🏆 이번 주 리더보드</span><span class="b-actions"><button class="b-refresh" id="boardRefresh" title="새로고침" aria-label="리더보드 새로고침">↻</button><a href="progress.html">전체 보기 →</a></span></div>
         <div id="board"></div>
       </div>
     </div>
@@ -515,7 +515,7 @@
 <script>
   // 이번 주 리더보드(상위 5명 + 내 순위) + 오늘의 퀘스트(데일리 리셋). app.js/gamify.js 는 defer 라 준비 완료 상태.
   document.addEventListener('DOMContentLoaded', function () {
-    function renderBoard() { if (window.ctLeaderboard) window.ctLeaderboard(document.getElementById('board'), { limit: 5 }); }
+    function renderBoard(force) { if (window.ctLeaderboard) window.ctLeaderboard(document.getElementById('board'), { limit: 5, force: !!force }); }
     function renderQuest() {
       var list = document.getElementById('questList');
       if (!list || !window.ctGamify) return;
@@ -537,6 +537,8 @@
     }
     function refreshAll() { renderBoard(); renderQuest(); if (window.__ctRefreshGami) window.__ctRefreshGami(); }
     refreshAll();
+    var br = document.getElementById('boardRefresh');
+    if (br) br.onclick = function () { renderBoard(true); };
     // 탭으로 돌아오면 최신 진행으로 갱신(런박스나 다른 탭에서 푼 결과/주간 순위 반영)
     document.addEventListener('visibilitychange', function () { if (!document.hidden) refreshAll(); });
     window.addEventListener('focus', refreshAll);

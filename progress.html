@@ -144,7 +144,7 @@
   </div>
 
   <div class="sec">
-    <h2>🏆 주간 리더보드</h2>
+    <h2 class="lb-h2">🏆 주간 리더보드 <button class="b-refresh" id="boardRefresh" title="새로고침" aria-label="리더보드 새로고침">↻</button></h2>
     <div id="board"></div>
   </div>
 
@@ -279,7 +279,9 @@
 <script>
   // 주간 리더보드: app.js 의 공용 로더(window.ctLeaderboard)를 사용. 마이페이지는 전체(20명)를 표시.
   document.addEventListener('DOMContentLoaded', function () {
-    if (window.ctLeaderboard) window.ctLeaderboard(document.getElementById('board'), { limit: 20 });
+    function render(force) { if (window.ctLeaderboard) window.ctLeaderboard(document.getElementById('board'), { limit: 20, force: !!force }); }
+    render();
+    var br = document.getElementById('boardRefresh'); if (br) br.onclick = function () { render(true); };
   });
 </script>
 </body>

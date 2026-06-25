@@ -136,7 +136,7 @@
     if (t === 'fill') {
       body = '<div class="qz-fill-hint">보기를 빈칸에 끌어다 놓거나, 눌러서 넣어 보세요.</div>' +
         '<div class="qz-chips" id="lpChips">' + q.o.map(function (o, oi) {
-          return '<button class="chip" type="button" data-o="' + oi + '" draggable="true">' + esc(o) + '</button>';
+          return '<button class="chip" type="button" data-o="' + oi + '">' + esc(o) + '</button>';
         }).join('') + '</div>';
     } else if (t === 'ox') {
       body = '<div class="qz-opts ox">' +
@@ -147,7 +147,7 @@
         '<div class="qz-multi" id="lpMulti">' + dispOrder(key, q.o.length).map(function (oi) {
           var sel = stored && q.a.indexOf(oi) >= 0 ? ' sel correct' : '';
           return '<button class="mopt' + sel + '" type="button" data-o="' + oi + '"' + (stored ? ' disabled' : '') + '>' + esc(q.o[oi]) + '</button>';
-        }).join('') + '</div><div class="qz-actions"><button class="chk" id="lpMultiChk"' + (stored ? ' disabled' : '') + '>확인</button></div>';
+        }).join('') + '</div><div class="qz-actions"><button class="chk" id="lpMultiChk"' + (stored ? ' disabled' : '') + '>확인</button><div class="qz-fb" id="lpFb"></div></div>';
     } else if (t === 'order') {
       if (!orderState[key]) orderState[key] = shuffleIdx(q.o.length);
       var disp = stored ? q.o.map(function (_, i) { return i; }) : orderState[key];
@@ -156,7 +156,7 @@
           return '<div class="oitem" data-oi="' + oi + '"><span class="onum">' + (pos + 1) + '</span><span class="otx">' + esc(q.o[oi]) + '</span>' +
             '<span class="obtns"><button class="oup" type="button"' + (pos === 0 || stored ? ' disabled' : '') + '>↑</button>' +
             '<button class="odn" type="button"' + (pos === disp.length - 1 || stored ? ' disabled' : '') + '>↓</button></span></div>';
-        }).join('') + '</div><div class="qz-actions"><button class="chk" id="lpOrderChk"' + (stored ? ' disabled' : '') + '>확인</button></div>';
+        }).join('') + '</div><div class="qz-actions"><button class="chk" id="lpOrderChk"' + (stored ? ' disabled' : '') + '>확인</button><div class="qz-fb" id="lpFb"></div></div>';
     } else {
       body = '<div class="qz-opts">' + dispOrder(key, q.o.length).map(function (oi) {
         var cls = stored && oi === q.a ? ' class="correct"' : '';
@@ -201,16 +201,44 @@
       if (oi === q.a) { if (blank) { blank.classList.remove('wrong'); blank.classList.add('correct'); } chips.forEach(function (c) { c.disabled = true; }); markCorrect(); }
       else { if (blank) blank.classList.add('wrong'); if (chips[oi]) { chips[oi].disabled = true; chips[oi].classList.add('used'); } }
     };
+    // 포인터 기반 드래그(데스크톱 마우스 + 모바일 터치 통합). 탭(이동 없음)은 click 으로 넣어요.
+    function overBlank(x, y) { if (!blank) return false; var r = blank.getBoundingClientRect(); return x >= r.left - 14 && x <= r.right + 14 && y >= r.top - 14 && y <= r.bottom + 14; }
     chips.forEach(function (c) {
       var oi = +c.getAttribute('data-o');
-      c.onclick = function () { placeFill(oi); };
-      c.addEventListener('dragstart', function (e) { e.dataTransfer.setData('text/plain', String(oi)); });
+      var sx = null, sy = null, moved = false, dragging = false, ghost = null;
+      c.style.touchAction = 'none';   // 드래그 중 스크롤/제스처가 가로채지 않게
+      c.addEventListener('pointerdown', function (e) {
+        if (c.disabled) return;
+        sx = e.clientX; sy = e.clientY; moved = false; dragging = false;
+        try { c.setPointerCapture(e.pointerId); } catch (_) {}
+      });
+      c.addEventListener('pointermove', function (e) {
+        if (sx == null) return;
+        if (!dragging && Math.abs(e.clientX - sx) + Math.abs(e.clientY - sy) > 8) {
+          dragging = true; moved = true;
+          ghost = c.cloneNode(true); ghost.className = 'chip chip-ghost';
+          ghost.style.cssText = 'position:fixed;z-index:9999;pointer-events:none;opacity:.92;margin:0;';
+          document.body.appendChild(ghost);
+        }
+        if (dragging && ghost) {
+          ghost.style.left = (e.clientX - ghost.offsetWidth / 2) + 'px';
+          ghost.style.top = (e.clientY - ghost.offsetHeight / 2) + 'px';
+          if (blank) blank.classList.toggle('drop', overBlank(e.clientX, e.clientY));
+        }
+      });
+      function endDrag(e) {
+        if (sx == null) return;
+        var wasDrag = dragging, x = e.clientX, y = e.clientY;
+        sx = sy = null; dragging = false;
+        if (ghost) { ghost.remove(); ghost = null; }
+        if (blank) blank.classList.remove('drop');
+        try { c.releasePointerCapture(e.pointerId); } catch (_) {}
+        if (wasDrag && overBlank(x, y)) placeFill(oi);
+      }
+      c.addEventListener('pointerup', endDrag);
+      c.addEventListener('pointercancel', endDrag);
+      c.addEventListener('click', function () { if (!moved) placeFill(oi); moved = false; });
     });
-    if (blank) {
-      blank.addEventListener('dragover', function (e) { e.preventDefault(); blank.classList.add('drop'); });
-      blank.addEventListener('dragleave', function () { blank.classList.remove('drop'); });
-      blank.addEventListener('drop', function (e) { e.preventDefault(); blank.classList.remove('drop'); placeFill(parseInt(e.dataTransfer.getData('text/plain'), 10)); });
-    }
   }
 
   function wireMulti(q, key) {
@@ -224,11 +252,15 @@
       var chosen = Object.keys(sel).map(Number).sort(function (a, b) { return a - b; });
       var ans = q.a.slice().sort(function (a, b) { return a - b; });
       showEx();
+      var fb = document.getElementById('lpFb');
       if (chosen.length === ans.length && chosen.every(function (v, i) { return v === ans[i]; })) {
         opts.forEach(function (b) { b.disabled = true; if (q.a.indexOf(+b.getAttribute('data-o')) >= 0) b.classList.add('correct'); });
-        document.getElementById('lpMultiChk').disabled = true; markCorrect();
+        document.getElementById('lpMultiChk').disabled = true; if (fb) fb.textContent = ''; markCorrect();
       } else {
         opts.forEach(function (b) { if (sel[+b.getAttribute('data-o')] && q.a.indexOf(+b.getAttribute('data-o')) < 0) b.classList.add('wrong'); });
+        var hit = chosen.filter(function (v) { return ans.indexOf(v) >= 0; }).length;
+        var over = chosen.filter(function (v) { return ans.indexOf(v) < 0; }).length;
+        if (fb) fb.textContent = '정답 ' + ans.length + '개 중 ' + hit + '개를 맞게 골랐어요.' + (over > 0 ? ' 잘못 고른 ' + over + '개를 빼 보세요.' : ' 놓친 것이 있어요.');
       }
     };
   }
@@ -246,10 +278,15 @@
     document.getElementById('lpOrderChk').onclick = function () {
       var cur = [].slice.call(el.children).map(function (it) { return +it.getAttribute('data-oi'); });
       showEx();
+      var fb = document.getElementById('lpFb');
       if (cur.every(function (v, i) { return v === i; })) {
         el.classList.add('done'); [].slice.call(el.querySelectorAll('button')).forEach(function (b) { b.disabled = true; });
-        document.getElementById('lpOrderChk').disabled = true; markCorrect();
-      } else { el.classList.add('shake'); setTimeout(function () { el.classList.remove('shake'); }, 400); }
+        document.getElementById('lpOrderChk').disabled = true; if (fb) fb.textContent = ''; markCorrect();
+      } else {
+        el.classList.add('shake'); setTimeout(function () { el.classList.remove('shake'); }, 400);
+        var inPlace = cur.filter(function (v, i) { return v === i; }).length;
+        if (fb) fb.textContent = cur.length + '개 중 ' + inPlace + '개가 제자리예요. 나머지를 옮겨 보세요.';
+      }
     };
   }
 
