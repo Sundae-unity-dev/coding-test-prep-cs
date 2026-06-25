@@ -107,6 +107,10 @@ summary:focus-visible, [tabindex]:focus-visible {
   .sitenav .nav-links { grid-column: 1 / -1; order: 3; }
 }
 
+/* ===== 표: 가운데 배치 + 셀 내용 가운데 정렬 (전 페이지 공통, html 접두로 페이지 인라인 th/td 우선) ===== */
+html table { margin-left: auto; margin-right: auto; }
+html th, html td { text-align: center; }
+
 /* 모바일: 섹션 네비(드롭다운 없는 일반 nav)는 줄바꿈해 가로 오버플로 방지 */
 @media (max-width: 560px) {
   nav:not(#topnav):not(:has(.dropdown)) { flex-wrap: wrap; height: auto; row-gap: 5px; padding-top: 9px; padding-bottom: 9px; }
