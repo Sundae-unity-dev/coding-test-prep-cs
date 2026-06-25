@@ -168,6 +168,23 @@
   .ml-tabs button.on { background: var(--code-bg); color: #fff; border-color: var(--code-bg); }
   .mlcode pre { margin-top: 0; border-top-left-radius: 0; }
 
+  /* 예시 코드 토글(노션 스타일 접기) */
+  .ex-toggle { margin-top: 12px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .ex-toggle > summary { cursor: pointer; list-style: none; padding: 11px 15px; font-size: 14px; font-weight: 700; color: var(--purple-dark); background: var(--purple-bg); display: flex; align-items: center; gap: 8px; }
+  .ex-toggle > summary::-webkit-details-marker { display: none; }
+  .ex-toggle > summary::after { content: '▸'; margin-left: auto; transition: transform 0.15s ease; }
+  .ex-toggle[open] > summary::after { transform: rotate(90deg); }
+  .ex-toggle[open] > summary { border-bottom: 1px solid var(--line); }
+  .ex-toggle .mlcode { margin: 0; padding: 12px 13px 13px; }
+
+  /* 헷갈리기 쉬운 포인트 callout */
+  .confuse { margin-top: 26px; background: #FFF8EE; border: 1px solid #FCE3B8; border-left: 4px solid #E8950C; border-radius: 0 12px 12px 0; padding: 14px 18px; }
+  .confuse > b { display: block; color: #B45309; font-size: 15px; margin-bottom: 8px; }
+  .confuse ul { margin: 0; padding-left: 20px; }
+  .confuse li { font-size: 14px; line-height: 1.65; margin: 5px 0; color: var(--ink); }
+  html[data-theme="dark"] .confuse { background: #2A1E10; border-color: #5C4A22; }
+  html[data-theme="dark"] .confuse > b { color: #E6AE4D; }
+
   /* ===== 정답 토글 (전역 .reveal 스크롤 등장과 분리) ===== */
   .codesol { margin-top: 12px; }
   .codesol > button {
@@ -1123,7 +1140,7 @@ meetings.Sort((a, b) =&gt; a.end != b.end
   <p class="lead">큰 문제를 작은 문제로 쪼개고, 작은 문제의 답을 <b>저장해서 재사용</b>하는 기법이에요. 어려워 보이지만 패턴이 정해져 있어요.</p>
 
   <h3>왜 필요한가요? 피보나치로 보기</h3>
-  <p>피보나치를 단순 재귀로 짜면 같은 계산이 수없이 반복돼요. Fib(50)을 부르면 Fib(10) 같은 작은 값을 수억 번 다시 계산해서, 사실상 끝나지 않아요. <b>한 번 구한 답을 배열에 적어두고 재사용</b>하면 O(N)으로 끝나요. 이게 DP의 전부예요.</p>
+  <p>피보나치를 단순 재귀로 짜면 같은 계산이 수없이 반복돼요. Fib(50)을 단순 재귀로 부르면 작은 값들을 수억 번 다시 계산해요. n이 조금만 더 커지면 호출 수가 폭발해서 사실상 끝나지 않죠. <b>한 번 구한 답을 배열에 적어두고 재사용</b>하면 O(N)으로 끝나요. 이게 DP의 전부예요.</p>
   <pre><span class="cm">// 방법 1 : 메모이제이션 (재귀 + 저장)</span>
 <span class="kw">static</span> <span class="kw">long</span>[] memo = <span class="kw">new</span> <span class="kw">long</span>[<span class="nm">100</span>];   <span class="cm">// n 최대치+1 크기로 잡아요 (long엔 Fib(92)까지만 담겨요)</span>
 <span class="kw">static</span> <span class="kw">long</span> Fib(<span class="kw">int</span> n)
@@ -1929,7 +1946,7 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
 <div class="topic" id="t20">
   <div class="crumb">수학</div>
   <h2>소수와 에라토스테네스의 체</h2>
-  <p class="lead">소수(1과 자기 자신만 약수인 수) 판정은 단골이에요. 하나만 판정할 땐 √N까지만 나눠보고, 범위 전체를 구할 땐 "체"로 한 번에 걸러요.</p>
+  <p class="lead">소수(1보다 큰 수 중 1과 자기 자신만 약수로 갖는 수, 1은 소수가 아니에요) 판정은 단골이에요. 하나만 판정할 땐 √N까지만 나눠보고, 범위 전체를 구할 땐 "체"로 한 번에 걸러요.</p>
 
   <h3>하나만 판정 : √N까지만 나눠봐요</h3>
   <pre><span class="kw">static</span> <span class="kw">bool</span> IsPrime(<span class="kw">int</span> x)
@@ -2306,6 +2323,7 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
 </script>
 <script src="assets/concept-code.js"></script>
 <script defer src="assets/concept-ml.js"></script>
+<script defer src="assets/concept-confuse.js"></script>
 <script defer src="assets/config.js"></script>
 <script defer src="assets/tracker.js"></script>
 <script defer src="assets/app.js"></script>

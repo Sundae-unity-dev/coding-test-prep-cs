@@ -53,7 +53,11 @@
       });
       var np = document.createElement('pre'); np.className = 'ml-pre';
       wrap.appendChild(tabs); wrap.appendChild(np);
-      pre.parentNode.replaceChild(wrap, pre);
+      // 예시 코드는 노션 토글처럼 접어 두고, 눌러서 펼친다
+      var det = document.createElement('details'); det.className = 'ex-toggle';
+      var sum = document.createElement('summary'); sum.innerHTML = '<span class="ex-ic">💻</span> 예시 코드 보기';
+      det.appendChild(sum); det.appendChild(wrap);
+      pre.parentNode.replaceChild(det, pre);
       blocks.push({ pre: np, html: html, btns: btns });
     });
   });
