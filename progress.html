@@ -102,7 +102,7 @@
       <div class="hello" id="hello">지금까지의 학습 기록이에요.</div>
       <div class="hero-actions">
         <a class="solid" href="practice.html">문제 풀러 가기</a>
-        <a class="line" id="reviewLink" href="practice.html">복습할 문제 보기</a>
+        <a class="line" id="reviewLink" href="practice.html">복습할 문제</a>
       </div>
     </div>
     <div class="ring-wrap" title="전체 문제 완료율">
@@ -202,7 +202,7 @@
   document.getElementById('cStreak').textContent = streak + '일';
   document.getElementById('cQuiz').textContent = quizN + ' / 40';
   document.getElementById('cReview').textContent = reviewN;
-  document.getElementById('reviewLink').textContent = reviewN ? ('복습할 문제 ' + reviewN + '개 보기') : '복습할 문제 보기';
+  document.getElementById('reviewLink').textContent = '복습할 문제';
 
   // 전체 완료율 링
   var pctAll = TOTAL ? Math.round(solvedN * 100 / TOTAL) : 0;

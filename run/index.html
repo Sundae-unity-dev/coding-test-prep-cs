@@ -39,6 +39,17 @@
         <a href="." class="reload">Reload</a>
         <span class="dismiss">🗙</span>
     </div>
+
+    <!-- 로딩이 너무 오래 걸리면(자산 캐시 손상/네트워크) 강제 새로고침 안내 -->
+    <div id="loadFallback" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(19,19,27,.93); color:#E7E7F1; align-items:center; justify-content:center; text-align:center; padding:24px; font-family:'Elice DX Neolli',Pretendard,-apple-system,'Malgun Gothic',sans-serif;">
+        <div style="max-width:400px;">
+            <div style="font-size:42px; margin-bottom:12px;">⏳</div>
+            <div style="font-size:18px; font-weight:800; margin-bottom:8px;">코드 실행기 로딩이 오래 걸려요</div>
+            <div style="font-size:14px; color:#A4A6BC; line-height:1.65; margin-bottom:20px;">처음에는 받을 파일이 좀 많아요. 너무 안 열리면 아래 버튼으로 저장된 캐시를 비우고 새로 받아 보세요.</div>
+            <button id="lfReload" type="button" style="font-family:inherit; font-size:14.5px; font-weight:800; padding:12px 24px; border:none; border-radius:11px; background:#8843FF; color:#fff; cursor:pointer;">강제 새로고침</button>
+            <button id="lfWait" type="button" style="display:block; margin:14px auto 0; background:none; border:none; color:#A4A6BC; font-size:13px; text-decoration:underline; cursor:pointer;">조금 더 기다릴게요</button>
+        </div>
+    </div>
     <script src="_framework/blazor.webassembly.66stpp682q.js"></script>
 
     <!-- 다국어 실행 엔진(C# 외 언어는 워커에 위임) -->
@@ -240,6 +251,31 @@
           navigator.serviceWorker.register('service-worker.js').catch(function () {});
         });
       }
+    </script>
+
+    <!-- 로딩 멈춤 감지: 일정 시간 내 Blazor 가 렌더 안 되면 강제 새로고침(캐시·SW 비우기) 안내 -->
+    <script>
+      (function () {
+        var SHOW_AFTER = 20000; // 20초
+        function appReady() { return !document.querySelector('.loading-progress'); } // Blazor 렌더 시 스피너 사라짐
+        var fb = document.getElementById('loadFallback');
+        var shown = false, t0 = Date.now();
+        var iv = setInterval(function () {
+          if (appReady()) { clearInterval(iv); if (fb) fb.style.display = 'none'; return; }
+          if (!shown && Date.now() - t0 > SHOW_AFTER) { shown = true; if (fb) fb.style.display = 'flex'; }
+        }, 800);
+        var rb = document.getElementById('lfReload');
+        if (rb) rb.addEventListener('click', function () {
+          rb.disabled = true; rb.textContent = '캐시 비우는 중...';
+          (async function () {
+            try { if (window.caches) { var ks = await caches.keys(); await Promise.all(ks.map(function (k) { return caches.delete(k); })); } } catch (e) {}
+            try { if (navigator.serviceWorker) { var rs = await navigator.serviceWorker.getRegistrations(); await Promise.all(rs.map(function (r) { return r.unregister(); })); } } catch (e) {}
+            location.reload();
+          })();
+        });
+        var wb = document.getElementById('lfWait');
+        if (wb) wb.addEventListener('click', function () { shown = true; if (fb) fb.style.display = 'none'; });
+      })();
     </script>
 </body>
 
