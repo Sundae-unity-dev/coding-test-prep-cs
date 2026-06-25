@@ -63,6 +63,7 @@
     var act = activity();
     var fz = readObj('ct_streak_freeze_v1');
     var used = Array.isArray(fz.used) ? fz.used.slice() : [];
+    var prevUsedN = used.length;
     var usedSet = {}; used.forEach(function (x) { usedSet[x] = 1; });
 
     // 프리즈 없이 본 연속(적립 기준)
@@ -90,7 +91,8 @@
       break;
     }
     newMax = Math.max(newMax, s);
-    write('ct_streak_freeze_v1', { max: newMax, used: used });
+    // 값이 실제로 바뀐 경우에만 기록(읽기성 summary 가 호출마다 디스크에 쓰지 않도록)
+    if (newMax !== prevMax || used.length !== prevUsedN) write('ct_streak_freeze_v1', { max: newMax, used: used });
     var freezesLeft = Math.max(0, Math.min(FREEZE_CAP, Math.floor(newMax / 7)) - used.length);
     return { streak: s, freezes: freezesLeft };
   }

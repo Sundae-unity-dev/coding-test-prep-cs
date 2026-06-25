@@ -189,7 +189,7 @@
   var visitor = rd('ct_visitor_v1');
 
   var solvedN = Object.keys(solved).filter(function (k) { return solved[k]; }).length;
-  var quizN = Object.keys(quiz).filter(function (k) { return quiz[k] && quiz[k].correct; }).length;
+  var quizN = Object.keys(quiz).filter(function (k) { return quiz[k] === true || (quiz[k] && quiz[k].correct); }).length;
   var reviewN = Object.keys(review).filter(function (k) { var r = review[k]; return r && (r.f || r.s); }).length;
 
   // 연속 학습일: 오늘(없으면 어제)부터 거슬러 연속 기록

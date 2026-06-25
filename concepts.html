@@ -2222,7 +2222,7 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
     TOPICS.forEach(function (id, i) {
       var quizzes = document.querySelectorAll('#' + id + ' .quiz');
       var done = 0;
-      quizzes.forEach(function (qz) { if (quizState[qz.dataset.qid]) done++; });
+      quizzes.forEach(function (qz) { var s = quizState[qz.dataset.qid]; if (s === true || (s && s.correct)) done++; });
       var old = menuBtns[i].querySelector('.qdone');
       if (old) old.remove();
       if (quizzes.length > 0 && done > 0) {
@@ -2317,7 +2317,8 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
     box.innerHTML = html;
     topic.appendChild(box);
   });
-  var qn = Object.keys(readObj('ct_concepts_quiz_v1')).length;
+  var _qz = readObj('ct_concepts_quiz_v1');
+  var qn = Object.keys(_qz).filter(function (k) { return _qz[k] === true || (_qz[k] && _qz[k].correct); }).length;
   var sn = Object.keys(SOLVED).filter(function (k) { return SOLVED[k]; }).length;
   var brandEl = document.querySelector('aside .brand');
   if (brandEl) { var d = document.createElement('div'); d.className = 'side-progress'; d.textContent = '퀴즈 ' + qn + '/' + document.querySelectorAll('.quiz').length + ', 문제 ' + sn + '/' + ((window.CT_PROBLEMS || []).length || 63) + ' 진행 중'; brandEl.appendChild(d); }

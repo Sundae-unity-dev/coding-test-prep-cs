@@ -418,7 +418,7 @@
     function readObj(k) { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch (e) { return {}; } }
     function countTrue(o) { return Object.keys(o).filter(function (k) { return o[k]; }).length; }
     var qd0 = readObj('ct_concepts_quiz_v1');
-    var quizDone = Object.keys(qd0).filter(function (k) { return qd0[k] && qd0[k].correct; }).length;
+    var quizDone = Object.keys(qd0).filter(function (k) { return qd0[k] === true || (qd0[k] && qd0[k].correct); }).length;
     var solveDone = countTrue(readObj('ct_practice_solved_v1'));
     var chkDone = countTrue(readObj('ct_guide_checklist_v1'));
     function fill(nId, barId, done, total) {

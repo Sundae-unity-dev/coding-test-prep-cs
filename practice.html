@@ -485,7 +485,7 @@
 
 <script>
 (function () {
-  var SKEY = 'ct_practice_solved_v1', BKEY = 'ct_practice_bookmarks_v1', DKEY = 'ct_practice_daily_v1', RKEY = 'ct_review_v1';
+  var SKEY = 'ct_practice_solved_v1', BKEY = 'ct_practice_bookmarks_v1', RKEY = 'ct_review_v1';
   var wrap = document.getElementById('cards');
   var cards = [].slice.call(document.querySelectorAll('.card'));
   var LVRANK = { intro: 0, basic: 1, mid: 2, hard: 3 };
@@ -622,7 +622,6 @@
     resetFilters();
     pick.scrollIntoView({ behavior: 'smooth', block: 'center' });
     pick.classList.remove('flash'); void pick.offsetWidth; pick.classList.add('flash');
-    writeObj(DKEY, { date: d.toISOString().slice(0, 10), pid: pick.dataset.pid });
   });
 
   document.getElementById('resetBtn').addEventListener('click', function () {

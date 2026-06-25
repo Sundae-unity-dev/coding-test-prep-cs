@@ -168,7 +168,6 @@
     if (diff < 86400 * 7) return Math.floor(diff / 86400) + '일 전';
     return (d.getMonth() + 1) + '월 ' + d.getDate() + '일';
   }
-  function csvCount(s) { return String(s || '').split(',').filter(String).length; }
 
   function showErr(m) { var e = document.getElementById('gateErr'); e.textContent = m || ''; }
 
