@@ -292,7 +292,7 @@
     <h1>Core Concepts for Coding Tests</h1>
   </div>
   <div class="search">
-    <input type="text" id="searchBox" placeholder="개념 검색 (예: 정렬, BFS, DP)">
+    <input type="text" id="searchBox" aria-label="개념 검색" placeholder="개념 검색 (예: 정렬, BFS, DP)">
   </div>
   <div class="menu" id="menu">
     <div class="grp">기초</div>
@@ -1975,7 +1975,8 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
     <tr><th>단계</th><th>지우는 수</th></tr>
     <tr><td>i = 2</td><td>4, 6, 8, 10, 12, 14, 16, 18, 20</td></tr>
     <tr><td>i = 3</td><td>9, 15 (6, 12, 18은 이미 지워짐)</td></tr>
-    <tr><td>i = 4</td><td>이미 지워진 수라 건너뜀, 그리고 4*4 &gt; 20 이라 여기서 멈춤</td></tr>
+    <tr><td>i = 4</td><td>이미 지워진 수(합성수)라 배수 지우기는 건너뛰어요</td></tr>
+    <tr><td>i = 5</td><td>5*5 = 25 &gt; 20 이라 바깥 루프(<code>i*i &le; n</code>)가 여기서 끝나요</td></tr>
     <tr><td>결과</td><td>안 지워진 수 = <b>2, 3, 5, 7, 11, 13, 17, 19</b> (20 이하 소수)</td></tr>
   </table>
   <p>각 소수의 배수를 한 번씩만 훑어 지우기 때문에, 하나하나 √N 판정하는 것보다 범위 전체를 훨씬 빠르게 구해요.</p>
@@ -2183,7 +2184,7 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
     document.getElementById('prevBtn').disabled = idx === 0;
     document.getElementById('nextBtn').disabled = idx === TOPICS.length - 1;
     window.scrollTo({ top: 0 });
-    localStorage.setItem('ct_concepts_last_topic', idx);
+    localStorage.setItem('ct_concepts_last_topic', TOPICS[idx]);
   }
 
   menuBtns.forEach(function (b, i) {
@@ -2282,8 +2283,9 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
 
   // 해시가 있으면 그 주제, 없으면 마지막으로 보던 주제에서 시작해요
   if (!showByHash()) {
-    var last = parseInt(localStorage.getItem('ct_concepts_last_topic'), 10);
-    show(isNaN(last) || last < 0 || last >= TOPICS.length ? 0 : last);
+    var lastId = localStorage.getItem('ct_concepts_last_topic') || '';
+    var li = TOPICS.indexOf(lastId);
+    show(li < 0 ? 0 : li);
   }
 })();
 </script>

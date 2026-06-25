@@ -7,7 +7,6 @@
 <script>(function(){try{var t=localStorage.getItem('ctprep_theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 <link rel="stylesheet" href="assets/app.css">
 <style>
-  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
   :root {
     --purple: #8843FF; --purple-dark: #6A2FD0; --purple-bg: #F4EEFF;
     --ink: #1F2230; --ink-soft: #555B6E; --line: #E5E2F0; --bg: #FAFAFD;
@@ -278,6 +277,7 @@
     <h2 class="sec-title">내 학습 진행</h2>
     <p class="sec-sub">진행 상황은 이 브라우저에 자동 저장돼요. 이어서 학습하면 아래 막대가 채워져요.</p>
     <div class="gami" id="gamiBox" hidden></div>
+    <div class="streak-alert" id="streakAlert" hidden></div>
     <div class="dash-grid">
       <a class="dash-item" href="concepts.html"><span class="dl">개념 퀴즈</span><b class="dn" id="dQuiz">0 / 40</b><span class="dbar"><i id="dQuizBar"></i></span></a>
       <a class="dash-item" href="practice.html"><span class="dl">문제 풀이</span><b class="dn" id="dSolve">0 / 63</b><span class="dbar"><i id="dSolveBar"></i></span></a>
@@ -417,7 +417,8 @@
     // 내 학습 진행 대시보드 채우기 (localStorage 읽기)
     function readObj(k) { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch (e) { return {}; } }
     function countTrue(o) { return Object.keys(o).filter(function (k) { return o[k]; }).length; }
-    var quizDone = Object.keys(readObj('ct_concepts_quiz_v1')).length;
+    var qd0 = readObj('ct_concepts_quiz_v1');
+    var quizDone = Object.keys(qd0).filter(function (k) { return qd0[k] && qd0[k].correct; }).length;
     var solveDone = countTrue(readObj('ct_practice_solved_v1'));
     var chkDone = countTrue(readObj('ct_guide_checklist_v1'));
     function fill(nId, barId, done, total) {
@@ -471,49 +472,74 @@
   })();
 </script>
 <script>
-  // 게이미피케이션 요약 카드 렌더(gamify.js 는 defer 라 DOMContentLoaded 이후 ctGamify 준비됨)
+  // 게이미피케이션 요약 카드 + 스트릭 위기 배너 (gamify.js 는 defer 라 DOMContentLoaded 이후 ctGamify 준비됨)
   document.addEventListener('DOMContentLoaded', function () {
-    if (!window.ctGamify) return;
-    var box = document.getElementById('gamiBox'); if (!box) return;
-    var g = window.ctGamify.summary();
-    var goalPct = Math.min(100, Math.round(g.todayXp * 100 / g.dailyGoal));
-    var recent = g.badges.filter(function (b) { return b.earned; }).slice(-5).map(function (b) { return b.e; }).join(' ') || '아직 없음';
-    box.innerHTML =
-      '<div class="ct-level"><div class="lv-badge"><small>LV</small><b>' + g.level + '</b></div>' +
-      '<div class="lv-body"><div class="lv-top"><span class="lv-title">' + g.levelTitle + '</span>' +
-      '<span class="lv-xp">' + g.xpInLevel + ' / ' + g.xpForNext + ' XP</span></div>' +
-      '<div class="lv-bar"><i style="width:' + g.levelPct + '%"></i></div></div></div>' +
-      '<div class="gami-goal"><div class="gg-top"><span class="gg-label">오늘 목표</span><b>' + g.todayXp + ' / ' + g.dailyGoal + ' XP</b></div>' +
-      '<div class="gg-bar"><i style="width:' + goalPct + '%"></i></div>' +
-      (g.goalMet ? '<span class="gg-done">오늘 목표 달성!</span>' : '<span class="gb-count">목표까지 ' + Math.max(0, g.dailyGoal - g.todayXp) + ' XP</span>') + '</div>' +
-      '<div class="gami-badges"><span class="gb-count">배지 ' + g.earnedCount + ' / ' + g.totalBadges + '</span>' +
-      '<span class="gb-row">' + recent + '</span>' +
-      '<a class="gb-link" href="progress.html">마이페이지에서 모두 보기 →</a></div>';
-    box.hidden = false;
+    function rd(k) { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch (e) { return {}; } }
+    function ymd(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+    function renderGami() {
+      if (!window.ctGamify) return;
+      var box = document.getElementById('gamiBox'); if (!box) return;
+      var g = window.ctGamify.summary();
+      var goalPct = Math.min(100, Math.round(g.todayXp * 100 / g.dailyGoal));
+      var recent = g.badges.filter(function (b) { return b.earned; }).slice(-5).map(function (b) { return b.e; }).join(' ') || '아직 없음';
+      box.innerHTML =
+        '<div class="ct-level"><div class="lv-badge"><small>LV</small><b>' + g.level + '</b></div>' +
+        '<div class="lv-body"><div class="lv-top"><span class="lv-title">' + g.levelTitle + '</span>' +
+        '<span class="lv-xp">' + g.xpInLevel + ' / ' + g.xpForNext + ' XP</span></div>' +
+        '<div class="lv-bar"><i style="width:' + g.levelPct + '%"></i></div></div></div>' +
+        '<div class="gami-goal"><div class="gg-top"><span class="gg-label">오늘 목표</span><b>' + g.todayXp + ' / ' + g.dailyGoal + ' XP</b></div>' +
+        '<div class="gg-bar"><i style="width:' + goalPct + '%"></i></div>' +
+        (g.goalMet ? '<span class="gg-done">오늘 목표 달성!</span>' : '<span class="gb-count">목표까지 ' + Math.max(0, g.dailyGoal - g.todayXp) + ' XP</span>') + '</div>' +
+        '<div class="gami-badges"><span class="gb-count">배지 ' + g.earnedCount + ' / ' + g.totalBadges + '</span>' +
+        '<span class="gb-row">' + recent + '</span>' +
+        '<a class="gb-link" href="progress.html">마이페이지에서 모두 보기 →</a></div>';
+      box.hidden = false;
+
+      // 스트릭 위기 배너: 오늘 아직 학습 기록이 없고 연속 2일 이상이면 한 문제 풀도록 독려
+      var al = document.getElementById('streakAlert');
+      if (al) {
+        var act = rd('ct_activity_v1');
+        if (!act[ymd(new Date())] && g.streak >= 2) {
+          al.innerHTML = '<span class="sa-fire">🔥</span>' +
+            '<span class="sa-tx"><b>' + g.streak + '일</b> 연속 학습 중이에요. 오늘 <b>1문제</b>만 풀면 이어가요.' +
+            (g.freezes > 0 ? ' <span class="sa-fz">❄️ 프리즈 ' + g.freezes + '개 보유</span>' : '') + '</span>' +
+            '<a class="sa-go" href="practice.html">지금 풀기 →</a>';
+          al.hidden = false;
+        } else { al.hidden = true; al.innerHTML = ''; }
+      }
+    }
+    renderGami();
+    window.__ctRefreshGami = renderGami;
   });
 </script>
 <script>
   // 이번 주 리더보드(상위 5명 + 내 순위) + 오늘의 퀘스트(데일리 리셋). app.js/gamify.js 는 defer 라 준비 완료 상태.
   document.addEventListener('DOMContentLoaded', function () {
-    if (window.ctLeaderboard) window.ctLeaderboard(document.getElementById('board'), { limit: 5 });
-
-    var list = document.getElementById('questList');
-    if (!list || !window.ctGamify) return;
-    var g = window.ctGamify.summary();
-    var quests = [
-      { done: g.todaySolved >= 1, tx: '문제 1개 풀기' },
-      { done: g.todayQuiz >= 1, tx: '개념 퀴즈 1개 풀기' },
-      { done: g.goalMet, tx: '오늘 목표 달성', xp: g.todayXp + ' / ' + g.dailyGoal + ' XP' }
-    ];
-    var doneN = quests.filter(function (q) { return q.done; }).length;
-    list.innerHTML = quests.map(function (q) {
-      return '<li class="q-item' + (q.done ? ' done' : '') + '"><span class="q-mark">' + (q.done ? '✓' : '') + '</span>' +
-        '<span class="q-tx">' + q.tx + '</span>' + (q.xp ? '<span class="q-xp">' + q.xp + '</span>' : '') + '</li>';
-    }).join('') +
-      (doneN === quests.length
-        ? '<div class="q-all">오늘 퀘스트를 모두 끝냈어요! 내일 또 이어가요 🎉</div>'
-        : '<div class="q-tip">매일 조금씩 풀면 연속 학습과 XP가 쌓여요.</div>');
-    document.getElementById('questCount').textContent = doneN + ' / ' + quests.length + ' 완료';
+    function renderBoard() { if (window.ctLeaderboard) window.ctLeaderboard(document.getElementById('board'), { limit: 5 }); }
+    function renderQuest() {
+      var list = document.getElementById('questList');
+      if (!list || !window.ctGamify) return;
+      var g = window.ctGamify.summary();
+      var quests = [
+        { done: g.todaySolved >= 1, tx: '문제 1개 풀기' },
+        { done: g.todayQuiz >= 1, tx: '개념 퀴즈 1개 풀기' },
+        { done: g.goalMet, tx: '오늘 목표 달성', xp: g.todayXp + ' / ' + g.dailyGoal + ' XP' }
+      ];
+      var doneN = quests.filter(function (q) { return q.done; }).length;
+      list.innerHTML = quests.map(function (q) {
+        return '<li class="q-item' + (q.done ? ' done' : '') + '"><span class="q-mark">' + (q.done ? '✓' : '') + '</span>' +
+          '<span class="q-tx">' + q.tx + '</span>' + (q.xp ? '<span class="q-xp">' + q.xp + '</span>' : '') + '</li>';
+      }).join('') +
+        (doneN === quests.length
+          ? '<div class="q-all">오늘 퀘스트를 모두 끝냈어요! 내일 또 이어가요 🎉</div>'
+          : '<div class="q-tip">매일 조금씩 풀면 연속 학습과 XP가 쌓여요.</div>');
+      document.getElementById('questCount').textContent = doneN + ' / ' + quests.length + ' 완료';
+    }
+    function refreshAll() { renderBoard(); renderQuest(); if (window.__ctRefreshGami) window.__ctRefreshGami(); }
+    refreshAll();
+    // 탭으로 돌아오면 최신 진행으로 갱신(런박스나 다른 탭에서 푼 결과/주간 순위 반영)
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) refreshAll(); });
+    window.addEventListener('focus', refreshAll);
   });
 </script>
 </body>

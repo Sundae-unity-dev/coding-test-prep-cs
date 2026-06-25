@@ -22,6 +22,8 @@
   var activeTid = null, curIdx = 0;
   var WEEKS = { '입문': '1~4주차', '기초': '5~8주차', '중급': '9~12주차', '심화': '13~16주차' };
   var orderState = {};   // 순서 맞추기: 문제별 표시 순서(셔플)를 세션 동안 고정
+  var dispCache = {};    // 객관식/복수정답: 보기 표시 순서 셔플(암기 방지)을 세션 동안 고정
+  function dispOrder(key, n) { if (!dispCache[key]) dispCache[key] = shuffleIdx(n); return dispCache[key]; }
   var animatedOnce = false;
   function shuffleIdx(n) {
     var a = []; for (var i = 0; i < n; i++) a.push(i);
@@ -142,9 +144,9 @@
         '<button data-o="1"' + (stored ? ' disabled' : '') + (stored && q.a === 1 ? ' class="correct"' : '') + '><b>X</b><span>거짓</span></button></div>';
     } else if (t === 'multi') {
       body = '<div class="qz-fill-hint">맞는 것을 모두 고른 뒤 확인을 눌러요.</div>' +
-        '<div class="qz-multi" id="lpMulti">' + q.o.map(function (o, oi) {
+        '<div class="qz-multi" id="lpMulti">' + dispOrder(key, q.o.length).map(function (oi) {
           var sel = stored && q.a.indexOf(oi) >= 0 ? ' sel correct' : '';
-          return '<button class="mopt' + sel + '" type="button" data-o="' + oi + '"' + (stored ? ' disabled' : '') + '>' + esc(o) + '</button>';
+          return '<button class="mopt' + sel + '" type="button" data-o="' + oi + '"' + (stored ? ' disabled' : '') + '>' + esc(q.o[oi]) + '</button>';
         }).join('') + '</div><div class="qz-actions"><button class="chk" id="lpMultiChk"' + (stored ? ' disabled' : '') + '>확인</button></div>';
     } else if (t === 'order') {
       if (!orderState[key]) orderState[key] = shuffleIdx(q.o.length);
@@ -156,9 +158,9 @@
             '<button class="odn" type="button"' + (pos === disp.length - 1 || stored ? ' disabled' : '') + '>↓</button></span></div>';
         }).join('') + '</div><div class="qz-actions"><button class="chk" id="lpOrderChk"' + (stored ? ' disabled' : '') + '>확인</button></div>';
     } else {
-      body = '<div class="qz-opts">' + q.o.map(function (o, oi) {
+      body = '<div class="qz-opts">' + dispOrder(key, q.o.length).map(function (oi) {
         var cls = stored && oi === q.a ? ' class="correct"' : '';
-        return '<button data-o="' + oi + '"' + cls + (stored ? ' disabled' : '') + '>' + esc(o) + '</button>';
+        return '<button data-o="' + oi + '"' + cls + (stored ? ' disabled' : '') + '>' + esc(q.o[oi]) + '</button>';
       }).join('') + '</div>';
     }
 

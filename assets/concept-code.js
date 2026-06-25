@@ -83,7 +83,7 @@ window.CT_CONCEPT_CODE = {
     "js": "// JS에는 내장 우선순위 큐가 없어요. 작은 입력은 배열에 넣고 매번 정렬해 흉내내요\n// 우선순위가 작을수록 먼저 나와요 (최소 힙)\nconst pq = [];\n\npq.push([3, \"세 번째\"]);\npq.push([1, \"첫 번째\"]);\npq.push([2, \"두 번째\"]);\n\nwhile (pq.length > 0) {\n  pq.sort((a, b) => a[0] - b[0]);   // 우선순위 오름차순 정렬\n  const [, item] = pq.shift();\n  console.log(item);                // 첫 번째, 두 번째, 세 번째 순으로 나와요\n}\n\n// 최대 힙이 필요하면 우선순위에 부호를 뒤집어 넣는 게 가장 간단해요\nmaxPq.push([-value, value]);"
   },
   "t11-1": {
-    "py": "import heapq\n\npq = []\nfor v in potions:\n    heapq.heappush(pq, v)\n\nmix_count = 0\nwhile pq[0] < K:\n    # 남은 게 하나뿐인데 아직 K 미만이면 실패예요\n    if len(pq) < 2:\n        return -1\n\n    a = heapq.heappop(pq)\n    b = heapq.heappop(pq)\n    mixed = a + b\n    heapq.heappush(pq, mixed)\n    mix_count += 1",
+    "py": "import heapq\n\npq = []\nfor v in potions:\n    heapq.heappush(pq, v)\n\nmix_count = 0\nwhile pq and pq[0] < K:\n    # 남은 게 하나뿐인데 아직 K 미만이면 실패예요\n    if len(pq) < 2:\n        return -1\n\n    a = heapq.heappop(pq)\n    b = heapq.heappop(pq)\n    mixed = a + b\n    heapq.heappush(pq, mixed)\n    mix_count += 1",
     "js": "// 작은 입력 가정, 배열을 최소 힙처럼 매번 정렬해 사용해요\nconst pq = [];\nfor (const v of potions) pq.push(v);\npq.sort((a, b) => a - b);\n\nlet mixCount = 0;\nwhile (pq[0] < K) {\n  // 남은 게 하나뿐인데 아직 K 미만이면 실패예요\n  if (pq.length < 2) return -1;\n\n  const a = pq.shift();\n  const b = pq.shift();\n  const mixed = a + b;\n  pq.push(mixed);\n  pq.sort((a, b) => a - b);   // 다시 정렬해 최소값을 앞으로\n  mixCount++;\n}"
   },
   "t12-0": {
@@ -136,6 +136,6 @@ window.CT_CONCEPT_CODE = {
   },
   "t21-0": {
     "py": "def gcd(a, b):\n    while b != 0:\n        t = a % b\n        a = b\n        b = t\n    return a          # b가 0이 된 순간의 a가 최대공약수예요\n\n# 최소공배수 = 두 수의 곱 / 최대공약수\ndef lcm(a, b):\n    return a // gcd(a, b) * b   # 곱하기 전에 나눠 오버플로를 피해요",
-    "js": "function gcd(a, b) {\n  while (b !== 0) {\n    const t = a % b;\n    a = b;\n    b = t;\n  }\n  return a;          // b가 0이 된 순간의 a가 최대공약수예요\n}\n\n// 최소공배수 = 두 수의 곱 / 최대공약수\nfunction lcm(a, b) {\n  return a / gcd(a, b) * b;   // 곱하기 전에 나눠 오버플로를 피해요\n}"
+    "js": "function gcd(a, b) {\n  while (b !== 0) {\n    const t = a % b;\n    a = b;\n    b = t;\n  }\n  return a;          // b가 0이 된 순간의 a가 최대공약수예요\n}\n\n// 최소공배수 = 두 수의 곱 / 최대공약수\nfunction lcm(a, b) {\n  return Math.floor(a / gcd(a, b)) * b;   // 곱하기 전에 나눠 오버플로를 피해요\n}"
   }
 };
