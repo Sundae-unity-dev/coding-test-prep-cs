@@ -681,20 +681,21 @@
   window.addEventListener('hashchange', jumpToCard);
   jumpToCard();
 
-  // 커뮤니티 정답률(추적 백엔드 공개 데이터)을 카드에 표시. app.js(defer) 로드 후 호출, 데이터 없으면 조용히 생략.
-  window.addEventListener('DOMContentLoaded', function () {
-    if (!window.ctProblemStats) return;
+  // 커뮤니티 정답률(추적 백엔드 공개 데이터)을 카드에 표시.
+  // app.js(defer)가 ctProblemStats 를 정의할 때까지 짧게 재시도(DOMContentLoaded 타이밍에 의존하지 않음). 데이터 없으면 조용히 생략.
+  (function tryRates(n) {
+    if (!window.ctProblemStats) { if (n < 40) setTimeout(function () { tryRates(n + 1); }, 200); return; }
     window.ctProblemStats(function (map) {
       if (!map) return;
       cards.forEach(function (c) {
         var pid = c.dataset.pid, st = map[pid], slot = document.getElementById('cstat-' + pid);
-        if (!st || st.rate === null || !slot) return;
+        if (!st || st.rate === null || !slot || slot.querySelector('.cs-rate')) return;
         var span = document.createElement('span'); span.className = 'cs-rate';
         span.textContent = '정답률 ' + st.rate + '% (' + st.triers + '명)';
         slot.insertBefore(span, slot.firstChild);
       });
     });
-  });
+  })(0);
 
   // 런박스 프리페치: "문제 풀기"에 hover/focus/touch 인텐트가 생기면 런타임의 큰 자산을 미리 받아
   // 캐시를 데워 둬요. 인텐트 기반이라 그냥 둘러보는 사용자에겐 부담이 없어요.
