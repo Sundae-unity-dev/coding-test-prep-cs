@@ -6,11 +6,22 @@
  * - 주인용 집계는 admin.html(비밀번호) 에서만 봅니다.
  */
 (function () {
-  // ctTrack 은 항상 정의해 둡니다(런박스 Blazor가 호출해도 안전하도록). 꺼져 있으면 빈 함수.
-  window.ctTrack = function () {};
+  // 채점 시도/통과를 로컬에 기록(서버 유무와 무관). 마이페이지/문제 카드의 '내 정답률'에 쓰여요.
+  function recordLocal(type, detail) {
+    if (type !== 'code' || !detail || !detail.pid) return;
+    try {
+      var k = 'ct_attempts_v1', o = JSON.parse(localStorage.getItem(k) || '{}');
+      var p = o[detail.pid] || { tries: 0, passed: false };
+      p.tries++;
+      if (detail.passed === true || detail.passed === 1 || detail.passed === '통과' || detail.passed === 'true') p.passed = true;
+      o[detail.pid] = p; localStorage.setItem(k, JSON.stringify(o));
+    } catch (e) {}
+  }
+  // ctTrack 은 항상 정의(런박스 Blazor가 호출해도 안전). 엔드포인트 없으면 로컬 기록만 해요.
+  window.ctTrack = function (type, detail) { recordLocal(type, detail); };
 
   var ENDPOINT = (window.CT_ENDPOINT || '').trim();
-  if (!ENDPOINT) return;                       // 미설정이면 추적 비활성
+  if (!ENDPOINT) return;                       // 미설정이면 전송 비활성(로컬 기록은 위에서 계속)
   if (/admin\.html$/i.test(location.pathname)) return; // 관리자 페이지는 추적 안 함
 
   var VKEY = 'ct_visitor_v1';
@@ -42,8 +53,8 @@
     } catch (e) {}
   }
 
-  // 실제 추적 함수로 교체
-  window.ctTrack = function (type, detail) { send({ type: type, detail: detail || {} }); };
+  // 실제 추적 함수로 교체(로컬 기록 + 서버 전송)
+  window.ctTrack = function (type, detail) { recordLocal(type, detail); send({ type: type, detail: detail || {} }); };
 
   // 이름 입력 모달 (앱 토큰/테마 변수 그대로 사용)
   function showNameModal(cb) {

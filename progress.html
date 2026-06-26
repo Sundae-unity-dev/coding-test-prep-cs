@@ -283,6 +283,8 @@
     if (solvedN === 0 && qAns === 0) {
       ins.push('아직 시작 전이에요. <a href="practice.html">예시 문제</a> 한 개부터 풀어 볼까요?');
     } else {
+      var at = rd('ct_attempts_v1'), atIds = Object.keys(at).filter(function (k) { return at[k] && at[k].tries; });
+      if (atIds.length) { var atPass = atIds.filter(function (k) { return at[k].passed; }).length; ins.push('내 정답률 <b>' + Math.round(atPass * 100 / atIds.length) + '%</b> (시도한 ' + atIds.length + '문제 중 ' + atPass + '문제 통과).'); }
       if (weak && weak.pct < 1) ins.push('<b>' + weak.name + '</b> 단계가 ' + Math.round(weak.pct * 100) + '% 로 가장 부족해요. <a href="practice.html">이 단계 문제 더 풀기</a>');
       if (qAns > 0) ins.push('개념 퀴즈 정답률 <b>' + Math.round(quizN * 100 / qAns) + '%</b> (' + quizN + ' / ' + qAns + ' 시도). <a href="concepts.html">개념 복습하기</a>');
       if (reviewN > 0) ins.push('복습할 문제가 <b>' + reviewN + '개</b> 있어요. 아래 복습 노트에서 다시 풀어 봐요.');

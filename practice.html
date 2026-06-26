@@ -64,6 +64,9 @@
   .card p { font-size: 14px; color: var(--ink-soft); flex: 1; }
   .card .go { margin-top: 16px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: var(--purple); color: #fff; text-decoration: none; font-size: 14.5px; font-weight: 800; padding: 11px 18px; border-radius: 10px; transition: all 0.15s; }
   .card .go:hover { background: var(--purple-dark); }
+  .card .cstat { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 12px; color: var(--ink-soft); margin: -2px 0 8px; }
+  .card .cstat .cs-my { font-weight: 700; }
+  .card .cstat .cs-rate { color: var(--purple-dark); font-weight: 800; }
   .card .memo { margin-top: 10px; }
   .card .memo-btn { font-family: inherit; font-size: 12px; font-weight: 700; color: var(--ink-soft); background: none; border: none; cursor: pointer; padding: 0; }
   .card .memo-btn.has { color: var(--purple-dark); }
@@ -542,6 +545,14 @@
     ta.addEventListener('click', function (e) { e.stopPropagation(); });
     ta.addEventListener('input', function () { var n = readObj(NKEY); if (ta.value.trim()) n[pid] = ta.value; else delete n[pid]; writeObj(NKEY, n); label(); });
     label(); wrap.appendChild(btn); wrap.appendChild(ta); c.appendChild(wrap);
+  });
+
+  // 내 시도/정답 슬롯 주입 (B2 내 시도 = ct_attempts_v1, B1 커뮤니티 정답률은 app.js 가 같은 슬롯에 채움)
+  cards.forEach(function (c) {
+    var pid = c.dataset.pid, at = readObj('ct_attempts_v1')[pid];
+    var slot = document.createElement('div'); slot.className = 'cstat'; slot.id = 'cstat-' + pid;
+    if (at && at.tries) slot.innerHTML = '<span class="cs-my">내 시도 ' + at.tries + '회' + (at.passed ? ', 해결 ✓' : '') + '</span>';
+    c.querySelector('.top').insertAdjacentElement('afterend', slot);
   });
 
   // 유형 select 채우기
