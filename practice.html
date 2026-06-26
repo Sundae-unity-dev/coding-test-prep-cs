@@ -681,6 +681,21 @@
   window.addEventListener('hashchange', jumpToCard);
   jumpToCard();
 
+  // 커뮤니티 정답률(추적 백엔드 공개 데이터)을 카드에 표시. app.js(defer) 로드 후 호출, 데이터 없으면 조용히 생략.
+  window.addEventListener('DOMContentLoaded', function () {
+    if (!window.ctProblemStats) return;
+    window.ctProblemStats(function (map) {
+      if (!map) return;
+      cards.forEach(function (c) {
+        var pid = c.dataset.pid, st = map[pid], slot = document.getElementById('cstat-' + pid);
+        if (!st || st.rate === null || !slot) return;
+        var span = document.createElement('span'); span.className = 'cs-rate';
+        span.textContent = '정답률 ' + st.rate + '% (' + st.triers + '명)';
+        slot.insertBefore(span, slot.firstChild);
+      });
+    });
+  });
+
   // 런박스 프리페치: "문제 풀기"에 hover/focus/touch 인텐트가 생기면 런타임의 큰 자산을 미리 받아
   // 캐시를 데워 둬요. 인텐트 기반이라 그냥 둘러보는 사용자에겐 부담이 없어요.
   // (파일명은 WasmFingerprintAssets=false 라 안정적. .NET 버전을 올리면 이 목록을 갱신하세요.)

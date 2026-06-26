@@ -183,6 +183,29 @@
     setTimeout(function () { if (!done) box.innerHTML = '<div class="lb-empty">리더보드 응답이 늦어요. 잠시 후 다시 열어 주세요.</div>'; }, 8000);
   };
 
+  // 문제별 커뮤니티 정답률 로더 (공개 ?stats=problems JSONP, 5분 캐시). cb(map) 로 {pid:{triers,solvers,rate}} 전달, 없으면 cb(null).
+  window.ctProblemStats = function (cb) {
+    var EP = (window.CT_ENDPOINT || '').trim();
+    if (!EP) { cb(null); return; }
+    var cache; try { cache = JSON.parse(localStorage.getItem('ct_pstats_cache_v1')); } catch (e) {}
+    if (cache && cache.data && (Date.now() - cache.at) < 300000) { cb(cache.data); return; }
+    var done = false;
+    window.ctPStatsCb = function (res) {
+      done = true;
+      if (res && res.problems) {
+        var map = {};
+        res.problems.forEach(function (p) { var tr = p.triers || 0, sv = p.solvers || 0; map[p.pid] = { triers: tr, solvers: sv, rate: tr ? Math.round(sv * 100 / tr) : null }; });
+        try { localStorage.setItem('ct_pstats_cache_v1', JSON.stringify({ at: Date.now(), data: map })); } catch (e) {}
+        cb(map);
+      } else { cb(null); }
+    };
+    var s = document.createElement('script');
+    s.src = EP + (EP.indexOf('?') >= 0 ? '&' : '?') + 'stats=problems&callback=ctPStatsCb';
+    s.onerror = function () { if (!done) cb(null); };
+    document.body.appendChild(s);
+    setTimeout(function () { if (!done) cb(null); }, 8000);
+  };
+
   // 전역 검색: 상단 네비에 검색 버튼 + 오버레이를 주입해 개념과 예시 문제를 어느 페이지서나 검색.
   // CT_PROBLEMS/CT_CONCEPTS 가 로드된 페이지에서만 동작(없으면 조용히 생략).
   function initSearch() {
