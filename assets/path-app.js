@@ -410,8 +410,8 @@
   // 트랙 전환 토글 (개발 / QA)
   function syncTrackUI() {
     var dv = document.getElementById('trackDev'), qv = document.getElementById('trackQa');
-    if (dv) dv.classList.toggle('on', track === 'dev');
-    if (qv) qv.classList.toggle('on', track === 'qa');
+    if (dv) { dv.classList.toggle('on', track === 'dev'); dv.setAttribute('aria-pressed', track === 'dev' ? 'true' : 'false'); }
+    if (qv) { qv.classList.toggle('on', track === 'qa'); qv.setAttribute('aria-pressed', track === 'qa' ? 'true' : 'false'); }
     var d = document.getElementById('trackDesc');
     if (d) d.textContent = track === 'qa'
       ? 'QA 직무 대비: QA 개념 레슨과 입문, 기초 알고리즘, SQL 문제를 풀어요.'

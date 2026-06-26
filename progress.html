@@ -52,6 +52,9 @@
   .tier .tl { display:flex; justify-content:space-between; font-size:13px; margin-bottom:5px; }
   .tier .tl b { font-weight:700; }
   .tier .tl .v { color:var(--ink-soft); font-variant-numeric:tabular-nums; }
+  .tier .tl .trev { margin-left:8px; font-weight:700; color:var(--purple); text-decoration:none; white-space:nowrap; }
+  .tier .tl .trev:hover { text-decoration:underline; }
+  .tier .tl .trev.weak { color:#E0526A; }
   .bar { height:9px; background:var(--purple-bg); border-radius:999px; overflow:hidden; }
   .bar i { display:block; height:100%; background:linear-gradient(90deg,var(--purple),var(--purple-dark)); border-radius:999px; transition:width .6s ease; }
   .hmap { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; }
@@ -163,6 +166,7 @@
 
   <div class="sec" id="topicSec" style="display:none;">
     <h2>📊 주제별 정답률 <span style="font-size:13px;color:var(--ink-soft);font-weight:700;">약한 주제부터</span></h2>
+    <p id="topicHint" style="display:none;font-size:13px;color:var(--ink-soft);margin:0 0 10px;">정답률 70% 미만 주제는 <b>복습 →</b>를 눌러 개념부터 다시 봐요.</p>
     <div id="topicAcc"></div>
   </div>
 
@@ -320,8 +324,14 @@
     ids.sort(function (a, b) { return (byTopic[a].c / byTopic[a].t) - (byTopic[b].c / byTopic[b].t); });
     document.getElementById('topicAcc').innerHTML = ids.map(function (t) {
       var s = byTopic[t], pct = Math.round(s.c * 100 / s.t);
-      return '<div class="tier"><div class="tl"><b>' + String(nameOf[t]).replace(/[<>&]/g, '') + '</b><span class="v">' + s.c + ' / ' + s.t + ' (' + pct + '%)</span></div><div class="bar"><i style="width:' + pct + '%"></i></div></div>';
+      var weak = pct < 70 ? ' weak' : '';
+      return '<div class="tier"><div class="tl"><b>' + String(nameOf[t]).replace(/[<>&]/g, '') + '</b><span class="v">' + s.c + ' / ' + s.t + ' (' + pct + '%) <a class="trev' + weak + '" href="concepts.html#' + t + '">복습 →</a></span></div><div class="bar"><i style="width:' + pct + '%"></i></div></div>';
     }).join('');
+    var anyWeak = ids.some(function (t) { return (byTopic[t].c / byTopic[t].t) < 0.7; });
+    if (anyWeak) {
+      var hint = document.getElementById('topicHint');
+      if (hint) hint.style.display = '';
+    }
     document.getElementById('topicSec').style.display = '';
   })();
 

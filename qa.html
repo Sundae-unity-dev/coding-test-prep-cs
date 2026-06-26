@@ -386,7 +386,10 @@
   (function () {
     var box = document.getElementById('bugCheck'); if (!box) return;
     var opts = [].slice.call(box.querySelectorAll('.bc-opt'));
-    opts.forEach(function (b) { b.addEventListener('click', function () { if (box.classList.contains('done')) return; b.classList.toggle('sel'); }); });
+    opts.forEach(function (b) {
+      b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', function () { if (box.classList.contains('done')) return; var on = b.classList.toggle('sel'); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+    });
     document.getElementById('bcCheck').addEventListener('click', function () {
       box.classList.add('done');
       var hit = 0, totalMiss = 0, wrongPick = 0;
