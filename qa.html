@@ -91,6 +91,17 @@
   .nextlinks a { font-size: 14px; font-weight: 700; text-decoration: none; background: var(--purple); color: #fff; padding: 11px 18px; border-radius: 10px; }
   .nextlinks a.ghost { background: transparent; color: var(--purple-dark); border: 1px solid var(--line); }
 
+  .bugcheck { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+  .bc-report { background: var(--purple-bg); border-radius: 10px; padding: 12px 14px; font-size: 14px; margin-bottom: 13px; line-height: 1.6; }
+  .bc-dim { color: var(--ink-soft); font-size: 12.5px; }
+  .bc-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .bc-opt { font-family: inherit; font-size: 13.5px; font-weight: 700; padding: 9px 14px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px; cursor: pointer; }
+  .bc-opt.sel { border-color: var(--purple); background: var(--purple-bg); color: var(--purple-dark); }
+  .bc-opt.right { border-color: var(--green); background: var(--green-bg, #E7F8EE); color: var(--green); }
+  .bc-opt.wrong { border-color: var(--red); background: var(--red-bg, #FBECEE); color: var(--red); }
+  .bc-actions { margin-top: 12px; }
+  .bc-check { font-family: inherit; font-weight: 800; font-size: 14px; padding: 10px 22px; border: none; border-radius: 10px; background: var(--purple); color: #fff; cursor: pointer; }
+  .bc-fb { margin-top: 11px; font-size: 13.5px; font-weight: 700; }
   footer { text-align: center; color: var(--ink-soft); font-size: 13px; padding: 26px 20px 50px; }
   @media (max-width: 860px) { .qa-layout { grid-template-columns: 1fr; } .qa-toc { position: static; display: flex; flex-wrap: wrap; gap: 4px; } .qa-toc a { font-size: 13px; padding: 6px 10px; } }
 </style>
@@ -192,6 +203,8 @@
         <tr><td>API 테스트</td><td>Postman, REST Assured</td></tr>
         <tr><td>단위 테스트</td><td>JUnit(Java), pytest(Python)</td></tr>
       </table>
+      <p class="sec-sub" style="margin-top:14px;">자동화 퀴즈 <span class="qprog" id="aProg">0 / 0</span></p>
+      <div id="autoQuiz"></div>
 
       <h3 class="sub">테스트 설계 기법</h3>
       <p class="sec-sub">적은 케이스로 많은 결함을 잡는 대표 기법이에요.</p>
@@ -236,6 +249,22 @@
 
       <h3 class="sub">테스트 케이스의 구성요소</h3>
       <p class="tx">TC ID, 제목, 사전 조건, 입력과 절차, 기대 결과, 우선순위로 구성해요. 누가 실행해도 같은 결과가 나오도록 명확하게 적는 것이 좋은 테스트 케이스예요.</p>
+
+      <h3 class="sub">직접 해보기: 나쁜 버그 리포트 고치기</h3>
+      <p class="sec-sub">아래 리포트에 빠진 항목을 모두 골라 보세요.</p>
+      <div class="bugcheck" id="bugCheck">
+        <div class="bc-report">제목: 로그인이 안 돼요<br><span class="bc-dim">(본문 내용 없음)</span></div>
+        <div class="bc-opts">
+          <button type="button" class="bc-opt" data-miss="1">재현 단계</button>
+          <button type="button" class="bc-opt" data-miss="1">기대 결과</button>
+          <button type="button" class="bc-opt" data-miss="1">실제 결과</button>
+          <button type="button" class="bc-opt" data-miss="1">환경 정보</button>
+          <button type="button" class="bc-opt" data-miss="1">심각도/우선순위</button>
+          <button type="button" class="bc-opt" data-miss="0">제목</button>
+        </div>
+        <div class="bc-actions"><button type="button" class="bc-check" id="bcCheck">확인</button></div>
+        <div class="bc-fb" id="bcFb"></div>
+      </div>
     </section>
 
     <!-- 4. 면접 -->
@@ -345,6 +374,35 @@
   });
   document.getElementById('csQuiz').innerHTML = csHtml;
   renderQuizzes(document.getElementById('csQuiz'), QA.cs, 'c', 'csProg');
+
+  // 자동화 퀴즈
+  var auto = QA.automation || [];
+  if (auto.length) {
+    document.getElementById('autoQuiz').innerHTML = auto.map(function (q, i) { return quizCard('a' + i, q, i + 1); }).join('');
+    renderQuizzes(document.getElementById('autoQuiz'), auto, 'a', 'aProg');
+  }
+
+  // 버그 리포트 셀프 점검: 빠진 항목 모두 고르기
+  (function () {
+    var box = document.getElementById('bugCheck'); if (!box) return;
+    var opts = [].slice.call(box.querySelectorAll('.bc-opt'));
+    opts.forEach(function (b) { b.addEventListener('click', function () { if (box.classList.contains('done')) return; b.classList.toggle('sel'); }); });
+    document.getElementById('bcCheck').addEventListener('click', function () {
+      box.classList.add('done');
+      var hit = 0, totalMiss = 0, wrongPick = 0;
+      opts.forEach(function (b) {
+        var miss = b.getAttribute('data-miss') === '1', sel = b.classList.contains('sel');
+        b.disabled = true;
+        if (miss) { totalMiss++; b.classList.add('right'); if (sel) hit++; }
+        else if (sel) { b.classList.add('wrong'); wrongPick++; }
+      });
+      var fb = document.getElementById('bcFb'), good = (hit === totalMiss && wrongPick === 0);
+      fb.style.color = good ? 'var(--green)' : 'var(--red)';
+      fb.textContent = good
+        ? '정확해요. 좋은 버그 리포트는 환경, 재현 단계, 기대 결과, 실제 결과, 심각도까지 담아요.'
+        : ('빠진 항목 ' + totalMiss + '개 중 ' + hit + '개를 찾았어요. 제목 외에는 모두 빠져 있어요(초록이 정답).');
+    });
+  })();
 
   // 사이드 목차 활성 표시(스크롤 스파이)
   var links = [].slice.call(document.querySelectorAll('.qa-toc a'));
