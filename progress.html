@@ -158,6 +158,11 @@
     </div>
   </div>
 
+  <div class="sec" id="topicSec" style="display:none;">
+    <h2>📊 주제별 정답률 <span style="font-size:13px;color:var(--ink-soft);font-weight:700;">약한 주제부터</span></h2>
+    <div id="topicAcc"></div>
+  </div>
+
   <div class="sec">
     <h2>📝 복습 노트 <span id="rvCount" style="font-size:13px;color:var(--ink-soft);font-weight:700;"></span></h2>
     <div id="reviewNote"></div>
@@ -278,6 +283,26 @@
       document.getElementById('insights').innerHTML = ins.map(function (s) { return '<li>' + s + '</li>'; }).join('');
       document.getElementById('insightSec').style.display = '';
     }
+  })();
+
+  // 주제별 정답률(약점 분석): 개념 퀴즈 qX-Y 를 주제 tX 로 집계, 정답률 낮은 순
+  (function () {
+    var CC = window.CT_CONCEPTS || [], nameOf = {};
+    CC.forEach(function (c) { nameOf[c.id] = c.t; });
+    var byTopic = {};
+    Object.keys(quiz).forEach(function (k) {
+      var m = k.match(/^q(\d+)-/); if (!m) return;
+      var tid = 't' + m[1], v = quiz[k], ok = (v === true || (v && v.correct));
+      byTopic[tid] = byTopic[tid] || { c: 0, t: 0 }; byTopic[tid].t++; if (ok) byTopic[tid].c++;
+    });
+    var ids = Object.keys(byTopic).filter(function (t) { return nameOf[t]; });
+    if (!ids.length) return;
+    ids.sort(function (a, b) { return (byTopic[a].c / byTopic[a].t) - (byTopic[b].c / byTopic[b].t); });
+    document.getElementById('topicAcc').innerHTML = ids.map(function (t) {
+      var s = byTopic[t], pct = Math.round(s.c * 100 / s.t);
+      return '<div class="tier"><div class="tl"><b>' + String(nameOf[t]).replace(/[<>&]/g, '') + '</b><span class="v">' + s.c + ' / ' + s.t + ' (' + pct + '%)</span></div><div class="bar"><i style="width:' + pct + '%"></i></div></div>';
+    }).join('');
+    document.getElementById('topicSec').style.display = '';
   })();
 
   // 전체 완료율 링
