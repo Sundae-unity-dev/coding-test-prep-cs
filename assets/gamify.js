@@ -133,12 +133,16 @@
     var nonGSolved = 0;
     (window.CT_PROBLEMS || []).forEach(function (p) { if (!p.g && sm[p.id]) { nonGSolved++; if (tierSolved[p.lv] !== undefined) tierSolved[p.lv]++; } });
     var exs = exams();
+    var act = readObj('ct_activity_v1'), weekend = false;
+    Object.keys(act).forEach(function (d) { if (act[d]) { var w = new Date(d).getDay(); if (w === 0 || w === 6) weekend = true; } });
+    var sqlS = readObj('ct_sql_solved_v1'); var sqlN = Object.keys(sqlS).filter(function (k) { return sqlS[k]; }).length;
     return {
       tierTotal: tierTotal, tierSolved: tierSolved,
       totalSolved: solvedIds().length, nonGSolved: nonGSolved, nonGTotal: nonGTotal,
       quizCorrect: quizCorrectIds().length, examCount: exs.length,
       examPerfect: exs.some(function (e) { return e.N > 0 && e.P === e.N; }),
-      streak: computeStreak().streak
+      streak: computeStreak().streak,
+      weekendStudy: weekend, sqlSolved: sqlN
     };
   }
 
@@ -157,7 +161,9 @@
     { id: 'exam1', e: '📝', t: '첫 모의고사', d: '모의고사에 처음 응시', test: function (c) { return c.examCount >= 1; } },
     { id: 'examperfect', e: '💯', t: '모의고사 만점', d: '모의고사에서 만점', test: function (c) { return c.examPerfect; } },
     { id: 'solve25', e: '⭐', t: '25문제 해결', d: '문제 25개 해결', test: function (c) { return c.totalSolved >= 25; } },
-    { id: 'solveall', e: '🏆', t: '올 클리어', d: '예시 문제를 모두 해결', test: function (c) { return c.nonGTotal > 0 && c.nonGSolved >= c.nonGTotal; } }
+    { id: 'solveall', e: '🏆', t: '올 클리어', d: '예시 문제를 모두 해결', test: function (c) { return c.nonGTotal > 0 && c.nonGSolved >= c.nonGTotal; } },
+    { id: 'weekend', e: '🌙', t: '주말에도 학습', d: '주말에 학습했어요', test: function (c) { return c.weekendStudy; } },
+    { id: 'sql1', e: '🗄️', t: 'SQL 입문', d: 'SQL 문제를 풀었어요', test: function (c) { return c.sqlSolved >= 1; } }
   ];
 
   // ===== 토스트 =====

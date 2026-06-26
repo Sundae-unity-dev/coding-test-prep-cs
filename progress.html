@@ -194,6 +194,16 @@
     </div>
   </div>
 
+  <div class="sec">
+    <h2>💾 진행 백업</h2>
+    <p style="font-size:13.5px;color:var(--ink-soft);margin:0 0 12px;">진행 기록을 파일로 내려받아 두면 다른 기기나 브라우저로 옮길 수 있어요.</p>
+    <div class="go">
+      <button class="primary" id="expBtn" type="button" style="font-family:inherit;border:none;cursor:pointer;">내보내기</button>
+      <button class="ghost" id="impBtn" type="button" style="font-family:inherit;cursor:pointer;">가져오기</button>
+      <input type="file" id="impFile" accept="application/json,.json" hidden>
+    </div>
+  </div>
+
   <div class="note">이 진행 기록은 지금 쓰는 브라우저에 저장돼요. 다른 기기에서는 따로 쌓여요.</div>
 </div>
 
@@ -430,6 +440,38 @@
       }, 'image/png');
     });
   });
+</script>
+<script>
+  // 진행 백업/복원: ct 로 시작하는 localStorage 키를 JSON 으로 내보내고 가져와요(기기 간 수동 이전).
+  (function () {
+    function gather() { var o = {}; for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (/^ct/.test(k)) o[k] = localStorage.getItem(k); } return o; }
+    var exp = document.getElementById('expBtn'), imp = document.getElementById('impBtn'), file = document.getElementById('impFile');
+    if (exp) exp.addEventListener('click', function () {
+      var payload = JSON.stringify({ _app: 'elice-coding-camp', ts: Date.now(), data: gather() }, null, 2);
+      var blob = new Blob([payload], { type: 'application/json' });
+      var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'elice-coding-camp-progress.json';
+      document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+    });
+    if (imp && file) {
+      imp.addEventListener('click', function () { file.click(); });
+      file.addEventListener('change', function () {
+        var f = file.files[0]; if (!f) return;
+        var rd = new FileReader();
+        rd.onload = function () {
+          try {
+            var j = JSON.parse(rd.result); var d = (j && j.data) ? j.data : j;
+            if (!d || typeof d !== 'object') throw 0;
+            var keys = Object.keys(d).filter(function (k) { return /^ct/.test(k); });
+            if (!keys.length) throw 0;
+            if (!confirm('현재 진행을 이 파일 내용으로 덮어쓸까요?')) { file.value = ''; return; }
+            keys.forEach(function (k) { localStorage.setItem(k, d[k]); });
+            alert('진행을 가져왔어요. 새로고침할게요.'); location.reload();
+          } catch (e) { alert('올바른 백업 파일이 아니에요.'); file.value = ''; }
+        };
+        rd.readAsText(f);
+      });
+    }
+  })();
 </script>
 </body>
 </html>

@@ -514,7 +514,17 @@
       var list = document.getElementById('questList');
       if (!list || !window.ctGamify) return;
       var g = window.ctGamify.summary();
+      // 날짜 시드로 매일 바뀌는 오늘의 미션(기존 카운터 재사용)
+      var MISSIONS = [
+        { tx: '오늘의 미션: 문제 2개 풀기', done: g.todaySolved >= 2 },
+        { tx: '오늘의 미션: 개념 퀴즈 3개 풀기', done: g.todayQuiz >= 3 },
+        { tx: '오늘의 미션: 문제 1개 + 개념 퀴즈 1개', done: g.todaySolved >= 1 && g.todayQuiz >= 1 },
+        { tx: '오늘의 미션: 개념 퀴즈 2개 풀기', done: g.todayQuiz >= 2 },
+        { tx: '오늘의 미션: 문제 3개 풀기', done: g.todaySolved >= 3 }
+      ];
+      var dt = new Date(), mi = (dt.getFullYear() * 372 + (dt.getMonth() + 1) * 31 + dt.getDate()) % MISSIONS.length;
       var quests = [
+        MISSIONS[mi],
         { done: g.todaySolved >= 1, tx: '문제 1개 풀기' },
         { done: g.todayQuiz >= 1, tx: '개념 퀴즈 1개 풀기' },
         { done: g.goalMet, tx: '오늘 목표 달성', xp: g.todayXp + ' / ' + g.dailyGoal + ' XP' }
