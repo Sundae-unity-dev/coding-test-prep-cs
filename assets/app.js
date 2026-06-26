@@ -175,7 +175,7 @@
     function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
     var items = [];
     (window.CT_CONCEPTS || []).forEach(function (c) { items.push({ t: c.t, sub: '개념 ' + (c.n || ''), href: 'concepts.html#' + c.id, kind: '개념' }); });
-    (window.CT_PROBLEMS || []).filter(function (p) { return !p.g; }).forEach(function (p) { items.push({ t: p.t, sub: '예시 문제', href: 'practice.html#p-' + p.id, kind: '문제' }); });
+    (window.CT_PROBLEMS || []).filter(function (p) { return !p.g; }).forEach(function (p) { items.push({ t: p.t, sub: (p.tags && p.tags.length ? p.tags.join(', ') : '예시 문제'), href: 'practice.html#p-' + p.id, kind: '문제', tags: p.tags || [] }); });
 
     var btn = document.createElement('button');
     btn.type = 'button'; btn.className = 'gs-trigger'; btn.setAttribute('aria-label', '검색'); btn.title = '검색 (단축키 /)';
@@ -192,7 +192,7 @@
     function render(q) {
       q = q.trim().toLowerCase();
       // 검색어가 없으면 전체 목록을 보여줘 결과 영역 안에서 둘러볼 수 있게 해요.
-      var list = q ? items.filter(function (it) { return it.t.toLowerCase().indexOf(q) >= 0; }).slice(0, 40) : items.slice();
+      var list = q ? items.filter(function (it) { return it.t.toLowerCase().indexOf(q) >= 0 || (it.tags || []).some(function (tg) { return tg.toLowerCase().indexOf(q) >= 0; }); }).slice(0, 40) : items.slice();
       if (!list.length) { results.innerHTML = '<div class="gs-empty">검색 결과가 없어요.</div>'; return; }
       results.innerHTML = list.map(function (it) {
         return '<a class="gs-item" role="option" href="' + it.href + '"><span class="gs-kind">' + it.kind + '</span><span class="gs-t">' + esc(it.t) + '</span><span class="gs-sub">' + esc(it.sub) + '</span></a>';
