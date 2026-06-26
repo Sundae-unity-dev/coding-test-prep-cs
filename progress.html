@@ -92,6 +92,11 @@
   .rv-tag.ok { color:#16A34A; background:var(--green-bg,#E7F8EE); }
   html[data-theme="dark"] .rv-tag.s { background:#2A1E10; }
   .rv-empty { font-size:13.5px; color:var(--ink-soft); }
+  .insights { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:9px; }
+  .insights li { font-size:14px; padding:11px 14px; background:var(--purple-bg); border-radius:10px; }
+  .insights li b { color:var(--purple-dark); }
+  .insights li a { color:var(--purple-dark); font-weight:700; text-decoration:none; }
+  .insights li a:hover { text-decoration:underline; }
   /* 리더보드 스타일(.lb-*)은 assets/app.css 공용 정의 사용 */
   @media (max-width:760px){ .grid2 { grid-template-columns:1fr; } }
   @media (max-width:560px){ .cards { grid-template-columns:repeat(2,1fr); } .hero { flex-direction:column; align-items:flex-start; } }
@@ -106,6 +111,8 @@
     <a href="path.html">학습 경로</a>
     <a href="practice.html">예시 문제</a>
     <a href="gichul.html">기출 문제</a>
+    <a href="sql.html">SQL</a>
+    <a href="qa.html">QA/면접</a>
     <a href="run/?mode=exam">모의고사</a>
   </div>
   <a class="mypage-link" href="progress.html">마이페이지</a>
@@ -136,6 +143,11 @@
     <div class="stat"><div class="ico">🔥</div><div class="n" id="cStreak">0일</div><div class="l">연속 학습</div></div>
     <div class="stat"><div class="ico">📘</div><div class="n" id="cQuiz">0 / 40</div><div class="l">개념 퀴즈</div></div>
     <div class="stat"><div class="ico">🔁</div><div class="n" id="cReview">0</div><div class="l">복습 대기</div></div>
+  </div>
+
+  <div class="sec" id="insightSec" style="display:none;">
+    <h2>💡 학습 인사이트</h2>
+    <ul id="insights" class="insights"></ul>
   </div>
 
   <div class="sec">
@@ -249,6 +261,31 @@
     var unsolvedN = arr.filter(function (k) { return !solved[k]; }).length;
     if (rvCount) rvCount.textContent = unsolvedN ? unsolvedN + '개 남음' : '모두 복습 완료';
     box.innerHTML = (firstUnsolved ? '<a class="rv-start" href="run/?problem=' + encodeURIComponent(firstUnsolved) + '">▶ 복습 시작</a>' : '') + '<div class="rv-list">' + rows + '</div>';
+  })();
+
+  // 학습 인사이트: 기존 기록에서 약점/정답률을 뽑아 다음 행동을 제안해요.
+  (function () {
+    var qAns = Object.keys(quiz).length;
+    var qa = rd('ct_qa_quiz_v1'), qaCor = Object.keys(qa).filter(function (k) { return qa[k] && qa[k].correct; }).length;
+    var tiersArr = Object.keys(TIERS).map(function (name) {
+      var ids = TIERS[name], done = ids.filter(function (id) { return solved[id]; }).length;
+      return { name: name, done: done, total: ids.length, pct: ids.length ? done / ids.length : 1 };
+    }).filter(function (t) { return t.total > 0; });
+    var weak = tiersArr.slice().sort(function (a, b) { return a.pct - b.pct; })[0];
+    var ins = [];
+    if (solvedN === 0 && qAns === 0) {
+      ins.push('아직 시작 전이에요. <a href="practice.html">예시 문제</a> 한 개부터 풀어 볼까요?');
+    } else {
+      if (weak && weak.pct < 1) ins.push('<b>' + weak.name + '</b> 단계가 ' + Math.round(weak.pct * 100) + '% 로 가장 부족해요. <a href="practice.html">이 단계 문제 더 풀기</a>');
+      if (qAns > 0) ins.push('개념 퀴즈 정답률 <b>' + Math.round(quizN * 100 / qAns) + '%</b> (' + quizN + ' / ' + qAns + ' 시도). <a href="concepts.html">개념 복습하기</a>');
+      if (reviewN > 0) ins.push('복습할 문제가 <b>' + reviewN + '개</b> 있어요. 아래 복습 노트에서 다시 풀어 봐요.');
+      if (qaCor > 0) ins.push('QA/면접 지식 퀴즈를 <b>' + qaCor + '개</b> 맞혔어요. <a href="qa.html">이어서 풀기</a>');
+      else ins.push('면접도 함께 준비해요. <a href="qa.html">QA/면접 지식 퀴즈</a>로 CS 기초를 점검해 봐요.');
+    }
+    if (ins.length) {
+      document.getElementById('insights').innerHTML = ins.map(function (s) { return '<li>' + s + '</li>'; }).join('');
+      document.getElementById('insightSec').style.display = '';
+    }
   })();
 
   // 전체 완료율 링

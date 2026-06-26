@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL 연습 - Elice Coding Camp</title>
+<script>(function(){try{var t=localStorage.getItem('ctprep_theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<link rel="stylesheet" href="assets/app.css">
+<style>
+  :root {
+    --purple: #8843FF; --purple-dark: #6A2FD0; --purple-bg: #F4EEFF;
+    --ink: #1F2230; --ink-soft: #555B6E; --line: #E5E2F0; --bg: #FAFAFD;
+    --card: #FFFFFF; --green: #16A34A; --amber: #D97706;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.7; word-break: keep-all; overflow-wrap: break-word; }
+  .sitebrand { display: flex; align-items: center; gap: 9px; font-weight: 800; font-size: 15px; color: var(--ink); text-decoration: none; }
+  header.hero { background: linear-gradient(135deg, #3B1B7E 0%, #6A2FD0 55%, #8843FF 100%); color: #fff; text-align: center; padding: 52px 24px 44px; }
+  header.hero .badge { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); padding: 4px 14px; border-radius: 99px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
+  header.hero h1 { font-size: 30px; font-weight: 800; margin-bottom: 12px; }
+  header.hero p { font-size: 15px; opacity: 0.92; max-width: 640px; margin: 0 auto; }
+
+  main { max-width: 1180px; margin: 0 auto; padding: 24px 20px 80px; }
+  .notebox { background: var(--purple-bg); border-left: 4px solid var(--purple); border-radius: 0 10px 10px 0; padding: 13px 17px; margin: 0 0 20px; font-size: 13.5px; }
+  .notebox strong { color: var(--purple-dark); }
+
+  h2.sec { font-size: 18px; font-weight: 800; margin: 26px 0 12px; }
+
+  /* 스키마 패널 */
+  .schema { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+  .tbl { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .tbl .tname { font-weight: 800; font-size: 14px; padding: 10px 14px; background: var(--purple-bg); color: var(--purple-dark); }
+  .tbl .tcols { font-family: 'Elice Digital Coding', Consolas, monospace; font-size: 12.5px; color: var(--ink-soft); padding: 8px 14px; border-bottom: 1px solid var(--line); }
+  .tbl table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .tbl th, .tbl td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
+  .tbl th { background: rgba(136,67,255,0.05); font-weight: 700; }
+  .tbl .more { font-size: 11.5px; color: var(--ink-soft); padding: 6px 14px; }
+
+  /* 작업 영역 */
+  .work { display: grid; grid-template-columns: 240px minmax(0,1fr); gap: 18px; align-items: start; }
+  .plist { display: flex; flex-direction: column; gap: 7px; position: sticky; top: 70px; }
+  .plist button { text-align: left; font-family: inherit; font-size: 13.5px; font-weight: 700; padding: 10px 12px; border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+  .plist button:hover { border-color: var(--purple); }
+  .plist button.on { border-color: var(--purple); background: var(--purple-bg); color: var(--purple-dark); }
+  .plist button .lv { font-size: 10.5px; font-weight: 800; border-radius: 999px; padding: 1px 7px; }
+  .plist button .done { margin-left: auto; color: var(--green); font-weight: 800; }
+  .lv.intro { color: #16A34A; background: #EFFAF3; } .lv.basic { color: #2563EB; background: #EFF4FE; }
+  .lv.mid { color: #D97706; background: #FFF7ED; } .lv.hard { color: #8843FF; background: #F4EEFF; }
+
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; }
+  .panel h3 { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+  .panel .prompt { font-size: 15px; margin-bottom: 12px; }
+  .panel .hintbox { font-size: 13px; color: var(--ink-soft); background: var(--purple-bg); border-radius: 9px; padding: 10px 13px; margin-bottom: 12px; display: none; }
+  .panel .hintbox.show { display: block; }
+  .sqled { width: 100%; min-height: 130px; resize: vertical; font-family: 'Elice Digital Coding', Consolas, monospace; font-size: 14px; line-height: 1.6; padding: 13px 15px; border: 1.5px solid var(--line); border-radius: 11px; background: var(--bg); color: var(--ink); outline: none; word-break: normal; overflow-wrap: normal; }
+  .sqled:focus { border-color: var(--purple); }
+  .btns { display: flex; flex-wrap: wrap; gap: 9px; margin: 12px 0; }
+  .btns button { font-family: inherit; font-weight: 800; font-size: 14px; padding: 11px 20px; border: none; border-radius: 10px; cursor: pointer; }
+  .btns .run { background: var(--purple); color: #fff; }
+  .btns .grade { background: var(--green); color: #fff; }
+  .btns .ghost { background: transparent; color: var(--ink-soft); border: 1px solid var(--line); }
+  .verdict { font-weight: 800; font-size: 14.5px; margin: 6px 0 10px; display: none; }
+  .verdict.show { display: block; }
+  .verdict.ok { color: var(--green); } .verdict.no { color: #E0526A; }
+  .reswrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; margin-top: 8px; }
+  .reswrap table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: 'Elice Digital Coding', Consolas, monospace; }
+  .reswrap th, .reswrap td { padding: 7px 12px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
+  .reswrap th { background: var(--purple-bg); color: var(--purple-dark); font-weight: 800; }
+  .reserr { color: #E0526A; font-size: 13.5px; padding: 10px 2px; font-family: 'Elice Digital Coding', Consolas, monospace; }
+  .solbox { margin-top: 12px; }
+  .solbox pre { background: #1E1E2E; color: #E6E6F0; padding: 13px 15px; border-radius: 10px; font-size: 13.5px; overflow-x: auto; word-break: normal; }
+  .loading { text-align: center; color: var(--ink-soft); padding: 40px; font-size: 14px; }
+  footer { text-align: center; color: var(--ink-soft); font-size: 13px; padding: 26px 20px 50px; }
+  @media (max-width: 760px) { .work { grid-template-columns: 1fr; } .plist { position: static; flex-direction: row; flex-wrap: wrap; } .plist button { flex: 1 1 auto; } }
+</style>
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon-192.png">
+</head>
+<body>
+
+<nav class="sitenav">
+  <a class="sitebrand" href="index.html"><img class="brandlogo" src="assets/elicetrack.png" alt="Elice Track"><span class="brandsub">Coding Test</span></a>
+  <div class="nav-links">
+    <a href="guide.html">준비 가이드</a>
+    <a href="concepts.html">개념 정리</a>
+    <a href="path.html">학습 경로</a>
+    <a href="practice.html">예시 문제</a>
+    <a href="gichul.html">기출 문제</a>
+    <a class="on" href="sql.html">SQL</a>
+    <a href="qa.html">QA/면접</a>
+    <a href="run/?mode=exam">모의고사</a>
+  </div>
+  <a class="mypage-link" href="progress.html">마이페이지</a>
+</nav>
+
+<header class="hero">
+  <div class="badge">QA/데이터 직무 대비</div>
+  <h1>SQL 연습</h1>
+  <p>브라우저 안에서 도는 SQLite 로 실제 쿼리를 작성하고 바로 채점받아요. 설치도 서버도 필요 없어요.</p>
+</header>
+
+<main>
+  <div class="notebox"><strong>이렇게 풀어요.</strong> 왼쪽에서 문제를 고르고, 쿼리를 작성한 뒤 <b>실행</b>으로 결과를 확인하고 <b>채점하기</b>로 정답과 비교해요. 결과의 컬럼 순서는 문제에서 요구한 대로 맞춰 주세요. 정렬을 요구하지 않는 문제는 행 순서가 달라도 정답으로 인정돼요.</div>
+
+  <h2 class="sec">데이터베이스 구조</h2>
+  <div class="schema" id="schema"></div>
+
+  <h2 class="sec">문제</h2>
+  <div id="boot" class="loading">SQL 엔진을 불러오는 중이에요...</div>
+  <div class="work" id="work" style="display:none;">
+    <div class="plist" id="plist"></div>
+    <div class="panel" id="panel"></div>
+  </div>
+</main>
+
+<footer>Elice Track 코딩 테스트 준비자료 | 엘리스 트랙 수강생용</footer>
+
+<script src="assets/problems.js"></script>
+<script src="assets/sql-problems.js"></script>
+<script src="assets/sql-wasm.js"></script>
+<script defer src="assets/config.js"></script>
+<script defer src="assets/tracker.js"></script>
+<script defer src="assets/app.js"></script>
+<script defer src="assets/gamify.js"></script>
+<script>
+(function () {
+  var DATA = window.CT_SQL || { setup: '', problems: [] };
+  var SKEY = 'ct_sql_solved_v1';
+  function rd(k) { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch (e) { return {}; } }
+  function wr(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+  var LVN = { intro: '입문', basic: '기초', mid: '중급', hard: '심화' };
+
+  var db = null, expected = {}, cur = null, solved = rd(SKEY);
+
+  // 결과를 값 행렬로 정규화(컬럼명 무시, 값만 비교). ordered=false 면 행 정렬.
+  function normalize(res, ordered) {
+    if (!res) return { cols: [], rows: [] };
+    var rows = (res.values || []).map(function (r) { return r.map(function (v) { return v === null ? '∅NULL' : String(v); }); });
+    if (!ordered) rows = rows.slice().sort(function (a, b) { return a.join('').localeCompare(b.join('')); });
+    return { cols: res.columns || [], rows: rows };
+  }
+  function sameResult(a, b) {
+    if (a.rows.length !== b.rows.length) return false;
+    if ((a.cols.length || a.rows[0] && a.rows[0].length) !== (b.cols.length || b.rows[0] && b.rows[0].length)) { /* 컬럼 수는 행 길이로도 검증 */ }
+    for (var i = 0; i < a.rows.length; i++) {
+      if (a.rows[i].length !== b.rows[i].length) return false;
+      for (var j = 0; j < a.rows[i].length; j++) if (a.rows[i][j] !== b.rows[i][j]) return false;
+    }
+    return true;
+  }
+  function runSQL(sql) {
+    // 마지막 SELECT 결과를 반환. 오류는 throw.
+    var r = db.exec(sql);
+    return r.length ? r[r.length - 1] : { columns: [], values: [] };
+  }
+
+  function renderSchema() {
+    var tables = db.exec("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name");
+    var names = tables.length ? tables[0].values.map(function (r) { return r[0]; }) : [];
+    var html = names.map(function (t) {
+      var info = db.exec("PRAGMA table_info(" + t + ")");
+      var cols = info.length ? info[0].values.map(function (r) { return r[1]; }) : [];
+      var sample = db.exec("SELECT * FROM " + t + " LIMIT 4");
+      var s = sample.length ? sample[0] : { columns: cols, values: [] };
+      var head = s.columns.map(function (c) { return '<th>' + esc(c) + '</th>'; }).join('');
+      var body = s.values.map(function (row) { return '<tr>' + row.map(function (v) { return '<td>' + esc(v === null ? 'NULL' : v) + '</td>'; }).join('') + '</tr>'; }).join('');
+      var cnt = db.exec("SELECT COUNT(*) FROM " + t);
+      var total = cnt.length ? cnt[0].values[0][0] : 0;
+      return '<div class="tbl"><div class="tname">' + esc(t) + '</div><div class="tcols">' + cols.map(esc).join(', ') + '</div>' +
+        '<table><thead><tr>' + head + '</tr></thead><tbody>' + body + '</tbody></table>' +
+        '<div class="more">총 ' + total + '행 (상위 4행 미리보기)</div></div>';
+    }).join('');
+    document.getElementById('schema').innerHTML = html;
+  }
+
+  function renderList() {
+    document.getElementById('plist').innerHTML = DATA.problems.map(function (p, i) {
+      return '<button data-i="' + i + '"' + (cur === i ? ' class="on"' : '') + '><span class="lv ' + p.level + '">' + (LVN[p.level] || '') + '</span>' + esc(p.title) + (solved[p.id] ? '<span class="done">✓</span>' : '') + '</button>';
+    }).join('');
+    [].slice.call(document.querySelectorAll('#plist button')).forEach(function (b) {
+      b.addEventListener('click', function () { select(+b.getAttribute('data-i')); });
+    });
+  }
+
+  function renderTable(res) {
+    if (!res || !res.columns || !res.columns.length) return '<div class="reserr">결과가 없어요. (행 0개)</div>';
+    var head = res.columns.map(function (c) { return '<th>' + esc(c) + '</th>'; }).join('');
+    var body = (res.values || []).map(function (row) { return '<tr>' + row.map(function (v) { return '<td>' + esc(v === null ? 'NULL' : v) + '</td>'; }).join('') + '</tr>'; }).join('');
+    return '<div class="reswrap"><table><thead><tr>' + head + '</tr></thead><tbody>' + body + '</tbody></table></div>';
+  }
+
+  function select(i) {
+    cur = i; renderList();
+    var p = DATA.problems[i];
+    var panel = document.getElementById('panel');
+    panel.innerHTML =
+      '<h3>' + esc(p.title) + '</h3>' +
+      '<div class="prompt">' + esc(p.prompt) + '</div>' +
+      '<div class="hintbox" id="hint">' + esc(p.hint) + '</div>' +
+      '<textarea class="sqled" id="ed" spellcheck="false" placeholder="여기에 SQL 을 작성하세요. 예: SELECT * FROM members;"></textarea>' +
+      '<div class="btns"><button class="run" id="runBtn">실행</button><button class="grade" id="gradeBtn">채점하기</button>' +
+      '<button class="ghost" id="hintBtn">힌트</button><button class="ghost" id="solBtn">정답 보기</button></div>' +
+      '<div class="verdict" id="verdict"></div>' +
+      '<div id="out"></div><div class="solbox" id="sol"></div>';
+    document.getElementById('runBtn').onclick = function () { doRun(false); };
+    document.getElementById('gradeBtn').onclick = function () { doRun(true); };
+    document.getElementById('hintBtn').onclick = function () { document.getElementById('hint').classList.toggle('show'); };
+    document.getElementById('solBtn').onclick = function () {
+      document.getElementById('sol').innerHTML = '<pre>' + esc(p.answer) + '</pre>';
+    };
+  }
+
+  function doRun(grade) {
+    var p = DATA.problems[cur];
+    var sql = document.getElementById('ed').value.trim();
+    var out = document.getElementById('out'), vd = document.getElementById('verdict');
+    vd.className = 'verdict'; vd.textContent = '';
+    if (!sql) { out.innerHTML = '<div class="reserr">쿼리를 입력해 주세요.</div>'; return; }
+    var res;
+    try { res = runSQL(sql); }
+    catch (e) { out.innerHTML = '<div class="reserr">오류: ' + esc(e.message || e) + '</div>'; return; }
+    out.innerHTML = renderTable(res);
+    if (!grade) return;
+    var mine = normalize(res, p.ordered), exp = expected[p.id];
+    if (sameResult(mine, exp)) {
+      vd.className = 'verdict show ok'; vd.textContent = '정답이에요! 결과가 정확히 일치해요.';
+      if (!solved[p.id]) { solved[p.id] = true; wr(SKEY, solved); renderList(); }
+      if (window.ctStampActivity) window.ctStampActivity();
+      if (window.ctTrack) { try { window.ctTrack('sql', { id: p.id }); } catch (e) {} }
+    } else {
+      vd.className = 'verdict show no';
+      vd.textContent = '아직 정답이 아니에요. 기대한 행 ' + exp.rows.length + '개 / 내 결과 ' + mine.rows.length + '개. 컬럼 순서와 조건을 다시 확인해 보세요.';
+    }
+  }
+
+  function boot(SQL) {
+    db = new SQL.Database();
+    db.run(DATA.setup);
+    DATA.problems.forEach(function (p) { try { expected[p.id] = normalize(runSQL(p.answer), p.ordered); } catch (e) { expected[p.id] = { cols: [], rows: [] }; } });
+    renderSchema(); renderList(); select(0);
+    document.getElementById('boot').style.display = 'none';
+    document.getElementById('work').style.display = 'grid';
+  }
+
+  window.addEventListener('load', function () {
+    if (typeof initSqlJs !== 'function') { document.getElementById('boot').textContent = 'SQL 엔진을 불러오지 못했어요. 새로고침해 주세요.'; return; }
+    initSqlJs({ locateFile: function (f) { return 'assets/' + f; } }).then(boot).catch(function (e) {
+      document.getElementById('boot').textContent = 'SQL 엔진 초기화 실패: ' + (e.message || e);
+    });
+  });
+})();
+</script>
+</body>
+</html>

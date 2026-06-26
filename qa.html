@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QA 코딩테스트 - Elice Coding Camp</title>
+<script>(function(){try{var t=localStorage.getItem('ctprep_theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<link rel="stylesheet" href="assets/app.css">
+<style>
+  :root {
+    --purple: #8843FF; --purple-dark: #6A2FD0; --purple-bg: #F4EEFF;
+    --ink: #1F2230; --ink-soft: #555B6E; --line: #E5E2F0; --bg: #FAFAFD;
+    --card: #FFFFFF; --green: #16A34A; --red: #E0526A; --amber: #D97706;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.7; word-break: keep-all; overflow-wrap: break-word; }
+  .sitebrand { display: flex; align-items: center; gap: 9px; font-weight: 800; font-size: 15px; color: var(--ink); text-decoration: none; }
+  header.hero { background: linear-gradient(135deg, #3B1B7E 0%, #6A2FD0 55%, #8843FF 100%); color: #fff; text-align: center; padding: 52px 24px 44px; }
+  header.hero .badge { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); padding: 4px 14px; border-radius: 99px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
+  header.hero h1 { font-size: 30px; font-weight: 800; margin-bottom: 12px; }
+  header.hero p { font-size: 15px; opacity: 0.92; max-width: 660px; margin: 0 auto; }
+
+  main { max-width: 1000px; margin: 0 auto; padding: 26px 20px 80px; }
+  .notebox { background: var(--purple-bg); border-left: 4px solid var(--purple); border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 0 0 8px; font-size: 14px; }
+  .notebox strong { color: var(--purple-dark); }
+  .notebox ul { margin: 7px 0 0 18px; } .notebox li { margin: 3px 0; }
+
+  h2.sec { font-size: 21px; font-weight: 800; margin: 34px 0 6px; }
+  .sec-sub { font-size: 13.5px; color: var(--ink-soft); margin-bottom: 14px; }
+  h3.cat { font-size: 16px; font-weight: 800; margin: 22px 0 10px; color: var(--purple-dark); }
+
+  .tech { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+  .tcard { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 17px 19px; }
+  .tcard h4 { font-size: 16px; font-weight: 800; margin-bottom: 6px; }
+  .tcard .d { font-size: 14px; margin-bottom: 9px; }
+  .tcard .ex { font-size: 13px; color: var(--ink-soft); background: var(--purple-bg); border-radius: 9px; padding: 9px 12px; }
+  .tcard .ex b { color: var(--purple-dark); }
+
+  .qprog { font-size: 13px; font-weight: 800; color: var(--purple-dark); background: var(--purple-bg); border-radius: 999px; padding: 5px 14px; display: inline-block; margin-bottom: 12px; }
+
+  .quiz { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 17px 19px; margin-bottom: 12px; }
+  .quiz .qh { font-weight: 700; font-size: 15.5px; margin-bottom: 12px; }
+  .quiz .qh .qn { color: var(--purple-dark); margin-right: 7px; font-weight: 800; }
+  .quiz .opts { display: flex; flex-direction: column; gap: 8px; }
+  .quiz .opts button { text-align: left; font-family: inherit; font-size: 14.5px; padding: 12px 15px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink); border-radius: 10px; cursor: pointer; transition: border-color .12s, background .12s; }
+  .quiz .opts button:hover:not(:disabled) { border-color: var(--purple); background: var(--purple-bg); }
+  .quiz .opts button:disabled { cursor: default; }
+  .quiz .opts button.correct { border-color: var(--green); background: var(--green-bg, #E7F8EE); font-weight: 700; }
+  .quiz .opts button.wrong { border-color: var(--red); background: var(--red-bg, #FBECEE); }
+  .quiz .expl { display: none; font-size: 13.5px; color: var(--ink-soft); background: var(--purple-bg); border-radius: 9px; padding: 11px 13px; margin-top: 11px; line-height: 1.6; }
+  .quiz.answered .expl { display: block; }
+  .quiz .expl b.ok { color: var(--green); } .quiz .expl b.no { color: var(--red); }
+  .quiz .retry { display: none; margin-top: 9px; font-size: 12.5px; font-weight: 700; color: var(--purple-dark); background: none; border: none; cursor: pointer; padding: 0; }
+  .quiz.answered .retry { display: inline-block; }
+
+  footer { text-align: center; color: var(--ink-soft); font-size: 13px; padding: 26px 20px 50px; }
+</style>
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon-192.png">
+</head>
+<body>
+
+<nav class="sitenav">
+  <a class="sitebrand" href="index.html"><img class="brandlogo" src="assets/elicetrack.png" alt="Elice Track"><span class="brandsub">Coding Test</span></a>
+  <div class="nav-links">
+    <a href="guide.html">준비 가이드</a>
+    <a href="concepts.html">개념 정리</a>
+    <a href="path.html">학습 경로</a>
+    <a href="practice.html">예시 문제</a>
+    <a href="gichul.html">기출 문제</a>
+    <a href="sql.html">SQL</a>
+    <a class="on" href="qa.html">QA/면접</a>
+    <a href="run/?mode=exam">모의고사</a>
+  </div>
+  <a class="mypage-link" href="progress.html">마이페이지</a>
+</nav>
+
+<header class="hero">
+  <div class="badge">QA/면접 대비</div>
+  <h1>QA 코딩테스트 + 면접 지식</h1>
+  <p>QA 직무 코딩 테스트에서 자주 나오는 테스트 설계 기법과, 개발자와 QA 모두에게 필요한 CS 기초 지식을 퀴즈로 점검해요.</p>
+</header>
+
+<main>
+  <div class="notebox">
+    <strong>QA 코딩 테스트는 뭘 볼까요?</strong>
+    <ul>
+      <li>알고리즘 문제(보통 개발자보다 쉬운 난이도) - 문자열, 배열, 해시, 정렬, 구현 위주예요. <a href="practice.html">예시 문제</a>에서 연습해요.</li>
+      <li>SQL 쿼리 - 데이터 검증에서 자주 쓰여요. <a href="sql.html">SQL 연습</a>에서 풀어 봐요.</li>
+      <li>테스트 케이스 설계 - 경계값, 동등 분할 같은 기법으로 좋은 케이스를 뽑는 능력이에요. 아래에서 익혀요.</li>
+      <li>CS 기초와 디버깅 - 면접에서도 함께 물어봐요.</li>
+    </ul>
+  </div>
+
+  <h2 class="sec">테스트 설계 기법</h2>
+  <p class="sec-sub">적은 케이스로 많은 결함을 잡는 대표 기법들이에요.</p>
+  <div class="tech" id="techBox"></div>
+
+  <h2 class="sec">테스트 설계 퀴즈</h2>
+  <p class="sec-sub">기법을 제대로 이해했는지 확인해요. <span class="qprog" id="dProg">0 / 0</span></p>
+  <div id="designQuiz"></div>
+
+  <h2 class="sec">CS 면접 지식 퀴즈</h2>
+  <p class="sec-sub">자료구조, 데이터베이스, 네트워크, 운영체제 핵심을 점검해요. <span class="qprog" id="csProg">0 / 0</span></p>
+  <div id="csQuiz"></div>
+</main>
+
+<footer>Elice Track 코딩 테스트 준비자료 | 엘리스 트랙 수강생용</footer>
+
+<script src="assets/problems.js"></script>
+<script src="assets/qa-data.js"></script>
+<script defer src="assets/config.js"></script>
+<script defer src="assets/tracker.js"></script>
+<script defer src="assets/app.js"></script>
+<script defer src="assets/gamify.js"></script>
+<script>
+(function () {
+  var QA = window.CT_QA || { techniques: [], design: [], cs: [] };
+  var KEY = 'ct_qa_quiz_v1';
+  function rd() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function wr(o) { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {} }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+  var state = rd();
+
+  // 테스트 설계 기법 카드
+  document.getElementById('techBox').innerHTML = QA.techniques.map(function (t) {
+    return '<div class="tcard"><h4>' + esc(t.title) + '</h4><div class="d">' + esc(t.desc) + '</div><div class="ex"><b>예시</b> ' + esc(t.ex || t.example) + '</div></div>';
+  }).join('');
+
+  function quizCard(qid, q, n) {
+    var opts = q.o.map(function (o, oi) { return '<button data-ok="' + (oi === q.a ? 1 : 0) + '" type="button">' + esc(o) + '</button>'; }).join('');
+    return '<div class="quiz" data-qid="' + qid + '"><div class="qh"><span class="qn">Q' + n + '.</span>' + esc(q.q) + '</div>' +
+      '<div class="opts">' + opts + '</div><div class="expl"></div><button class="retry" type="button">다시 풀기</button></div>';
+  }
+
+  function bind(scope, list, progId) {
+    var total = list.length;
+    function updateProg() {
+      var s = rd(), done = 0;
+      scope.querySelectorAll('.quiz').forEach(function (qz) { var v = s[qz.dataset.qid]; if (v && v.correct) done++; });
+      var el = document.getElementById(progId); if (el) el.textContent = done + ' / ' + total;
+    }
+    scope.querySelectorAll('.quiz').forEach(function (qz) {
+      var qid = qz.dataset.qid, buttons = qz.querySelectorAll('.opts button'), expl = qz.querySelector('.expl');
+      expl.setAttribute('aria-live', 'polite');
+      var idx = +qid.replace(/^\D+/, '');
+      var q = qid.charAt(0) === 'd' ? QA.design[idx] : QA.cs[idx];
+      function grade(chosen) {
+        qz.classList.add('answered');
+        var correct = false;
+        buttons.forEach(function (b) {
+          b.disabled = true;
+          if (b.dataset.ok === '1') b.classList.add('correct');
+        });
+        if (chosen) { correct = chosen.dataset.ok === '1'; if (!correct) chosen.classList.add('wrong'); }
+        expl.innerHTML = '<b class="' + (correct ? 'ok' : 'no') + '">' + (correct ? '정답이에요' : '다시 보면 좋아요') + '</b><br>' + esc(q.e);
+        var s = rd(); s[qid] = { correct: correct }; wr(s);
+        if (window.ctStampActivity) window.ctStampActivity();
+        updateProg();
+      }
+      buttons.forEach(function (b) { b.addEventListener('click', function () { if (qz.classList.contains('answered')) return; grade(b); }); });
+      qz.querySelector('.retry').addEventListener('click', function () {
+        qz.classList.remove('answered');
+        buttons.forEach(function (b) { b.disabled = false; b.classList.remove('correct', 'wrong'); });
+        expl.innerHTML = '';
+        var s = rd(); delete s[qid]; wr(s); updateProg();
+      });
+      // 저장된 정답 복원(정답만 표시)
+      if (state[qid] && state[qid].correct) {
+        qz.classList.add('answered');
+        buttons.forEach(function (b) { b.disabled = true; if (b.dataset.ok === '1') b.classList.add('correct'); });
+        expl.innerHTML = '<b class="ok">정답이에요</b><br>' + esc(q.e);
+      }
+    });
+    updateProg();
+  }
+
+  // 테스트 설계 퀴즈
+  var dq = QA.design.map(function (q, i) { return quizCard('d' + i, q, i + 1); }).join('');
+  document.getElementById('designQuiz').innerHTML = dq;
+  bind(document.getElementById('designQuiz'), QA.design, 'dProg');
+
+  // CS 퀴즈: 카테고리별 그룹
+  var cats = [];
+  QA.cs.forEach(function (q) { if (cats.indexOf(q.cat) < 0) cats.push(q.cat); });
+  var csHtml = '';
+  cats.forEach(function (cat) {
+    csHtml += '<h3 class="cat">' + esc(cat) + '</h3>';
+    QA.cs.forEach(function (q, i) { if (q.cat === cat) csHtml += quizCard('cs' + i, q, i + 1); });
+  });
+  document.getElementById('csQuiz').innerHTML = csHtml;
+  bind(document.getElementById('csQuiz'), QA.cs, 'csProg');
+})();
+</script>
+</body>
+</html>
