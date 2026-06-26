@@ -184,7 +184,7 @@
 
     var ov = document.createElement('div');
     ov.className = 'gs-ov'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-label', '사이트 검색'); ov.hidden = true;
-    ov.innerHTML = '<div class="gs-box"><input type="text" class="gs-input" placeholder="개념이나 문제를 검색해 보세요" aria-label="검색어"><div class="gs-results" id="gsResults" role="listbox"></div></div>';
+    ov.innerHTML = '<div class="gs-box"><div class="gs-head"><input type="text" class="gs-input" placeholder="개념이나 문제를 검색해 보세요" aria-label="검색어"><button type="button" class="gs-close" aria-label="검색 닫기" title="닫기">×</button></div><div class="gs-results" id="gsResults" role="listbox"></div></div>';
     document.body.appendChild(ov);
     var input = ov.querySelector('.gs-input');
     var results = ov.querySelector('.gs-results');
@@ -200,6 +200,7 @@
     function open() { ov.hidden = false; ov.classList.add('on'); input.value = ''; render(''); setTimeout(function () { input.focus(); }, 30); }
     function close() { ov.classList.remove('on'); ov.hidden = true; }
     btn.addEventListener('click', open);
+    ov.querySelector('.gs-close').addEventListener('click', close);
     ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
     input.addEventListener('input', function () { render(input.value); });
     document.addEventListener('keydown', function (e) {
