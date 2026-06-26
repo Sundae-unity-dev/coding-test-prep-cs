@@ -97,6 +97,17 @@
   .topic { display: none; }
   .topic.show { display: block; animation: fade 0.34s cubic-bezier(0.22,0.61,0.36,1); }
   @keyframes fade { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  .cheat-btn { font-family: inherit; font-size: 13px; font-weight: 800; color: var(--purple-dark); background: var(--purple-bg); border: 1px solid var(--line); border-radius: 9px; padding: 8px 14px; cursor: pointer; margin-bottom: 18px; }
+  .cheat-btn:hover { border-color: var(--purple); }
+  /* 인쇄용 치트시트: 모든 주제의 핵심만 펼치고 nav/퀴즈/코드토글/사이드바 숨김 */
+  @media print {
+    nav, aside, .float-ctrl, .cheat-btn, .quiz, .ex-toggle, .codesol, .retry, .topic-practice, .confuse, #searchBox, .gs-ov, .help-ov { display: none !important; }
+    .cc-layout { display: block !important; }
+    main { max-width: none !important; padding: 0 16px !important; }
+    .topic, .topic.show { display: block !important; animation: none !important; page-break-inside: avoid; margin-bottom: 16px; }
+    html body { font-size: 11px; }
+    h2 { page-break-after: avoid; font-size: 16px; }
+  }
 
   .topic-practice { margin-top: 28px; padding: 14px 16px; background: var(--purple-bg); border-radius: 10px; font-size: 14px; }
   .topic-practice b { color: var(--purple-dark); margin-right: 8px; }
@@ -321,6 +332,7 @@
 </aside>
 
 <main>
+<button id="cheatBtn" class="cheat-btn" type="button" onclick="window.print()">🖨 치트시트 인쇄</button>
 
 <!-- ==================== 1. 시간 복잡도 ==================== -->
 <div class="topic" id="t1">
