@@ -76,6 +76,22 @@
   footer { text-align:center; color:var(--ink-soft); font-size:12.5px; padding:24px 18px 40px; }
   .gbtn { font-family:inherit; border:1px solid var(--line); background:var(--card); color:var(--purple-dark); border-radius:7px; padding:3px 10px; font-weight:800; cursor:pointer; }
   .gbtn:hover { border-color:var(--purple); }
+  .hero-actions button.line { font-family:inherit; cursor:pointer; }
+  /* 복습 노트 */
+  .rv-start { display:inline-block; margin-bottom:12px; font-size:13px; font-weight:800; text-decoration:none; background:var(--purple); color:#fff; padding:9px 16px; border-radius:999px; }
+  .rv-list { display:flex; flex-direction:column; gap:8px; }
+  .rv-item { display:flex; align-items:center; gap:10px; padding:11px 14px; border:1px solid var(--line); border-radius:11px; text-decoration:none; color:var(--ink); }
+  .rv-item:hover { border-color:var(--purple); background:var(--purple-bg); }
+  .rv-item.solved { opacity:.6; }
+  .rv-t { font-weight:700; font-size:14.5px; }
+  .rv-tags { margin-left:auto; display:flex; gap:5px; flex-shrink:0; }
+  .rv-tag { font-size:11px; font-weight:800; border-radius:999px; padding:2px 9px; }
+  .rv-tag.f { color:#E0526A; background:var(--red-bg,#FBECEE); }
+  .rv-tag.s { color:#D97706; background:#FFF4E6; }
+  .rv-tag.b { color:var(--purple-dark); background:var(--purple-bg); }
+  .rv-tag.ok { color:#16A34A; background:var(--green-bg,#E7F8EE); }
+  html[data-theme="dark"] .rv-tag.s { background:#2A1E10; }
+  .rv-empty { font-size:13.5px; color:var(--ink-soft); }
   /* 리더보드 스타일(.lb-*)은 assets/app.css 공용 정의 사용 */
   @media (max-width:760px){ .grid2 { grid-template-columns:1fr; } }
   @media (max-width:560px){ .cards { grid-template-columns:repeat(2,1fr); } .hero { flex-direction:column; align-items:flex-start; } }
@@ -103,6 +119,7 @@
       <div class="hero-actions">
         <a class="solid" href="practice.html">문제 풀러 가기</a>
         <a class="line" id="reviewLink" href="practice.html">복습할 문제</a>
+        <button class="line" id="shareBtn" type="button">성취 공유</button>
       </div>
     </div>
     <div class="ring-wrap" title="전체 문제 완료율">
@@ -135,6 +152,11 @@
       <h2>🗓 최근 2주 학습</h2>
       <div class="cal" id="cal"></div>
     </div>
+  </div>
+
+  <div class="sec">
+    <h2>📝 복습 노트 <span id="rvCount" style="font-size:13px;color:var(--ink-soft);font-weight:700;"></span></h2>
+    <div id="reviewNote"></div>
   </div>
 
   <div class="sec">
@@ -203,6 +225,31 @@
   document.getElementById('cQuiz').textContent = quizN + ' / 40';
   document.getElementById('cReview').textContent = reviewN;
   document.getElementById('reviewLink').textContent = '복습할 문제';
+
+  // 복습 노트: 틀린(f)/풀이 본(s)/별표 문제를 모아 다시 풀게 해요(미해결 우선 정렬).
+  (function () {
+    var bm = rd('ct_practice_bookmarks_v1');
+    var PROB = {}; (window.CT_PROBLEMS || []).forEach(function (p) { PROB[p.id] = p; });
+    var ids = {};
+    Object.keys(review).forEach(function (k) { var r = review[k]; if (r && (r.f || r.s)) ids[k] = 1; });
+    Object.keys(bm).forEach(function (k) { if (bm[k]) ids[k] = 1; });
+    var arr = Object.keys(ids).filter(function (k) { return PROB[k]; });
+    arr.sort(function (a, b) { return (solved[a] ? 1 : 0) - (solved[b] ? 1 : 0); });
+    var box = document.getElementById('reviewNote'), rvCount = document.getElementById('rvCount');
+    if (!arr.length) { box.innerHTML = '<div class="rv-empty">아직 복습할 문제가 없어요. 틀리거나 별표한 문제가 여기에 모여요.</div>'; return; }
+    var firstUnsolved = null;
+    var rows = arr.map(function (id) {
+      var p = PROB[id], r = review[id] || {}, sv = !!solved[id];
+      if (!sv && !firstUnsolved) firstUnsolved = id;
+      var tags = '';
+      if (sv) tags += '<span class="rv-tag ok">복습 완료</span>';
+      else { if (r.f) tags += '<span class="rv-tag f">틀림</span>'; if (r.s) tags += '<span class="rv-tag s">풀이 봄</span>'; if (bm[id]) tags += '<span class="rv-tag b">별표</span>'; }
+      return '<a class="rv-item' + (sv ? ' solved' : '') + '" href="run/?problem=' + encodeURIComponent(id) + '"><span class="rv-t">' + String(p.t).replace(/[<>&]/g, '') + '</span><span class="rv-tags">' + tags + '</span></a>';
+    }).join('');
+    var unsolvedN = arr.filter(function (k) { return !solved[k]; }).length;
+    if (rvCount) rvCount.textContent = unsolvedN ? unsolvedN + '개 남음' : '모두 복습 완료';
+    box.innerHTML = (firstUnsolved ? '<a class="rv-start" href="run/?problem=' + encodeURIComponent(firstUnsolved) + '">▶ 복습 시작</a>' : '') + '<div class="rv-list">' + rows + '</div>';
+  })();
 
   // 전체 완료율 링
   var pctAll = TOTAL ? Math.round(solvedN * 100 / TOTAL) : 0;
@@ -282,6 +329,52 @@
     function render(force) { if (window.ctLeaderboard) window.ctLeaderboard(document.getElementById('board'), { limit: 20, force: !!force }); }
     render();
     var br = document.getElementById('boardRefresh'); if (br) br.onclick = function () { render(true); };
+  });
+</script>
+<script>
+  // 성취 공유 카드: canvas 로 레벨/배지/스트릭/푼 문제를 이미지로 그려 공유(navigator.share) 또는 다운로드.
+  document.addEventListener('DOMContentLoaded', function () {
+    var btn = document.getElementById('shareBtn');
+    if (!btn) return;
+    function rd(k) { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch (e) { return {}; } }
+    function rrect(c, X, Y, w, h, r) { c.beginPath(); c.moveTo(X + r, Y); c.arcTo(X + w, Y, X + w, Y + h, r); c.arcTo(X + w, Y + h, X, Y + h, r); c.arcTo(X, Y + h, X, Y, r); c.arcTo(X, Y, X + w, Y, r); c.closePath(); }
+    btn.addEventListener('click', function () {
+      if (!window.ctGamify) { alert('학습 기록을 불러오는 중이에요. 잠시 후 다시 시도해 주세요.'); return; }
+      var g = window.ctGamify.summary();
+      var solved = rd('ct_practice_solved_v1');
+      var solvedN = Object.keys(solved).filter(function (k) { return solved[k]; }).length;
+      var TOTAL = (window.CT_PROBLEMS || []).length || 63;
+      var visitor = rd('ct_visitor_v1'), name = (visitor && visitor.name) ? String(visitor.name) : '';
+      var W = 1080, H = 1080, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+      var x = cv.getContext('2d'), FF = "'Elice DX Neolli', 'Malgun Gothic', sans-serif";
+      var grd = x.createLinearGradient(0, 0, W, H); grd.addColorStop(0, '#8843FF'); grd.addColorStop(1, '#5B21B6');
+      x.fillStyle = grd; x.fillRect(0, 0, W, H);
+      x.textAlign = 'center'; x.fillStyle = '#fff';
+      x.font = '800 56px ' + FF; x.fillText('Elice Coding Camp', W / 2, 140);
+      x.globalAlpha = .85; x.font = '600 34px ' + FF; x.fillText('코딩 테스트 학습 현황', W / 2, 196); x.globalAlpha = 1;
+      if (name) { x.font = '700 40px ' + FF; x.fillText(name.slice(0, 16) + ' 님', W / 2, 300); }
+      x.font = '800 180px ' + FF; x.fillText('Lv.' + g.level, W / 2, 500);
+      x.globalAlpha = .95; x.font = '700 46px ' + FF; x.fillText(g.levelTitle, W / 2, 565); x.globalAlpha = 1;
+      var stats = [['누적 XP', g.xp + ''], ['연속 학습', g.streak + '일'], ['배지', g.earnedCount + ' / ' + g.totalBadges], ['푼 문제', solvedN + ' / ' + TOTAL]];
+      var bw = 440, bh = 150, gap = 40, ox = (W - bw * 2 - gap) / 2, oy = 645;
+      stats.forEach(function (s, i) {
+        var bx = ox + (i % 2) * (bw + gap), by = oy + Math.floor(i / 2) * (bh + gap);
+        x.fillStyle = 'rgba(255,255,255,0.14)'; rrect(x, bx, by, bw, bh, 22); x.fill();
+        x.fillStyle = '#fff'; x.globalAlpha = .8; x.font = '600 30px ' + FF; x.fillText(s[0], bx + bw / 2, by + 58); x.globalAlpha = 1;
+        x.font = '800 56px ' + FF; x.fillText(s[1], bx + bw / 2, by + 120);
+      });
+      x.globalAlpha = .8; x.font = '500 26px ' + FF; x.fillText('sundae-unity-dev.github.io/coding-test-prep-cs', W / 2, H - 48); x.globalAlpha = 1;
+      cv.toBlob(function (blob) {
+        if (!blob) return;
+        var file = new File([blob], 'elice-coding-camp.png', { type: 'image/png' });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          navigator.share({ files: [file], title: 'Elice Coding Camp', text: '코딩 테스트 학습 현황 Lv.' + g.level }).catch(function () {});
+        } else {
+          var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'elice-coding-camp.png';
+          document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+        }
+      }, 'image/png');
+    });
   });
 </script>
 </body>

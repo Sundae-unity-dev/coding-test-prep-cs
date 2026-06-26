@@ -143,10 +143,10 @@
     <input type="search" id="q" class="ctrl-search" placeholder="문제 제목이나 설명 검색" aria-label="문제 검색">
     <select id="fType" class="ctrl-sel" aria-label="유형"><option value="all">전체 유형</option></select>
     <select id="fLevel" class="ctrl-sel" aria-label="난이도"><option value="all">전체 난이도</option><option value="intro">입문</option><option value="basic">기초</option><option value="mid">중급</option><option value="hard">심화</option></select>
-    <div class="seg" id="fSolved"><button type="button" data-v="all" class="on">전체</button><button type="button" data-v="unsolved">미해결</button><button type="button" data-v="solved">해결</button></div>
+    <div class="seg" id="fSolved" role="group" aria-label="해결 여부 필터"><button type="button" data-v="all" class="on" aria-pressed="true">전체</button><button type="button" data-v="unsolved" aria-pressed="false">미해결</button><button type="button" data-v="solved" aria-pressed="false">해결</button></div>
     <select id="fSort" class="ctrl-sel" aria-label="정렬"><option value="default">기본순</option><option value="level">난이도순</option><option value="title">제목순</option></select>
-    <button type="button" id="fBookmark" class="ctrl-btn">⭐ 즐겨찾기</button>
-    <button type="button" id="fReview" class="ctrl-btn">🔁 복습</button>
+    <button type="button" id="fBookmark" class="ctrl-btn" aria-pressed="false">⭐ 즐겨찾기</button>
+    <button type="button" id="fReview" class="ctrl-btn" aria-pressed="false">🔁 복습</button>
     <button type="button" id="randBtn" class="ctrl-btn primary">🎲 오늘의 문제</button>
     <span class="ctrl-count" id="shownCount"></span>
   </div>
@@ -515,12 +515,12 @@
     var pid = c.dataset.pid, bm = readObj(BKEY);
     var star = document.createElement('button');
     star.className = 'star' + (bm[pid] ? ' on' : ''); star.type = 'button';
-    star.setAttribute('aria-label', '즐겨찾기'); star.textContent = bm[pid] ? '★' : '☆';
+    star.setAttribute('aria-label', '즐겨찾기'); star.setAttribute('aria-pressed', bm[pid] ? 'true' : 'false'); star.textContent = bm[pid] ? '★' : '☆';
     star.addEventListener('click', function (e) {
       e.preventDefault(); e.stopPropagation();
       var b = readObj(BKEY);
-      if (b[pid]) { delete b[pid]; star.textContent = '☆'; star.classList.remove('on'); }
-      else { b[pid] = true; star.textContent = '★'; star.classList.add('on'); }
+      if (b[pid]) { delete b[pid]; star.textContent = '☆'; star.classList.remove('on'); star.setAttribute('aria-pressed', 'false'); }
+      else { b[pid] = true; star.textContent = '★'; star.classList.add('on'); star.setAttribute('aria-pressed', 'true'); }
       writeObj(BKEY, b); applyFilters();
     });
     c.querySelector('.top').appendChild(star);
@@ -595,8 +595,9 @@
     F = { q: '', type: 'all', level: 'all', solved: 'all', bookmark: false, review: false, sort: 'default' };
     document.getElementById('q').value = '';
     fType.value = 'all'; document.getElementById('fLevel').value = 'all'; document.getElementById('fSort').value = 'default';
-    seg.querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b.dataset.v === 'all'); });
-    bmBtn.classList.remove('on'); rvBtn.classList.remove('on');
+    seg.querySelectorAll('button').forEach(function (b) { var on = b.dataset.v === 'all'; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+    bmBtn.classList.remove('on'); bmBtn.setAttribute('aria-pressed', 'false');
+    rvBtn.classList.remove('on'); rvBtn.setAttribute('aria-pressed', 'false');
     applyFilters();
   }
 
@@ -607,13 +608,13 @@
   var seg = document.getElementById('fSolved');
   seg.addEventListener('click', function (e) {
     var btn = e.target.closest('button'); if (!btn) return;
-    seg.querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b === btn); });
+    seg.querySelectorAll('button').forEach(function (b) { var on = b === btn; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
     F.solved = btn.dataset.v; applyFilters();
   });
   var bmBtn = document.getElementById('fBookmark');
-  bmBtn.addEventListener('click', function () { F.bookmark = !F.bookmark; bmBtn.classList.toggle('on', F.bookmark); applyFilters(); });
+  bmBtn.addEventListener('click', function () { F.bookmark = !F.bookmark; bmBtn.classList.toggle('on', F.bookmark); bmBtn.setAttribute('aria-pressed', F.bookmark ? 'true' : 'false'); applyFilters(); });
   var rvBtn = document.getElementById('fReview');
-  rvBtn.addEventListener('click', function () { F.review = !F.review; rvBtn.classList.toggle('on', F.review); applyFilters(); });
+  rvBtn.addEventListener('click', function () { F.review = !F.review; rvBtn.classList.toggle('on', F.review); rvBtn.setAttribute('aria-pressed', F.review ? 'true' : 'false'); applyFilters(); });
 
   // 오늘의 문제: 날짜 시드 결정적 선택(미해결 우선). 같은 날엔 같은 문제.
   document.getElementById('randBtn').addEventListener('click', function () {

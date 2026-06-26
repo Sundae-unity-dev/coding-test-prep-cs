@@ -147,7 +147,7 @@
         '<div class="qz-multi" id="lpMulti">' + dispOrder(key, q.o.length).map(function (oi) {
           var sel = stored && q.a.indexOf(oi) >= 0 ? ' sel correct' : '';
           return '<button class="mopt' + sel + '" type="button" data-o="' + oi + '"' + (stored ? ' disabled' : '') + '>' + esc(q.o[oi]) + '</button>';
-        }).join('') + '</div><div class="qz-actions"><button class="chk" id="lpMultiChk"' + (stored ? ' disabled' : '') + '>확인</button><div class="qz-fb" id="lpFb"></div></div>';
+        }).join('') + '</div><div class="qz-actions"><button class="chk" id="lpMultiChk"' + (stored ? ' disabled' : '') + '>확인</button><div class="qz-fb" id="lpFb" aria-live="polite"></div></div>';
     } else if (t === 'order') {
       if (!orderState[key]) orderState[key] = shuffleIdx(q.o.length);
       var disp = stored ? q.o.map(function (_, i) { return i; }) : orderState[key];
@@ -156,7 +156,7 @@
           return '<div class="oitem" data-oi="' + oi + '"><span class="onum">' + (pos + 1) + '</span><span class="otx">' + esc(q.o[oi]) + '</span>' +
             '<span class="obtns"><button class="oup" type="button"' + (pos === 0 || stored ? ' disabled' : '') + '>↑</button>' +
             '<button class="odn" type="button"' + (pos === disp.length - 1 || stored ? ' disabled' : '') + '>↓</button></span></div>';
-        }).join('') + '</div><div class="qz-actions"><button class="chk" id="lpOrderChk"' + (stored ? ' disabled' : '') + '>확인</button><div class="qz-fb" id="lpFb"></div></div>';
+        }).join('') + '</div><div class="qz-actions"><button class="chk" id="lpOrderChk"' + (stored ? ' disabled' : '') + '>확인</button><div class="qz-fb" id="lpFb" aria-live="polite"></div></div>';
     } else {
       body = '<div class="qz-opts">' + dispOrder(key, q.o.length).map(function (oi) {
         var cls = stored && oi === q.a ? ' class="correct"' : '';
@@ -169,7 +169,7 @@
       '<div class="lp-sub">개념을 이해했는지 확인하는 문제예요. 다 맞히면 레슨이 완료돼요. <a href="concepts.html#' + activeTid + '">개념 자세히 보기 →</a></div>' +
       '<div class="lp-prog"><span class="bar"><i style="width:' + pct + '%"></i></span><span class="n">' + got + ' / ' + total + ' 정답</span></div>' +
       '<div class="qz-q"><div class="qq"><span class="qn">Q' + (curIdx + 1) + '.</span><span class="qtag">' + tag + '</span>' + blankify(q.q, t === 'fill' ? 'lpBlank' : null) + '</div>' + body +
-      '<div class="qz-ex' + (stored ? ' show' : '') + '" id="lpEx"><b>정답</b> : ' + esc(q.e) + '</div></div>' +
+      '<div class="qz-ex' + (stored ? ' show' : '') + '" id="lpEx" aria-live="polite"><b>정답</b> : ' + esc(q.e) + '</div></div>' +
       '<div class="lp-nav"><button id="lpPrev"' + (curIdx === 0 ? ' disabled' : '') + '>← 이전</button>' +
       '<button class="next" id="lpNext"' + (curIdx === total - 1 ? ' disabled' : '') + '>다음 →</button></div>' +
       '<div id="lpDone"></div>';

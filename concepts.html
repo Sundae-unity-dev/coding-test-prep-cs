@@ -2246,6 +2246,7 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
   document.querySelectorAll('.quiz').forEach(function (quiz) {
     var qid = quiz.dataset.qid;
     var buttons = quiz.querySelectorAll('.opts button');
+    var exEl = quiz.querySelector('.expl'); if (exEl) exEl.setAttribute('aria-live', 'polite');
 
     buttons.forEach(function (b) {
       b.addEventListener('click', function () {

@@ -167,7 +167,53 @@
     setTimeout(function () { if (!done) box.innerHTML = '<div class="lb-empty">리더보드 응답이 늦어요. 잠시 후 다시 열어 주세요.</div>'; }, 8000);
   };
 
-  function init() { buildControls(); initReveal(); initCopy(); }
+  // 전역 검색: 상단 네비에 검색 버튼 + 오버레이를 주입해 개념과 예시 문제를 어느 페이지서나 검색.
+  // CT_PROBLEMS/CT_CONCEPTS 가 로드된 페이지에서만 동작(없으면 조용히 생략).
+  function initSearch() {
+    var nav = document.querySelector('.sitenav .nav-links');
+    if (!nav || !window.CT_PROBLEMS) return;
+    function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+    var items = [];
+    (window.CT_CONCEPTS || []).forEach(function (c) { items.push({ t: c.t, sub: '개념 ' + (c.n || ''), href: 'concepts.html#' + c.id, kind: '개념' }); });
+    (window.CT_PROBLEMS || []).filter(function (p) { return !p.g; }).forEach(function (p) { items.push({ t: p.t, sub: '예시 문제', href: 'practice.html#p-' + p.id, kind: '문제' }); });
+
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'gs-trigger'; btn.setAttribute('aria-label', '검색'); btn.title = '검색 (단축키 /)';
+    btn.textContent = '🔍';
+    nav.appendChild(btn);
+
+    var ov = document.createElement('div');
+    ov.className = 'gs-ov'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-label', '사이트 검색'); ov.hidden = true;
+    ov.innerHTML = '<div class="gs-box"><input type="text" class="gs-input" placeholder="개념이나 문제를 검색해 보세요" aria-label="검색어"><div class="gs-results" id="gsResults" role="listbox"></div></div>';
+    document.body.appendChild(ov);
+    var input = ov.querySelector('.gs-input');
+    var results = ov.querySelector('.gs-results');
+
+    function render(q) {
+      q = q.trim().toLowerCase();
+      var list = q ? items.filter(function (it) { return it.t.toLowerCase().indexOf(q) >= 0; }) : items.slice(0, 8);
+      if (!list.length) { results.innerHTML = '<div class="gs-empty">검색 결과가 없어요.</div>'; return; }
+      results.innerHTML = list.slice(0, 30).map(function (it) {
+        return '<a class="gs-item" role="option" href="' + it.href + '"><span class="gs-kind">' + it.kind + '</span><span class="gs-t">' + esc(it.t) + '</span><span class="gs-sub">' + esc(it.sub) + '</span></a>';
+      }).join('');
+    }
+    function open() { ov.hidden = false; ov.classList.add('on'); input.value = ''; render(''); setTimeout(function () { input.focus(); }, 30); }
+    function close() { ov.classList.remove('on'); ov.hidden = true; }
+    btn.addEventListener('click', open);
+    ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+    input.addEventListener('input', function () { render(input.value); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && ov.classList.contains('on')) { close(); return; }
+      if (e.key === '/' && !ov.classList.contains('on')) {
+        var ae = document.activeElement, tag = (ae && ae.tagName) || '';
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || (ae && ae.isContentEditable)) return;
+        e.preventDefault(); open();
+      }
+      if (e.key === 'Enter' && ov.classList.contains('on')) { var f = results.querySelector('.gs-item'); if (f) f.click(); }
+    });
+  }
+
+  function init() { buildControls(); initReveal(); initCopy(); initSearch(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
