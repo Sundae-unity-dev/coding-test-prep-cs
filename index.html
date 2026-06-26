@@ -277,6 +277,7 @@
       <a class="dash-item" href="practice.html"><span class="dl">문제 풀이</span><b class="dn" id="dSolve">0 / 63</b><span class="dbar"><i id="dSolveBar"></i></span></a>
       <a class="dash-item" href="guide.html#s7"><span class="dl">시험 전 체크리스트</span><b class="dn" id="dChk">0 / 13</b><span class="dbar"><i id="dChkBar"></i></span></a>
     </div>
+    <div class="goalbar" id="goalBar"></div>
     <div class="dash-extra">
       <div class="streak" id="streakBox"></div>
       <a class="daily-card" id="dailyCard" href="practice.html"><span class="dc-top">🎲 오늘의 문제</span><b class="dc-title" id="dailyTitle">문제 풀러 가기</b><span class="dc-go">지금 풀기 →</span></a>
@@ -361,6 +362,7 @@
 <script defer src="assets/app.js"></script>
 <script src="assets/problems.js"></script>
 <script defer src="assets/gamify.js"></script>
+<script defer src="assets/goal.js"></script>
 <script>
   (function () {
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -504,6 +506,13 @@
     }
     renderGami();
     window.__ctRefreshGami = renderGami;
+
+    // 시험 D-day 목표 + 페이스 (goal.js defer 로드 후)
+    if (window.ctGoal) {
+      var solved = window.ctProgress ? window.ctProgress().solvedDone : Object.keys(rd('ct_practice_solved_v1')).filter(function (k) { return rd('ct_practice_solved_v1')[k]; }).length;
+      var total = (window.CT_PROBLEMS || []).length || 63;
+      window.ctGoal.render(document.getElementById('goalBar'), solved, total);
+    }
   });
 </script>
 <script>

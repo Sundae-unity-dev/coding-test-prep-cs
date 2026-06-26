@@ -143,6 +143,14 @@
     <div class="stat"><div class="ico">🔁</div><div class="n" id="cReview">0</div><div class="l">복습 대기</div></div>
   </div>
 
+  <div id="goalBar" class="goalbar" style="margin-top:0;margin-bottom:18px;"></div>
+
+  <div class="sec">
+    <h2>🍅 집중 타이머</h2>
+    <p style="font-size:13px;color:var(--ink-soft);margin:0 0 12px;">집중 세션을 끝까지 마치면 오늘 학습으로 기록돼서 스트릭과 히트맵에 반영돼요. 페이지를 옮겨도 타이머는 이어져요.</p>
+    <div class="focus" id="focusBox"></div>
+  </div>
+
   <div class="sec" id="insightSec" style="display:none;">
     <h2>💡 학습 인사이트</h2>
     <ul id="insights" class="insights"></ul>
@@ -168,6 +176,12 @@
     <h2>📊 주제별 정답률 <span style="font-size:13px;color:var(--ink-soft);font-weight:700;">약한 주제부터</span></h2>
     <p id="topicHint" style="display:none;font-size:13px;color:var(--ink-soft);margin:0 0 10px;">정답률 70% 미만 주제는 <b>복습 →</b>를 눌러 개념부터 다시 봐요.</p>
     <div id="topicAcc"></div>
+  </div>
+
+  <div class="sec" id="srsSec" style="display:none;">
+    <h2>🔁 오늘 복습할 주제 <span id="srsCount" style="font-size:13px;color:var(--ink-soft);font-weight:700;"></span></h2>
+    <p style="font-size:13px;color:var(--ink-soft);margin:0 0 10px;">간격 반복(1일 / 3일 / 1주 / 2주 / 1달)으로 한 번 푼 개념을 잊을 때쯤 다시 꺼내요. 복습하고 <b>완료</b>를 누르면 다음 복습일이 미뤄져요.</p>
+    <div id="srsList"></div>
   </div>
 
   <div class="sec">
@@ -223,6 +237,9 @@
 
 <script src="assets/problems.js"></script>
 <script defer src="assets/gamify.js"></script>
+<script defer src="assets/goal.js"></script>
+<script defer src="assets/srs.js"></script>
+<script defer src="assets/focus.js"></script>
 <script defer src="assets/config.js"></script>
 <script defer src="assets/tracker.js"></script>
 <script defer src="assets/app.js"></script>
@@ -243,6 +260,13 @@
 
   var solvedN = Object.keys(solved).filter(function (k) { return solved[k]; }).length;
   var quizN = Object.keys(quiz).filter(function (k) { return quiz[k] === true || (quiz[k] && quiz[k].correct); }).length;
+
+  // 시험 D-day 목표 + 페이스, 간격 반복 복습 (goal.js/srs.js 는 defer 라 DOMContentLoaded 시점에 준비됨)
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.ctGoal) window.ctGoal.render(document.getElementById('goalBar'), solvedN, TOTAL);
+    if (window.ctSrs) window.ctSrs.render(document.getElementById('srsList'), quiz, window.CT_CONCEPTS || []);
+    if (window.ctFocus) window.ctFocus.render(document.getElementById('focusBox'));
+  });
   var reviewN = Object.keys(review).filter(function (k) { var r = review[k]; return r && (r.f || r.s); }).length;
 
   // 연속 학습일: 오늘(없으면 어제)부터 거슬러 연속 기록

@@ -223,3 +223,40 @@ body.gs-lock { overflow: hidden; }
 .help-close { background: none; border: none; font-size: 24px; line-height: 1; color: var(--ink-soft); cursor: pointer; }
 .help-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 9px; font-size: 14px; color: var(--ink); }
 .help-list kbd { display: inline-block; min-width: 22px; text-align: center; background: var(--purple-bg); color: var(--purple-dark); border: 1px solid var(--line); border-radius: 6px; padding: 1px 7px; font-family: 'Elice Digital Coding', Consolas, monospace; font-weight: 700; margin-right: 6px; }
+
+/* 시험 D-day 목표 + 페이스 (index, progress 공용) */
+.goalbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 18px; margin-top: 16px; }
+.goalbar.urgent { border-color: #E0526A; }
+.goalbar .gb-dday { font-size: 22px; font-weight: 800; color: var(--purple-dark); font-variant-numeric: tabular-nums; }
+.goalbar.urgent .gb-dday { color: #E0526A; }
+.goalbar .gb-info { flex: 1; min-width: 200px; font-size: 13.5px; color: var(--ink-soft); }
+.goalbar .gb-info b { color: var(--ink); }
+.goalbar .gb-msg { flex: 1; min-width: 220px; font-size: 13.5px; color: var(--ink-soft); }
+.goalbar .gb-actions { display: inline-flex; gap: 8px; }
+.goalbar button { font-family: inherit; font-size: 12.5px; font-weight: 700; padding: 7px 13px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink-soft); border-radius: 999px; cursor: pointer; }
+.goalbar .gb-save { border-color: var(--purple); background: var(--purple); color: #fff; }
+.goalbar .gb-edit-wrap { display: inline-flex; gap: 8px; align-items: center; }
+.goalbar .gb-date { font-family: inherit; font-size: 13px; padding: 6px 10px; border: 1.5px solid var(--line); border-radius: 10px; background: var(--card); color: var(--ink); }
+
+/* 간격 반복 복습 큐 (progress) */
+.srs-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; margin-bottom: 10px; }
+.srs-row.weak { border-left: 4px solid #E0526A; }
+.srs-row .srs-meta { display: flex; flex-direction: column; gap: 3px; }
+.srs-row .srs-meta b { font-size: 14.5px; font-weight: 700; }
+.srs-row .srs-tag { font-size: 12.5px; color: var(--ink-soft); }
+.srs-row .srs-act { display: inline-flex; align-items: center; gap: 10px; }
+.srs-row .srs-go { font-size: 13px; font-weight: 700; color: var(--purple); text-decoration: none; white-space: nowrap; }
+.srs-row .srs-go:hover { text-decoration: underline; }
+.srs-row .srs-done { font-family: inherit; font-size: 12.5px; font-weight: 700; padding: 7px 14px; border: 1.5px solid var(--purple); background: var(--purple); color: #fff; border-radius: 999px; cursor: pointer; white-space: nowrap; }
+
+/* 집중 학습 타이머 (progress) */
+.focus { display: flex; flex-direction: column; align-items: center; gap: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 22px 18px; }
+.focus .ft-presets { display: inline-flex; gap: 8px; }
+.focus .ft-set { font-family: inherit; font-size: 13px; font-weight: 700; padding: 7px 16px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink-soft); border-radius: 999px; cursor: pointer; }
+.focus .ft-set:disabled { opacity: 0.4; cursor: default; }
+.focus .ft-clock { font-family: 'Elice Digital Coding', Consolas, monospace; font-size: 56px; font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; line-height: 1.1; }
+.focus .ft-ctrl { display: inline-flex; gap: 10px; }
+.focus .ft-main { font-family: inherit; font-size: 14px; font-weight: 800; padding: 11px 26px; border: none; background: var(--purple); color: #fff; border-radius: 999px; cursor: pointer; }
+.focus .ft-reset { font-family: inherit; font-size: 14px; font-weight: 700; padding: 11px 20px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink-soft); border-radius: 999px; cursor: pointer; }
+.focus .ft-today { font-size: 13.5px; color: var(--ink-soft); }
+.focus .ft-today b { color: var(--purple-dark); font-size: 15px; }

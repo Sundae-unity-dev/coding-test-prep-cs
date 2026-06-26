@@ -10,6 +10,7 @@
     { href: 'path.html', label: '학습 경로' },
     { href: 'practice.html', label: '예시 문제' },
     { href: 'gichul.html', label: '기출 문제' },
+    { href: 'templates.html', label: '템플릿' },
     { href: 'run/?mode=exam', label: '모의고사' }
   ];
   var box = document.querySelector('.sitenav .nav-links');

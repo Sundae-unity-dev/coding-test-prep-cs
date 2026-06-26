@@ -104,23 +104,26 @@
   window.ctReveal = initReveal;
 
   // 코드 블록 복사 버튼 (토큰 span 은 textContent 로 순수 코드 추출). 표 안의 작은 pre 는 제외.
-  function initCopy() {
-    document.querySelectorAll('pre').forEach(function (pre) {
+  // root 아래의 pre 에만 붙여요. 동적으로 그려진 코드에도 다시 호출할 수 있게 window.ctAddCopy 로 노출해요.
+  function addCopy(root) {
+    (root || document).querySelectorAll('pre').forEach(function (pre) {
       if (pre.closest('table') || pre.querySelector('.copy-btn')) return;
-      var code = pre.textContent.trim();
-      if (code.length < 20) return;
+      var codeText = pre.textContent;          // 버튼을 붙이기 전 순수 코드를 잡아둬요
+      if (codeText.trim().length < 20) return;
       pre.classList.add('has-copy');
       var b = document.createElement('button');
       b.className = 'copy-btn'; b.type = 'button'; b.textContent = '복사';
       b.addEventListener('click', function (ev) {
         ev.stopPropagation(); ev.preventDefault();
-        navigator.clipboard.writeText(pre.textContent).then(function () {
+        navigator.clipboard.writeText(codeText).then(function () {
           b.textContent = '복사됨'; setTimeout(function () { b.textContent = '복사'; }, 1500);
         }).catch(function () {});
       });
       pre.appendChild(b);
     });
   }
+  function initCopy() { addCopy(document); }
+  window.ctAddCopy = addCopy;
 
   // 진행 집계 헬퍼 (localStorage 읽기) - 대시보드에서 사용
   window.ctProgress = function () {

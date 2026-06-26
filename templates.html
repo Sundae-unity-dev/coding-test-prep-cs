@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>알고리즘 템플릿 - Elice Coding Camp</title>
+<script>(function(){try{var t=localStorage.getItem('ctprep_theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<link rel="stylesheet" href="assets/app.css">
+<style>
+  header.hero { background: linear-gradient(135deg, #3B1B7E 0%, #6A2FD0 55%, #8843FF 100%); color: #fff; text-align: center; padding: 52px 24px 44px; }
+  header.hero .badge { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); padding: 4px 14px; border-radius: 99px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
+  header.hero h1 { font-size: 30px; font-weight: 800; margin-bottom: 12px; }
+  header.hero p { font-size: 15px; opacity: 0.92; max-width: 660px; margin: 0 auto; }
+
+  main { max-width: 920px; margin: 0 auto; padding: 24px 20px 80px; }
+  .notebox { background: var(--purple-bg); border-left: 4px solid var(--purple); border-radius: 0 10px 10px 0; padding: 13px 17px; margin: 0 0 18px; font-size: 13.5px; }
+  .notebox strong { color: var(--purple-dark); }
+
+  /* 카테고리 필터 칩 */
+  .cats { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 20px; position: sticky; top: 0; background: var(--bg); padding: 12px 0; z-index: 5; }
+  .cat-chip { font-family: inherit; font-size: 13px; font-weight: 700; padding: 7px 14px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink-soft); border-radius: 999px; cursor: pointer; }
+  .cat-chip.on { border-color: var(--purple); background: var(--purple); color: #fff; }
+
+  .tpl { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin-bottom: 16px; }
+  .tpl h2 { font-size: 17px; font-weight: 800; margin: 0 0 4px; display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+  .tpl .tcat { font-size: 11.5px; font-weight: 700; color: var(--purple-dark); background: var(--purple-bg); padding: 2px 9px; border-radius: 999px; }
+  .tpl .tnote { font-size: 13.5px; color: var(--ink-soft); margin: 0 0 12px; }
+
+  .langs { display: inline-flex; gap: 0; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; margin-bottom: 10px; }
+  .langs button { font-family: inherit; font-size: 12.5px; font-weight: 800; padding: 6px 16px; border: none; background: transparent; color: var(--ink-soft); cursor: pointer; }
+  .langs button.on { background: var(--purple); color: #fff; }
+
+  .tpl pre { background: #1B1B2B; color: #E7E5F0; border-radius: 12px; padding: 16px 16px 16px; overflow-x: auto; font-family: 'Elice Digital Coding', 'Consolas', monospace; font-size: 13px; line-height: 1.65; position: relative; }
+  .tpl pre.hide { display: none; }
+  html[data-theme="dark"] .tpl pre { background: #11111C; }
+
+  #empty { color: var(--ink-soft); font-size: 14px; padding: 30px 0; text-align: center; display: none; }
+</style>
+</head>
+<body>
+<nav class="sitenav">
+  <a class="sitebrand" href="index.html"><img class="brandlogo" src="assets/elicetrack.png" alt="Elice Track"><span class="brandsub">Coding Test</span></a>
+  <div class="nav-links"></div>
+  <a class="mypage-link" href="progress.html">마이페이지</a>
+</nav>
+<script src="assets/nav.js"></script>
+
+<header class="hero">
+  <div class="badge">실전 빠른 참조</div>
+  <h1>알고리즘 템플릿</h1>
+  <p>코딩 테스트에서 자주 쓰는 코드 골격을 언어별로 모았어요. 필요한 패턴을 골라 복사해서 바로 쓰세요.</p>
+</header>
+
+<main>
+  <div class="notebox"><strong>이렇게 써요.</strong> 위에서 카테고리를 고르고, 각 카드의 언어 탭(C# / Python / JS)을 눌러 원하는 언어로 바꾼 뒤 코드 오른쪽 위 <b>복사</b> 버튼으로 가져가요. 변수명과 입력 형식은 문제에 맞게 손봐서 쓰면 돼요.</div>
+
+  <div class="cats" id="cats"></div>
+  <div id="list"></div>
+  <p id="empty">해당 카테고리에 템플릿이 없어요.</p>
+</main>
+
+<footer>Elice Track 코딩 테스트 준비자료 | 엘리스 트랙 수강생용</footer>
+
+<script src="assets/templates-data.js"></script>
+<script defer src="assets/config.js"></script>
+<script defer src="assets/tracker.js"></script>
+<script defer src="assets/app.js"></script>
+<script defer src="assets/gamify.js"></script>
+<script>
+(function () {
+  var T = window.CT_TEMPLATES || [];
+  var LANGS = [['cs', 'C#'], ['py', 'Python'], ['js', 'JS']];
+  var listEl = document.getElementById('list');
+  var emptyEl = document.getElementById('empty');
+
+  // 카테고리 칩 (등장 순서 유지, 맨 앞에 전체)
+  var cats = ['전체'];
+  T.forEach(function (t) { if (cats.indexOf(t.cat) === -1) cats.push(t.cat); });
+  var curCat = '전체';
+  var catBox = document.getElementById('cats');
+  catBox.innerHTML = cats.map(function (c, i) {
+    return '<button class="cat-chip' + (i === 0 ? ' on' : '') + '" data-cat="' + c + '">' + c + '</button>';
+  }).join('');
+  catBox.addEventListener('click', function (e) {
+    var b = e.target.closest('.cat-chip'); if (!b) return;
+    curCat = b.getAttribute('data-cat');
+    [].forEach.call(catBox.children, function (x) { x.classList.toggle('on', x === b); });
+    render();
+  });
+
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+  // 카드 한 장: 언어 탭 + 언어별 pre (없는 언어 탭은 숨김)
+  function cardHtml(t) {
+    var avail = LANGS.filter(function (l) { return t.code[l[0]]; });
+    var tabs = avail.map(function (l, i) {
+      return '<button data-lang="' + l[0] + '"' + (i === 0 ? ' class="on"' : '') + '>' + l[1] + '</button>';
+    }).join('');
+    var pres = avail.map(function (l, i) {
+      return '<pre class="lang-' + l[0] + (i === 0 ? '' : ' hide') + '">' + esc(t.code[l[0]]) + '</pre>';
+    }).join('');
+    return '<div class="tpl" data-id="' + t.id + '">'
+      + '<h2><span class="tcat">' + esc(t.cat) + '</span>' + esc(t.title) + '</h2>'
+      + '<p class="tnote">' + esc(t.note) + '</p>'
+      + '<div class="langs">' + tabs + '</div>'
+      + pres + '</div>';
+  }
+
+  function render() {
+    var items = T.filter(function (t) { return curCat === '전체' || t.cat === curCat; });
+    listEl.innerHTML = items.map(cardHtml).join('');
+    emptyEl.style.display = items.length ? 'none' : '';
+    // app.js initCopy 는 init 시점에 이미 돌았으므로, 새로 그린 pre 에 복사 버튼을 다시 붙여요.
+    if (window.ctAddCopy) window.ctAddCopy(listEl);
+  }
+
+  // 언어 탭 전환 (이벤트 위임)
+  listEl.addEventListener('click', function (e) {
+    var b = e.target.closest('.langs button'); if (!b) return;
+    var card = b.closest('.tpl'), lang = b.getAttribute('data-lang');
+    [].forEach.call(b.parentNode.children, function (x) { x.classList.toggle('on', x === b); });
+    [].forEach.call(card.querySelectorAll('pre'), function (p) {
+      p.classList.toggle('hide', !p.classList.contains('lang-' + lang));
+    });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
