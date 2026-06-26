@@ -198,7 +198,8 @@ html[data-theme="dark"] .streak-alert .sa-tx b { color: #FF9A52; }
 /* 전역 검색 (상단 네비 주입 버튼 + 오버레이) */
 .gs-trigger { background: none; border: 1px solid var(--line); border-radius: 9px; cursor: pointer; font-size: 14px; line-height: 1; padding: 7px 11px; color: var(--ink-soft); }
 .gs-trigger:hover { border-color: var(--purple); color: var(--purple-dark); }
-.gs-ov { position: fixed; inset: 0; z-index: 300; background: rgba(20, 16, 40, 0.45); display: flex; justify-content: center; align-items: flex-start; padding: 10vh 16px 16px; overflow-y: auto; }
+body.gs-lock { overflow: hidden; }
+.gs-ov { position: fixed; inset: 0; z-index: 300; background: rgba(20, 16, 40, 0.45); display: flex; justify-content: center; align-items: flex-start; padding: 10vh 16px 16px; overflow-y: auto; overscroll-behavior: contain; }
 .gs-ov[hidden] { display: none; }
 .gs-box { width: 100%; max-width: 560px; max-height: 80vh; display: flex; flex-direction: column; background: var(--card); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 20px 60px var(--shadow); overflow: hidden; }
 .gs-head { display: flex; align-items: stretch; border-bottom: 1px solid var(--line); flex-shrink: 0; }

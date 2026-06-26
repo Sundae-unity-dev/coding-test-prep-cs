@@ -191,14 +191,16 @@
 
     function render(q) {
       q = q.trim().toLowerCase();
-      var list = q ? items.filter(function (it) { return it.t.toLowerCase().indexOf(q) >= 0; }) : items.slice(0, 8);
+      // 검색어가 없으면 전체 목록을 보여줘 결과 영역 안에서 둘러볼 수 있게 해요.
+      var list = q ? items.filter(function (it) { return it.t.toLowerCase().indexOf(q) >= 0; }).slice(0, 40) : items.slice();
       if (!list.length) { results.innerHTML = '<div class="gs-empty">검색 결과가 없어요.</div>'; return; }
-      results.innerHTML = list.slice(0, 30).map(function (it) {
+      results.innerHTML = list.map(function (it) {
         return '<a class="gs-item" role="option" href="' + it.href + '"><span class="gs-kind">' + it.kind + '</span><span class="gs-t">' + esc(it.t) + '</span><span class="gs-sub">' + esc(it.sub) + '</span></a>';
       }).join('');
+      results.scrollTop = 0;
     }
-    function open() { ov.hidden = false; ov.classList.add('on'); input.value = ''; render(''); setTimeout(function () { input.focus(); }, 30); }
-    function close() { ov.classList.remove('on'); ov.hidden = true; }
+    function open() { ov.hidden = false; ov.classList.add('on'); document.body.classList.add('gs-lock'); input.value = ''; render(''); setTimeout(function () { input.focus(); }, 30); }
+    function close() { ov.classList.remove('on'); ov.hidden = true; document.body.classList.remove('gs-lock'); }
     btn.addEventListener('click', open);
     ov.querySelector('.gs-close').addEventListener('click', close);
     ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
