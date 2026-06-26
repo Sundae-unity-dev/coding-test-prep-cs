@@ -214,3 +214,12 @@ body.gs-lock { overflow: hidden; }
 .gs-t { font-weight: 700; }
 .gs-sub { margin-left: auto; font-size: 12px; color: var(--ink-soft); flex-shrink: 0; }
 .gs-empty { padding: 24px; text-align: center; color: var(--ink-soft); }
+
+/* 단축키 도움말 모달 (? 키) */
+.help-ov { position: fixed; inset: 0; z-index: 320; background: rgba(20, 16, 40, 0.45); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.help-ov[hidden] { display: none; }
+.help-box { width: 100%; max-width: 360px; background: var(--card); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 20px 60px var(--shadow); padding: 18px 20px; }
+.help-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 16px; }
+.help-close { background: none; border: none; font-size: 24px; line-height: 1; color: var(--ink-soft); cursor: pointer; }
+.help-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 9px; font-size: 14px; color: var(--ink); }
+.help-list kbd { display: inline-block; min-width: 22px; text-align: center; background: var(--purple-bg); color: var(--purple-dark); border: 1px solid var(--line); border-radius: 6px; padding: 1px 7px; font-family: 'Elice Digital Coding', Consolas, monospace; font-weight: 700; margin-right: 6px; }

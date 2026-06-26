@@ -49,6 +49,22 @@
       wrap.appendChild(fUp); wrap.appendChild(fDn);
     }
 
+    // 사이트 전역 글자 크기(런박스 제외 - 런박스는 에디터 전용 A+/A- 사용). body zoom 으로 화면 전체 확대.
+    if (location.pathname.indexOf('/run/') < 0) {
+      var scale = parseFloat(localStorage.getItem('ct_font_scale')) || 1;
+      var applyScale = function () { document.body.style.zoom = scale; };
+      applyScale();
+      var sUp = document.createElement('button');
+      sUp.className = 'fc-btn'; sUp.type = 'button'; sUp.textContent = 'A+'; sUp.style.fontSize = '15px'; sUp.style.fontWeight = '800';
+      sUp.setAttribute('aria-label', '글자 크게'); sUp.title = '글자 크게';
+      sUp.addEventListener('click', function () { scale = Math.min(1.3, Math.round((scale + 0.1) * 10) / 10); try { localStorage.setItem('ct_font_scale', scale); } catch (e) {} applyScale(); });
+      var sDn = document.createElement('button');
+      sDn.className = 'fc-btn'; sDn.type = 'button'; sDn.textContent = 'A-'; sDn.style.fontSize = '13px'; sDn.style.fontWeight = '800';
+      sDn.setAttribute('aria-label', '글자 작게'); sDn.title = '글자 작게';
+      sDn.addEventListener('click', function () { scale = Math.max(0.9, Math.round((scale - 0.1) * 10) / 10); try { localStorage.setItem('ct_font_scale', scale); } catch (e) {} applyScale(); });
+      wrap.appendChild(sUp); wrap.appendChild(sDn);
+    }
+
     wrap.appendChild(tbtn); wrap.appendChild(top);
     document.body.appendChild(wrap);
 
@@ -209,14 +225,36 @@
       if (e.key === 'Escape' && ov.classList.contains('on')) { close(); return; }
       if (e.key === '/' && !ov.classList.contains('on')) {
         var ae = document.activeElement, tag = (ae && ae.tagName) || '';
-        if (tag === 'INPUT' || tag === 'TEXTAREA' || (ae && ae.isContentEditable)) return;
+        if ((tag === 'INPUT' || tag === 'TEXTAREA' || (ae && ae.isContentEditable)) && ae.offsetParent !== null) return;
         e.preventDefault(); open();
       }
       if (e.key === 'Enter' && ov.classList.contains('on')) { var f = results.querySelector('.gs-item'); if (f) f.click(); }
     });
   }
 
-  function init() { buildControls(); initReveal(); initCopy(); initSearch(); }
+  // 단축키 도움말 모달 (? 키)
+  function initHelp() {
+    var ov = document.createElement('div');
+    ov.className = 'help-ov'; ov.hidden = true; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-label', '단축키 도움말');
+    ov.innerHTML = '<div class="help-box"><div class="help-head"><b>단축키</b><button class="help-close" type="button" aria-label="닫기">×</button></div>' +
+      '<ul class="help-list"><li><kbd>/</kbd> 검색 열기</li><li><kbd>?</kbd> 이 도움말</li><li><kbd>Esc</kbd> 닫기</li>' +
+      '<li>우하단 <b>A+ / A-</b> 글자 크기</li><li>우하단 <b>달 / 해</b> 다크 모드</li></ul></div>';
+    document.body.appendChild(ov);
+    function close() { ov.classList.remove('on'); ov.hidden = true; }
+    function open() { ov.hidden = false; ov.classList.add('on'); }
+    ov.querySelector('.help-close').addEventListener('click', close);
+    ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && ov.classList.contains('on')) { close(); return; }
+      if (e.key === '?') {
+        var ae = document.activeElement, tag = (ae && ae.tagName) || '';
+        if ((tag === 'INPUT' || tag === 'TEXTAREA' || (ae && ae.isContentEditable)) && ae.offsetParent !== null) return;
+        e.preventDefault(); if (ov.classList.contains('on')) close(); else open();
+      }
+    });
+  }
+
+  function init() { buildControls(); initReveal(); initCopy(); initSearch(); initHelp(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
