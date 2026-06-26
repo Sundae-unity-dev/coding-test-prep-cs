@@ -83,6 +83,54 @@ window.CT_SQL = {
       prompt: "상태가 '완료'인 주문 금액 합계가 50000 이상인 회원의 이름(name)을 조회하세요.",
       hint: "GROUP BY 뒤 HAVING SUM(amount) >= 50000 으로 그룹을 걸러요.",
       answer: "SELECT m.name FROM members m JOIN orders o ON m.id = o.member_id WHERE o.status = '완료' GROUP BY m.id, m.name HAVING SUM(o.amount) >= 50000;"
+    },
+    {
+      id: "cancelled", title: "취소된 주문", level: "basic", ordered: false,
+      prompt: "상태(status)가 '취소'인 주문의 product 와 amount 를 조회하세요.",
+      hint: "WHERE status = '취소' 로 걸러요.",
+      answer: "SELECT product, amount FROM orders WHERE status = '취소';"
+    },
+    {
+      id: "recent-members", title: "최근 가입 회원", level: "basic", ordered: true,
+      prompt: "회원을 가입일(joined) 최신순으로 정렬해 name 과 joined 를 조회하세요.",
+      hint: "ORDER BY joined DESC 를 써요.",
+      answer: "SELECT name, joined FROM members ORDER BY joined DESC;"
+    },
+    {
+      id: "grade-count", title: "등급별 회원 수", level: "basic", ordered: false,
+      prompt: "등급(grade)별 회원 수를 grade 와 회원 수 두 컬럼으로 조회하세요.",
+      hint: "GROUP BY grade 와 COUNT(*) 를 써요.",
+      answer: "SELECT grade, COUNT(*) AS cnt FROM members GROUP BY grade;"
+    },
+    {
+      id: "product-sales", title: "제품별 판매액", level: "mid", ordered: true,
+      prompt: "상태가 '완료'인 주문만으로 제품(product)별 총 판매액을 구하고, 판매액이 큰 순으로 product 와 합계를 조회하세요.",
+      hint: "WHERE 로 완료만 거르고 GROUP BY product, SUM, ORDER BY 합계 DESC.",
+      answer: "SELECT product, SUM(amount) AS total FROM orders WHERE status = '완료' GROUP BY product ORDER BY total DESC;"
+    },
+    {
+      id: "distinct-buyers", title: "주문한 회원 이름", level: "mid", ordered: false,
+      prompt: "한 번이라도 주문한 적이 있는 회원의 이름(name)을 중복 없이 조회하세요.",
+      hint: "orders 와 JOIN 후 DISTINCT, 또는 id IN (SELECT member_id FROM orders) 를 써요.",
+      answer: "SELECT DISTINCT m.name FROM members m JOIN orders o ON m.id = o.member_id;"
+    },
+    {
+      id: "amount-band", title: "금액대별 주문 수", level: "mid", ordered: false,
+      prompt: "각 주문을 금액(amount) 100000 이상이면 '고액', 그 미만이면 '일반' 으로 나눠, 구분별 주문 수를 구분과 개수 두 컬럼으로 조회하세요.",
+      hint: "CASE WHEN amount >= 100000 THEN '고액' ELSE '일반' END 으로 묶어 GROUP BY 해요.",
+      answer: "SELECT CASE WHEN amount >= 100000 THEN '고액' ELSE '일반' END AS band, COUNT(*) AS cnt FROM orders GROUP BY band;"
+    },
+    {
+      id: "above-avg", title: "평균보다 비싼 주문", level: "hard", ordered: false,
+      prompt: "전체 주문의 평균 금액보다 amount 가 큰 주문의 id 와 amount 를 조회하세요.",
+      hint: "WHERE amount > (SELECT AVG(amount) FROM orders) 처럼 서브쿼리를 써요.",
+      answer: "SELECT id, amount FROM orders WHERE amount > (SELECT AVG(amount) FROM orders);"
+    },
+    {
+      id: "repeat-buyers", title: "완료 2건 이상 회원", level: "hard", ordered: false,
+      prompt: "상태가 '완료'인 주문을 2건 이상 한 회원의 이름(name)을 조회하세요.",
+      hint: "완료만 거른 뒤 GROUP BY 하고 HAVING COUNT(*) >= 2 로 걸러요.",
+      answer: "SELECT m.name FROM members m JOIN orders o ON m.id = o.member_id WHERE o.status = '완료' GROUP BY m.id, m.name HAVING COUNT(*) >= 2;"
     }
   ]
 };
