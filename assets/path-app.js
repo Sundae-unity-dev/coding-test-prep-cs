@@ -13,8 +13,25 @@
   var TIERS = ['입문', '기초', '중급', '심화'];
   var examples = ALL.filter(function (p) { return !p.g; });
   var gichul = ALL.filter(function (p) { return p.g; });
-  var orderedLessons = [];
-  TIERS.forEach(function (t) { CONCEPTS.filter(function (c) { return c.lv === t; }).forEach(function (c) { orderedLessons.push(c); }); });
+  var devOrderedLessons = [];
+  TIERS.forEach(function (t) { CONCEPTS.filter(function (c) { return c.lv === t; }).forEach(function (c) { devOrderedLessons.push(c); }); });
+
+  // ===== 트랙: 개발(dev) / QA =====
+  var track = (function () { try { return localStorage.getItem('ct_path_track') === 'qa' ? 'qa' : 'dev'; } catch (e) { return 'dev'; } })();
+  var QA = window.CT_QA || {};
+  var QA_CS = QA.cs || [];
+  var QA_LESSONS = [
+    { id: 'qa-design', t: '테스트 설계', quizzes: QA.design || [] },
+    { id: 'qa-theory', t: '테스트 이론', quizzes: QA.theoryQuiz || [] },
+    { id: 'qa-ds', t: '자료구조', quizzes: QA_CS.filter(function (q) { return q.cat === '자료구조'; }) },
+    { id: 'qa-db', t: '데이터베이스', quizzes: QA_CS.filter(function (q) { return q.cat === '데이터베이스'; }) },
+    { id: 'qa-net', t: '네트워크', quizzes: QA_CS.filter(function (q) { return q.cat === '네트워크'; }) },
+    { id: 'qa-os', t: '운영체제', quizzes: QA_CS.filter(function (q) { return q.cat === '운영체제'; }) }
+  ];
+  var QA_QUIZ = {}; QA_LESSONS.forEach(function (l) { QA_QUIZ[l.id] = l.quizzes; });
+  var QA_SQL = (window.CT_SQL && window.CT_SQL.problems) || [];
+  var qaAlg = examples.filter(function (p) { return p.lv === '입문' || p.lv === '기초'; });
+  function orderedLessonsList() { return track === 'qa' ? QA_LESSONS : devOrderedLessons; }
 
   var pathRoot = document.getElementById('pathRoot');
   var ov = document.getElementById('qzOv');
@@ -32,17 +49,18 @@
     return a;
   }
 
-  function qList(tid) { return QUIZ[tid] || []; }
+  function qList(tid) { return (track === 'qa' ? (QA_QUIZ[tid] || []) : (QUIZ[tid] || [])); }
   function pq() { return readObj('ct_path_quiz_v1'); }
   function isCorrect(tid, i) { return pq()[tid + '-' + i] === true; }
   function correctCount(tid) { var p = pq(), n = 0, L = qList(tid); for (var i = 0; i < L.length; i++) if (p[tid + '-' + i]) n++; return n; }
   function lessonDone(c) { var t = qList(c.id).length; return t > 0 && correctCount(c.id) >= t; }
-  function conceptOf(tid) { for (var i = 0; i < CONCEPTS.length; i++) if (CONCEPTS[i].id === tid) return CONCEPTS[i]; return null; }
-  function firstIncompleteLesson() { for (var i = 0; i < orderedLessons.length; i++) if (!lessonDone(orderedLessons[i])) return orderedLessons[i]; return null; }
+  function conceptOf(tid) { var arr = orderedLessonsList(); for (var i = 0; i < arr.length; i++) if (arr[i].id === tid) return arr[i]; return null; }
+  function firstIncompleteLesson() { var arr = orderedLessonsList(); for (var i = 0; i < arr.length; i++) if (!lessonDone(arr[i])) return arr[i]; return null; }
   function nextIncompleteLessonAfter(tid) {
-    var idx = -1; for (var i = 0; i < orderedLessons.length; i++) if (orderedLessons[i].id === tid) { idx = i; break; }
-    for (var j = idx + 1; j < orderedLessons.length; j++) if (!lessonDone(orderedLessons[j])) return orderedLessons[j];
-    for (var k = 0; k < orderedLessons.length; k++) if (!lessonDone(orderedLessons[k])) return orderedLessons[k];
+    var arr = orderedLessonsList();
+    var idx = -1; for (var i = 0; i < arr.length; i++) if (arr[i].id === tid) { idx = i; break; }
+    for (var j = idx + 1; j < arr.length; j++) if (!lessonDone(arr[j])) return arr[j];
+    for (var k = 0; k < arr.length; k++) if (!lessonDone(arr[k])) return arr[k];
     return null;
   }
 
@@ -56,8 +74,9 @@
     var cur = ('L:' + c.id) === currentKey, act = activeTid === c.id;
     var cls = 'lesson ' + (done ? 'done' : (cur ? 'current' : 'todo')) + (act ? ' active' : '');
     var now = cur ? '<span class="pnow">지금 할 차례</span>' : '';
+    var href = track === 'qa' ? 'qa.html' : 'concepts.html#' + c.id;
     return '<div class="pnode ' + cls + '" style="transform:translateX(' + wind() + 'px)">' +
-      '<a class="pcircle" href="concepts.html#' + c.id + '" data-lesson="' + c.id + '" title="개념 퀴즈: ' + esc(c.t) + '">' + (done ? '✓' : '📖') + '</a>' +
+      '<a class="pcircle" href="' + href + '" data-lesson="' + c.id + '" title="개념 퀴즈: ' + esc(c.t) + '">' + (done ? '✓' : '📖') + '</a>' +
       '<span class="plabel">' + esc(c.t) + '</span><span class="pquiz">퀴즈 ' + got + '/' + total + '</span>' + now + '</div>';
   }
   function probNode(p, seq, solved) {
@@ -69,7 +88,48 @@
       '<span class="plabel">' + esc(p.t) + '</span>' + now + '</div>';
   }
 
-  function build() {
+  // SQL 문제 노드(QA 트랙): sql.html?p=id 로 이동, ct_sql_solved_v1 로 완료 표시
+  function sqlNode(s, seq, sqlSolved) {
+    var done = !!sqlSolved[s.id], cur = ('S:' + s.id) === currentKey;
+    var cls = done ? 'done' : (cur ? 'current' : 'todo');
+    var now = cur ? '<span class="pnow">지금 도전</span>' : '';
+    return '<div class="pnode ' + cls + '" style="transform:translateX(' + wind() + 'px)">' +
+      '<a class="pcircle" href="sql.html?p=' + encodeURIComponent(s.id) + '" title="SQL: ' + esc(s.title) + '">' + (done ? '✓' : seq) + '</a>' +
+      '<span class="plabel">' + esc(s.title) + '</span>' + now + '</div>';
+  }
+
+  function build() { if (track === 'qa') buildQA(); else buildDev(); }
+
+  // QA 트랙: QA 개념 레슨 + 입문/기초 알고리즘 + SQL
+  function buildQA() {
+    var solved = readObj('ct_practice_solved_v1'), sqlSolved = readObj('ct_sql_solved_v1');
+    var seqNodes = [];
+    QA_LESSONS.forEach(function (l) { seqNodes.push({ k: 'L', c: l }); });
+    qaAlg.forEach(function (p) { seqNodes.push({ k: 'P', p: p }); });
+    QA_SQL.forEach(function (s) { seqNodes.push({ k: 'S', s: s }); });
+    currentKey = null;
+    for (var i = 0; i < seqNodes.length; i++) {
+      var nd = seqNodes[i], dn = nd.k === 'L' ? lessonDone(nd.c) : nd.k === 'P' ? !!solved[nd.p.id] : !!sqlSolved[nd.s.id];
+      if (!dn) { currentKey = (nd.k === 'L' ? 'L:' + nd.c.id : nd.k === 'P' ? 'P:' + nd.p.id : 'S:' + nd.s.id); break; }
+    }
+    gi = 0; var html = '', seq = 0;
+    var ld = QA_LESSONS.filter(lessonDone).length;
+    html += '<div class="pt-head"><span class="pt-name">QA 개념</span><span class="pt-prog">레슨 ' + ld + '/' + QA_LESSONS.length + '</span></div>';
+    html += '<div class="ptrack">' + QA_LESSONS.map(lessonNode).join('') + '</div>';
+    var ad = qaAlg.filter(function (p) { return solved[p.id]; }).length;
+    html += '<div class="pt-head"><span class="pt-name">알고리즘 (입문, 기초)</span><span class="pt-prog">문제 ' + ad + '/' + qaAlg.length + '</span></div>';
+    html += '<div class="ptrack">' + qaAlg.map(function (p) { seq++; return probNode(p, seq, solved); }).join('') + '</div>';
+    var sd = QA_SQL.filter(function (s) { return sqlSolved[s.id]; }).length;
+    html += '<div class="pt-head"><span class="pt-name">SQL</span><span class="pt-prog">문제 ' + sd + '/' + QA_SQL.length + '</span></div>';
+    html += '<div class="ptrack">' + QA_SQL.map(function (s) { seq++; return sqlNode(s, seq, sqlSolved); }).join('') + '</div>';
+    pathRoot.innerHTML = html;
+    if (!animatedOnce) { animatedOnce = true; [].slice.call(pathRoot.querySelectorAll('.pnode')).forEach(function (n, i) { n.style.animationDelay = (Math.min(i, 36) * 0.028) + 's'; n.classList.add('pop'); }); }
+    var totDone = ld + ad + sd, tot = QA_LESSONS.length + qaAlg.length + QA_SQL.length, pct = tot ? Math.round(totDone * 100 / tot) : 0;
+    document.getElementById('poverall').innerHTML =
+      '<span>전체 진행</span><span class="pbar"><i style="width:' + pct + '%"></i></span><b>' + totDone + ' / ' + tot + '</b>';
+  }
+
+  function buildDev() {
     var solved = readObj('ct_practice_solved_v1');
     var seqNodes = [];
     TIERS.forEach(function (t) {
@@ -166,7 +226,7 @@
 
     panel.innerHTML =
       '<div class="lp-head"><h2>📖 ' + esc(c.t) + '</h2><button class="lp-close" id="lpClose" aria-label="닫기">×</button></div>' +
-      '<div class="lp-sub">개념을 이해했는지 확인하는 문제예요. 다 맞히면 레슨이 완료돼요. <a href="concepts.html#' + activeTid + '">개념 자세히 보기 →</a></div>' +
+      '<div class="lp-sub">개념을 이해했는지 확인하는 문제예요. 다 맞히면 레슨이 완료돼요. <a href="' + (track === 'qa' ? 'qa.html' : 'concepts.html#' + activeTid) + '">개념 자세히 보기 →</a></div>' +
       '<div class="lp-prog"><span class="bar"><i style="width:' + pct + '%"></i></span><span class="n">' + got + ' / ' + total + ' 정답</span></div>' +
       '<div class="qz-q"><div class="qq"><span class="qn">Q' + (curIdx + 1) + '.</span><span class="qtag">' + tag + '</span>' + blankify(q.q, t === 'fill' ? 'lpBlank' : null) + '</div>' + body +
       '<div class="qz-ex' + (stored ? ' show' : '') + '" id="lpEx" aria-live="polite"><b>정답</b> : ' + esc(q.e) + '</div></div>' +
@@ -346,6 +406,27 @@
   // 배경 클릭 / Esc 로 창 닫기
   ov.addEventListener('click', function (e) { if (e.target === ov) closePanel(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && ov.classList.contains('on')) closePanel(); });
+
+  // 트랙 전환 토글 (개발 / QA)
+  function syncTrackUI() {
+    var dv = document.getElementById('trackDev'), qv = document.getElementById('trackQa');
+    if (dv) dv.classList.toggle('on', track === 'dev');
+    if (qv) qv.classList.toggle('on', track === 'qa');
+    var d = document.getElementById('trackDesc');
+    if (d) d.textContent = track === 'qa'
+      ? 'QA 직무 대비: QA 개념 레슨과 입문, 기초 알고리즘, SQL 문제를 풀어요.'
+      : '개발 직무 대비: 개념 레슨과 입문부터 심화까지 전체 문제를 풀어요.';
+  }
+  function setTrack(t) {
+    if (track === t) return;
+    track = t; try { localStorage.setItem('ct_path_track', t); } catch (e) {}
+    if (ov.classList.contains('on')) closePanel();
+    animatedOnce = false; syncTrackUI(); build();
+  }
+  var dv = document.getElementById('trackDev'), qv = document.getElementById('trackQa');
+  if (dv) dv.addEventListener('click', function () { setTrack('dev'); });
+  if (qv) qv.addEventListener('click', function () { setTrack('qa'); });
+  syncTrackUI();
 
   build();
 })();

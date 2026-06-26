@@ -27,6 +27,10 @@
   .poverall .pbar { width:160px; height:9px; background:var(--purple-bg); border-radius:999px; overflow:hidden; }
   .poverall .pbar i { display:block; height:100%; background:linear-gradient(90deg,var(--purple),var(--purple-dark)); border-radius:999px; }
   .poverall b { color:var(--purple-dark); }
+  .track-toggle { display:inline-flex; gap:0; border:1px solid var(--line); border-radius:999px; overflow:hidden; margin:4px 0 10px; background:var(--card); }
+  .track-toggle button { font-family:inherit; font-size:13.5px; font-weight:800; padding:8px 20px; border:none; background:transparent; color:var(--ink-soft); cursor:pointer; }
+  .track-toggle button.on { background:var(--purple); color:#fff; }
+  .track-desc { font-size:13px; color:var(--ink-soft); margin:0 0 12px; min-height:1em; }
 
   .pt-head { display:flex; align-items:center; gap:10px; justify-content:center; margin:30px 0 8px; }
   .pt-name { font-size:16px; font-weight:800; padding:5px 16px; border-radius:999px; background:var(--purple-bg); color:var(--purple-dark); }
@@ -162,11 +166,10 @@
   <div class="nav-links">
     <a href="guide.html">준비 가이드</a>
     <a href="concepts.html">개념 정리</a>
+    <a href="qa.html">개념정리(QA)</a>
     <a class="on" href="path.html">학습 경로</a>
     <a href="practice.html">예시 문제</a>
     <a href="gichul.html">기출 문제</a>
-    <a href="sql.html">SQL</a>
-    <a href="qa.html">QA/면접</a>
     <a href="run/?mode=exam">모의고사</a>
   </div>
   <a class="mypage-link" href="progress.html">마이페이지</a>
@@ -176,6 +179,11 @@
   <header class="phead">
     <h1>학습 경로</h1>
     <p>길을 따라가며 개념(📖)을 누르면 문제 풀이 창이 열려요. 다 맞히면 다음으로 나아가요.</p>
+    <div class="track-toggle" role="group" aria-label="학습 트랙 선택">
+      <button id="trackDev" type="button" class="on">개발 트랙</button>
+      <button id="trackQa" type="button">QA 트랙</button>
+    </div>
+    <p class="track-desc" id="trackDesc"></p>
     <div class="poverall" id="poverall"></div>
     <div class="plegend">
       <span><i class="dot d-lesson"></i>📖 개념 레슨</span>
@@ -192,6 +200,8 @@
 
 <script defer src="assets/problems.js"></script>
 <script defer src="assets/concept-quiz.js"></script>
+<script defer src="assets/qa-data.js"></script>
+<script defer src="assets/sql-problems.js"></script>
 <script defer src="assets/config.js"></script>
 <script defer src="assets/tracker.js"></script>
 <script defer src="assets/app.js"></script>
