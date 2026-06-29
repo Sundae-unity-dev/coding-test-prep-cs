@@ -238,11 +238,11 @@
       ['위상 정렬 (Kahn)', 'toposort', '그래프', ['topological sort', '위상정렬', 'kahn']]
     ].forEach(function (e) { items.push({ t: e[0], sub: '템플릿 / ' + e[2], href: 'templates.html#tpl-' + e[1], kind: '템플릿', tags: e[3] }); });
     [
-      ['QA 직무와 채용', 's-jobs', ['qa', '직무', '채용']],
-      ['QA 테스트 기법', 's-theory', ['qa', '경계값', '동등분할', '테스트 기법']],
-      ['좋은 버그 리포트', 's-bug', ['qa', '버그', '리포트', 'bug report']],
-      ['QA 면접 대비', 's-interview', ['qa', '면접', 'interview']],
-      ['QA 기초 CS', 's-cs', ['qa', 'cs', '네트워크', '데이터베이스']]
+      ['QA 직무와 채용', 'qj', ['qa', '직무', '채용']],
+      ['QA 테스트 이론', 'qt', ['qa', '경계값', '동등분할', '테스트 기법', '레벨', '자동화']],
+      ['버그 리포트와 TC', 'qb', ['qa', '버그', '리포트', 'bug report', '테스트 케이스']],
+      ['QA 면접 단골 질문', 'qi', ['qa', '면접', 'interview']],
+      ['CS 지식 퀴즈', 'qc', ['qa', 'cs', '네트워크', '데이터베이스', '운영체제']]
     ].forEach(function (e) { items.push({ t: e[0], sub: '개념정리(QA)', href: 'qa.html#' + e[1], kind: 'QA', tags: e[2] }); });
     items.push({ t: 'SQL 연습', sub: '브라우저 SQLite 채점', href: 'sql.html', kind: 'SQL', tags: ['sql', 'query', '쿼리', 'select', 'join'] });
     // 확장 개념(CT_CONCEPTS 미등록분)도 검색에 노출해요. 제목은 concepts.html 사이드바와 맞춰 주세요.
