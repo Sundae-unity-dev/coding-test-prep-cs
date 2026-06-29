@@ -257,7 +257,12 @@
       ['세그먼트 트리와 펜윅 트리', 't29', ['segment tree', '세그먼트', 'fenwick', '펜윅', 'bit', '구간 합', '구간 질의']],
       ['분할 정복', 't30', ['divide and conquer', '분할 정복', '병합 정렬', '빠른 거듭제곱', 'fast power']],
       ['DP 심화 (트리 / 구간 / 비트마스크)', 't31', ['트리 dp', '구간 dp', '비트마스크 dp', 'tsp', '외판원', 'tree dp']],
-      ['조합론', 't32', ['조합론', '순열', '조합', 'combination', '파스칼', '모듈러', '역원', '페르마']]
+      ['조합론', 't32', ['조합론', '순열', '조합', 'combination', '파스칼', '모듈러', '역원', '페르마']],
+      ['모듈러 연산', 't33', ['모듈러', 'modular', '나머지', 'mod', '역원', '페르마', '큰 수']],
+      ['좌표 압축', 't34', ['좌표 압축', 'coordinate compression', '순위', 'rank', '압축']],
+      ['스위핑 (라인 스윕)', 't35', ['스위핑', 'sweeping', 'line sweep', '구간 겹침', '이벤트']],
+      ['최소 공통 조상 (LCA)', 't36', ['lca', '최소 공통 조상', 'lowest common ancestor', '트리', '조상']],
+      ['기하 기초 (CCW)', 't37', ['기하', 'ccw', '외적', 'cross product', '선분 교차', '볼록 껍질']]
     ].forEach(function (e) { items.push({ t: e[0], sub: '개념', href: 'concepts.html#' + e[1], kind: '개념', tags: e[2] }); });
 
     var btn = document.createElement('button');

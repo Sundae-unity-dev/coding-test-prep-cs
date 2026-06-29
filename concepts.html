@@ -337,8 +337,13 @@
     <button data-topic="t30" data-kw="분할 정복 divide conquer 병합정렬 merge sort 빠른 거듭제곱 fast power 재귀 반으로 쪼개기">29. 분할 정복</button>
     <button data-topic="t31" data-kw="dp 심화 트리dp 구간dp 비트마스크dp tree interval bitmask tsp 외판원 상태압축 점화식">30. DP 심화 (트리 / 구간 / 비트마스크)</button>
     <button data-topic="t32" data-kw="조합론 combinatorics 순열 조합 permutation combination 파스칼 pascal 모듈러 역원 페르마 경우의 수 nCr">31. 조합론</button>
+    <button data-topic="t33" data-kw="모듈러 연산 modular 나머지 mod 큰 수 페르마 소정리 역원 inverse 거듭제곱">32. 모듈러 연산</button>
+    <button data-topic="t34" data-kw="좌표 압축 coordinate compression 순위 rank 정렬 중복 제거 이분탐색 인덱스 범위 큰 값">33. 좌표 압축</button>
+    <button data-topic="t35" data-kw="스위핑 sweeping line sweep 구간 이벤트 겹침 누적 회의실 동시 정렬">34. 스위핑 (라인 스윕)</button>
+    <button data-topic="t36" data-kw="lca 최소 공통 조상 lowest common ancestor 트리 깊이 조상 희소 배열 sparse">35. 최소 공통 조상 (LCA)</button>
+    <button data-topic="t37" data-kw="기하 ccw 외적 cross product 방향 반시계 시계 선분 교차 볼록 점">36. 기하 기초 (CCW)</button>
     <div class="grp">마무리</div>
-    <button data-topic="t17" data-kw="추천문제 프로그래머스 유형별 매핑 problem">32. 유형별 추천 문제</button>
+    <button data-topic="t17" data-kw="추천문제 프로그래머스 유형별 매핑 problem">37. 유형별 추천 문제</button>
   </div>
   <div class="nores" id="noRes">검색 결과가 없어요</div>
 </aside>
@@ -2953,7 +2958,320 @@ dist[start] = <span class="nm">0</span>;
   </div>
 </div>
 
-<!-- ==================== 32. 유형별 추천 문제 ==================== -->
+<!-- ==================== 32. 모듈러 연산 ==================== -->
+<div class="topic" id="t33">
+  <div class="crumb">수학</div>
+  <h2>모듈러 연산</h2>
+  <p class="lead">답이 너무 커서 "어떤 수로 나눈 나머지를 출력하라"는 문제가 많아요. 나머지 세계의 계산 규칙을 알면 큰 수도 넘침 없이 다룰 수 있어요.</p>
+
+  <h3>기본 규칙</h3>
+  <p>더하기와 곱하기는 중간에 나머지를 취해도 결과가 같아요. 그래서 큰 수가 되기 전에 그때그때 나머지를 취해 넘침을 막아요. 빼기는 음수가 나올 수 있으니 m을 더해 보정해요.</p>
+  <pre><span class="kw">long</span> add = ((a % m) + (b % m)) % m;
+<span class="kw">long</span> mul = (a % m) * (b % m) % m;
+<span class="kw">long</span> sub = ((a - b) % m + m) % m;   <span class="cm">// 음수 나머지를 0..m-1 로 보정</span></pre>
+  <div class="warn"><b>곱셈 넘침 주의</b> : <code>a * b</code> 가 int 범위를 쉽게 넘어요. 나머지 곱은 <code>long</code> 으로 두고 곱한 직후 % m 을 취하세요.</div>
+
+  <h3>큰 지수는 빠른 거듭제곱으로</h3>
+  <p>a를 n번 곱한 나머지가 필요하면 분할 정복의 빠른 거듭제곱으로 O(log n)에 구해요(29번 주제). 모듈러 역원도 여기서 나와요.</p>
+
+  <h3>나눗셈은 역원으로</h3>
+  <p>나머지 세계에서는 나눗셈을 바로 못 해요. m이 소수면 페르마 소정리로 b의 역원이 <code>b^(m-2) mod m</code> 이고, 나누는 대신 이 역원을 곱해요.</p>
+  <pre><span class="cm">// a / b mod m = a * Inverse(b) mod m   (m 이 소수일 때)</span>
+<span class="kw">long</span> Inverse(<span class="kw">long</span> b, <span class="kw">long</span> m) =&gt; Power(b, m - <span class="nm">2</span>, m);   <span class="cm">// 페르마 소정리</span></pre>
+
+  <div class="card">
+    <ul class="plain">
+      <li><b>이럴 때 써요</b></li>
+      <li>"답을 1000000007로 나눈 나머지" 류의 큰 수 문제</li>
+      <li>조합론, 경우의 수, 큰 피보나치 등 결과가 폭발하는 계산</li>
+      <li>해시(라빈-카프)에서 롤링 해시 값을 다룰 때</li>
+    </ul>
+  </div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 결과가 매우 커서 나머지를 요구할 때예요.</li>
+      <li><b>복잡도</b> : 곱셈마다 O(1), 역원 한 번 O(log m).</li>
+      <li><b>핵심</b> : 더하기/곱하기는 중간 나머지 OK, 나누기는 역원 곱하기.</li>
+      <li><b>실수 주의</b> : long 사용, 빼기 음수 보정, 나눗셈을 그냥 쓰지 않기.</li>
+    </ul>
+  </div>
+
+  <div class="quiz" data-qid="q33-1">
+    <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">나머지 세계에서 그대로 적용하면 안 되는 연산은 무엇일까요?</span></div>
+    <div class="opts">
+      <button data-ok="0">덧셈</button>
+      <button data-ok="0">곱셈</button>
+      <button data-ok="1">나눗셈</button>
+    </div>
+    <div class="expl"><b class="ok">정답: 나눗셈</b><br>덧셈과 곱셈은 중간에 나머지를 취해도 결과가 같아요. 하지만 나눗셈은 그대로 못 하고, m이 소수일 때 b의 역원 b^(m-2)를 곱해야 정확한 답이 나와요.</div>
+    <button class="retry">다시 풀기</button>
+  </div>
+
+  <div class="quiz" data-qid="q33-2">
+    <div class="qhead"><span class="tag">QUIZ 2</span><span class="qtext">뺄셈 <code>(a - b) % m</code> 의 결과가 음수가 나올 때 올바른 보정은?</span></div>
+    <div class="opts">
+      <button data-ok="1">((a - b) % m + m) % m</button>
+      <button data-ok="0">(a - b) % m 그대로 둔다</button>
+      <button data-ok="0">-(a - b) % m</button>
+    </div>
+    <div class="expl"><b class="ok">정답: ((a - b) % m + m) % m</b><br>프로그래밍 언어의 나머지는 음수가 나올 수 있어요. m을 한 번 더한 뒤 다시 % m 을 취하면 항상 0부터 m-1 사이의 올바른 나머지로 맞춰져요.</div>
+    <button class="retry">다시 풀기</button>
+  </div>
+</div>
+
+<!-- ==================== 33. 좌표 압축 ==================== -->
+<div class="topic" id="t34">
+  <div class="crumb">기법</div>
+  <h2>좌표 압축</h2>
+  <p class="lead">값의 범위는 수십억으로 넓은데 실제 등장하는 값은 몇 개뿐일 때, 값을 "순위"로 바꿔 작은 인덱스로 다루는 기법이에요.</p>
+
+  <h3>왜 필요할까</h3>
+  <p>값이 최대 10억인데 개수는 10만 개라면, 값 자체를 배열 인덱스로 쓰는 건 불가능해요(크기 10억 배열). 하지만 등장하는 값은 10만 개뿐이니, 이들을 정렬해 0, 1, 2... 순위로 바꾸면 작은 배열로 다룰 수 있어요. 대소 관계는 그대로 보존돼요.</p>
+
+  <h3>방법 : 정렬 + 중복 제거 + 순위 찾기</h3>
+  <pre><span class="cm">// 1) 등장한 값들을 정렬하고 중복을 제거</span>
+<span class="kw">var</span> sorted = arr.Distinct().OrderBy(x =&gt; x).ToArray();
+
+<span class="cm">// 2) 값 v 를 그 순위(인덱스)로 바꾸기</span>
+<span class="kw">int</span> Rank(<span class="kw">int</span> v) =&gt; Array.BinarySearch(sorted, v);
+
+<span class="cm">// 이제 arr[i] 대신 Rank(arr[i]) 를 쓰면 0..k-1 의 작은 인덱스</span></pre>
+  <div class="tip"><strong>순서만 바뀌지 않아요</strong> : 압축해도 "누가 더 큰가"는 그대로예요. 그래서 정렬, 구간 합, 펜윅 트리처럼 대소와 인덱스만 중요한 문제에 안전하게 써요.</div>
+
+  <div class="card">
+    <ul class="plain">
+      <li><b>이럴 때 써요</b></li>
+      <li>값의 범위가 너무 넓어 배열이나 펜윅 트리를 못 잡을 때</li>
+      <li>등장하는 값의 개수는 적을 때</li>
+      <li>구간 질의, 스위핑, 펜윅 트리와 함께 자주 쓰여요</li>
+    </ul>
+  </div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 값 범위는 넓고 개수는 적을 때예요.</li>
+      <li><b>복잡도</b> : 정렬 O(N log N), 순위 찾기 O(log N).</li>
+      <li><b>핵심</b> : 정렬 + 중복 제거 후 이분 탐색으로 순위를 매겨요.</li>
+      <li><b>실수 주의</b> : 중복 제거를 빠뜨리면 순위가 어긋나요. 원래 값이 필요할 땐 sorted 배열로 되돌리세요.</li>
+    </ul>
+  </div>
+
+  <div class="quiz" data-qid="q34-1">
+    <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">좌표 압축을 쓰기에 가장 알맞은 상황은?</span></div>
+    <div class="opts">
+      <button data-ok="1">값의 범위는 10억인데 실제 등장하는 값은 10만 개일 때</button>
+      <button data-ok="0">값이 0부터 100까지 빽빽하게 있을 때</button>
+      <button data-ok="0">값의 순서를 무시해도 될 때</button>
+    </div>
+    <div class="expl"><b class="ok">정답: 범위는 넓고 개수는 적을 때</b><br>값이 0부터 100처럼 촘촘하면 압축할 이득이 없어요. 범위가 넓어 배열을 못 잡는데 실제 값은 적을 때, 순위로 바꾸면 작은 인덱스로 다룰 수 있어 효과가 커요.</div>
+    <button class="retry">다시 풀기</button>
+  </div>
+
+  <div class="quiz" data-qid="q34-2">
+    <div class="qhead"><span class="tag">QUIZ 2</span><span class="qtext">좌표 압축에서 정렬한 값 배열에 중복 제거가 필요한 이유는?</span></div>
+    <div class="opts">
+      <button data-ok="1">같은 값이 서로 다른 순위를 갖지 않도록</button>
+      <button data-ok="0">정렬을 더 빠르게 하려고</button>
+      <button data-ok="0">메모리를 아끼는 것과는 무관하다</button>
+    </div>
+    <div class="expl"><b class="ok">정답: 같은 값은 같은 순위여야 해서</b><br>중복을 남기면 동일한 값이 여러 인덱스로 흩어져 순위가 어긋나요. 중복을 제거해야 각 값이 유일한 순위 하나에 대응돼 압축이 올바르게 동작해요.</div>
+    <button class="retry">다시 풀기</button>
+  </div>
+</div>
+
+<!-- ==================== 34. 스위핑 ==================== -->
+<div class="topic" id="t35">
+  <div class="crumb">기법</div>
+  <h2>스위핑 (라인 스윕)</h2>
+  <p class="lead">시작과 끝 같은 이벤트를 한 줄로 정렬해 한 방향으로 쓸어가며 처리하는 기법이에요. 구간 겹침, 동시 진행 수, 일정 충돌 문제에 강해요.</p>
+
+  <h3>이벤트로 바꿔 정렬하기</h3>
+  <p>각 구간 [s, e)를 "s에서 +1, e에서 -1"인 두 이벤트로 쪼개요. 이벤트를 위치 순으로 정렬한 뒤 한 줄로 훑으며 누적하면, 현재 겹친 개수를 실시간으로 알 수 있어요.</p>
+  <pre><span class="cm">// 회의실 최대 동시 사용 수 구하기</span>
+<span class="kw">var</span> events = <span class="kw">new</span> List&lt;(<span class="kw">int</span> x, <span class="kw">int</span> delta)&gt;();
+<span class="kw">foreach</span> (<span class="kw">var</span> (s, e) <span class="kw">in</span> intervals)
+{
+    events.Add((s, +<span class="nm">1</span>));   <span class="cm">// 시작: 하나 늘어남</span>
+    events.Add((e, -<span class="nm">1</span>));   <span class="cm">// 끝: 하나 줄어듦</span>
+}
+events.Sort((a, b) =&gt; a.x != b.x ? a.x - b.x : a.delta - b.delta);  <span class="cm">// 같은 위치면 끝(-1) 먼저</span>
+
+<span class="kw">int</span> cur = <span class="nm">0</span>, max = <span class="nm">0</span>;
+<span class="kw">foreach</span> (<span class="kw">var</span> ev <span class="kw">in</span> events)
+{
+    cur += ev.delta;
+    max = Math.Max(max, cur);
+}
+<span class="cm">// max = 동시에 겹친 최대 개수</span></pre>
+  <div class="tip"><strong>정렬 순서가 정답을 가른다</strong> : 같은 좌표에서 끝(-1)을 시작(+1)보다 먼저 처리하면 "맞닿은 구간"은 겹치지 않는 것으로 봐요. 문제가 맞닿음을 겹침으로 보는지 아닌지에 맞춰 순서를 정하세요.</div>
+
+  <div class="card">
+    <ul class="plain">
+      <li><b>이럴 때 써요</b></li>
+      <li>회의실 배정, 동시 접속자 수, 구간 겹침 개수</li>
+      <li>구간들의 합집합 길이, 직사각형 넓이의 합</li>
+      <li>좌표 압축, 펜윅 트리와 묶어 더 큰 문제로 확장</li>
+    </ul>
+  </div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 구간의 겹침이나 동시 진행 수를 다룰 때예요.</li>
+      <li><b>복잡도</b> : 이벤트 정렬이 지배해 O(N log N).</li>
+      <li><b>핵심</b> : 시작 +1, 끝 -1 이벤트로 만들어 정렬 후 누적해요.</li>
+      <li><b>실수 주의</b> : 같은 좌표에서 +1과 -1의 처리 순서를 문제 조건에 맞추세요.</li>
+    </ul>
+  </div>
+
+  <div class="quiz" data-qid="q35-1">
+    <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">스위핑으로 최대 동시 겹침 수를 구할 때, 각 구간을 어떻게 이벤트로 바꿀까요?</span></div>
+    <div class="opts">
+      <button data-ok="1">시작 위치에 +1, 끝 위치에 -1</button>
+      <button data-ok="0">시작과 끝 모두 +1</button>
+      <button data-ok="0">길이만큼 +1</button>
+    </div>
+    <div class="expl"><b class="ok">정답: 시작 +1, 끝 -1</b><br>시작에서 겹침이 하나 늘고 끝에서 하나 줄어요. 이벤트를 위치 순으로 훑으며 누적하면 그 순간 겹친 개수가 나오고, 그 최댓값이 최대 동시 겹침 수예요.</div>
+    <button class="retry">다시 풀기</button>
+  </div>
+
+  <div class="quiz" data-qid="q35-2">
+    <div class="qhead"><span class="tag">QUIZ 2</span><span class="qtext">스위핑의 전체 시간 복잡도를 좌우하는 단계는?</span></div>
+    <div class="opts">
+      <button data-ok="1">이벤트를 정렬하는 O(N log N)</button>
+      <button data-ok="0">이벤트를 누적하는 O(N)</button>
+      <button data-ok="0">구간을 만드는 O(1)</button>
+    </div>
+    <div class="expl"><b class="ok">정답: 정렬 O(N log N)</b><br>이벤트를 한 줄로 훑는 누적은 O(N)이에요. 그 전에 이벤트를 위치 순으로 정렬하는 비용 O(N log N)이 전체를 좌우해요.</div>
+    <button class="retry">다시 풀기</button>
+  </div>
+</div>
+
+<!-- ==================== 35. 최소 공통 조상 (LCA) ==================== -->
+<div class="topic" id="t36">
+  <div class="crumb">그래프</div>
+  <h2>최소 공통 조상 (LCA)</h2>
+  <p class="lead">트리에서 두 노드의 가장 가까운 공통 조상을 찾는 문제예요. 두 노드 사이 거리나 경로를 구할 때 토대가 돼요.</p>
+
+  <h3>기본 방법 : 깊이 맞추고 같이 올라가기</h3>
+  <p>먼저 두 노드의 깊이를 같게 맞춘 뒤, 둘이 만날 때까지 함께 한 칸씩 부모로 올라가요. 깊이와 부모 배열은 DFS나 BFS로 미리 구해 둬요.</p>
+  <pre><span class="cm">// depth[], parent[] 를 루트에서 미리 계산해 둠</span>
+<span class="kw">int</span> Lca(<span class="kw">int</span> u, <span class="kw">int</span> v)
+{
+    <span class="kw">while</span> (depth[u] &gt; depth[v]) u = parent[u];   <span class="cm">// 깊은 쪽을 끌어올려</span>
+    <span class="kw">while</span> (depth[v] &gt; depth[u]) v = parent[v];   <span class="cm">// 깊이를 맞춤</span>
+    <span class="kw">while</span> (u != v) { u = parent[u]; v = parent[v]; } <span class="cm">// 같이 올라가 만나는 지점</span>
+    <span class="kw">return</span> u;
+}</pre>
+  <div class="tip"><strong>질의가 많으면 희소 배열</strong> : 위 방법은 한 번에 O(N)이라 질의가 많으면 느려요. 2^k 번째 조상을 미리 표로 만드는 희소 배열(sparse table)을 쓰면 질의당 O(log N)으로 빨라져요.</div>
+
+  <div class="card">
+    <ul class="plain">
+      <li><b>이럴 때 써요</b></li>
+      <li>트리에서 두 노드 사이 거리 (depth[u] + depth[v] - 2 x depth[LCA])</li>
+      <li>두 노드의 경로 위에 있는지 판별</li>
+      <li>트리 위 구간 질의, 가족 관계 문제</li>
+    </ul>
+  </div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 트리에서 두 노드의 공통 조상이나 거리가 필요할 때예요.</li>
+      <li><b>복잡도</b> : 기본 O(N) per 질의, 희소 배열이면 전처리 O(N log N) + 질의 O(log N).</li>
+      <li><b>핵심</b> : 깊이를 맞춘 뒤 함께 올라가 만나는 노드예요.</li>
+      <li><b>실수 주의</b> : depth와 parent를 정확히 전처리하세요. 질의가 많으면 반드시 희소 배열로 바꾸세요.</li>
+    </ul>
+  </div>
+
+  <div class="quiz" data-qid="q36-1">
+    <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">LCA를 단순하게 구할 때 가장 먼저 하는 일은?</span></div>
+    <div class="opts">
+      <button data-ok="1">두 노드의 깊이를 같게 맞춘다</button>
+      <button data-ok="0">두 노드를 루트까지 올린다</button>
+      <button data-ok="0">두 노드를 정렬한다</button>
+    </div>
+    <div class="expl"><b class="ok">정답: 깊이를 맞춘다</b><br>깊이가 다르면 함께 올라가도 같은 높이에서 비교가 안 돼요. 더 깊은 쪽을 먼저 끌어올려 깊이를 같게 만든 뒤, 둘이 만날 때까지 함께 올라가면 그 지점이 LCA예요.</div>
+    <button class="retry">다시 풀기</button>
+  </div>
+
+  <div class="quiz" data-qid="q36-2">
+    <div class="qhead"><span class="tag">QUIZ 2</span><span class="qtext">LCA 질의가 매우 많을 때 질의당 O(log N)으로 줄이는 방법은?</span></div>
+    <div class="opts">
+      <button data-ok="1">2^k 번째 조상을 미리 계산하는 희소 배열</button>
+      <button data-ok="0">매번 루트부터 다시 탐색</button>
+      <button data-ok="0">노드를 정렬해 이분 탐색</button>
+    </div>
+    <div class="expl"><b class="ok">정답: 희소 배열(sparse table)</b><br>각 노드의 1, 2, 4, 8... 번째 조상을 미리 표로 만들어 두면, 깊이 차이를 이진수로 한 번에 점프해 질의당 O(log N)에 LCA를 구할 수 있어요.</div>
+    <button class="retry">다시 풀기</button>
+  </div>
+</div>
+
+<!-- ==================== 36. 기하 기초 (CCW) ==================== -->
+<div class="topic" id="t37">
+  <div class="crumb">수학</div>
+  <h2>기하 기초 (CCW)</h2>
+  <p class="lead">세 점이 어느 방향으로 도는지(반시계, 시계, 일직선)를 외적의 부호로 판별해요. 선분 교차, 볼록 껍질 같은 기하 문제의 출발점이에요.</p>
+
+  <h3>CCW : 세 점의 방향</h3>
+  <p>두 벡터의 외적 부호로 방향을 알 수 있어요. 양수면 반시계, 음수면 시계, 0이면 한 직선 위에 있어요.</p>
+  <pre><span class="cm">// 세 점 a, b, c 의 방향: 1=반시계, -1=시계, 0=일직선</span>
+<span class="kw">int</span> Ccw(<span class="kw">long</span> ax, <span class="kw">long</span> ay, <span class="kw">long</span> bx, <span class="kw">long</span> by, <span class="kw">long</span> cx, <span class="kw">long</span> cy)
+{
+    <span class="kw">long</span> cross = (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
+    <span class="kw">return</span> cross &gt; <span class="nm">0</span> ? <span class="nm">1</span> : (cross &lt; <span class="nm">0</span> ? -<span class="nm">1</span> : <span class="nm">0</span>);
+}</pre>
+  <div class="warn"><b>오버플로 주의</b> : 좌표가 크면 외적의 곱이 int 범위를 넘어요. 좌표와 계산을 <code>long</code> 으로 두세요.</div>
+
+  <h3>선분 교차 판정</h3>
+  <p>두 선분이 교차하는지는 CCW로 판별해요. 한 선분의 양 끝에서 본 다른 선분 두 끝의 방향이 서로 반대이고, 반대로도 그렇다면 교차해요. 방향이 0인(일직선) 경우만 따로 끝점 포함 여부를 확인하면 돼요.</p>
+
+  <div class="card">
+    <ul class="plain">
+      <li><b>이럴 때 써요</b></li>
+      <li>선분 교차 판정, 점이 다각형 안에 있는지</li>
+      <li>볼록 껍질(convex hull)을 만들 때 방향 판별</li>
+      <li>다각형 넓이(신발끈 공식)도 외적에서 나와요</li>
+    </ul>
+  </div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 점과 선분의 방향, 교차를 다루는 기하 문제예요.</li>
+      <li><b>복잡도</b> : CCW 한 번 O(1).</li>
+      <li><b>핵심</b> : 외적 부호로 반시계(+), 시계(-), 일직선(0)을 가려요.</li>
+      <li><b>실수 주의</b> : 좌표 곱이 커지니 long 을 쓰고, 일직선(0) 경우를 따로 처리하세요.</li>
+    </ul>
+  </div>
+
+  <div class="quiz" data-qid="q37-1">
+    <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">CCW에서 외적 결과가 0이면 세 점은 어떤 상태일까요?</span></div>
+    <div class="opts">
+      <button data-ok="1">한 직선 위에 있다 (일직선)</button>
+      <button data-ok="0">반시계 방향으로 돈다</button>
+      <button data-ok="0">정삼각형을 이룬다</button>
+    </div>
+    <div class="expl"><b class="ok">정답: 일직선</b><br>외적이 0이라는 건 두 벡터가 같은 방향(또는 반대 방향)이라 넓이가 0이라는 뜻이에요. 즉 세 점이 한 직선 위에 놓여 있어요. 양수면 반시계, 음수면 시계예요.</div>
+    <button class="retry">다시 풀기</button>
+  </div>
+
+  <div class="quiz" data-qid="q37-2">
+    <div class="qhead"><span class="tag">QUIZ 2</span><span class="qtext">CCW 계산에서 좌표를 long으로 두라고 권하는 이유는?</span></div>
+    <div class="opts">
+      <button data-ok="1">외적의 곱셈이 int 범위를 넘칠 수 있어서</button>
+      <button data-ok="0">long이 항상 더 빨라서</button>
+      <button data-ok="0">방향 결과가 달라지기 때문에</button>
+    </div>
+    <div class="expl"><b class="ok">정답: 곱셈이 넘칠 수 있어서</b><br>외적은 좌표 차이끼리의 곱이라, 좌표가 크면 결과가 int 범위를 쉽게 넘어요. 넘치면 부호가 뒤집혀 방향을 틀리게 판단하니 long으로 계산해야 안전해요.</div>
+    <button class="retry">다시 풀기</button>
+  </div>
+</div>
+
+<!-- ==================== 37. 유형별 추천 문제 ==================== -->
 <div class="topic" id="t17">
   <div class="crumb">마무리</div>
   <h2>유형별 추천 문제</h2>
@@ -3016,7 +3334,7 @@ dist[start] = <span class="nm">0</span>;
 
 <script>
 (function () {
-  var TOPICS = ['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11','t12','t13','t14','t15','t16','t18','t19','t20','t21','t22','t23','t24','t25','t26','t27','t28','t29','t30','t31','t32','t17'];
+  var TOPICS = ['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11','t12','t13','t14','t15','t16','t18','t19','t20','t21','t22','t23','t24','t25','t26','t27','t28','t29','t30','t31','t32','t33','t34','t35','t36','t37','t17'];
   var QUIZ_KEY = 'ct_concepts_quiz_v1';
   var menuBtns = document.querySelectorAll('#menu button');
   var current = 0;
