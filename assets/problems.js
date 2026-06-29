@@ -63,6 +63,11 @@ window.CT_PROBLEMS = [
   { id: 'longestuniq', t: '겹치지 않는 최장 구간', lv: '중급' , tags: ['투포인터/누적합'] },
   { id: 'rotate', t: '지도 90도 회전', lv: '중급' , tags: ['구현'] },
   { id: 'floyd', t: '모든 거점 최단 거리', lv: '심화' , tags: ['최단경로'] },
+  // 확장 (신규 개념 채점 문제)
+  { id: 'treeleaf', t: '길드 조직도의 말단', lv: '기초' , tags: ['트리'] },
+  { id: 'coordcomp', t: '좌표 압축 지도', lv: '중급' , tags: ['정렬'] },
+  { id: 'modpow', t: '봉인 마법의 잔여 마나', lv: '중급' , tags: ['수학'] },
+  { id: 'ccw', t: '세 정찰병의 방향', lv: '심화' , tags: ['수학'] },
   // 기출 유형 문제(gichul.html)
   { id: 'report', t: '신고 누적 정지 집계', lv: '중급', g: true , tags: ['해시'] },
   { id: 'compress', t: '반복 패턴 압축 최소 길이', lv: '중급', g: true , tags: ['배열/문자열'] },
