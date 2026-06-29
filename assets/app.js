@@ -239,12 +239,22 @@
     ].forEach(function (e) { items.push({ t: e[0], sub: '템플릿 / ' + e[2], href: 'templates.html#tpl-' + e[1], kind: '템플릿', tags: e[3] }); });
     [
       ['QA 직무와 채용', 'qj', ['qa', '직무', '채용']],
+      ['소프트웨어 테스트의 기초', 'qintro', ['qa', '테스트 7원칙', '검증', '확인', 'qc', '살충제']],
+      ['개발 생명주기 (SDLC)', 'qsdlc', ['qa', 'sdlc', '워터폴', 'v모델', '애자일', '개발 생명주기']],
+      ['애자일과 스크럼', 'qagile', ['qa', '애자일', '스크럼', '스프린트', '시프트 레프트', '회고']],
+      ['테스팅 프로세스 (STLC)', 'qstlc', ['qa', 'stlc', '테스팅 프로세스', '테스트 계획', 'rtm']],
       ['테스트 레벨과 유형', 'qlevel', ['qa', '테스트 레벨', '단위', '통합', '시스템', '인수', '기능', '비기능']],
-      ['테스트 프로세스와 자동화', 'qproc', ['qa', '자동화', '피라미드', '회귀', '스모크', 'selenium']],
-      ['테스트 설계 기법', 'qdesign', ['qa', '경계값', '동등분할', '결정 테이블', '상태 전이', '페어와이즈']],
-      ['버그 리포트와 TC', 'qbug', ['qa', '버그', '리포트', 'bug report', '테스트 케이스']],
-      ['QA 면접 단골 질문', 'qinterview', ['qa', '면접', 'interview']],
-      ['CS 핵심 (자료구조 / DB / 네트워크 / OS)', 'qcs', ['qa', 'cs', '자료구조', '네트워크', '데이터베이스', '운영체제', 'tcp', 'acid']]
+      ['테스트 설계 기법', 'qdesign', ['qa', '경계값', '동등분할', '결정 테이블', '상태 전이', '페어와이즈', '커버리지']],
+      ['테스트 관리', 'qmanage', ['qa', '테스트 계획', '전략', '결함 밀도', 'dre', '리스크 기반', '진입 종료']],
+      ['앱 구조와 API', 'qarch', ['qa', '클라이언트 서버', 'api', 'rest', 'http', '상태 코드', '모바일']],
+      ['웹 테스트', 'qweb', ['qa', '크로스 브라우징', '반응형', '쿠키', 'xss', 'sql injection', 'csrf', '접근성']],
+      ['CS 핵심', 'qcs', ['qa', 'cs', '자료구조', '네트워크', '데이터베이스', '운영체제', 'tcp', 'acid']],
+      ['버그 리포팅과 결함 관리', 'qbug', ['qa', '버그', '리포트', '결함 생명주기', '심각도', '우선순위']],
+      ['테스트 자동화와 도구', 'qauto', ['qa', '자동화', 'selenium', 'playwright', 'cypress', 'postman', '피라미드']],
+      ['Python으로 QA 자동화', 'qpython', ['qa', 'python', 'pytest', 'requests', 'selenium', '자동화 코드']],
+      ['CI/CD와 Jenkins', 'qcicd', ['qa', 'ci', 'cd', 'jenkins', '파이프라인', '품질 게이트', 'github actions']],
+      ['채용 공고로 보는 요구 역량', 'qjob', ['qa', '채용', '자격요건', '우대사항', 'istqb', '포트폴리오']],
+      ['QA 면접 단골 질문', 'qinterview', ['qa', '면접', 'interview']]
     ].forEach(function (e) { items.push({ t: e[0], sub: '개념정리(QA)', href: 'qa.html#' + e[1], kind: 'QA', tags: e[2] }); });
     items.push({ t: 'SQL 연습', sub: '브라우저 SQLite 채점', href: 'sql.html', kind: 'SQL', tags: ['sql', 'query', '쿼리', 'select', 'join'] });
     // 확장 개념(CT_CONCEPTS 미등록분)도 검색에 노출해요. 제목은 concepts.html 사이드바와 맞춰 주세요.

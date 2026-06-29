@@ -16,8 +16,8 @@
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.7; min-height: 100vh; word-break: keep-all; overflow-wrap: break-word; }
+  pre, code { word-break: normal; overflow-wrap: normal; }
 
-  /* 상단 네비 아래 사이드바 + 본문 2단 (개념정리와 동일) */
   .cc-layout { display: flex; align-items: flex-start; }
   aside { width: 300px; flex-shrink: 0; background: var(--card); border-right: 1px solid var(--line); position: sticky; top: 56px; height: calc(100vh - 56px); display: flex; flex-direction: column; }
   aside .brand { padding: 20px 20px 14px; border-bottom: 1px solid var(--line); }
@@ -28,7 +28,7 @@
   aside .search input:focus { border-color: var(--purple); }
   aside .menu { flex: 1; overflow-y: auto; padding: 10px 10px 20px; }
   aside .menu .grp { font-size: 11px; font-weight: 800; color: #9AA0B5; letter-spacing: 0.06em; padding: 14px 10px 5px; }
-  aside .menu button { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; background: var(--card); border: 1.5px solid var(--line); cursor: pointer; font-family: inherit; font-size: 15.5px; font-weight: 700; color: var(--ink); padding: 13px 14px; border-radius: 11px; margin-bottom: 7px; transition: all 0.12s; }
+  aside .menu button { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; background: var(--card); border: 1.5px solid var(--line); cursor: pointer; font-family: inherit; font-size: 15px; font-weight: 700; color: var(--ink); padding: 12px 14px; border-radius: 11px; margin-bottom: 7px; transition: all 0.12s; }
   aside .menu button:hover { background: var(--purple-bg); color: var(--purple-dark); border-color: var(--purple); }
   aside .menu button.active { background: var(--purple); color: #fff; border-color: var(--purple); }
   aside .menu button.hidden { display: none; }
@@ -52,7 +52,7 @@
   .tip b, .tip strong { color: var(--purple-dark); }
   .warn { background: #FFF7ED; border-left: 4px solid #D97706; border-radius: 0 10px 10px 0; padding: 13px 17px; margin-top: 13px; font-size: 14.5px; }
 
-  table { width: 100%; border-collapse: collapse; margin-top: 12px; background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--line); font-size: 14px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--line); font-size: 13.8px; }
   th { background: var(--purple); color: #fff; padding: 9px 12px; text-align: left; font-weight: 700; vertical-align: top; }
   td { padding: 9px 12px; border-top: 1px solid var(--line); vertical-align: top; }
   tr:nth-child(even) td { background: #FBFAFE; }
@@ -61,13 +61,16 @@
   tbody tr:hover td, table tr:hover td { background: var(--purple-bg); }
   p code, li code, td code { background: var(--purple-bg); color: var(--purple-dark); padding: 1px 6px; border-radius: 5px; font-family: Consolas, 'D2Coding', monospace; font-size: 0.92em; }
 
-  .cardgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 13px; margin: 12px 0; }
+  pre { background: var(--code-bg); color: var(--code-ink); border-radius: 12px; padding: 16px 18px; margin-top: 12px; overflow-x: auto; font-size: 13px; line-height: 1.62; font-family: Consolas, 'D2Coding', monospace; }
+  pre .cm { color: #7E8BA3; } pre .kw { color: #C792EA; } pre .st { color: #C3E88D; } pre .nm { color: #F78C6C; } pre .fn { color: #82AAFF; }
+
+  .cardgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 13px; margin: 12px 0; }
   .icard { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
   .icard h4 { font-size: 15.5px; font-weight: 800; margin-bottom: 6px; color: var(--purple-dark); }
   .icard p { font-size: 13.5px; color: var(--ink-soft); }
   .icard .tag { display: inline-block; font-size: 11px; font-weight: 800; background: var(--purple-bg); color: var(--purple-dark); border-radius: 999px; padding: 2px 9px; margin-top: 8px; }
   .steps { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
-  .steps .st { flex: 1 1 150px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+  .steps .st { flex: 1 1 140px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
   .steps .st b { color: var(--purple-dark); font-size: 13px; } .steps .st p { font-size: 13px; color: var(--ink-soft); margin-top: 3px; }
 
   details.try { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 0 16px; margin: 12px 0; }
@@ -134,27 +137,38 @@
 <div class="cc-layout">
 <aside>
   <div class="brand">
-    <h1>QA 코딩테스트와 면접</h1>
-    <p>직무 흐름부터 이론, CS, 면접까지</p>
+    <h1>QA 종합 가이드</h1>
+    <p>이론부터 자동화, 취업까지</p>
   </div>
   <div class="search">
-    <input type="text" id="searchBox" aria-label="QA 주제 검색" placeholder="주제 검색 (예: 경계값, 버그, 네트워크)">
+    <input type="text" id="searchBox" aria-label="QA 주제 검색" placeholder="주제 검색 (예: 애자일, 결함, Jenkins)">
   </div>
   <div class="menu" id="menu">
-    <div class="grp">직무</div>
-    <button data-topic="qj" data-kw="직무 채용 manual sdet 자동화 엔지니어 로드맵 코딩테스트">1. QA 직무와 채용</button>
+    <div class="grp">시작</div>
+    <button data-topic="qj" data-kw="직무 채용 manual sdet 자동화 엔지니어 로드맵">1. QA 직무와 채용</button>
     <div class="grp">테스트 이론</div>
-    <button data-topic="qlevel" data-kw="테스트 레벨 유형 단위 통합 시스템 인수 기능 비기능 정적 동적 v모델 성능 보안">2. 테스트 레벨과 유형</button>
-    <button data-topic="qproc" data-kw="테스트 프로세스 자동화 피라미드 selenium playwright 회귀 스모크 ci 도구">3. 테스트 프로세스와 자동화</button>
-    <button data-topic="qdesign" data-kw="테스트 설계 기법 동등 분할 경계값 분석 결정 테이블 상태 전이 페어와이즈 유스케이스">4. 테스트 설계 기법</button>
+    <button data-topic="qintro" data-kw="소프트웨어 테스트 정의 목적 7원칙 살충제 검증 확인 verification validation qa qc 테스팅">2. 소프트웨어 테스트의 기초</button>
+    <button data-topic="qsdlc" data-kw="sdlc 개발 생명주기 워터폴 v모델 반복 점진 애자일 모델">3. 개발 생명주기 (SDLC)</button>
+    <button data-topic="qagile" data-kw="애자일 스크럼 스프린트 백로그 데일리 스탠드업 회고 시프트 레프트 역할">4. 애자일과 스크럼</button>
+    <button data-topic="qstlc" data-kw="stlc 테스팅 프로세스 테스트 생명주기 계획 설계 실행 종료 rtm">5. 테스팅 프로세스 (STLC)</button>
+    <button data-topic="qlevel" data-kw="테스트 레벨 유형 단위 통합 시스템 인수 기능 비기능 성능 부하 스트레스 보안">6. 테스트 레벨과 유형</button>
+    <button data-topic="qdesign" data-kw="테스트 설계 기법 동등 분할 경계값 결정 테이블 상태 전이 페어와이즈 커버리지 블랙박스 화이트박스">7. 테스트 설계 기법</button>
+    <button data-topic="qmanage" data-kw="테스트 관리 계획 전략 추정 지표 결함 밀도 dre 커버리지 리스크 진입 종료 기준">8. 테스트 관리</button>
+    <div class="grp">기술 이해</div>
+    <button data-topic="qarch" data-kw="앱 구조 클라이언트 서버 프론트 백엔드 db api rest http 메서드 상태 코드 모바일 네이티브 하이브리드">9. 앱 구조와 API</button>
+    <button data-topic="qweb" data-kw="웹 테스트 크로스 브라우징 반응형 쿠키 세션 캐시 폼 검증 xss sql injection csrf 성능 접근성">10. 웹 테스트</button>
+    <button data-topic="qcs" data-kw="cs 자료구조 데이터베이스 네트워크 운영체제 스택 큐 해시 인덱스 acid tcp 프로세스 스레드">11. CS 핵심</button>
     <div class="grp">실무</div>
-    <button data-topic="qbug" data-kw="버그 리포트 테스트 케이스 tc 심각도 우선순위 재현 단계 셀프 점검">5. 버그 리포트와 TC</button>
-    <div class="grp">CS 기초</div>
-    <button data-topic="qcs" data-kw="cs 자료구조 데이터베이스 네트워크 운영체제 스택 큐 해시 인덱스 acid tcp http 프로세스 스레드">6. CS 핵심</button>
-    <div class="grp">면접</div>
-    <button data-topic="qinterview" data-kw="면접 질문 답변 상황형 qa qc 회귀 우선순위 협업">7. 면접 단골 질문</button>
+    <button data-topic="qbug" data-kw="버그 리포트 결함 유형 생명주기 심각도 우선순위 테스트 케이스 tc 셀프 점검">12. 버그 리포팅과 결함 관리</button>
+    <div class="grp">자동화와 배포</div>
+    <button data-topic="qauto" data-kw="테스트 자동화 selenium playwright cypress 도구 비교 api postman rest assured 피라미드">13. 테스트 자동화와 도구</button>
+    <button data-topic="qpython" data-kw="python 자동화 pytest requests selenium 코드 assert fixture api">14. Python으로 QA 자동화</button>
+    <button data-topic="qcicd" data-kw="ci cd 지속적 통합 배포 jenkins 파이프라인 jenkinsfile 품질 게이트 github actions 회귀">15. CI/CD와 Jenkins</button>
+    <div class="grp">취업</div>
+    <button data-topic="qjob" data-kw="채용 공고 요구 역량 자격요건 우대사항 키워드 우선순위 istqb 포트폴리오 능통">16. 채용 공고로 보는 요구 역량</button>
+    <button data-topic="qinterview" data-kw="면접 질문 답변 상황형 qa qc 회귀">17. 면접 단골 질문</button>
     <div class="grp">마무리</div>
-    <button data-topic="qnext" data-kw="다음 단계 sql 알고리즘 모의고사 학습 경로 실전 퀴즈">8. 다음 단계</button>
+    <button data-topic="qnext" data-kw="다음 단계 sql 알고리즘 모의고사 학습 경로 실전 퀴즈">18. 다음 단계</button>
   </div>
   <div class="nores" id="noRes">검색 결과가 없어요</div>
 </aside>
@@ -163,14 +177,14 @@
 
 <!-- 1. QA 직무와 채용 -->
 <div class="topic" id="qj">
-  <div class="crumb">직무</div>
+  <div class="crumb">시작</div>
   <h2>QA 직무와 채용</h2>
   <p class="lead">QA도 직무에 따라 코딩 테스트와 면접에서 보는 것이 달라요. 내 목표 직무를 먼저 정하고, 거기에 맞춰 준비 범위를 좁히는 게 효율적이에요.</p>
 
   <h3>QA 직무 세 갈래</h3>
   <div class="cardgrid">
-    <div class="icard"><h4>수동 QA (Manual QA)</h4><p>명세와 시나리오 기반으로 직접 테스트하고 탐색적 테스트로 결함을 찾아요. 버그 리포트와 테스트 케이스 작성이 핵심이에요.</p><span class="tag">테스트 이론 중심</span></div>
-    <div class="icard"><h4>자동화 QA / SDET</h4><p>테스트를 코드로 작성해요. UI 자동화(Selenium, Playwright), API 테스트, 단위 테스트, CI 연동을 다뤄요. 프로그래밍 역량이 필요해요.</p><span class="tag">코딩 + 자동화</span></div>
+    <div class="icard"><h4>수동 QA (Manual QA)</h4><p>명세와 시나리오 기반으로 직접 테스트하고 탐색적 테스트로 결함을 찾아요. 버그 리포트와 테스트 케이스 작성이 핵심이에요. 코딩은 필수가 아니에요.</p><span class="tag">테스트 이론 중심</span></div>
+    <div class="icard"><h4>자동화 QA / SDET</h4><p>테스트를 코드로 작성해요. UI 자동화(Selenium, Playwright), API 테스트, CI 연동을 다뤄요. 사실상 개발 직군에 가까워 코딩 테스트가 있어요.</p><span class="tag">코딩 + 자동화</span></div>
     <div class="icard"><h4>QA 엔지니어</h4><p>품질 프로세스와 테스트 전략을 설계하고 품질 지표를 관리해요. 릴리스 가부 판단의 기준을 세워요.</p><span class="tag">전략 + 프로세스</span></div>
   </div>
 
@@ -183,177 +197,459 @@
   </div>
   <div class="tip"><b>코딩 테스트 팁.</b> QA 코테 알고리즘은 보통 개발자보다 쉬운 편이라 문자열, 배열, 해시, 정렬, 구현을 탄탄히 하면 충분한 경우가 많아요. 대신 SQL은 비중이 커서 따로 준비해 두면 유리해요.</div>
 
-  <h3>역량 로드맵</h3>
-  <table>
-    <tr><th>단계</th><th>준비할 것</th></tr>
-    <tr><td>기초</td><td>테스트 이론(설계 기법, 레벨, 유형), 기본 알고리즘, SQL SELECT</td></tr>
-    <tr><td>자동화</td><td>언어 1개(Python 또는 Java), Selenium 또는 Playwright, API 테스트(Postman)</td></tr>
-    <tr><td>심화</td><td>CI/CD 안에서의 테스트, 성능/부하 테스트, 보안 테스트 기초, 테스트 전략 수립</td></tr>
-  </table>
-
   <h3>한눈에 정리</h3>
   <div class="card"><ul class="plain">
     <li><b>직무</b> : 수동 QA, 자동화 QA/SDET, QA 엔지니어로 나뉘고 준비 범위가 달라요.</li>
     <li><b>코테</b> : 알고리즘은 기본기 위주, SQL 비중이 커요.</li>
     <li><b>면접</b> : 테스트 이론과 CS 기초, 상황형 질문이 핵심이에요.</li>
-    <li><b>먼저 할 일</b> : 목표 직무를 정하고 그에 맞는 깊이로 준비하세요.</li>
+    <li><b>먼저 할 일</b> : 목표 직무를 정하고 그에 맞는 깊이로 준비하세요. (16번 주제에서 공고 요구사항을 자세히 다뤄요.)</li>
   </ul></div>
 </div>
 
-<!-- 2. 테스트 레벨과 유형 -->
+<!-- 2. 소프트웨어 테스트의 기초 -->
+<div class="topic" id="qintro">
+  <div class="crumb">테스트 이론</div>
+  <h2>소프트웨어 테스트의 기초</h2>
+  <p class="lead">테스트는 소프트웨어가 의도대로 동작하는지 평가하고 검증하는 활동이에요. 결함을 일찍 찾아 위험과 비용을 줄이고, 품질에 대한 신뢰와 의사결정 정보를 제공해요.</p>
+
+  <h3>테스트의 목적</h3>
+  <div class="card"><ul class="plain">
+    <li>출시 전에 결함을 발견해 운영 장애 위험을 줄여요.</li>
+    <li>요구사항 충족(검증)과 사용자/비즈니스 요구 적합성(확인)을 확인해요.</li>
+    <li>품질 수준에 대한 신뢰를 확보하고, 릴리스 가부 같은 의사결정 정보를 제공해요.</li>
+    <li>결함을 미리 예방하고, 계약과 표준 준수를 보장해요.</li>
+  </ul></div>
+  <p>테스트에는 코드를 실행하는 <b>동적 테스트</b>와, 실행하지 않고 리뷰나 정적 분석으로 결함을 찾는 <b>정적 테스트</b>가 모두 포함돼요.</p>
+
+  <h3>ISTQB 테스트 7원칙</h3>
+  <table>
+    <tr><th>원칙</th><th>의미</th></tr>
+    <tr><td>1. 결함의 존재를 보여줄 뿐</td><td>테스트는 결함이 있음을 보여줄 수 있어도, 결함이 없음을 증명하지는 못해요. 통과가 무결함의 증거는 아니에요.</td></tr>
+    <tr><td>2. 전수 테스트는 불가능</td><td>모든 입력과 조건 조합을 다 시험할 수는 없어요. 위험 분석과 우선순위로 대체해요.</td></tr>
+    <tr><td>3. 조기 테스트</td><td>생애주기 초반부터 테스트하면(시프트 레프트) 결함을 더 싸고 빠르게 잡아요.</td></tr>
+    <tr><td>4. 결함 집중(군집)</td><td>소수 모듈에 대부분의 결함이 몰려요(파레토 80/20).</td></tr>
+    <tr><td>5. 살충제 역설</td><td>같은 테스트만 반복하면 새 결함을 못 찾아요. 테스트를 갱신하고 추가해야 해요.</td></tr>
+    <tr><td>6. 정황 의존</td><td>안전이 중요한 시스템과 일반 앱은 다르게 테스트해요.</td></tr>
+    <tr><td>7. 오류 부재는 착각</td><td>결함을 다 잡아도 사용자 요구를 못 채우면 의미가 없어요.</td></tr>
+  </table>
+
+  <h3>헷갈리기 쉬운 용어</h3>
+  <table>
+    <tr><th>구분</th><th>핵심</th></tr>
+    <tr><td>검증(Verification) vs 확인(Validation)</td><td>검증 = "제품을 올바르게 만들고 있나?"(명세 부합, 정적 리뷰). 확인 = "올바른 제품을 만들고 있나?"(사용자 요구 충족, 동적 실행).</td></tr>
+    <tr><td>QA vs QC vs 테스팅</td><td>QA는 프로세스 지향 예방 활동, QC는 산출물에서 결함을 찾는 검출 활동, 테스팅은 QC의 일부예요. 포함 관계는 QA가 QC를, QC가 테스팅을 품어요.</td></tr>
+  </table>
+
+  <h3>한눈에 정리</h3>
+  <div class="card"><ul class="plain">
+    <li><b>테스트</b> : 결함을 찾아 위험과 비용을 줄이고 품질 신뢰를 주는 활동이에요.</li>
+    <li><b>7원칙</b> : 전수 불가, 조기 테스트, 결함 집중, 살충제 역설이 자주 나와요.</li>
+    <li><b>검증 vs 확인</b> : 명세대로 만드는가(정적) vs 올바른 것을 만드는가(동적).</li>
+    <li><b>QA ⊃ QC ⊃ 테스팅</b> : 예방, 검출, 실행으로 점점 좁아져요.</li>
+  </ul></div>
+</div>
+
+<!-- 3. SDLC -->
+<div class="topic" id="qsdlc">
+  <div class="crumb">테스트 이론</div>
+  <h2>개발 생명주기 (SDLC)</h2>
+  <p class="lead">소프트웨어는 요구 분석부터 유지보수까지 일정한 흐름으로 만들어져요. 어떤 모델을 쓰느냐에 따라 QA가 언제, 어떻게 참여하는지가 달라져요.</p>
+
+  <h3>대표 모델과 QA 관여 시점</h3>
+  <table>
+    <tr><th>모델</th><th>특징</th><th>QA 관여</th></tr>
+    <tr><td>워터폴</td><td>요구 -&gt; 설계 -&gt; 구현 -&gt; 테스트 -&gt; 배포 순서로 진행. 단계가 끝나야 다음으로. 변경에 약하고 문서 중심.</td><td>늦음. 개발이 끝난 뒤 테스트 단계가 시작돼 결함을 늦고 비싸게 발견.</td></tr>
+    <tr><td>V모델</td><td>워터폴을 V자로 펼친 형태. 좌측 개발 단계마다 우측에 대응 테스트가 짝을 이뤄요.</td><td>이르고 병렬. 각 개발 단계와 나란히 테스트를 계획하고 설계(실행은 나중).</td></tr>
+    <tr><td>반복/점진</td><td>짧은 반복으로 기능을 조금씩 쌓아 완성. 변경을 수용.</td><td>매 반복 종료 시. 회귀 테스트로 기존 기능을 보호.</td></tr>
+    <tr><td>애자일</td><td>2~4주 스프린트로 지속 인도. 변경을 환영하고 협업 중심.</td><td>매 스프린트 내내 지속적. 개발과 나란히 테스트하고 자동화/CI와 결합.</td></tr>
+  </table>
+  <div class="tip"><b>V모델의 짝.</b> 요구 분석은 인수 테스트와, 시스템 설계는 시스템 테스트와, 상세 설계는 단위 테스트와 짝을 이뤄요. 테스트를 개발이 끝난 뒤가 아니라 처음부터 함께 계획한다는 점이 핵심이에요.</div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card"><ul class="plain">
+    <li><b>워터폴</b> : 순차적, QA가 가장 늦게 참여해요.</li>
+    <li><b>V모델</b> : 단계마다 테스트가 짝을 이뤄 일찍 계획해요.</li>
+    <li><b>반복/점진</b> : 주기마다 회귀로 기존 기능을 지켜요.</li>
+    <li><b>애자일</b> : 스프린트 내내 지속적으로 테스트해요(요즘 주류).</li>
+  </ul></div>
+</div>
+
+<!-- 4. 애자일과 스크럼 -->
+<div class="topic" id="qagile">
+  <div class="crumb">테스트 이론</div>
+  <h2>애자일과 스크럼</h2>
+  <p class="lead">요즘 대부분의 팀은 애자일로 일해요. 짧은 주기로 만들고 피드백받아 고쳐 나가요. QA는 마지막 관문이 아니라 처음부터 함께하는 품질 옹호자예요.</p>
+
+  <h3>스크럼의 뼈대</h3>
+  <p><b>스프린트</b>는 사용 가능한 결과물(증분)을 만드는 고정 길이 주기예요. 보통 1~4주이고 2주가 가장 흔해요. 길이는 일정하게 유지해요.</p>
+  <table>
+    <tr><th>역할</th><th>책임</th></tr>
+    <tr><td>제품 책임자(PO)</td><td>제품 가치 극대화. 제품 백로그를 소유하고 우선순위를 정해요. "무엇을, 왜".</td></tr>
+    <tr><td>스크럼 마스터</td><td>스크럼이 잘 돌아가게 코칭하고 장애물을 제거해요. "어떻게 일할지".</td></tr>
+    <tr><td>개발팀</td><td>자기조직적으로 스프린트 작업을 계획하고 증분을 만들어요. "만들기".</td></tr>
+  </table>
+
+  <h3>주요 이벤트(세리머니)</h3>
+  <div class="steps">
+    <div class="st"><b>스프린트 계획</b><p>목표 합의, 할 일 선정</p></div>
+    <div class="st"><b>데일리 스탠드업</b><p>15분, 진척과 블로커 점검</p></div>
+    <div class="st"><b>스프린트 리뷰</b><p>증분 시연, 피드백</p></div>
+    <div class="st"><b>회고</b><p>사람/프로세스/도구 개선</p></div>
+  </div>
+
+  <h3>애자일에서 QA의 역할과 시프트 레프트</h3>
+  <p>품질은 특정 부서가 아니라 팀 전체의 책임이에요. 테스트는 개발이 끝난 뒤 따로 하는 단계가 아니라 매 스프린트 내내 함께 진행돼요. QA는 자동화를 만들고, 리스크를 자문하고, 인수 기준을 명확히 하는 능동적 역할을 해요.</p>
+  <div class="tip"><b>시프트 레프트(shift-left).</b> 테스트 활동을 생애주기 초반(요구, 설계, 코딩)으로 당기는 거예요. 초기 결함이 훨씬 싸게 잡히기 때문에, 초점이 결함 "발견"에서 "예방"으로 옮겨가요.</div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card"><ul class="plain">
+    <li><b>스프린트</b> : 1~4주 고정 주기로 쓸 수 있는 증분을 만들어요.</li>
+    <li><b>역할</b> : PO(무엇을), 스크럼 마스터(어떻게), 개발팀(만들기).</li>
+    <li><b>이벤트</b> : 계획 / 데일리 / 리뷰 / 회고.</li>
+    <li><b>QA</b> : 팀 전체가 품질 책임, 시프트 레프트로 예방 중심.</li>
+  </ul></div>
+</div>
+
+<!-- 5. STLC -->
+<div class="topic" id="qstlc">
+  <div class="crumb">테스트 이론</div>
+  <h2>테스팅 프로세스 (STLC)</h2>
+  <p class="lead">테스트도 즉흥이 아니라 정해진 흐름을 따라요. 요구사항을 검토하는 것부터 결과를 보고하고 마무리하는 것까지, 단계마다 할 일과 산출물이 있어요.</p>
+
+  <h3>STLC 6단계</h3>
+  <table>
+    <tr><th>단계</th><th>하는 일</th><th>산출물</th></tr>
+    <tr><td>1. 요구사항 분석</td><td>테스트 관점에서 요구사항을 검토하고 테스트 가능 여부를 파악, 모호한 점을 명확히.</td><td>요구사항 추적표(RTM)</td></tr>
+    <tr><td>2. 테스트 계획</td><td>전략, 범위, 일정, 자원, 도구, 공수를 정해요. 가장 중요한 단계예요.</td><td>테스트 계획서</td></tr>
+    <tr><td>3. 케이스 설계</td><td>입력, 절차, 기대 결과가 담긴 케이스를 작성하고 데이터를 준비, 동료 리뷰.</td><td>테스트 케이스, 데이터</td></tr>
+    <tr><td>4. 환경 구축</td><td>하드웨어, 소프트웨어, 데이터를 구성하고 스모크 테스트로 준비 확인.</td><td>준비된 환경</td></tr>
+    <tr><td>5. 테스트 실행</td><td>케이스를 수행하고 실제와 기대를 비교, 결함을 기록하고 재테스트.</td><td>결과 로그, 결함 리포트</td></tr>
+    <tr><td>6. 종료</td><td>결함 종결 확인, 지표 평가, 환경 정리, 회고.</td><td>테스트 요약 보고서</td></tr>
+  </table>
+  <div class="tip"><b>RTM(요구사항 추적표).</b> 어떤 요구사항이 어떤 테스트 케이스로 검증되는지 연결한 표예요. 빠진 요구사항이 없는지, 테스트가 요구를 모두 덮는지 확인하는 데 써요.</div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card"><ul class="plain">
+    <li><b>흐름</b> : 요구 분석 -&gt; 계획 -&gt; 설계 -&gt; 환경 -&gt; 실행 -&gt; 종료.</li>
+    <li><b>가장 중요</b> : 테스트 계획 단계예요.</li>
+    <li><b>추적</b> : RTM으로 요구와 테스트를 연결해 빠짐을 막아요.</li>
+    <li><b>SDLC와 다름</b> : SDLC는 개발 전체, STLC는 그 안의 테스트 흐름이에요.</li>
+  </ul></div>
+</div>
+
+<!-- 6. 테스트 레벨과 유형 -->
 <div class="topic" id="qlevel">
   <div class="crumb">테스트 이론</div>
   <h2>테스트 레벨과 유형</h2>
-  <p class="lead">면접에서 가장 많이 묻는 영역이에요. 무엇을, 어느 단위로, 어떤 관점에서 테스트하는지 용어를 내 말로 설명할 수 있어야 해요.</p>
+  <p class="lead">무엇을, 어느 단위로, 어떤 관점에서 테스트하는지 용어를 내 말로 설명할 수 있어야 해요. 면접에서 가장 많이 묻는 영역이에요.</p>
 
-  <h3>테스트 레벨 (무엇을 테스트하나)</h3>
-  <p>개발 단위가 커지는 순서로 네 단계가 있어요. 작은 단위부터 검증해 올라가면 결함을 더 일찍, 더 싸게 잡을 수 있어요.</p>
+  <h3>테스트 레벨 (어느 단위를 보나)</h3>
   <table>
     <tr><th>레벨</th><th>대상</th><th>주로 누가</th></tr>
-    <tr><td>단위 테스트</td><td>함수, 클래스 같은 최소 단위</td><td>개발자</td></tr>
+    <tr><td>단위 테스트</td><td>함수, 클래스 같은 최소 단위(스텁/목 활용)</td><td>개발자</td></tr>
     <tr><td>통합 테스트</td><td>모듈 간 인터페이스와 상호작용</td><td>개발자, QA</td></tr>
-    <tr><td>시스템 테스트</td><td>완성된 시스템 전체 동작</td><td>QA</td></tr>
-    <tr><td>인수 테스트</td><td>사용자 요구사항 충족과 인도 여부</td><td>사용자, 발주자</td></tr>
+    <tr><td>시스템 테스트</td><td>완성된 전체 시스템을 처음부터 끝까지</td><td>독립 테스트팀</td></tr>
+    <tr><td>인수 테스트</td><td>사용자 요구와 인수 기준 대비 공식 검증</td><td>사용자, 발주자</td></tr>
   </table>
+  <p>인수 테스트에는 현업이 검증하는 UAT, 사내에서 하는 알파, 외부 실사용자가 하는 베타 등이 있어요.</p>
 
-  <h3>테스트 유형 (어떤 관점으로 보나)</h3>
-  <p><b>기능 테스트</b>는 무엇을 하는지(요구한 기능이 동작하는지)를 봐요. <b>비기능 테스트</b>는 얼마나 잘 하는지를 봐요.</p>
-  <div class="cardgrid">
-    <div class="icard"><h4>성능 / 부하</h4><p>예상 부하에서 응답 시간과 처리량을 측정해요.</p></div>
-    <div class="icard"><h4>스트레스</h4><p>한계를 초과하는 부하로 한계점과 복구 동작을 확인해요.</p></div>
-    <div class="icard"><h4>보안</h4><p>인증, 권한, 취약점을 점검해요.</p></div>
-    <div class="icard"><h4>사용성 / 호환성</h4><p>사용 편의성, 그리고 여러 브라우저와 기기에서의 동작을 확인해요.</p></div>
-  </div>
-
-  <h3>정적 테스트와 동적 테스트, 그리고 V모델</h3>
-  <p><b>정적 테스트</b>는 코드를 실행하지 않고 리뷰나 정적 분석으로 결함을 찾고, <b>동적 테스트</b>는 실제로 실행해 동작을 확인해요.</p>
-  <div class="tip"><b>V모델.</b> 요구사항 분석, 설계, 구현 같은 개발 단계마다 인수, 시스템, 단위 테스트가 좌우로 짝을 이뤄요. 테스트를 개발이 끝난 뒤가 아니라 초기부터 함께 계획한다는 점이 핵심이에요.</div>
+  <h3>테스트 유형 (어떤 품질을 보나)</h3>
+  <p><b>기능 테스트</b>는 무엇을 하는지(요구한 기능이 동작하는지)를, <b>비기능 테스트</b>는 얼마나 잘 하는지를 봐요.</p>
+  <table>
+    <tr><th>유형</th><th>핵심</th></tr>
+    <tr><td>성능</td><td>여러 조건에서 속도, 응답성, 안정성, 자원 사용을 평가하는 우산 개념.</td></tr>
+    <tr><td>부하</td><td>예상되는 정상에서 피크 범위의 부하에서 제대로 동작하는지.</td></tr>
+    <tr><td>스트레스</td><td>정상/최대 용량을 초과한 부하로 한계점과 복구 동작을 확인.</td></tr>
+    <tr><td>보안</td><td>인증, 권한, 취약점을 점검.</td></tr>
+    <tr><td>사용성 / 호환성</td><td>사용 편의성, 그리고 여러 브라우저/기기에서의 일관 동작.</td></tr>
+  </table>
+  <div class="warn"><b>자주 나오는 구분.</b> 성능은 전체를 아우르는 부모 개념이고, 부하는 예상 범위 안에서, 스트레스는 한계를 넘겨 임계점과 복구를 확인해요.</div>
 
   <h3>한눈에 정리</h3>
   <div class="card"><ul class="plain">
     <li><b>레벨</b> : 단위 -&gt; 통합 -&gt; 시스템 -&gt; 인수 순으로 범위가 커져요.</li>
     <li><b>유형</b> : 기능(무엇을)과 비기능(얼마나 잘)으로 나뉘어요.</li>
-    <li><b>정적 vs 동적</b> : 실행하지 않는 리뷰가 정적, 실행해 보는 것이 동적이에요.</li>
-    <li><b>V모델</b> : 단계별로 테스트를 짝지어 초기부터 계획해요.</li>
+    <li><b>성능/부하/스트레스</b> : 전반 / 예상 범위 / 한계 초과로 구분해요.</li>
   </ul></div>
 </div>
 
-<!-- 3. 테스트 프로세스와 자동화 -->
-<div class="topic" id="qproc">
-  <div class="crumb">테스트 이론</div>
-  <h2>테스트 프로세스와 자동화</h2>
-  <p class="lead">테스트는 즉흥이 아니라 계획에서 종료까지 흐름을 따라요. 그리고 반복되는 부분은 자동화로 효율을 높여요.</p>
-
-  <h3>테스트 프로세스</h3>
-  <div class="steps">
-    <div class="st"><b>1. 계획</b><p>범위, 일정, 자원</p></div>
-    <div class="st"><b>2. 분석/설계</b><p>테스트 케이스 작성</p></div>
-    <div class="st"><b>3. 구현/실행</b><p>테스트 수행, 결함 기록</p></div>
-    <div class="st"><b>4. 평가/리포트</b><p>결과 분석, 보고</p></div>
-    <div class="st"><b>5. 종료</b><p>산출물 정리, 회고</p></div>
-  </div>
-
-  <h3>테스트 자동화 피라미드</h3>
-  <p>자동화 피라미드는 빠르고 안정적인 <b>단위 테스트를 가장 많이</b>, 느리고 깨지기 쉬운 <b>E2E 테스트를 가장 적게</b> 두기를 권장해요. 위로 갈수록 실행이 느리고 유지보수가 어려워지기 때문이에요.</p>
-  <table>
-    <tr><th>분류</th><th>대표 도구</th></tr>
-    <tr><td>UI 자동화 (E2E)</td><td>Selenium, Playwright, Cypress</td></tr>
-    <tr><td>API 테스트</td><td>Postman, REST Assured</td></tr>
-    <tr><td>단위 테스트</td><td>JUnit(Java), pytest(Python)</td></tr>
-  </table>
-
-  <h3>무엇을 자동화하나</h3>
-  <p>반복되는 회귀 테스트와 스모크 테스트, 입력과 기대 결과가 명확하고 안정적인 기능이 자동화에 적합해요. 반대로 UI 변동이 잦거나 일회성, 탐색적 테스트는 수동이 더 효율적이에요.</p>
-  <div class="tip"><b>회귀 테스트.</b> 코드 변경이나 버그 수정 후, 기존 기능이 그대로 동작하는지 다시 확인하는 테스트예요. 반복 실행이 많아 자동화의 1순위 대상이에요.</div>
-
-  <h3>CI/CD 안에서의 테스트</h3>
-  <p>코드를 올릴 때마다 빌드와 테스트를 자동으로 돌리면(지속적 통합) 결함을 빠르게 발견해요. 자동화된 테스트가 통과해야 다음 단계로 넘어가도록 품질 게이트를 두는 것이 좋아요.</p>
-
-  <h3>한눈에 정리</h3>
-  <div class="card"><ul class="plain">
-    <li><b>프로세스</b> : 계획 -&gt; 분석/설계 -&gt; 실행 -&gt; 평가 -&gt; 종료.</li>
-    <li><b>피라미드</b> : 단위 많이, E2E 적게.</li>
-    <li><b>자동화 대상</b> : 반복되는 회귀/스모크, 안정적인 기능.</li>
-    <li><b>수동이 나은 것</b> : 탐색적 테스트, UI 변동이 잦거나 일회성.</li>
-  </ul></div>
-</div>
-
-<!-- 4. 테스트 설계 기법 -->
+<!-- 7. 테스트 설계 기법 -->
 <div class="topic" id="qdesign">
   <div class="crumb">테스트 이론</div>
   <h2>테스트 설계 기법</h2>
-  <p class="lead">모든 입력을 다 시험할 수는 없어요. 적은 케이스로 많은 결함을 잡는 대표 기법들을 익혀, 빠짐 없이 효율적으로 케이스를 뽑아요.</p>
+  <p class="lead">모든 입력을 다 시험할 수는 없어요. 적은 케이스로 많은 결함을 잡는 대표 기법을 익혀 빠짐 없이 효율적으로 케이스를 뽑아요. 명세를 보는 블랙박스와 코드를 보는 화이트박스로 나뉘어요.</p>
 
+  <h3 class="cat">블랙박스 (명세 기반)</h3>
   <h3>동등 분할 (Equivalence Partitioning)</h3>
-  <p>같은 결과를 내는 입력들을 하나의 그룹(클래스)으로 묶고, 그룹마다 대표값 하나만 시험해요. 그룹 안의 값은 동작이 같다고 보기 때문에 모두 시험할 필요가 없어요.</p>
-  <div class="tip"><b>예시.</b> 점수 입력이 0~100이라면 "유효(0~100)", "너무 작음(음수)", "너무 큼(101 이상)" 세 그룹으로 나눠 각 그룹 대표값 하나씩만 시험해요.</div>
+  <p>같은 결과를 내는 입력들을 한 그룹으로 묶고 그룹마다 대표값 하나만 시험해요. 그룹 안 값은 동작이 같다고 보기 때문이에요.</p>
+  <div class="tip"><b>예시.</b> 점수가 0~100이라면 "유효(0~100)", "너무 작음(음수)", "너무 큼(101 이상)" 세 그룹으로 나눠 대표값 하나씩 시험해요.</div>
 
   <h3>경계값 분석 (Boundary Value Analysis)</h3>
-  <p>결함은 그룹의 경계 부근에서 자주 생겨요. 그래서 경계인 최소, 최대 값과 그 바로 직전직후 값을 집중 시험해요. 동등 분할과 짝을 이뤄 쓰면 효과가 커요.</p>
-  <div class="tip"><b>예시.</b> 허용 범위가 1~100이면 경계인 1과 100, 그리고 바로 바깥인 0과 101을 함께 시험해요.</div>
+  <p>결함은 경계 부근에서 자주 생겨요. 그래서 경계인 최소, 최대와 그 바로 직전직후 값을 집중 시험해요. 동등 분할과 짝을 이루면 효과가 커요.</p>
+  <div class="tip"><b>예시.</b> 허용 범위가 1~100이면 1과 100, 그리고 바로 바깥인 0과 101을 함께 시험해요.</div>
 
-  <h3>결정 테이블 (Decision Table)</h3>
-  <p>여러 조건의 조합에 따라 결과가 달라질 때, 조건과 결과를 표로 정리해 빠짐 없이 케이스를 만들어요. 조건이 많아 말로 헷갈릴 때 특히 유용해요.</p>
+  <h3>결정 테이블 / 상태 전이 / 페어와이즈</h3>
   <table>
-    <tr><th>회원 여부</th><th>쿠폰 보유</th><th>결과(할인)</th></tr>
-    <tr><td>회원</td><td>있음</td><td>둘 다 적용</td></tr>
-    <tr><td>회원</td><td>없음</td><td>회원 할인만</td></tr>
-    <tr><td>비회원</td><td>있음</td><td>쿠폰만</td></tr>
-    <tr><td>비회원</td><td>없음</td><td>할인 없음</td></tr>
+    <tr><th>기법</th><th>언제 / 어떻게</th></tr>
+    <tr><td>결정 테이블</td><td>여러 조건의 조합에 따라 결과가 달라질 때, 조건과 결과를 표로 정리해 빠짐 없이.</td></tr>
+    <tr><td>상태 전이</td><td>상태가 있는 기능에서 어떤 상태에서 어떤 동작을 하면 어떤 상태로 바뀌는지(허용/비허용 전이 모두).</td></tr>
+    <tr><td>페어와이즈</td><td>설정 항목이 많을 때, 두 항목의 값 조합이 적어도 한 번씩 나오게 케이스를 줄여요.</td></tr>
+    <tr><td>유스케이스</td><td>사용자 시나리오에서 기본 흐름과 대안/예외 흐름을 도출해요.</td></tr>
   </table>
 
-  <h3>상태 전이 (State Transition)</h3>
-  <p>상태가 있는 기능에서 "어떤 상태에서 어떤 동작을 하면 어떤 상태로 바뀌는지"를 시험해요. 정상 전이뿐 아니라 허용되지 않는 전이(예: 로그아웃 상태에서 결제)도 확인해요.</p>
-  <div class="tip"><b>예시.</b> 주문 상태가 결제 대기 -&gt; 결제 완료 -&gt; 배송 중 -&gt; 완료로 흐를 때, 건너뛰는 전이나 역방향 전이가 막히는지 시험해요.</div>
-
-  <h3>페어와이즈 (Pairwise)</h3>
-  <p>설정 항목이 많으면 모든 조합을 다 시험하기 어려워요. 페어와이즈는 "어떤 두 항목의 값 조합"이 적어도 한 번씩은 나오도록 케이스를 줄여, 적은 수로 대부분의 조합 결함을 잡아요.</p>
+  <h3 class="cat">화이트박스 (구조 기반)</h3>
+  <table>
+    <tr><th>커버리지</th><th>의미</th></tr>
+    <tr><td>구문(Statement)</td><td>실행 가능한 코드 문장이 한 번 이상 실행된 비율. 셋 중 가장 약해요.</td></tr>
+    <tr><td>분기/결정(Branch)</td><td>각 분기점을 참과 거짓 모두 실행한 비율. 구문보다 강해요.</td></tr>
+    <tr><td>조건(Condition)</td><td>복합 조건 안의 개별 조건이 각각 참과 거짓으로 평가됐는지.</td></tr>
+  </table>
+  <div class="warn"><b>시험 단골 함정.</b> 100% 분기 커버리지는 100% 구문 커버리지를 보장해요. 하지만 100% 조건 커버리지가 100% 결정(분기) 커버리지를 보장하지는 않아요.</div>
 
   <h3>한눈에 정리</h3>
   <div class="card"><ul class="plain">
-    <li><b>동등 분할</b> : 같은 결과 그룹은 대표값 하나만.</li>
-    <li><b>경계값 분석</b> : 경계와 그 직전직후를 집중 시험(동등 분할과 짝).</li>
-    <li><b>결정 테이블</b> : 조건 조합을 표로 빠짐 없이.</li>
-    <li><b>상태 전이</b> : 허용/비허용 전이를 모두 확인.</li>
-    <li><b>페어와이즈</b> : 두 항목 조합 기준으로 케이스를 줄여요.</li>
+    <li><b>블랙박스</b> : 동등 분할(대표값), 경계값(경계 집중), 결정 테이블, 상태 전이, 페어와이즈.</li>
+    <li><b>화이트박스</b> : 구문 &lt; 분기 &lt; 조건 순으로 촘촘해져요.</li>
+    <li><b>핵심</b> : 동등 분할 + 경계값을 짝으로 쓰는 게 기본기예요.</li>
   </ul></div>
 </div>
 
-<!-- 5. 버그 리포트와 TC -->
+<!-- 8. 테스트 관리 -->
+<div class="topic" id="qmanage">
+  <div class="crumb">테스트 이론</div>
+  <h2>테스트 관리</h2>
+  <p class="lead">무엇을 어떻게 테스트할지 계획하고, 얼마나 했는지 지표로 보고, 위험이 큰 곳에 자원을 집중하는 활동이에요. QA 엔지니어와 면접에서 자주 다뤄요.</p>
+
+  <h3>테스트 계획과 전략</h3>
+  <table>
+    <tr><th>구분</th><th>핵심</th></tr>
+    <tr><td>테스트 전략</td><td>조직이나 프로그램 차원의 상위 접근(레벨, 방법론, 도구, 표준, 역할). "어떻게 테스트하는가"의 일반 원칙.</td></tr>
+    <tr><td>테스트 계획</td><td>프로젝트나 릴리스별 문서(목표, 범위, 자원, 일정, 담당, 조건). "이번에 무엇을 테스트하는가". 전략에서 파생돼요.</td></tr>
+  </table>
+
+  <h3>테스트 추정</h3>
+  <p>일정을 가늠하는 방법이에요. 작업을 잘게 나눠 합산하는 WBS, 전문가가 따로 추정 후 수렴하는 델파이, 그리고 3점 추정이 흔해요.</p>
+  <div class="tip"><b>3점 추정.</b> (낙관 + 4 x 최빈 + 비관) / 6 으로 계산해요. 최선과 최악, 가장 그럴듯한 값을 모두 반영해 한쪽으로 치우치지 않게 해요.</div>
+
+  <h3>품질과 진척 지표</h3>
+  <table>
+    <tr><th>지표</th><th>공식 / 의미</th></tr>
+    <tr><td>결함 밀도</td><td>결함 수 / 규모(보통 천 줄). 낮을수록 좋아요.</td></tr>
+    <tr><td>테스트 커버리지</td><td>테스트한 항목 / 전체 항목 x 100. 항목은 요구, 코드, 분기 등.</td></tr>
+    <tr><td>결함 제거 효율(DRE)</td><td>테스트로 찾은 결함 / (테스트 발견 + 출시 후 발견) x 100. 100에 가까울수록 좋아요.</td></tr>
+  </table>
+
+  <h3>리스크 기반 테스트와 진입/종료 기준</h3>
+  <p>위험은 발생 가능성과 영향의 곱이에요. 위험이 큰 영역을 먼저, 더 집중해서 테스트해요.</p>
+  <table>
+    <tr><th>기준</th><th>예</th></tr>
+    <tr><td>진입(Entry)</td><td>환경 준비, 케이스/데이터 완비, 빌드 배포와 스모크 통과.</td></tr>
+    <tr><td>종료(Exit)</td><td>계획한 케이스 실행 완료, 목표 커버리지 달성, 미해결 치명/높음 결함 없음, 일정/예산 충족.</td></tr>
+  </table>
+
+  <h3>한눈에 정리</h3>
+  <div class="card"><ul class="plain">
+    <li><b>전략 vs 계획</b> : 일반 원칙(어떻게) vs 이번 프로젝트(무엇을).</li>
+    <li><b>추정</b> : WBS, 델파이, 3점 추정(낙관/최빈/비관).</li>
+    <li><b>지표</b> : 결함 밀도, 커버리지, DRE.</li>
+    <li><b>리스크 기반</b> : 가능성 x 영향이 큰 곳을 먼저 테스트, 진입/종료 기준으로 관리.</li>
+  </ul></div>
+</div>
+
+<!-- 9. 앱 구조와 API -->
+<div class="topic" id="qarch">
+  <div class="crumb">기술 이해</div>
+  <h2>앱 구조와 API</h2>
+  <p class="lead">무엇을 테스트하는지 알려면 소프트웨어가 어떻게 동작하는지 먼저 알아야 해요. 화면, 서버, 데이터가 어떻게 주고받는지, API가 무엇인지 짚어요.</p>
+
+  <h3>클라이언트-서버와 3계층 구조</h3>
+  <p>클라이언트(브라우저나 앱)가 서버에 요청을 보내면, 서버가 처리해 응답을 돌려줘요. 보통 세 계층으로 나뉘어요.</p>
+  <table>
+    <tr><th>계층</th><th>역할</th></tr>
+    <tr><td>프론트엔드(화면)</td><td>사용자가 보고 조작하는 화면(HTML/CSS/JS, React 등).</td></tr>
+    <tr><td>백엔드(로직)</td><td>비즈니스 로직을 처리하고 API를 제공.</td></tr>
+    <tr><td>데이터베이스</td><td>데이터를 영구 저장(MySQL 등 관계형, MongoDB 등 NoSQL).</td></tr>
+  </table>
+  <p>흐름은 프론트 -&gt; 백엔드 API 호출 -&gt; DB 조회/저장 -&gt; 응답 반환이에요.</p>
+
+  <h3>API와 REST</h3>
+  <p>API는 소프트웨어끼리 통신하는 규약이고, REST는 HTTP 기반으로 자원을 URL로 표현하는 방식이에요. 클라이언트가 요청하면 서버가 응답하는 구조예요.</p>
+  <table>
+    <tr><th>HTTP 메서드</th><th>역할(멱등 여부)</th></tr>
+    <tr><td>GET</td><td>조회 (안전, 멱등)</td></tr>
+    <tr><td>POST</td><td>생성 (멱등 아님)</td></tr>
+    <tr><td>PUT</td><td>전체 수정/교체 (멱등)</td></tr>
+    <tr><td>PATCH</td><td>부분 수정 (보통 멱등 아님)</td></tr>
+    <tr><td>DELETE</td><td>삭제 (멱등)</td></tr>
+  </table>
+  <p>멱등은 여러 번 호출해도 결과가 같다는 뜻이에요.</p>
+  <table>
+    <tr><th>상태 코드</th><th>의미</th></tr>
+    <tr><td>2xx</td><td>성공 (200 OK, 201 Created, 204 No Content)</td></tr>
+    <tr><td>3xx</td><td>리다이렉션 (301, 302)</td></tr>
+    <tr><td>4xx</td><td>클라이언트 오류 (400 잘못된 요청, 401 인증 필요, 403 권한 없음, 404 없음)</td></tr>
+    <tr><td>5xx</td><td>서버 오류 (500 내부 오류, 502, 503)</td></tr>
+  </table>
+
+  <h3>모바일 앱의 종류</h3>
+  <table>
+    <tr><th>종류</th><th>특징</th></tr>
+    <tr><td>네이티브</td><td>OS 전용 언어로 개발(iOS Swift, Android Kotlin). 성능과 기기 기능 접근이 최고, 플랫폼별 개발 필요.</td></tr>
+    <tr><td>하이브리드</td><td>웹 기술로 만들어 네이티브 컨테이너로 감싸요. 한 코드로 양쪽, 성능은 네이티브보다 낮음.</td></tr>
+    <tr><td>웹앱</td><td>브라우저에서 실행, 설치 불필요. 기기 기능 접근에 제한이 있어요.</td></tr>
+  </table>
+
+  <h3>한눈에 정리</h3>
+  <div class="card"><ul class="plain">
+    <li><b>구조</b> : 클라이언트-서버, 프론트/백엔드/DB 3계층.</li>
+    <li><b>API/REST</b> : 자원을 URL로, GET/POST/PUT/PATCH/DELETE로 다뤄요.</li>
+    <li><b>상태 코드</b> : 2xx 성공, 4xx 클라이언트 오류, 5xx 서버 오류.</li>
+    <li><b>모바일</b> : 네이티브 / 하이브리드 / 웹앱.</li>
+  </ul></div>
+</div>
+
+<!-- 10. 웹 테스트 -->
+<div class="topic" id="qweb">
+  <div class="crumb">기술 이해</div>
+  <h2>웹 테스트</h2>
+  <p class="lead">웹 서비스는 다양한 브라우저, 화면 크기, 네트워크에서 똑같이 동작해야 해요. 무엇을 어디서 점검하는지 핵심 포인트를 정리했어요.</p>
+
+  <h3>크로스 브라우징과 반응형</h3>
+  <table>
+    <tr><th>영역</th><th>점검 포인트</th></tr>
+    <tr><td>크로스 브라우징</td><td>Chrome, Firefox, Safari, Edge에서 렌더링(CSS), 동작(JS), 폰트/레이아웃 깨짐, 미지원 기능.</td></tr>
+    <tr><td>반응형</td><td>화면 너비별 레이아웃 전환, 가로 스크롤 발생, 요소 겹침/잘림, 터치 타깃 크기, 가로/세로 회전.</td></tr>
+  </table>
+
+  <h3>쿠키, 세션, 폼 검증</h3>
+  <table>
+    <tr><th>영역</th><th>점검 포인트</th></tr>
+    <tr><td>쿠키/세션</td><td>로그인 유지와 만료, 타임아웃, 로그아웃 후 뒤로가기로 접근 차단, 동시 로그인.</td></tr>
+    <tr><td>캐시</td><td>배포 직후 최신 리소스 반영, 이전 캐시로 인한 오작동.</td></tr>
+    <tr><td>폼/입력</td><td>빈 값, 공백, 최대 길이 초과, 특수문자, 경계값, 필수 누락 시 에러, 중복 제출(더블 클릭).</td></tr>
+  </table>
+  <div class="tip"><b>클라이언트 검증은 우회될 수 있어요.</b> 화면에서 막아도 서버가 다시 검증하는지 확인해야 해요. 개발자 도구로 클라이언트 검증을 우회한 뒤 서버가 거르는지 시험해 보세요.</div>
+
+  <h3>웹 보안 기초 (테스터 관점)</h3>
+  <table>
+    <tr><th>취약점</th><th>테스터가 확인할 것</th></tr>
+    <tr><td>XSS</td><td>입력 필드나 URL에 스크립트를 넣어 실행되는지(댓글, 검색어, 프로필 등 입력이 화면에 출력되는 지점). 방어는 입력 escape.</td></tr>
+    <tr><td>SQL Injection</td><td>로그인/검색창에 <code>' OR '1'='1</code> 같은 값으로 인증 우회나 데이터 노출이 되는지. 방어는 매개변수화 쿼리.</td></tr>
+    <tr><td>CSRF</td><td>정상 요청에 CSRF 토큰이 포함되는지, 토큰 없이/위조 시 거부되는지. 방어는 CSRF 토큰.</td></tr>
+  </table>
+  <p>보조 도구로 OWASP ZAP(자동 스캔), Burp Suite(수동 가로채기)가 있고, 기준은 OWASP Top 10이에요.</p>
+
+  <h3>성능과 접근성</h3>
+  <table>
+    <tr><th>영역</th><th>점검 포인트</th></tr>
+    <tr><td>성능</td><td>페이지 로드 시간, 첫 바이트까지 시간(TTFB), 이미지 최적화, 불필요한 요청 수, 느린 네트워크에서의 동작.</td></tr>
+    <tr><td>접근성(a11y)</td><td>키보드만으로 사용 가능, 이미지 대체 텍스트, 폼 라벨 연결, 색 대비. 기준은 WCAG, 도구는 axe와 Lighthouse.</td></tr>
+  </table>
+
+  <h3>한눈에 정리</h3>
+  <div class="card"><ul class="plain">
+    <li><b>호환</b> : 브라우저, 화면 크기, 회전까지 일관 동작.</li>
+    <li><b>상태</b> : 쿠키/세션/캐시, 폼 입력의 정상과 비정상.</li>
+    <li><b>보안</b> : XSS, SQL Injection, CSRF를 테스터 관점에서.</li>
+    <li><b>품질</b> : 성능(로딩)과 접근성(키보드, 대체 텍스트)도 챙겨요.</li>
+  </ul></div>
+</div>
+
+<!-- 11. CS 핵심 -->
+<div class="topic" id="qcs">
+  <div class="crumb">기술 이해</div>
+  <h2>CS 핵심</h2>
+  <p class="lead">QA 면접에서도 CS 기초를 물어봐요. 자료구조, 데이터베이스, 네트워크, 운영체제의 핵심만 짚어 정리했어요. 깊이보다 정확히 한 문장으로 설명하기가 목표예요.</p>
+
+  <h3 class="cat">자료구조</h3>
+  <table>
+    <tr><th>구조</th><th>핵심</th></tr>
+    <tr><td>배열 / 연결 리스트</td><td>배열은 임의 접근 O(1), 중간 삽입 O(n). 연결 리스트는 그 반대.</td></tr>
+    <tr><td>스택 / 큐</td><td>스택은 LIFO(나중에 넣은 게 먼저), 큐는 FIFO(먼저 넣은 게 먼저).</td></tr>
+    <tr><td>해시 테이블</td><td>키를 해시로 매핑해 평균 O(1) 탐색. 다른 키가 같은 칸에 가면 충돌.</td></tr>
+    <tr><td>BST / 힙</td><td>BST는 탐색용(왼쪽 &lt; 부모 &lt; 오른쪽), 힙은 최솟값/최댓값용(루트가 극값).</td></tr>
+  </table>
+
+  <h3 class="cat">데이터베이스</h3>
+  <table>
+    <tr><th>개념</th><th>핵심</th></tr>
+    <tr><td>인덱스</td><td>정렬된 자료구조로 검색을 빠르게. 대신 삽입/갱신 유지 비용.</td></tr>
+    <tr><td>정규화</td><td>중복을 줄여 삽입/갱신/삭제 이상을 방지.</td></tr>
+    <tr><td>ACID</td><td>원자성(전부 아니면 전무), 일관성, 격리성, 지속성.</td></tr>
+    <tr><td>JOIN / 키</td><td>INNER는 일치 행만. 기본키는 유일 식별(중복/NULL 불가), 외래키는 다른 테이블 참조.</td></tr>
+  </table>
+
+  <h3 class="cat">네트워크</h3>
+  <table>
+    <tr><th>개념</th><th>핵심</th></tr>
+    <tr><td>TCP vs UDP</td><td>TCP는 연결지향, 순서/재전송으로 신뢰성. UDP는 빠르지만 비신뢰.</td></tr>
+    <tr><td>3-way handshake</td><td>SYN -&gt; SYN-ACK -&gt; ACK 로 연결을 맺어요.</td></tr>
+    <tr><td>HTTP vs HTTPS</td><td>HTTPS는 TLS로 암호화. 포트도 80과 443으로 달라요.</td></tr>
+    <tr><td>DNS</td><td>도메인 이름을 IP 주소로 변환.</td></tr>
+  </table>
+
+  <h3 class="cat">운영체제</h3>
+  <table>
+    <tr><th>개념</th><th>핵심</th></tr>
+    <tr><td>프로세스 vs 스레드</td><td>같은 프로세스의 스레드는 코드/데이터/힙 공유, 스택은 따로. 전환 비용이 적어요.</td></tr>
+    <tr><td>교착 상태</td><td>상호 배제, 점유와 대기, 비선점, 순환 대기 네 조건이 동시에 성립할 때.</td></tr>
+    <tr><td>뮤텍스 vs 세마포어</td><td>뮤텍스는 한 번에 하나, 카운팅 세마포어는 정해진 수만큼 동시 접근.</td></tr>
+  </table>
+
+  <h3>한눈에 정리</h3>
+  <div class="card"><ul class="plain">
+    <li><b>자료구조</b> : 스택 LIFO, 큐 FIFO, 해시 평균 O(1), BST와 힙의 목적 차이.</li>
+    <li><b>DB</b> : 인덱스, 정규화, ACID, JOIN.</li>
+    <li><b>네트워크</b> : TCP 신뢰/UDP 속도, 3-way handshake, HTTPS 암호화.</li>
+    <li><b>OS</b> : 프로세스와 스레드, 교착 상태 네 조건, 동기화.</li>
+  </ul></div>
+</div>
+
+<!-- 12. 버그 리포팅과 결함 관리 -->
 <div class="topic" id="qbug">
   <div class="crumb">실무</div>
-  <h2>버그 리포트와 테스트 케이스 작성</h2>
-  <p class="lead">QA의 실무 산출물이에요. 코테나 과제에서 직접 작성하라고 요구하기도 하고, 면접에서도 자주 물어봐요.</p>
+  <h2>버그 리포팅과 결함 관리</h2>
+  <p class="lead">QA의 실무 산출물이에요. 결함을 어떻게 적고, 어떤 유형이 있고, 어떤 흐름으로 처리되는지가 핵심이에요. 코테나 과제에서 직접 작성하라고도 해요.</p>
 
   <h3>좋은 버그 리포트의 구성요소</h3>
   <table>
     <tr><th>항목</th><th>내용</th></tr>
-    <tr><td>제목</td><td>무엇이 어디서 잘못됐는지 한 줄로 요약</td></tr>
+    <tr><td>제목</td><td>무엇이 어디서 잘못됐는지 한 줄 요약</td></tr>
     <tr><td>환경</td><td>OS, 브라우저, 버전, 계정 등</td></tr>
-    <tr><td>사전 조건</td><td>재현에 필요한 상태</td></tr>
     <tr><td>재현 단계</td><td>1, 2, 3 번호로 누구나 따라 할 수 있게</td></tr>
-    <tr><td>기대 결과</td><td>정상이라면 어떻게 동작해야 하는지</td></tr>
-    <tr><td>실제 결과</td><td>실제로 어떤 일이 일어났는지</td></tr>
+    <tr><td>기대 결과 / 실제 결과</td><td>정상이라면 어떻게 동작해야 하는지 vs 실제로 일어난 일</td></tr>
     <tr><td>심각도/우선순위</td><td>영향 크기와 처리 순서</td></tr>
     <tr><td>첨부</td><td>스크린샷, 영상, 로그</td></tr>
   </table>
-  <div class="tip"><b>심각도(Severity)와 우선순위(Priority)는 달라요.</b> 심각도는 결함이 시스템에 미치는 영향의 크기, 우선순위는 얼마나 빨리 고쳐야 하는지예요. 메인 화면 로고의 오타는 심각도는 낮지만 우선순위는 높을 수 있어요.</div>
 
-  <h3>좋은 테스트 케이스</h3>
-  <p>TC ID, 제목, 사전 조건, 입력과 절차, 기대 결과, 우선순위로 구성해요. 누가 실행해도 같은 결과가 나오도록 명확하게, 요구사항에 추적 가능하게 적는 것이 좋은 테스트 케이스예요.</p>
-  <details class="try"><summary>직접 해보기: 로그인 기능의 테스트 케이스를 떠올려 보세요</summary>
-    <div class="body">
-      <p>먼저 스스로 적어 본 뒤 아래 모범 예시와 비교해요. 정상 흐름만이 아니라 비정상과 경계까지 떠올리는 게 핵심이에요.</p>
-      <table>
-        <tr><th>유형</th><th>테스트 케이스 예시</th></tr>
-        <tr><td>정상</td><td>올바른 아이디와 비밀번호로 로그인 성공</td></tr>
-        <tr><td>비정상</td><td>틀린 비밀번호, 존재하지 않는 아이디, 빈 입력</td></tr>
-        <tr><td>경계</td><td>아이디/비밀번호 최소, 최대 길이와 그 직전직후</td></tr>
-        <tr><td>보안</td><td>연속 실패 시 계정 잠금, SQL 삽입 같은 악성 입력 처리</td></tr>
-        <tr><td>상태</td><td>로그인 후 새로고침 시 세션 유지, 로그아웃 후 접근 차단</td></tr>
-      </table>
-    </div>
-  </details>
+  <h3>버그(결함) 유형</h3>
+  <div class="cardgrid">
+    <div class="icard"><h4>기능</h4><p>요구사항대로 동작하지 않아요(가장 흔함).</p></div>
+    <div class="icard"><h4>UI / 외관</h4><p>레이아웃 깨짐, 오타, 색이나 정렬 문제.</p></div>
+    <div class="icard"><h4>성능</h4><p>느린 응답, 메모리 누수, 부하 시 저하.</p></div>
+    <div class="icard"><h4>호환성</h4><p>특정 브라우저/OS/기기에서만 발생.</p></div>
+    <div class="icard"><h4>보안</h4><p>인증 우회, 데이터 노출 등.</p></div>
+    <div class="icard"><h4>데이터</h4><p>잘못된 저장/계산/표시, 데이터 불일치.</p></div>
+  </div>
+
+  <h3>결함 생명주기</h3>
+  <p>결함은 등록부터 종료까지 정해진 상태를 거쳐요.</p>
+  <p><code>New</code> -&gt; <code>Assigned</code>(배정) -&gt; <code>Open</code>(수정 착수) -&gt; <code>Fixed</code>(수정 완료) -&gt; <code>Retest</code>(재검증) -&gt; <code>Verified</code> -&gt; <code>Closed</code>(종료)</p>
+  <table>
+    <tr><th>분기 상태</th><th>의미</th></tr>
+    <tr><td>Reopen</td><td>수정했는데 다시 재현되면 열어서 개발자에게 되돌려요.</td></tr>
+    <tr><td>Deferred</td><td>실제 결함이지만 급하지 않아 다음 릴리스로 연기.</td></tr>
+    <tr><td>Rejected</td><td>재현 불가, 사양대로 동작, 중복 등으로 결함이 아니라고 판단.</td></tr>
+  </table>
+
+  <h3>심각도 vs 우선순위</h3>
+  <div class="tip"><b>둘은 달라요.</b> 심각도는 시스템에 미치는 기술적 영향(보통 QA가 지정), 우선순위는 얼마나 빨리 고쳐야 하는지(PM/개발리드가 협의). 메인 화면 로고 오타는 심각도는 낮아도 우선순위는 높을 수 있어요.</div>
+  <table>
+    <tr><th>조합</th><th>예시</th></tr>
+    <tr><td>높은 심각도 + 높은 우선순위</td><td>운영 환경 로그인 장애(전 사용자 접근 불가)</td></tr>
+    <tr><td>높은 심각도 + 낮은 우선순위</td><td>거의 안 쓰는 환경에서만 나는 크래시</td></tr>
+    <tr><td>낮은 심각도 + 높은 우선순위</td><td>로그인 화면 회사명 오타(모든 사용자가 봄)</td></tr>
+  </table>
 
   <h3>직접 해보기: 나쁜 버그 리포트 고치기</h3>
   <p>아래 리포트에 빠진 항목을 모두 골라 보세요.</p>
@@ -373,83 +669,219 @@
 
   <h3>한눈에 정리</h3>
   <div class="card"><ul class="plain">
-    <li><b>버그 리포트</b> : 제목, 환경, 재현 단계, 기대/실제 결과, 심각도/우선순위가 빠지면 안 돼요.</li>
-    <li><b>심각도 vs 우선순위</b> : 영향의 크기와 고치는 순서는 별개예요.</li>
-    <li><b>좋은 TC</b> : 누가 실행해도 같은 결과가 나오게 명확히.</li>
-    <li><b>관점</b> : 정상뿐 아니라 비정상, 경계, 보안, 상태까지.</li>
+    <li><b>좋은 리포트</b> : 제목, 환경, 재현 단계, 기대/실제, 심각도/우선순위.</li>
+    <li><b>유형</b> : 기능, UI, 성능, 호환성, 보안, 데이터 결함.</li>
+    <li><b>생명주기</b> : New -&gt; Fixed -&gt; Retest -&gt; Closed, 재현되면 Reopen.</li>
+    <li><b>심각도 vs 우선순위</b> : 영향 크기와 고치는 순서는 별개예요.</li>
   </ul></div>
 </div>
 
-<!-- 6. CS 핵심 -->
-<div class="topic" id="qcs">
-  <div class="crumb">CS 기초</div>
-  <h2>CS 핵심</h2>
-  <p class="lead">QA 면접에서도 CS 기초를 물어봐요. 자료구조, 데이터베이스, 네트워크, 운영체제의 핵심만 짚어 정리했어요. 깊이보다 "정확히 한 문장으로 설명하기"가 목표예요.</p>
+<!-- 13. 테스트 자동화와 도구 -->
+<div class="topic" id="qauto">
+  <div class="crumb">자동화와 배포</div>
+  <h2>테스트 자동화와 도구</h2>
+  <p class="lead">반복되는 테스트는 사람이 매번 하기 어려워요. 자동화로 빠르고 일관되게 돌리되, 무엇을 자동화할지 고르는 눈이 중요해요.</p>
 
-  <h3 class="cat" id="cs-ds">자료구조</h3>
-  <table>
-    <tr><th>구조</th><th>핵심</th></tr>
-    <tr><td>배열</td><td>인덱스로 임의 접근 O(1), 메모리 연속. 중간 삽입/삭제는 O(n).</td></tr>
-    <tr><td>연결 리스트</td><td>노드를 포인터로 연결. 위치를 알면 삽입/삭제 O(1), 임의 접근은 O(n).</td></tr>
-    <tr><td>스택</td><td>LIFO, 나중에 넣은 것이 먼저 나와요. 괄호 검사, 되돌리기.</td></tr>
-    <tr><td>큐</td><td>FIFO, 먼저 넣은 것이 먼저 나와요. BFS, 작업 대기열.</td></tr>
-    <tr><td>해시 테이블</td><td>키를 해시로 매핑해 평균 O(1) 탐색. 서로 다른 키가 같은 칸에 가면 충돌.</td></tr>
-    <tr><td>이진 탐색 트리</td><td>왼쪽 &lt; 부모 &lt; 오른쪽. 균형이 깨지면 최악 O(n).</td></tr>
-    <tr><td>힙</td><td>부모가 자식보다 작거나(최소 힙) 큰 완전 이진 트리. 루트가 최솟값/최댓값.</td></tr>
-  </table>
-  <div class="tip"><b>자주 나오는 함정.</b> 연결 리스트는 임의 접근이 느리고(O(n)), 해시는 충돌을 체이닝이나 개방 주소법으로 해결해요. BST와 힙은 둘 다 트리지만 목적이 달라요(탐색 vs 최댓값/최솟값).</div>
+  <h3>자동화 피라미드와 무엇을 자동화하나</h3>
+  <p>피라미드는 빠르고 안정적인 <b>단위 테스트를 가장 많이</b>, 느리고 깨지기 쉬운 <b>E2E 테스트를 가장 적게</b> 두기를 권장해요. 반복되는 회귀와 스모크, 입력과 기대 결과가 명확한 기능이 자동화에 적합해요. 반대로 UI 변동이 잦거나 일회성, 탐색적 테스트는 수동이 나아요.</p>
 
-  <h3 class="cat" id="cs-db">데이터베이스</h3>
+  <h3>UI 자동화 도구 비교</h3>
   <table>
-    <tr><th>개념</th><th>핵심</th></tr>
-    <tr><td>인덱스</td><td>정렬된 자료구조(보통 B-tree)로 검색을 빠르게. 대신 삽입/갱신 유지 비용이 있어요.</td></tr>
-    <tr><td>정규화</td><td>중복을 줄여 삽입/갱신/삭제 이상 현상을 방지해요.</td></tr>
-    <tr><td>ACID</td><td>원자성(전부 아니면 전무), 일관성, 격리성, 지속성.</td></tr>
-    <tr><td>JOIN</td><td>INNER는 일치하는 행만, OUTER는 일치하지 않는 행도 포함.</td></tr>
-    <tr><td>기본키 / 외래키</td><td>기본키는 행을 유일 식별(중복, NULL 불가). 외래키는 다른 테이블을 참조.</td></tr>
-    <tr><td>SQL vs NoSQL</td><td>관계형은 스키마와 조인, 강한 트랜잭션에 강해요. NoSQL은 유연한 스키마와 수평 확장에 유리.</td></tr>
+    <tr><th>도구</th><th>언어</th><th>특징</th></tr>
+    <tr><td>Selenium</td><td>Java, Python, C#, JS 등 가장 넓음</td><td>가장 오래된 표준, 생태계가 큼. 자동 대기가 약해 불안정(flaky) 위험, 설정이 복잡.</td></tr>
+    <tr><td>Playwright</td><td>JS/TS, Python, .NET, Java</td><td>자동 대기로 안정적이고 빠름. 크로스 브라우저, 병렬과 트레이싱 내장. 상대적으로 신생.</td></tr>
+    <tr><td>Cypress</td><td>JS/TS 전용</td><td>개발자 친화, 실시간 디버깅. 단일 언어, 멀티탭/다중 브라우저에 한계.</td></tr>
   </table>
 
-  <h3 class="cat" id="cs-net">네트워크</h3>
+  <h3>API 테스트 도구</h3>
   <table>
-    <tr><th>개념</th><th>핵심</th></tr>
-    <tr><td>TCP vs UDP</td><td>TCP는 연결지향, 순서 보장과 재전송으로 신뢰성. UDP는 비연결형, 빠르지만 비신뢰.</td></tr>
-    <tr><td>3-way handshake</td><td>SYN -&gt; SYN-ACK -&gt; ACK 순으로 연결을 맺어요.</td></tr>
-    <tr><td>HTTP vs HTTPS</td><td>HTTPS는 TLS(이전 SSL)로 암호화. 포트도 80과 443으로 달라요.</td></tr>
-    <tr><td>상태 코드</td><td>200 성공, 404 자원 없음, 403 권한 없음, 500 서버 오류.</td></tr>
-    <tr><td>DNS</td><td>도메인 이름을 IP 주소로 변환해요.</td></tr>
-    <tr><td>OSI 계층</td><td>네트워크 계층이 IP 라우팅, 전송 계층이 종단 간 신뢰성을 담당.</td></tr>
-  </table>
-
-  <h3 class="cat" id="cs-os">운영체제</h3>
-  <table>
-    <tr><th>개념</th><th>핵심</th></tr>
-    <tr><td>프로세스 vs 스레드</td><td>같은 프로세스의 스레드는 코드/데이터/힙을 공유하고 스택은 따로. 그래서 전환 비용이 적어요.</td></tr>
-    <tr><td>교착 상태</td><td>상호 배제, 점유와 대기, 비선점, 순환 대기 네 조건이 동시에 성립할 때 발생.</td></tr>
-    <tr><td>스케줄링</td><td>FCFS는 비선점(도착 순), Round Robin과 SRT는 선점형.</td></tr>
-    <tr><td>뮤텍스 vs 세마포어</td><td>뮤텍스는 한 번에 하나, 카운팅 세마포어는 정해진 수만큼 동시 접근 허용.</td></tr>
-    <tr><td>가상 메모리</td><td>페이징으로 물리 메모리보다 큰 주소 공간을 제공. 주소 변환에 페이지 테이블.</td></tr>
-    <tr><td>컨텍스트 스위칭</td><td>현재 프로세스 상태를 저장하고 다음 프로세스 상태를 복원. 오버헤드가 있어요.</td></tr>
+    <tr><th>도구</th><th>특징</th></tr>
+    <tr><td>Postman</td><td>GUI 기반, 코딩 없이 요청 작성과 테스트, 문서화. 진입장벽이 낮고 협업에 강함. CI 연동은 Newman.</td></tr>
+    <tr><td>REST Assured</td><td>Java 라이브러리. 코드로 작성하고 BDD 스타일(given-when-then). CI/CD 통합에 유리.</td></tr>
   </table>
 
   <h3>한눈에 정리</h3>
   <div class="card"><ul class="plain">
-    <li><b>자료구조</b> : 스택 LIFO, 큐 FIFO, 해시 평균 O(1), BST와 힙의 목적 차이.</li>
-    <li><b>DB</b> : 인덱스로 검색 가속, 정규화로 중복 제거, ACID, JOIN 종류.</li>
-    <li><b>네트워크</b> : TCP 신뢰/UDP 속도, 3-way handshake, HTTPS 암호화, 상태 코드.</li>
-    <li><b>OS</b> : 프로세스와 스레드, 교착 상태 네 조건, 스케줄링, 동기화.</li>
+    <li><b>피라미드</b> : 단위 많이, E2E 적게.</li>
+    <li><b>자동화 대상</b> : 반복 회귀/스모크, 안정적인 기능.</li>
+    <li><b>UI 도구</b> : Selenium(넓음), Playwright(안정/빠름), Cypress(JS 전용).</li>
+    <li><b>API 도구</b> : Postman(GUI), REST Assured(코드).</li>
   </ul></div>
 </div>
 
-<!-- 7. 면접 단골 질문 -->
+<!-- 14. Python으로 QA 자동화 -->
+<div class="topic" id="qpython">
+  <div class="crumb">자동화와 배포</div>
+  <h2>Python으로 QA 자동화</h2>
+  <p class="lead">QA 자동화에서 Python을 많이 써요. 문법이 쉽고 pytest, requests, Selenium 같은 도구가 잘 갖춰져 있어 API와 UI 테스트를 빠르게 만들 수 있어요.</p>
+
+  <h3>pytest 기본 구조</h3>
+  <p>파일명은 <code>test_</code>로 시작하고 함수명도 <code>test_</code>로 시작하면 자동으로 모여 실행돼요. 검증은 <code>assert</code>로 해요. 준비와 정리는 fixture로 분리해요.</p>
+  <pre><span class="kw">import</span> pytest
+
+<span class="kw">@pytest.fixture</span>
+<span class="kw">def</span> <span class="fn">sample_user</span>():
+    <span class="kw">return</span> {<span class="st">"name"</span>: <span class="st">"kim"</span>, <span class="st">"age"</span>: <span class="nm">20</span>}
+
+<span class="kw">def</span> <span class="fn">test_user_name</span>(sample_user):   <span class="cm"># fixture 를 인자로 요청</span>
+    <span class="kw">assert</span> sample_user[<span class="st">"name"</span>] == <span class="st">"kim"</span>
+
+<span class="kw">def</span> <span class="fn">test_addition</span>():
+    <span class="kw">assert</span> <span class="nm">1</span> + <span class="nm">1</span> == <span class="nm">2</span></pre>
+  <p>터미널에서 <code>pytest</code> (또는 <code>pytest -v</code>)로 실행해요.</p>
+
+  <h3>requests 로 API 테스트</h3>
+  <pre><span class="kw">import</span> requests
+
+<span class="kw">def</span> <span class="fn">test_get_user</span>():
+    res = requests.<span class="fn">get</span>(<span class="st">"https://api.example.com/users/1"</span>)
+    <span class="kw">assert</span> res.status_code == <span class="nm">200</span>
+    body = res.<span class="fn">json</span>()
+    <span class="kw">assert</span> body[<span class="st">"id"</span>] == <span class="nm">1</span>
+
+<span class="kw">def</span> <span class="fn">test_create_user</span>():
+    res = requests.<span class="fn">post</span>(<span class="st">"https://api.example.com/users"</span>,
+                        json={<span class="st">"name"</span>: <span class="st">"kim"</span>})
+    <span class="kw">assert</span> res.status_code == <span class="nm">201</span></pre>
+  <p><code>res.status_code</code>(상태 코드), <code>res.json()</code>(JSON 파싱), <code>res.headers</code> 등을 확인해요.</p>
+
+  <h3>Selenium 으로 UI 자동화</h3>
+  <pre><span class="kw">from</span> selenium <span class="kw">import</span> webdriver
+<span class="kw">from</span> selenium.webdriver.common.by <span class="kw">import</span> By
+
+driver = webdriver.<span class="fn">Chrome</span>()
+driver.<span class="fn">get</span>(<span class="st">"https://www.example.com"</span>)
+
+box = driver.<span class="fn">find_element</span>(By.NAME, <span class="st">"q"</span>)   <span class="cm"># 요소 찾기</span>
+box.<span class="fn">send_keys</span>(<span class="st">"test"</span>)                      <span class="cm"># 입력</span>
+driver.<span class="fn">find_element</span>(By.ID, <span class="st">"submit"</span>).<span class="fn">click</span>()
+<span class="kw">assert</span> <span class="st">"결과"</span> <span class="kw">in</span> driver.title
+driver.<span class="fn">quit</span>()                              <span class="cm"># 브라우저 종료</span></pre>
+  <div class="tip"><b>안정성 팁.</b> 요소가 늦게 나타나면 테스트가 깨질 수 있어요. 실무에서는 <code>WebDriverWait</code>로 명시적 대기를 넣어 요소가 준비될 때까지 기다린 뒤 조작해요.</div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card"><ul class="plain">
+    <li><b>pytest</b> : test_ 규칙, assert로 검증, fixture로 준비/정리.</li>
+    <li><b>requests</b> : status_code와 json()으로 API 검증.</li>
+    <li><b>Selenium</b> : By로 요소 찾기, 입력/클릭, 명시적 대기로 안정화.</li>
+  </ul></div>
+</div>
+
+<!-- 15. CI/CD와 Jenkins -->
+<div class="topic" id="qcicd">
+  <div class="crumb">자동화와 배포</div>
+  <h2>CI/CD와 Jenkins</h2>
+  <p class="lead">코드를 올릴 때마다 자동으로 빌드하고 테스트하면 문제를 빨리 발견해요. 자동화된 테스트가 파이프라인 안에서 품질의 문지기 역할을 해요.</p>
+
+  <h3>CI와 CD</h3>
+  <table>
+    <tr><th>개념</th><th>의미</th></tr>
+    <tr><td>CI (지속적 통합)</td><td>코드를 자주 합치고, 합칠 때마다 자동으로 빌드와 테스트를 실행해 통합 오류를 일찍 발견.</td></tr>
+    <tr><td>CD (지속적 배포/전달)</td><td>테스트를 통과한 코드를 자동으로 릴리스 준비하거나 운영까지 배포.</td></tr>
+  </table>
+
+  <h3>파이프라인에서 테스트의 위치</h3>
+  <table>
+    <tr><th>단계</th><th>실행하는 테스트</th></tr>
+    <tr><td>커밋</td><td>빠른 단위 테스트와 스모크(개발 흐름을 막지 않게 짧게)</td></tr>
+    <tr><td>빌드</td><td>통합 테스트와 UI 회귀</td></tr>
+    <tr><td>릴리스</td><td>전체 회귀, E2E, 성능, 보안</td></tr>
+  </table>
+  <div class="warn"><b>품질 게이트.</b> 다음 단계로 넘어가기 전 충족해야 하는 조건(커버리지 임계치, 정적 분석 통과, 테스트 통과율)이에요. 테스트 실패가 빌드를 막지 못하면 그 자동화는 장식일 뿐이에요.</div>
+
+  <h3>Jenkins</h3>
+  <p>Jenkins는 빌드, 테스트, 배포를 자동 실행하는 오픈소스 자동화 서버예요. 파이프라인을 코드로 적은 <code>Jenkinsfile</code>을 저장소에 함께 두고 버전 관리해요(Pipeline as Code).</p>
+  <pre><span class="kw">pipeline</span> {
+    agent any
+    stages {
+        stage(<span class="st">'Build'</span>) {
+            steps { sh <span class="st">'make build'</span> }
+        }
+        stage(<span class="st">'Test'</span>) {
+            steps { sh <span class="st">'pytest'</span> }
+        }
+        stage(<span class="st">'Deploy'</span>) {
+            steps { echo <span class="st">'Deploying...'</span> }
+        }
+    }
+}</pre>
+  <p>전체를 <code>pipeline</code>으로 감싸고, <code>agent</code>로 실행 환경을 정하고, <code>stages</code> 안에 <code>stage</code>를, 각 stage 안에 <code>steps</code>를 둬요. 코드 푸시나 일정으로 자동 실행하고, 실패 시 빌드를 멈추고 알림을 보내요.</p>
+
+  <h3>Jenkins vs GitHub Actions</h3>
+  <table>
+    <tr><th>구분</th><th>특징</th></tr>
+    <tr><td>Jenkins</td><td>자체 서버를 설치/운영, 플러그인이 매우 풍부. 커스터마이즈에 강함. 설정은 Jenkinsfile(Groovy).</td></tr>
+    <tr><td>GitHub Actions</td><td>GitHub에 내장된 클라우드형, 서버 관리 불필요. 저장소와 긴밀. 설정은 YAML 파일.</td></tr>
+  </table>
+
+  <h3>한눈에 정리</h3>
+  <div class="card"><ul class="plain">
+    <li><b>CI/CD</b> : 자주 합쳐 자동 빌드/테스트(CI), 통과하면 자동 배포(CD).</li>
+    <li><b>테스트 배치</b> : 커밋엔 빠른 단위, 릴리스엔 전체 회귀/E2E.</li>
+    <li><b>품질 게이트</b> : 실패가 빌드를 막아야 의미가 있어요.</li>
+    <li><b>Jenkins</b> : Jenkinsfile로 pipeline/agent/stages/steps 구성.</li>
+  </ul></div>
+</div>
+
+<!-- 16. 채용 공고로 보는 요구 역량 -->
+<div class="topic" id="qjob">
+  <div class="crumb">취업</div>
+  <h2>채용 공고로 보는 요구 역량</h2>
+  <p class="lead">공고의 자격요건과 우대사항을 읽으면 무엇을 먼저 준비할지 보여요. QA 채용 공고에서 실제로 자주 요구하는 것들을 정리했어요. (회사와 연차에 따라 편차가 커요.)</p>
+
+  <h3>자격요건 vs 우대사항</h3>
+  <table>
+    <tr><th>직무</th><th>필수(자격요건)</th><th>우대사항</th></tr>
+    <tr><td>수동 QA</td><td>테스트 케이스/시나리오 작성, 버그 리포트 작성, 꼼꼼함과 재현 능력, 커뮤니케이션, 이슈트래커(Jira)</td><td>ISTQB 자격증, SQL 기초, API/HTTP 이해, 도메인 경험, 자동화 맛보기, 포트폴리오</td></tr>
+    <tr><td>자동화 QA / SDET</td><td>프로그래밍 언어 1개 실사용, 자동화 프레임워크 경험(Selenium/Playwright 등), Git, 코딩 테스트 통과</td><td>CI/CD 연동(Jenkins), API 자동화, 성능 테스트(JMeter), 프레임워크 설계, Docker/클라우드</td></tr>
+  </table>
+  <p>핵심 차이는 수동 QA는 코딩이 필수가 아니지만(이해 수준), SDET는 사실상 개발 직군이라 코딩이 필수예요.</p>
+
+  <h3>공고에 자주 나오는 키워드와 중요도</h3>
+  <table>
+    <tr><th>키워드</th><th>빈도</th></tr>
+    <tr><td>테스트 케이스/시나리오 작성</td><td>거의 항상</td></tr>
+    <tr><td>버그 리포트와 결함 관리</td><td>거의 항상</td></tr>
+    <tr><td>Jira 등 이슈트래커, 커뮤니케이션, 꼼꼼함</td><td>거의 항상</td></tr>
+    <tr><td>애자일/스크럼, SQL, API/Postman, Git</td><td>자주</td></tr>
+    <tr><td>Selenium/Playwright (자동화/SDET)</td><td>자동화는 거의 항상, 수동은 우대</td></tr>
+    <tr><td>Python/Java, CI/CD/Jenkins</td><td>SDET 자주, 수동 가끔</td></tr>
+    <tr><td>Appium(모바일), JMeter(성능)</td><td>가끔(특화 포지션)</td></tr>
+  </table>
+
+  <h3>공고 표현 해석</h3>
+  <table>
+    <tr><th>표현</th><th>실제 요구</th></tr>
+    <tr><td>~에 능통한 / 능숙한 분</td><td>실무에서 바로 쓸 수준. 단독으로 사용/작성 가능 기대.</td></tr>
+    <tr><td>~경험이 있으신 분</td><td>실제 프로젝트 이력. 포트폴리오나 개인 프로젝트로도 일부 인정.</td></tr>
+    <tr><td>~에 대한 이해가 있으신 분</td><td>개념과 용어를 설명할 수 있는 수준이면 충족.</td></tr>
+    <tr><td>~우대 / 있으면 좋음</td><td>없어도 지원 가능, 합격선 가산점.</td></tr>
+    <tr><td>원활한 커뮤니케이션</td><td>결함을 객관적으로 전달하고 협업하는 능력(실제 탈락 사유로 자주 작동).</td></tr>
+  </table>
+
+  <h3>ISTQB 자격증, 솔직한 가치</h3>
+  <div class="tip"><b>있으면 가산, 없다고 탈락은 아니에요.</b> 한국 공고엔 ISTQB 언급이 흔하지만 대개 우대사항이에요. 신입에겐 필수가 아니고, 이론 학습 가이드와 변별력 정도의 가치예요. 자격증보다 직접 만든 테스트 산출물(포트폴리오)이 우선이에요.</div>
+
+  <h3>주니어가 먼저 챙길 핵심 5가지</h3>
+  <div class="card"><ul class="plain">
+    <li><b>1.</b> 테스트 케이스/시나리오 작성 (모든 공고의 1순위).</li>
+    <li><b>2.</b> 버그 리포트 작성(재현 절차, 기대/실제, 로그) + 꼼꼼함.</li>
+    <li><b>3.</b> 테스트 기본 이론(레벨/유형, SDLC, 7원칙).</li>
+    <li><b>4.</b> Jira 등 협업툴 + 애자일/스크럼 흐름.</li>
+    <li><b>5.</b> 포트폴리오(직접 만든 TC/버그리포트 공개) + 기초 기술(SQL, API). 자동화 지망이면 언어 1개와 Selenium/Playwright 추가.</li>
+  </ul></div>
+  <div class="warn"><b>현실 한 줄.</b> 신입 QA 채용 자체가 드문 편이에요. 자격증보다 "직접 만든 테스트 산출물"이 차별화 요인이고, 자동화/SDET를 노린다면 코딩(언어 1개와 프레임워크)이 사실상 진입 요건이에요.</div>
+</div>
+
+<!-- 17. 면접 단골 질문 -->
 <div class="topic" id="qinterview">
-  <div class="crumb">면접</div>
+  <div class="crumb">취업</div>
   <h2>면접 단골 질문</h2>
   <p class="lead">질문을 눌러 모범 답변 포인트를 확인해요. 외우기보다 내 경험과 엮어 설명하는 연습을 해요.</p>
   <div id="ivBox"></div>
 </div>
 
-<!-- 8. 다음 단계 -->
+<!-- 18. 다음 단계 -->
 <div class="topic" id="qnext">
   <div class="crumb">마무리</div>
   <h2>다음 단계</h2>
