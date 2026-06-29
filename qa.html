@@ -17,7 +17,7 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.7; min-height: 100vh; word-break: keep-all; overflow-wrap: break-word; }
 
-  /* ===== 상단 네비 아래 사이드바 + 본문 2단 (개념정리와 동일) ===== */
+  /* 상단 네비 아래 사이드바 + 본문 2단 (개념정리와 동일) */
   .cc-layout { display: flex; align-items: flex-start; }
   aside { width: 300px; flex-shrink: 0; background: var(--card); border-right: 1px solid var(--line); position: sticky; top: 56px; height: calc(100vh - 56px); display: flex; flex-direction: column; }
   aside .brand { padding: 20px 20px 14px; border-bottom: 1px solid var(--line); }
@@ -31,8 +31,6 @@
   aside .menu button { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; background: var(--card); border: 1.5px solid var(--line); cursor: pointer; font-family: inherit; font-size: 15.5px; font-weight: 700; color: var(--ink); padding: 13px 14px; border-radius: 11px; margin-bottom: 7px; transition: all 0.12s; }
   aside .menu button:hover { background: var(--purple-bg); color: var(--purple-dark); border-color: var(--purple); }
   aside .menu button.active { background: var(--purple); color: #fff; border-color: var(--purple); }
-  aside .menu button .qdone { margin-left: auto; font-size: 11px; font-weight: 700; color: var(--green); flex-shrink: 0; }
-  aside .menu button.active .qdone { color: #D8FFE6; }
   aside .menu button.hidden { display: none; }
   aside .nores { font-size: 13px; color: var(--ink-soft); padding: 14px 12px; display: none; }
 
@@ -45,6 +43,7 @@
   .topic .lead { font-size: 15.5px; color: var(--ink-soft); margin-bottom: 22px; }
   h3 { font-size: 18px; font-weight: 800; margin: 30px 0 10px; display: flex; align-items: center; gap: 8px; }
   h3::before { content: ''; width: 5px; height: 18px; background: var(--purple); border-radius: 3px; }
+  h4.cat { font-size: 15.5px; font-weight: 800; margin: 20px 0 8px; color: var(--purple-dark); }
   p + p { margin-top: 10px; }
   ul.plain { margin: 8px 0 0 22px; } ul.plain li { margin-bottom: 6px; }
 
@@ -62,7 +61,6 @@
   tbody tr:hover td, table tr:hover td { background: var(--purple-bg); }
   p code, li code, td code { background: var(--purple-bg); color: var(--purple-dark); padding: 1px 6px; border-radius: 5px; font-family: Consolas, 'D2Coding', monospace; font-size: 0.92em; }
 
-  /* 직무/유형 카드 */
   .cardgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 13px; margin: 12px 0; }
   .icard { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
   .icard h4 { font-size: 15.5px; font-weight: 800; margin-bottom: 6px; color: var(--purple-dark); }
@@ -79,7 +77,6 @@
   details.try[open] > summary::before { content: '\25BE '; }
   details.try .body { padding: 0 0 14px; }
 
-  /* 면접 Q&A 아코디언 */
   .iv { background: var(--card); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 9px; overflow: hidden; }
   .iv summary { cursor: pointer; font-weight: 700; font-size: 14.5px; padding: 14px 16px; list-style: none; display: flex; gap: 9px; align-items: baseline; }
   .iv summary::-webkit-details-marker { display: none; }
@@ -89,27 +86,7 @@
   .iv .ans { padding: 13px 16px; font-size: 13.5px; }
   .iv .ans .lead { color: var(--ink-soft); font-weight: 700; margin-bottom: 7px; }
   .iv .ans ul { margin: 0 0 0 18px; } .iv .ans li { margin: 4px 0; }
-  h4.cat { font-size: 15px; font-weight: 800; margin: 22px 0 9px; color: var(--purple-dark); }
 
-  /* 퀴즈 (개념정리와 동일) */
-  .quiz { background: var(--card); border: 1.5px solid var(--purple); border-radius: 14px; padding: 18px 22px 16px; margin-top: 14px; }
-  .quiz .qhead { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
-  .quiz .qhead .tag { background: var(--purple); color: #fff; font-size: 11.5px; font-weight: 800; padding: 3px 10px; border-radius: 99px; flex-shrink: 0; }
-  .quiz .qtext { font-weight: 700; font-size: 15px; }
-  .quiz .opts { margin-top: 10px; display: grid; gap: 7px; }
-  .quiz .opts button { text-align: left; background: var(--bg); border: 1.5px solid var(--line); border-radius: 10px; padding: 10px 14px; font-family: inherit; font-size: 14px; cursor: pointer; transition: all 0.12s; color: var(--ink); }
-  .quiz .opts button:hover { border-color: var(--purple); background: var(--purple-bg); }
-  .quiz.answered .opts button { cursor: default; pointer-events: none; opacity: 0.75; }
-  .quiz .opts button.correct { background: var(--green-bg); border-color: var(--green); color: var(--green); font-weight: 700; opacity: 1 !important; }
-  .quiz .opts button.wrong { background: var(--red-bg); border-color: var(--red); color: var(--red); font-weight: 700; opacity: 1 !important; }
-  .quiz .expl { display: none; margin-top: 12px; font-size: 14px; background: var(--bg); border-radius: 10px; padding: 12px 15px; border: 1px solid var(--line); }
-  .quiz.answered .expl { display: block; }
-  .quiz .expl b.ok { color: var(--green); } .quiz .expl b.no { color: var(--red); }
-  .quiz .retry { display: none; margin-top: 10px; background: none; border: 1px solid var(--line); border-radius: 8px; padding: 6px 13px; font-size: 12.5px; color: var(--ink-soft); cursor: pointer; font-family: inherit; }
-  .quiz.answered .retry { display: inline-block; pointer-events: auto; }
-  .quiz .retry:hover { border-color: var(--purple); color: var(--purple-dark); }
-
-  /* 버그 리포트 셀프 점검 */
   .bugcheck { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin-top: 12px; }
   .bc-report { background: var(--purple-bg); border-radius: 10px; padding: 12px 14px; font-size: 14px; margin-bottom: 13px; line-height: 1.6; }
   .bc-dim { color: var(--ink-soft); font-size: 12.5px; }
@@ -158,23 +135,26 @@
 <aside>
   <div class="brand">
     <h1>QA 코딩테스트와 면접</h1>
-    <p>직무 흐름부터 이론, 면접까지</p>
+    <p>직무 흐름부터 이론, CS, 면접까지</p>
   </div>
   <div class="search">
-    <input type="text" id="searchBox" aria-label="QA 주제 검색" placeholder="주제 검색 (예: 버그, 면접, CS)">
+    <input type="text" id="searchBox" aria-label="QA 주제 검색" placeholder="주제 검색 (예: 경계값, 버그, 네트워크)">
   </div>
   <div class="menu" id="menu">
     <div class="grp">직무</div>
     <button data-topic="qj" data-kw="직무 채용 manual sdet 자동화 엔지니어 로드맵 코딩테스트">1. QA 직무와 채용</button>
-    <div class="grp">이론</div>
-    <button data-topic="qt" data-kw="테스트 이론 레벨 유형 프로세스 v모델 자동화 피라미드 설계 기법 경계값 동등분할">2. 테스트 이론</button>
+    <div class="grp">테스트 이론</div>
+    <button data-topic="qlevel" data-kw="테스트 레벨 유형 단위 통합 시스템 인수 기능 비기능 정적 동적 v모델 성능 보안">2. 테스트 레벨과 유형</button>
+    <button data-topic="qproc" data-kw="테스트 프로세스 자동화 피라미드 selenium playwright 회귀 스모크 ci 도구">3. 테스트 프로세스와 자동화</button>
+    <button data-topic="qdesign" data-kw="테스트 설계 기법 동등 분할 경계값 분석 결정 테이블 상태 전이 페어와이즈 유스케이스">4. 테스트 설계 기법</button>
     <div class="grp">실무</div>
-    <button data-topic="qb" data-kw="버그 리포트 테스트 케이스 tc 심각도 우선순위 재현 단계 셀프 점검">3. 버그 리포트와 TC</button>
+    <button data-topic="qbug" data-kw="버그 리포트 테스트 케이스 tc 심각도 우선순위 재현 단계 셀프 점검">5. 버그 리포트와 TC</button>
+    <div class="grp">CS 기초</div>
+    <button data-topic="qcs" data-kw="cs 자료구조 데이터베이스 네트워크 운영체제 스택 큐 해시 인덱스 acid tcp http 프로세스 스레드">6. CS 핵심</button>
     <div class="grp">면접</div>
-    <button data-topic="qi" data-kw="면접 질문 답변 상황형 인성 컬처핏">4. 면접 단골 질문</button>
-    <button data-topic="qc" data-kw="cs 지식 자료구조 데이터베이스 네트워크 운영체제 퀴즈">5. CS 지식 퀴즈</button>
+    <button data-topic="qinterview" data-kw="면접 질문 답변 상황형 qa qc 회귀 우선순위 협업">7. 면접 단골 질문</button>
     <div class="grp">마무리</div>
-    <button data-topic="qn" data-kw="다음 단계 sql 알고리즘 모의고사 실전">6. 다음 단계</button>
+    <button data-topic="qnext" data-kw="다음 단계 sql 알고리즘 모의고사 학습 경로 실전 퀴즈">8. 다음 단계</button>
   </div>
   <div class="nores" id="noRes">검색 결과가 없어요</div>
 </aside>
@@ -185,8 +165,9 @@
 <div class="topic" id="qj">
   <div class="crumb">직무</div>
   <h2>QA 직무와 채용</h2>
-  <p class="lead">QA도 직무에 따라 코딩 테스트와 면접에서 보는 것이 달라요. 내 목표 직무를 먼저 정해요.</p>
+  <p class="lead">QA도 직무에 따라 코딩 테스트와 면접에서 보는 것이 달라요. 내 목표 직무를 먼저 정하고, 거기에 맞춰 준비 범위를 좁히는 게 효율적이에요.</p>
 
+  <h3>QA 직무 세 갈래</h3>
   <div class="cardgrid">
     <div class="icard"><h4>수동 QA (Manual QA)</h4><p>명세와 시나리오 기반으로 직접 테스트하고 탐색적 테스트로 결함을 찾아요. 버그 리포트와 테스트 케이스 작성이 핵심이에요.</p><span class="tag">테스트 이론 중심</span></div>
     <div class="icard"><h4>자동화 QA / SDET</h4><p>테스트를 코드로 작성해요. UI 자동화(Selenium, Playwright), API 테스트, 단위 테스트, CI 연동을 다뤄요. 프로그래밍 역량이 필요해요.</p><span class="tag">코딩 + 자동화</span></div>
@@ -196,7 +177,7 @@
   <h3>채용 절차와 코딩 테스트 구성</h3>
   <div class="steps">
     <div class="st"><b>1. 서류</b><p>이력서, 포트폴리오, 테스트 경험</p></div>
-    <div class="st"><b>2. 코딩 테스트</b><p>알고리즘(쉬움~중간), SQL, 가끔 테스트 케이스 설계</p></div>
+    <div class="st"><b>2. 코딩 테스트</b><p>알고리즘(쉬움~중간), SQL, 가끔 TC 설계</p></div>
     <div class="st"><b>3. 기술 면접</b><p>테스트 이론, CS 기초, 상황형 질문</p></div>
     <div class="st"><b>4. 인성/임원</b><p>협업, 커뮤니케이션, 컬처핏</p></div>
   </div>
@@ -209,15 +190,24 @@
     <tr><td>자동화</td><td>언어 1개(Python 또는 Java), Selenium 또는 Playwright, API 테스트(Postman)</td></tr>
     <tr><td>심화</td><td>CI/CD 안에서의 테스트, 성능/부하 테스트, 보안 테스트 기초, 테스트 전략 수립</td></tr>
   </table>
+
+  <h3>한눈에 정리</h3>
+  <div class="card"><ul class="plain">
+    <li><b>직무</b> : 수동 QA, 자동화 QA/SDET, QA 엔지니어로 나뉘고 준비 범위가 달라요.</li>
+    <li><b>코테</b> : 알고리즘은 기본기 위주, SQL 비중이 커요.</li>
+    <li><b>면접</b> : 테스트 이론과 CS 기초, 상황형 질문이 핵심이에요.</li>
+    <li><b>먼저 할 일</b> : 목표 직무를 정하고 그에 맞는 깊이로 준비하세요.</li>
+  </ul></div>
 </div>
 
-<!-- 2. 테스트 이론 -->
-<div class="topic" id="qt">
-  <div class="crumb">이론</div>
-  <h2>테스트 이론</h2>
-  <p class="lead">면접에서 가장 많이 묻는 영역이에요. 용어를 내 말로 설명할 수 있어야 해요.</p>
+<!-- 2. 테스트 레벨과 유형 -->
+<div class="topic" id="qlevel">
+  <div class="crumb">테스트 이론</div>
+  <h2>테스트 레벨과 유형</h2>
+  <p class="lead">면접에서 가장 많이 묻는 영역이에요. 무엇을, 어느 단위로, 어떤 관점에서 테스트하는지 용어를 내 말로 설명할 수 있어야 해요.</p>
 
-  <h3>테스트 레벨</h3>
+  <h3>테스트 레벨 (무엇을 테스트하나)</h3>
+  <p>개발 단위가 커지는 순서로 네 단계가 있어요. 작은 단위부터 검증해 올라가면 결함을 더 일찍, 더 싸게 잡을 수 있어요.</p>
   <table>
     <tr><th>레벨</th><th>대상</th><th>주로 누가</th></tr>
     <tr><td>단위 테스트</td><td>함수, 클래스 같은 최소 단위</td><td>개발자</td></tr>
@@ -226,7 +216,7 @@
     <tr><td>인수 테스트</td><td>사용자 요구사항 충족과 인도 여부</td><td>사용자, 발주자</td></tr>
   </table>
 
-  <h3>테스트 유형</h3>
+  <h3>테스트 유형 (어떤 관점으로 보나)</h3>
   <p><b>기능 테스트</b>는 무엇을 하는지(요구한 기능이 동작하는지)를 봐요. <b>비기능 테스트</b>는 얼마나 잘 하는지를 봐요.</p>
   <div class="cardgrid">
     <div class="icard"><h4>성능 / 부하</h4><p>예상 부하에서 응답 시간과 처리량을 측정해요.</p></div>
@@ -234,6 +224,25 @@
     <div class="icard"><h4>보안</h4><p>인증, 권한, 취약점을 점검해요.</p></div>
     <div class="icard"><h4>사용성 / 호환성</h4><p>사용 편의성, 그리고 여러 브라우저와 기기에서의 동작을 확인해요.</p></div>
   </div>
+
+  <h3>정적 테스트와 동적 테스트, 그리고 V모델</h3>
+  <p><b>정적 테스트</b>는 코드를 실행하지 않고 리뷰나 정적 분석으로 결함을 찾고, <b>동적 테스트</b>는 실제로 실행해 동작을 확인해요.</p>
+  <div class="tip"><b>V모델.</b> 요구사항 분석, 설계, 구현 같은 개발 단계마다 인수, 시스템, 단위 테스트가 좌우로 짝을 이뤄요. 테스트를 개발이 끝난 뒤가 아니라 초기부터 함께 계획한다는 점이 핵심이에요.</div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card"><ul class="plain">
+    <li><b>레벨</b> : 단위 -&gt; 통합 -&gt; 시스템 -&gt; 인수 순으로 범위가 커져요.</li>
+    <li><b>유형</b> : 기능(무엇을)과 비기능(얼마나 잘)으로 나뉘어요.</li>
+    <li><b>정적 vs 동적</b> : 실행하지 않는 리뷰가 정적, 실행해 보는 것이 동적이에요.</li>
+    <li><b>V모델</b> : 단계별로 테스트를 짝지어 초기부터 계획해요.</li>
+  </ul></div>
+</div>
+
+<!-- 3. 테스트 프로세스와 자동화 -->
+<div class="topic" id="qproc">
+  <div class="crumb">테스트 이론</div>
+  <h2>테스트 프로세스와 자동화</h2>
+  <p class="lead">테스트는 즉흥이 아니라 계획에서 종료까지 흐름을 따라요. 그리고 반복되는 부분은 자동화로 효율을 높여요.</p>
 
   <h3>테스트 프로세스</h3>
   <div class="steps">
@@ -243,31 +252,78 @@
     <div class="st"><b>4. 평가/리포트</b><p>결과 분석, 보고</p></div>
     <div class="st"><b>5. 종료</b><p>산출물 정리, 회고</p></div>
   </div>
-  <div class="tip"><b>V모델.</b> 요구사항 분석, 설계, 구현 같은 개발 단계마다 인수, 시스템, 단위 테스트가 짝을 이뤄요. 테스트를 개발 초기부터 계획한다는 점이 핵심이에요. <b>정적 테스트</b>는 코드를 실행하지 않고 리뷰로, <b>동적 테스트</b>는 실행해서 결함을 찾아요.</div>
 
-  <h3>테스트 자동화</h3>
-  <p>자동화 피라미드는 빠르고 안정적인 <b>단위 테스트를 가장 많이</b>, 느리고 깨지기 쉬운 <b>E2E 테스트를 가장 적게</b> 두기를 권장해요. 반복되는 회귀, 스모크 테스트가 자동화에 적합하고, UI 변동이 잦거나 일회성인 것은 수동이 더 효율적이에요.</p>
+  <h3>테스트 자동화 피라미드</h3>
+  <p>자동화 피라미드는 빠르고 안정적인 <b>단위 테스트를 가장 많이</b>, 느리고 깨지기 쉬운 <b>E2E 테스트를 가장 적게</b> 두기를 권장해요. 위로 갈수록 실행이 느리고 유지보수가 어려워지기 때문이에요.</p>
   <table>
     <tr><th>분류</th><th>대표 도구</th></tr>
-    <tr><td>UI 자동화</td><td>Selenium, Playwright, Cypress</td></tr>
+    <tr><td>UI 자동화 (E2E)</td><td>Selenium, Playwright, Cypress</td></tr>
     <tr><td>API 테스트</td><td>Postman, REST Assured</td></tr>
     <tr><td>단위 테스트</td><td>JUnit(Java), pytest(Python)</td></tr>
   </table>
-  <div id="autoQuiz"></div>
 
-  <h3>테스트 설계 기법</h3>
-  <p>적은 케이스로 많은 결함을 잡는 대표 기법이에요.</p>
-  <div class="cardgrid" id="techBox"></div>
+  <h3>무엇을 자동화하나</h3>
+  <p>반복되는 회귀 테스트와 스모크 테스트, 입력과 기대 결과가 명확하고 안정적인 기능이 자동화에 적합해요. 반대로 UI 변동이 잦거나 일회성, 탐색적 테스트는 수동이 더 효율적이에요.</p>
+  <div class="tip"><b>회귀 테스트.</b> 코드 변경이나 버그 수정 후, 기존 기능이 그대로 동작하는지 다시 확인하는 테스트예요. 반복 실행이 많아 자동화의 1순위 대상이에요.</div>
 
-  <h3>테스트 이론 퀴즈</h3>
-  <div id="theoryQuiz"></div>
+  <h3>CI/CD 안에서의 테스트</h3>
+  <p>코드를 올릴 때마다 빌드와 테스트를 자동으로 돌리면(지속적 통합) 결함을 빠르게 발견해요. 자동화된 테스트가 통과해야 다음 단계로 넘어가도록 품질 게이트를 두는 것이 좋아요.</p>
+
+  <h3>한눈에 정리</h3>
+  <div class="card"><ul class="plain">
+    <li><b>프로세스</b> : 계획 -&gt; 분석/설계 -&gt; 실행 -&gt; 평가 -&gt; 종료.</li>
+    <li><b>피라미드</b> : 단위 많이, E2E 적게.</li>
+    <li><b>자동화 대상</b> : 반복되는 회귀/스모크, 안정적인 기능.</li>
+    <li><b>수동이 나은 것</b> : 탐색적 테스트, UI 변동이 잦거나 일회성.</li>
+  </ul></div>
 </div>
 
-<!-- 3. 버그 리포트와 TC -->
-<div class="topic" id="qb">
+<!-- 4. 테스트 설계 기법 -->
+<div class="topic" id="qdesign">
+  <div class="crumb">테스트 이론</div>
+  <h2>테스트 설계 기법</h2>
+  <p class="lead">모든 입력을 다 시험할 수는 없어요. 적은 케이스로 많은 결함을 잡는 대표 기법들을 익혀, 빠짐 없이 효율적으로 케이스를 뽑아요.</p>
+
+  <h3>동등 분할 (Equivalence Partitioning)</h3>
+  <p>같은 결과를 내는 입력들을 하나의 그룹(클래스)으로 묶고, 그룹마다 대표값 하나만 시험해요. 그룹 안의 값은 동작이 같다고 보기 때문에 모두 시험할 필요가 없어요.</p>
+  <div class="tip"><b>예시.</b> 점수 입력이 0~100이라면 "유효(0~100)", "너무 작음(음수)", "너무 큼(101 이상)" 세 그룹으로 나눠 각 그룹 대표값 하나씩만 시험해요.</div>
+
+  <h3>경계값 분석 (Boundary Value Analysis)</h3>
+  <p>결함은 그룹의 경계 부근에서 자주 생겨요. 그래서 경계인 최소, 최대 값과 그 바로 직전직후 값을 집중 시험해요. 동등 분할과 짝을 이뤄 쓰면 효과가 커요.</p>
+  <div class="tip"><b>예시.</b> 허용 범위가 1~100이면 경계인 1과 100, 그리고 바로 바깥인 0과 101을 함께 시험해요.</div>
+
+  <h3>결정 테이블 (Decision Table)</h3>
+  <p>여러 조건의 조합에 따라 결과가 달라질 때, 조건과 결과를 표로 정리해 빠짐 없이 케이스를 만들어요. 조건이 많아 말로 헷갈릴 때 특히 유용해요.</p>
+  <table>
+    <tr><th>회원 여부</th><th>쿠폰 보유</th><th>결과(할인)</th></tr>
+    <tr><td>회원</td><td>있음</td><td>둘 다 적용</td></tr>
+    <tr><td>회원</td><td>없음</td><td>회원 할인만</td></tr>
+    <tr><td>비회원</td><td>있음</td><td>쿠폰만</td></tr>
+    <tr><td>비회원</td><td>없음</td><td>할인 없음</td></tr>
+  </table>
+
+  <h3>상태 전이 (State Transition)</h3>
+  <p>상태가 있는 기능에서 "어떤 상태에서 어떤 동작을 하면 어떤 상태로 바뀌는지"를 시험해요. 정상 전이뿐 아니라 허용되지 않는 전이(예: 로그아웃 상태에서 결제)도 확인해요.</p>
+  <div class="tip"><b>예시.</b> 주문 상태가 결제 대기 -&gt; 결제 완료 -&gt; 배송 중 -&gt; 완료로 흐를 때, 건너뛰는 전이나 역방향 전이가 막히는지 시험해요.</div>
+
+  <h3>페어와이즈 (Pairwise)</h3>
+  <p>설정 항목이 많으면 모든 조합을 다 시험하기 어려워요. 페어와이즈는 "어떤 두 항목의 값 조합"이 적어도 한 번씩은 나오도록 케이스를 줄여, 적은 수로 대부분의 조합 결함을 잡아요.</p>
+
+  <h3>한눈에 정리</h3>
+  <div class="card"><ul class="plain">
+    <li><b>동등 분할</b> : 같은 결과 그룹은 대표값 하나만.</li>
+    <li><b>경계값 분석</b> : 경계와 그 직전직후를 집중 시험(동등 분할과 짝).</li>
+    <li><b>결정 테이블</b> : 조건 조합을 표로 빠짐 없이.</li>
+    <li><b>상태 전이</b> : 허용/비허용 전이를 모두 확인.</li>
+    <li><b>페어와이즈</b> : 두 항목 조합 기준으로 케이스를 줄여요.</li>
+  </ul></div>
+</div>
+
+<!-- 5. 버그 리포트와 TC -->
+<div class="topic" id="qbug">
   <div class="crumb">실무</div>
   <h2>버그 리포트와 테스트 케이스 작성</h2>
-  <p class="lead">QA의 실무 산출물이에요. 코테나 과제에서 직접 작성하라고 요구하기도 해요.</p>
+  <p class="lead">QA의 실무 산출물이에요. 코테나 과제에서 직접 작성하라고 요구하기도 하고, 면접에서도 자주 물어봐요.</p>
 
   <h3>좋은 버그 리포트의 구성요소</h3>
   <table>
@@ -281,8 +337,10 @@
     <tr><td>심각도/우선순위</td><td>영향 크기와 처리 순서</td></tr>
     <tr><td>첨부</td><td>스크린샷, 영상, 로그</td></tr>
   </table>
-  <div class="tip"><b>심각도(Severity)와 우선순위(Priority)는 달라요.</b> 심각도는 결함이 시스템에 미치는 영향의 크기, 우선순위는 얼마나 빨리 고쳐야 하는지예요. 자주 보는 회사 로고의 오타는 심각도는 낮지만 우선순위는 높을 수 있어요.</div>
+  <div class="tip"><b>심각도(Severity)와 우선순위(Priority)는 달라요.</b> 심각도는 결함이 시스템에 미치는 영향의 크기, 우선순위는 얼마나 빨리 고쳐야 하는지예요. 메인 화면 로고의 오타는 심각도는 낮지만 우선순위는 높을 수 있어요.</div>
 
+  <h3>좋은 테스트 케이스</h3>
+  <p>TC ID, 제목, 사전 조건, 입력과 절차, 기대 결과, 우선순위로 구성해요. 누가 실행해도 같은 결과가 나오도록 명확하게, 요구사항에 추적 가능하게 적는 것이 좋은 테스트 케이스예요.</p>
   <details class="try"><summary>직접 해보기: 로그인 기능의 테스트 케이스를 떠올려 보세요</summary>
     <div class="body">
       <p>먼저 스스로 적어 본 뒤 아래 모범 예시와 비교해요. 정상 흐름만이 아니라 비정상과 경계까지 떠올리는 게 핵심이에요.</p>
@@ -296,9 +354,6 @@
       </table>
     </div>
   </details>
-
-  <h3>테스트 케이스의 구성요소</h3>
-  <p>TC ID, 제목, 사전 조건, 입력과 절차, 기대 결과, 우선순위로 구성해요. 누가 실행해도 같은 결과가 나오도록 명확하게 적는 것이 좋은 테스트 케이스예요.</p>
 
   <h3>직접 해보기: 나쁜 버그 리포트 고치기</h3>
   <p>아래 리포트에 빠진 항목을 모두 골라 보세요.</p>
@@ -315,34 +370,97 @@
     <div class="bc-actions"><button type="button" class="bc-check" id="bcCheck">확인</button></div>
     <div class="bc-fb" id="bcFb"></div>
   </div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card"><ul class="plain">
+    <li><b>버그 리포트</b> : 제목, 환경, 재현 단계, 기대/실제 결과, 심각도/우선순위가 빠지면 안 돼요.</li>
+    <li><b>심각도 vs 우선순위</b> : 영향의 크기와 고치는 순서는 별개예요.</li>
+    <li><b>좋은 TC</b> : 누가 실행해도 같은 결과가 나오게 명확히.</li>
+    <li><b>관점</b> : 정상뿐 아니라 비정상, 경계, 보안, 상태까지.</li>
+  </ul></div>
 </div>
 
-<!-- 4. 면접 단골 질문 -->
-<div class="topic" id="qi">
+<!-- 6. CS 핵심 -->
+<div class="topic" id="qcs">
+  <div class="crumb">CS 기초</div>
+  <h2>CS 핵심</h2>
+  <p class="lead">QA 면접에서도 CS 기초를 물어봐요. 자료구조, 데이터베이스, 네트워크, 운영체제의 핵심만 짚어 정리했어요. 깊이보다 "정확히 한 문장으로 설명하기"가 목표예요.</p>
+
+  <h3 class="cat" id="cs-ds">자료구조</h3>
+  <table>
+    <tr><th>구조</th><th>핵심</th></tr>
+    <tr><td>배열</td><td>인덱스로 임의 접근 O(1), 메모리 연속. 중간 삽입/삭제는 O(n).</td></tr>
+    <tr><td>연결 리스트</td><td>노드를 포인터로 연결. 위치를 알면 삽입/삭제 O(1), 임의 접근은 O(n).</td></tr>
+    <tr><td>스택</td><td>LIFO, 나중에 넣은 것이 먼저 나와요. 괄호 검사, 되돌리기.</td></tr>
+    <tr><td>큐</td><td>FIFO, 먼저 넣은 것이 먼저 나와요. BFS, 작업 대기열.</td></tr>
+    <tr><td>해시 테이블</td><td>키를 해시로 매핑해 평균 O(1) 탐색. 서로 다른 키가 같은 칸에 가면 충돌.</td></tr>
+    <tr><td>이진 탐색 트리</td><td>왼쪽 &lt; 부모 &lt; 오른쪽. 균형이 깨지면 최악 O(n).</td></tr>
+    <tr><td>힙</td><td>부모가 자식보다 작거나(최소 힙) 큰 완전 이진 트리. 루트가 최솟값/최댓값.</td></tr>
+  </table>
+  <div class="tip"><b>자주 나오는 함정.</b> 연결 리스트는 임의 접근이 느리고(O(n)), 해시는 충돌을 체이닝이나 개방 주소법으로 해결해요. BST와 힙은 둘 다 트리지만 목적이 달라요(탐색 vs 최댓값/최솟값).</div>
+
+  <h3 class="cat" id="cs-db">데이터베이스</h3>
+  <table>
+    <tr><th>개념</th><th>핵심</th></tr>
+    <tr><td>인덱스</td><td>정렬된 자료구조(보통 B-tree)로 검색을 빠르게. 대신 삽입/갱신 유지 비용이 있어요.</td></tr>
+    <tr><td>정규화</td><td>중복을 줄여 삽입/갱신/삭제 이상 현상을 방지해요.</td></tr>
+    <tr><td>ACID</td><td>원자성(전부 아니면 전무), 일관성, 격리성, 지속성.</td></tr>
+    <tr><td>JOIN</td><td>INNER는 일치하는 행만, OUTER는 일치하지 않는 행도 포함.</td></tr>
+    <tr><td>기본키 / 외래키</td><td>기본키는 행을 유일 식별(중복, NULL 불가). 외래키는 다른 테이블을 참조.</td></tr>
+    <tr><td>SQL vs NoSQL</td><td>관계형은 스키마와 조인, 강한 트랜잭션에 강해요. NoSQL은 유연한 스키마와 수평 확장에 유리.</td></tr>
+  </table>
+
+  <h3 class="cat" id="cs-net">네트워크</h3>
+  <table>
+    <tr><th>개념</th><th>핵심</th></tr>
+    <tr><td>TCP vs UDP</td><td>TCP는 연결지향, 순서 보장과 재전송으로 신뢰성. UDP는 비연결형, 빠르지만 비신뢰.</td></tr>
+    <tr><td>3-way handshake</td><td>SYN -&gt; SYN-ACK -&gt; ACK 순으로 연결을 맺어요.</td></tr>
+    <tr><td>HTTP vs HTTPS</td><td>HTTPS는 TLS(이전 SSL)로 암호화. 포트도 80과 443으로 달라요.</td></tr>
+    <tr><td>상태 코드</td><td>200 성공, 404 자원 없음, 403 권한 없음, 500 서버 오류.</td></tr>
+    <tr><td>DNS</td><td>도메인 이름을 IP 주소로 변환해요.</td></tr>
+    <tr><td>OSI 계층</td><td>네트워크 계층이 IP 라우팅, 전송 계층이 종단 간 신뢰성을 담당.</td></tr>
+  </table>
+
+  <h3 class="cat" id="cs-os">운영체제</h3>
+  <table>
+    <tr><th>개념</th><th>핵심</th></tr>
+    <tr><td>프로세스 vs 스레드</td><td>같은 프로세스의 스레드는 코드/데이터/힙을 공유하고 스택은 따로. 그래서 전환 비용이 적어요.</td></tr>
+    <tr><td>교착 상태</td><td>상호 배제, 점유와 대기, 비선점, 순환 대기 네 조건이 동시에 성립할 때 발생.</td></tr>
+    <tr><td>스케줄링</td><td>FCFS는 비선점(도착 순), Round Robin과 SRT는 선점형.</td></tr>
+    <tr><td>뮤텍스 vs 세마포어</td><td>뮤텍스는 한 번에 하나, 카운팅 세마포어는 정해진 수만큼 동시 접근 허용.</td></tr>
+    <tr><td>가상 메모리</td><td>페이징으로 물리 메모리보다 큰 주소 공간을 제공. 주소 변환에 페이지 테이블.</td></tr>
+    <tr><td>컨텍스트 스위칭</td><td>현재 프로세스 상태를 저장하고 다음 프로세스 상태를 복원. 오버헤드가 있어요.</td></tr>
+  </table>
+
+  <h3>한눈에 정리</h3>
+  <div class="card"><ul class="plain">
+    <li><b>자료구조</b> : 스택 LIFO, 큐 FIFO, 해시 평균 O(1), BST와 힙의 목적 차이.</li>
+    <li><b>DB</b> : 인덱스로 검색 가속, 정규화로 중복 제거, ACID, JOIN 종류.</li>
+    <li><b>네트워크</b> : TCP 신뢰/UDP 속도, 3-way handshake, HTTPS 암호화, 상태 코드.</li>
+    <li><b>OS</b> : 프로세스와 스레드, 교착 상태 네 조건, 스케줄링, 동기화.</li>
+  </ul></div>
+</div>
+
+<!-- 7. 면접 단골 질문 -->
+<div class="topic" id="qinterview">
   <div class="crumb">면접</div>
   <h2>면접 단골 질문</h2>
   <p class="lead">질문을 눌러 모범 답변 포인트를 확인해요. 외우기보다 내 경험과 엮어 설명하는 연습을 해요.</p>
   <div id="ivBox"></div>
 </div>
 
-<!-- 5. CS 지식 퀴즈 -->
-<div class="topic" id="qc">
-  <div class="crumb">CS</div>
-  <h2>CS 지식 퀴즈</h2>
-  <p class="lead">자료구조, 데이터베이스, 네트워크, 운영체제 핵심을 점검해요. 개발자와 QA 면접 공통이에요.</p>
-  <div id="csQuiz"></div>
-</div>
-
-<!-- 6. 다음 단계 -->
-<div class="topic" id="qn">
+<!-- 8. 다음 단계 -->
+<div class="topic" id="qnext">
   <div class="crumb">마무리</div>
   <h2>다음 단계</h2>
-  <p class="lead">이론을 익혔다면 실전으로 이어가요.</p>
+  <p class="lead">이론을 익혔다면 실전으로 이어가요. 퀴즈로 점검하고 싶다면 학습 경로의 QA 트랙에서 단계별로 풀 수 있어요.</p>
   <div class="nextlinks">
-    <a href="sql.html">SQL 연습하기</a>
+    <a href="path.html">학습 경로 (QA 트랙)</a>
+    <a class="ghost" href="sql.html">SQL 연습하기</a>
     <a class="ghost" href="practice.html">알고리즘 예시 문제</a>
     <a class="ghost" href="run/?mode=exam">모의고사 보기</a>
   </div>
+  <div class="tip"><b>퀴즈로 점검하기.</b> 이 페이지는 개념을 정리하는 곳이에요. 배운 내용을 문제로 풀어 보려면 <a href="path.html">학습 경로의 QA 트랙</a>에서 개념 퀴즈와 SQL, 기초 알고리즘을 순서대로 풀어 봐요.</div>
 </div>
 
 <div class="pager">
@@ -362,53 +480,16 @@
 <script defer src="assets/gamify.js"></script>
 <script>
 (function () {
-  var QA = window.CT_QA || { techniques: [], design: [], cs: [], theoryQuiz: [], interview: [], automation: [] };
-  var QUIZ_KEY = 'ct_qa_quiz_v1';
-  var quizState; try { quizState = JSON.parse(localStorage.getItem(QUIZ_KEY)) || {}; } catch (e) { quizState = {}; }
-  function saveQuiz() { try { localStorage.setItem(QUIZ_KEY, JSON.stringify(quizState)); } catch (e) {} }
+  var QA = window.CT_QA || { interview: [] };
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
 
-  // ===== CT_QA 데이터를 개념정리와 동일한 .quiz 마크업으로 렌더 =====
-  function quizCard(qid, q, n) {
-    var opts = q.o.map(function (o, oi) { return '<button data-ok="' + (oi === q.a ? 1 : 0) + '" type="button">' + esc(o) + '</button>'; }).join('');
-    return '<div class="quiz" data-qid="' + qid + '">' +
-      '<div class="qhead"><span class="tag">QUIZ ' + n + '</span><span class="qtext">' + esc(q.q) + '</span></div>' +
-      '<div class="opts">' + opts + '</div>' +
-      '<div class="expl"><b class="ok">해설</b><br>' + esc(q.e) + '</div>' +
-      '<button class="retry" type="button">다시 풀기</button></div>';
-  }
-  function renderQuizList(elId, arr, prefix) {
-    var el = document.getElementById(elId); if (!el || !arr.length) return;
-    el.innerHTML = arr.map(function (q, i) { return quizCard(prefix + i, q, i + 1); }).join('');
-  }
-
-  // 설계 기법 카드
-  var techBox = document.getElementById('techBox');
-  if (techBox) techBox.innerHTML = (QA.techniques || []).map(function (t) {
-    return '<div class="icard"><h4>' + esc(t.title) + '</h4><p>' + esc(t.desc) + '</p><span class="tag">예시</span><p style="margin-top:6px;color:var(--ink-soft);font-size:13px;">' + esc(t.ex || t.example || '') + '</p></div>';
-  }).join('');
-
-  // 면접 Q&A 아코디언
+  // 면접 Q&A 아코디언 (단일 소스 CT_QA.interview)
   var ivBox = document.getElementById('ivBox');
   if (ivBox) ivBox.innerHTML = (QA.interview || []).map(function (it) {
     var pts = (it.points || []).map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('');
     return '<details class="iv"><summary><span class="cat">' + esc(it.cat) + '</span><span class="q">' + esc(it.q) + '</span></summary>' +
       '<div class="ans"><div class="lead">이렇게 답하면 좋아요</div><ul>' + pts + '</ul></div></details>';
   }).join('');
-
-  // 퀴즈 렌더 (이론 = theoryQuiz + design, 자동화, CS는 카테고리별)
-  renderQuizList('autoQuiz', QA.automation || [], 'a');
-  renderQuizList('theoryQuiz', (QA.theoryQuiz || []).concat(QA.design || []), 't');
-  var csEl = document.getElementById('csQuiz');
-  if (csEl) {
-    var cats = []; (QA.cs || []).forEach(function (q) { if (cats.indexOf(q.cat) < 0) cats.push(q.cat); });
-    var html = '';
-    cats.forEach(function (cat) {
-      html += '<h4 class="cat">' + esc(cat) + '</h4>';
-      (QA.cs || []).forEach(function (q, i) { if (q.cat === cat) html += quizCard('c' + i, q, i + 1); });
-    });
-    csEl.innerHTML = html;
-  }
 
   // ===== 주제 전환 (개념정리와 동일) =====
   var menuBtns = [].slice.call(document.querySelectorAll('#menu button'));
@@ -422,6 +503,7 @@
     document.getElementById('nextBtn').disabled = idx === TOPICS.length - 1;
     window.scrollTo({ top: 0 });
     try { localStorage.setItem('ct_qa_last_topic', TOPICS[idx]); } catch (e) {}
+    if (window.ctStampActivity) window.ctStampActivity();
   }
   menuBtns.forEach(function (b, i) { b.addEventListener('click', function () { show(i); }); });
   document.getElementById('prevBtn').addEventListener('click', function () { if (current > 0) show(current - 1); });
@@ -439,48 +521,6 @@
     });
     document.getElementById('noRes').style.display = visible === 0 ? 'block' : 'none';
   });
-
-  // ===== 퀴즈 채점 + 사이드바 배지 =====
-  function updateMenuBadges() {
-    TOPICS.forEach(function (id, i) {
-      var quizzes = document.querySelectorAll('#' + id + ' .quiz'), done = 0;
-      quizzes.forEach(function (qz) { var s = quizState[qz.dataset.qid]; if (s === true || (s && s.correct)) done++; });
-      var old = menuBtns[i].querySelector('.qdone'); if (old) old.remove();
-      if (quizzes.length > 0 && done > 0) {
-        var span = document.createElement('span');
-        span.className = 'qdone';
-        span.textContent = done === quizzes.length ? '완료' : done + '/' + quizzes.length;
-        menuBtns[i].appendChild(span);
-      }
-    });
-  }
-  function gradeQuiz(quiz, chosenBtn) {
-    quiz.querySelectorAll('.opts button').forEach(function (b) { if (b.dataset.ok === '1') b.classList.add('correct'); });
-    if (chosenBtn && chosenBtn.dataset.ok !== '1') chosenBtn.classList.add('wrong');
-    quiz.classList.add('answered');
-  }
-  document.querySelectorAll('.quiz').forEach(function (quiz) {
-    var qid = quiz.dataset.qid;
-    var buttons = quiz.querySelectorAll('.opts button');
-    buttons.forEach(function (b) {
-      b.addEventListener('click', function () {
-        if (quiz.classList.contains('answered')) return;
-        quizState[qid] = { correct: b.dataset.ok === '1' };
-        saveQuiz();
-        if (window.ctStampActivity) window.ctStampActivity();
-        if (window.ctTrack) window.ctTrack('qa_quiz', { qid: qid, correct: b.dataset.ok === '1' });
-        gradeQuiz(quiz, b);
-        updateMenuBadges();
-      });
-    });
-    quiz.querySelector('.retry').addEventListener('click', function () {
-      quiz.classList.remove('answered');
-      buttons.forEach(function (b) { b.classList.remove('correct', 'wrong'); });
-      delete quizState[qid]; saveQuiz(); updateMenuBadges();
-    });
-    if (quizState[qid]) gradeQuiz(quiz, null);
-  });
-  updateMenuBadges();
 
   // ===== 버그 리포트 셀프 점검 =====
   (function () {
@@ -507,7 +547,7 @@
     });
   })();
 
-  // ===== 해시로 주제 열기 (#qt 등), 없으면 마지막 본 주제 =====
+  // ===== 해시로 주제 열기 (#qcs 등), 없으면 마지막 본 주제 =====
   function showByHash() {
     var h = location.hash.replace('#', '');
     var i = TOPICS.indexOf(h);

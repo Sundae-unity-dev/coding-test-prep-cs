@@ -239,10 +239,12 @@
     ].forEach(function (e) { items.push({ t: e[0], sub: '템플릿 / ' + e[2], href: 'templates.html#tpl-' + e[1], kind: '템플릿', tags: e[3] }); });
     [
       ['QA 직무와 채용', 'qj', ['qa', '직무', '채용']],
-      ['QA 테스트 이론', 'qt', ['qa', '경계값', '동등분할', '테스트 기법', '레벨', '자동화']],
-      ['버그 리포트와 TC', 'qb', ['qa', '버그', '리포트', 'bug report', '테스트 케이스']],
-      ['QA 면접 단골 질문', 'qi', ['qa', '면접', 'interview']],
-      ['CS 지식 퀴즈', 'qc', ['qa', 'cs', '네트워크', '데이터베이스', '운영체제']]
+      ['테스트 레벨과 유형', 'qlevel', ['qa', '테스트 레벨', '단위', '통합', '시스템', '인수', '기능', '비기능']],
+      ['테스트 프로세스와 자동화', 'qproc', ['qa', '자동화', '피라미드', '회귀', '스모크', 'selenium']],
+      ['테스트 설계 기법', 'qdesign', ['qa', '경계값', '동등분할', '결정 테이블', '상태 전이', '페어와이즈']],
+      ['버그 리포트와 TC', 'qbug', ['qa', '버그', '리포트', 'bug report', '테스트 케이스']],
+      ['QA 면접 단골 질문', 'qinterview', ['qa', '면접', 'interview']],
+      ['CS 핵심 (자료구조 / DB / 네트워크 / OS)', 'qcs', ['qa', 'cs', '자료구조', '네트워크', '데이터베이스', '운영체제', 'tcp', 'acid']]
     ].forEach(function (e) { items.push({ t: e[0], sub: '개념정리(QA)', href: 'qa.html#' + e[1], kind: 'QA', tags: e[2] }); });
     items.push({ t: 'SQL 연습', sub: '브라우저 SQLite 채점', href: 'sql.html', kind: 'SQL', tags: ['sql', 'query', '쿼리', 'select', 'join'] });
     // 확장 개념(CT_CONCEPTS 미등록분)도 검색에 노출해요. 제목은 concepts.html 사이드바와 맞춰 주세요.
