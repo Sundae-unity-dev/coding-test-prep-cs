@@ -99,7 +99,7 @@
     var pres = avail.map(function (l, i) {
       return '<pre class="lang-' + l[0] + (i === 0 ? '' : ' hide') + '">' + esc(t.code[l[0]]) + '</pre>';
     }).join('');
-    return '<div class="tpl" data-id="' + t.id + '">'
+    return '<div class="tpl" id="tpl-' + t.id + '" data-id="' + t.id + '">'
       + '<h2><span class="tcat">' + esc(t.cat) + '</span>' + esc(t.title) + '</h2>'
       + '<p class="tnote">' + esc(t.note) + '</p>'
       + '<div class="langs">' + tabs + '</div>'

@@ -264,7 +264,13 @@
   // 시험 D-day 목표 + 페이스, 간격 반복 복습 (goal.js/srs.js 는 defer 라 DOMContentLoaded 시점에 준비됨)
   document.addEventListener('DOMContentLoaded', function () {
     if (window.ctGoal) window.ctGoal.render(document.getElementById('goalBar'), solvedN, TOTAL);
-    if (window.ctSrs) window.ctSrs.render(document.getElementById('srsList'), quiz, window.CT_CONCEPTS || []);
+    if (window.ctSrs) {
+      window.ctSrs.render(document.getElementById('srsList'), quiz, window.CT_CONCEPTS || []);
+      // '복습 대기' 통계에 오늘 복습할 주제 수도 더해 실제 대기량을 보여줘요.
+      var dueN = window.ctSrs.due(quiz, window.CT_CONCEPTS || []).length;
+      var cr = document.getElementById('cReview');
+      if (cr) cr.textContent = reviewN + dueN;
+    }
     if (window.ctFocus) window.ctFocus.render(document.getElementById('focusBox'));
   });
   var reviewN = Object.keys(review).filter(function (k) { var r = review[k]; return r && (r.f || r.s); }).length;
@@ -327,6 +333,10 @@
       if (qaCor > 0) ins.push('QA/면접 지식 퀴즈를 <b>' + qaCor + '개</b> 맞혔어요. <a href="qa.html">이어서 풀기</a>');
       else ins.push('면접도 함께 준비해요. <a href="qa.html">QA/면접 지식 퀴즈</a>로 CS 기초를 점검해 봐요.');
     }
+    // 집중 타이머 누적 시간(이번 주)을 인사이트로 보여줘요.
+    var stlog = rd('ct_studytime_v1'), todayMin = stlog[ymd(new Date())] || 0, weekMin = 0, sd = new Date();
+    for (var wi = 0; wi < 7; wi++) { weekMin += stlog[ymd(sd)] || 0; sd.setDate(sd.getDate() - 1); }
+    if (weekMin > 0) ins.push('이번 주 집중 학습 <b>' + weekMin + '분</b>' + (todayMin ? ' (오늘 ' + todayMin + '분)' : '') + '. 집중 타이머로 꾸준함을 이어가요.');
     if (ins.length) {
       document.getElementById('insights').innerHTML = ins.map(function (s) { return '<li>' + s + '</li>'; }).join('');
       document.getElementById('insightSec').style.display = '';

@@ -219,6 +219,33 @@
     (window.CT_CONCEPTS || []).forEach(function (c) { items.push({ t: c.t, sub: '개념 ' + (c.n || ''), href: 'concepts.html#' + c.id, kind: '개념' }); });
     (window.CT_PROBLEMS || []).filter(function (p) { return !p.g; }).forEach(function (p) { items.push({ t: p.t, sub: (p.tags && p.tags.length ? p.tags.join(', ') : '예시 문제'), href: 'practice.html#p-' + p.id, kind: '문제', tags: p.tags || [] }); });
 
+    // 템플릿/QA/SQL 은 데이터가 각 페이지에서만 로드돼요. 전역 검색에 노출하려고 가벼운 색인을 여기 둬요.
+    // (제목은 templates-data.js / qa-data.js 와 맞춰 주세요.)
+    [
+      ['빠른 입출력', 'io', '기본', ['io', 'input', '입력', '출력']],
+      ['정렬과 커스텀 비교', 'sort', '기본', ['sort', '정렬', '비교']],
+      ['이분 탐색 (lower / upper bound)', 'bsearch', '탐색', ['binary search', '이진탐색', 'lowerbound', 'upperbound']],
+      ['BFS (최단 거리)', 'bfs', '그래프', ['bfs', '너비우선', '최단거리', '격자']],
+      ['DFS (재귀)', 'dfs', '그래프', ['dfs', '깊이우선', '재귀']],
+      ['다익스트라 (최단 경로)', 'dijkstra', '그래프', ['dijkstra', '최단경로', '우선순위큐']],
+      ['동적 계획법 골격', 'dp', 'DP', ['dp', '동적계획법', '점화식', '메모이제이션']],
+      ['유니온 파인드 (분리 집합)', 'dsu', '그래프', ['union find', '유니온파인드', '분리집합', 'dsu']],
+      ['에라토스테네스의 체', 'sieve', '수학', ['sieve', '소수', '에라토스테네스']],
+      ['최대공약수와 최소공배수', 'gcd', '수학', ['gcd', 'lcm', '유클리드', '최대공약수', '최소공배수']],
+      ['순열 / 조합 / 백트래킹', 'backtrack', '탐색', ['permutation', 'combination', '백트래킹', '순열', '조합']],
+      ['투 포인터 / 슬라이딩 윈도우', 'twopointer', '배열', ['two pointer', '투포인터', '슬라이딩윈도우']],
+      ['누적 합', 'prefix', '배열', ['prefix sum', '누적합', '구간합']],
+      ['위상 정렬 (Kahn)', 'toposort', '그래프', ['topological sort', '위상정렬', 'kahn']]
+    ].forEach(function (e) { items.push({ t: e[0], sub: '템플릿 / ' + e[2], href: 'templates.html#tpl-' + e[1], kind: '템플릿', tags: e[3] }); });
+    [
+      ['QA 직무와 채용', 's-jobs', ['qa', '직무', '채용']],
+      ['QA 테스트 기법', 's-theory', ['qa', '경계값', '동등분할', '테스트 기법']],
+      ['좋은 버그 리포트', 's-bug', ['qa', '버그', '리포트', 'bug report']],
+      ['QA 면접 대비', 's-interview', ['qa', '면접', 'interview']],
+      ['QA 기초 CS', 's-cs', ['qa', 'cs', '네트워크', '데이터베이스']]
+    ].forEach(function (e) { items.push({ t: e[0], sub: '개념정리(QA)', href: 'qa.html#' + e[1], kind: 'QA', tags: e[2] }); });
+    items.push({ t: 'SQL 연습', sub: '브라우저 SQLite 채점', href: 'sql.html', kind: 'SQL', tags: ['sql', 'query', '쿼리', 'select', 'join'] });
+
     var btn = document.createElement('button');
     btn.type = 'button'; btn.className = 'gs-trigger'; btn.setAttribute('aria-label', '검색'); btn.title = '검색 (단축키 /)';
     btn.textContent = '🔍';
