@@ -20,14 +20,27 @@
   var track = (function () { try { return localStorage.getItem('ct_path_track') === 'qa' ? 'qa' : 'dev'; } catch (e) { return 'dev'; } })();
   var QA = window.CT_QA || {};
   var QA_CS = QA.cs || [];
+  function csCat(c) { return QA_CS.filter(function (q) { return q.cat === c; }); }
+  // QA 학습 경로 레슨. 개념정리(QA) 18주제 순서와 맞췄고, ref 로 해당 개념 주제 앵커에 연결해요.
   var QA_LESSONS = [
-    { id: 'qa-design', t: '테스트 설계', quizzes: QA.design || [] },
-    { id: 'qa-theory', t: '테스트 이론', quizzes: QA.theoryQuiz || [] },
-    { id: 'qa-ds', t: '자료구조', quizzes: QA_CS.filter(function (q) { return q.cat === '자료구조'; }) },
-    { id: 'qa-db', t: '데이터베이스', quizzes: QA_CS.filter(function (q) { return q.cat === '데이터베이스'; }) },
-    { id: 'qa-net', t: '네트워크', quizzes: QA_CS.filter(function (q) { return q.cat === '네트워크'; }) },
-    { id: 'qa-os', t: '운영체제', quizzes: QA_CS.filter(function (q) { return q.cat === '운영체제'; }) }
-  ];
+    { id: 'qa-basics', t: '소프트웨어 테스트 기초', ref: '#qintro', quizzes: QA.basics || [] },
+    { id: 'qa-sdlc', t: '개발 생명주기 (SDLC)', ref: '#qsdlc', quizzes: QA.sdlc || [] },
+    { id: 'qa-agile', t: '애자일과 스크럼', ref: '#qagile', quizzes: QA.agile || [] },
+    { id: 'qa-stlc', t: '테스팅 프로세스 (STLC)', ref: '#qstlc', quizzes: QA.stlc || [] },
+    { id: 'qa-theory', t: '테스트 레벨과 유형', ref: '#qlevel', quizzes: QA.theoryQuiz || [] },
+    { id: 'qa-design', t: '테스트 설계 기법', ref: '#qdesign', quizzes: QA.design || [] },
+    { id: 'qa-mgmt', t: '테스트 관리', ref: '#qmanage', quizzes: QA.mgmt || [] },
+    { id: 'qa-arch', t: '앱 구조와 API', ref: '#qarch', quizzes: QA.arch || [] },
+    { id: 'qa-web', t: '웹 테스트', ref: '#qweb', quizzes: QA.web || [] },
+    { id: 'qa-ds', t: '자료구조', ref: '#qcs', quizzes: csCat('자료구조') },
+    { id: 'qa-db', t: '데이터베이스', ref: '#qcs', quizzes: csCat('데이터베이스') },
+    { id: 'qa-net', t: '네트워크', ref: '#qcs', quizzes: csCat('네트워크') },
+    { id: 'qa-os', t: '운영체제', ref: '#qcs', quizzes: csCat('운영체제') },
+    { id: 'qa-bug', t: '버그와 결함 관리', ref: '#qbug', quizzes: QA.bug || [] },
+    { id: 'qa-auto', t: '자동화 도구', ref: '#qauto', quizzes: QA.automation || [] },
+    { id: 'qa-python', t: 'Python 자동화', ref: '#qpython', quizzes: QA.python || [] },
+    { id: 'qa-cicd', t: 'CI/CD와 Jenkins', ref: '#qcicd', quizzes: QA.cicd || [] }
+  ].filter(function (l) { return l.quizzes && l.quizzes.length; });
   var QA_QUIZ = {}; QA_LESSONS.forEach(function (l) { QA_QUIZ[l.id] = l.quizzes; });
   var QA_SQL = (window.CT_SQL && window.CT_SQL.problems) || [];
   var qaAlg = examples.filter(function (p) { return p.lv === '입문' || p.lv === '기초'; });
@@ -74,7 +87,7 @@
     var cur = ('L:' + c.id) === currentKey, act = activeTid === c.id;
     var cls = 'lesson ' + (done ? 'done' : (cur ? 'current' : 'todo')) + (act ? ' active' : '');
     var now = cur ? '<span class="pnow">지금 할 차례</span>' : '';
-    var href = track === 'qa' ? 'qa.html' : 'concepts.html#' + c.id;
+    var href = track === 'qa' ? ('qa.html' + (c.ref || '')) : 'concepts.html#' + c.id;
     return '<div class="pnode ' + cls + '" style="transform:translateX(' + wind() + 'px)">' +
       '<a class="pcircle" href="' + href + '" data-lesson="' + c.id + '" title="개념 퀴즈: ' + esc(c.t) + '">' + (done ? '✓' : '📖') + '</a>' +
       '<span class="plabel">' + esc(c.t) + '</span><span class="pquiz">퀴즈 ' + got + '/' + total + '</span>' + now + '</div>';
@@ -226,7 +239,7 @@
 
     panel.innerHTML =
       '<div class="lp-head"><h2>📖 ' + esc(c.t) + '</h2><button class="lp-close" id="lpClose" aria-label="닫기">×</button></div>' +
-      '<div class="lp-sub">개념을 이해했는지 확인하는 문제예요. 다 맞히면 레슨이 완료돼요. <a href="' + (track === 'qa' ? 'qa.html' : 'concepts.html#' + activeTid) + '">개념 자세히 보기 →</a></div>' +
+      '<div class="lp-sub">개념을 이해했는지 확인하는 문제예요. 다 맞히면 레슨이 완료돼요. <a href="' + (track === 'qa' ? ('qa.html' + (c.ref || '')) : 'concepts.html#' + activeTid) + '">개념 자세히 보기 →</a></div>' +
       '<div class="lp-prog"><span class="bar"><i style="width:' + pct + '%"></i></span><span class="n">' + got + ' / ' + total + ' 정답</span></div>' +
       '<div class="qz-q"><div class="qq"><span class="qn">Q' + (curIdx + 1) + '.</span><span class="qtag">' + tag + '</span>' + blankify(q.q, t === 'fill' ? 'lpBlank' : null) + '</div>' + body +
       '<div class="qz-ex' + (stored ? ' show' : '') + '" id="lpEx" aria-live="polite"><b>정답</b> : ' + esc(q.e) + '</div></div>' +
