@@ -33,7 +33,21 @@ window.CT_SQL = {
     "(15,5,'키보드',45000,'완료','2023-09-30'),",
     "(16,4,'모니터',230000,'완료','2023-10-01'),",
     "(17,3,'마우스',25000,'완료','2023-10-02'),",
-    "(18,8,'웹캠',60000,'완료','2023-10-03');"
+    "(18,8,'웹캠',60000,'완료','2023-10-03');",
+    "CREATE TABLE reviews (id INTEGER PRIMARY KEY, order_id INTEGER, rating INTEGER, content TEXT);",
+    "INSERT INTO reviews VALUES",
+    "(1,1,5,'타건감이 좋아요'),",
+    "(2,2,4,'가볍고 편해요'),",
+    "(3,3,5,'화면이 선명해요'),",
+    "(4,5,3,'무난해요'),",
+    "(5,6,4,'착용감이 좋아요'),",
+    "(6,8,5,'화질이 만족스러워요'),",
+    "(7,9,4,'포트가 넉넉해요'),",
+    "(8,10,2,'생각보다 별로예요'),",
+    "(9,12,4,'재구매 의사 있어요'),",
+    "(10,13,5,'성능이 최고예요'),",
+    "(11,15,3,'평범해요'),",
+    "(12,18,4,'선명하고 좋아요');"
   ].join("\n"),
   problems: [
     {
@@ -131,6 +145,78 @@ window.CT_SQL = {
       prompt: "상태가 '완료'인 주문을 2건 이상 한 회원의 이름(name)을 조회하세요.",
       hint: "완료만 거른 뒤 GROUP BY 하고 HAVING COUNT(*) >= 2 로 걸러요.",
       answer: "SELECT m.name FROM members m JOIN orders o ON m.id = o.member_id WHERE o.status = '완료' GROUP BY m.id, m.name HAVING COUNT(*) >= 2;"
+    },
+    {
+      id: "member-order-count", title: "회원별 주문 건수 (0건 포함)", level: "mid", ordered: true,
+      prompt: "모든 회원에 대해 이름(name)과 주문 건수를 id 오름차순으로 조회하세요. 주문이 한 건도 없는 회원은 0으로 나와야 해요.",
+      hint: "LEFT JOIN 으로 주문이 없는 회원도 남기고, COUNT 는 주문 컬럼(o.id)을 세요. COUNT(*) 는 0이 안 나와요.",
+      answer: "SELECT m.name, COUNT(o.id) AS cnt FROM members m LEFT JOIN orders o ON m.id = o.member_id GROUP BY m.id, m.name ORDER BY m.id;"
+    },
+    {
+      id: "sep-orders", title: "9월 주문 수", level: "basic", ordered: false,
+      prompt: "2023년 9월에 주문된(ordered_at) 주문이 몇 건인지 한 개의 값으로 조회하세요.",
+      hint: "날짜가 'YYYY-MM-DD' 문자열이라 LIKE '2023-09%' 로 거를 수 있어요.",
+      answer: "SELECT COUNT(*) AS cnt FROM orders WHERE ordered_at LIKE '2023-09%';"
+    },
+    {
+      id: "grade-avg", title: "등급별 완료 주문 평균액", level: "mid", ordered: false,
+      prompt: "상태가 '완료'인 주문만으로 회원 등급(grade)별 평균 주문 금액을 grade 와 평균값 두 컬럼으로 조회하세요.",
+      hint: "members 와 orders 를 JOIN 하고 완료만 거른 뒤 GROUP BY grade 로 AVG(amount) 를 구해요.",
+      answer: "SELECT m.grade, AVG(o.amount) AS avg_amount FROM members m JOIN orders o ON m.id = o.member_id WHERE o.status = '완료' GROUP BY m.grade;"
+    },
+    {
+      id: "city-sales", title: "도시별 완료 매출", level: "mid", ordered: true,
+      prompt: "상태가 '완료'인 주문만으로 도시(city)별 매출 합계를 구하고, 합계가 큰 순으로 city 와 합계를 조회하세요.",
+      hint: "JOIN 후 완료만 거르고 GROUP BY city, SUM(amount), ORDER BY 합계 DESC.",
+      answer: "SELECT m.city, SUM(o.amount) AS total FROM members m JOIN orders o ON m.id = o.member_id WHERE o.status = '완료' GROUP BY m.city ORDER BY total DESC;"
+    },
+    {
+      id: "mid-amount", title: "중간 금액대 주문", level: "basic", ordered: false,
+      prompt: "주문 금액(amount)이 30000 이상 100000 이하인 주문의 product 와 amount 를 조회하세요.",
+      hint: "BETWEEN 30000 AND 100000 을 WHERE 에 쓸 수 있어요.",
+      answer: "SELECT product, amount FROM orders WHERE amount BETWEEN 30000 AND 100000;"
+    },
+    {
+      id: "mouse-like", title: "마우스 종류 주문", level: "basic", ordered: false,
+      prompt: "제품명(product)에 '마우스' 가 들어가는 주문의 id 와 product 를 조회하세요. (마우스, 마우스패드 등)",
+      hint: "LIKE '%마우스%' 로 부분 일치를 검색해요.",
+      answer: "SELECT id, product FROM orders WHERE product LIKE '%마우스%';"
+    },
+    {
+      id: "distinct-products", title: "주문된 제품 가짓수", level: "basic", ordered: false,
+      prompt: "주문된 서로 다른 제품(product)이 몇 가지인지 한 개의 값으로 조회하세요.",
+      hint: "COUNT(DISTINCT product) 를 써요.",
+      answer: "SELECT COUNT(DISTINCT product) AS cnt FROM orders;"
+    },
+    {
+      id: "laptop-buyers", title: "노트북 구매 회원", level: "mid", ordered: false,
+      prompt: "'노트북' 을 주문한 적이 있는 회원의 이름(name)을 조회하세요.",
+      hint: "id IN (SELECT member_id FROM orders WHERE product = '노트북') 처럼 서브쿼리를 써요.",
+      answer: "SELECT name FROM members WHERE id IN (SELECT member_id FROM orders WHERE product = '노트북');"
+    },
+    {
+      id: "member-max", title: "회원별 최고 완료 주문액", level: "mid", ordered: false,
+      prompt: "상태가 '완료'인 주문에 대해, 회원 이름(name)과 그 회원의 가장 비싼 주문 금액을 조회하세요. 완료 주문이 있는 회원만 나오면 돼요.",
+      hint: "JOIN 후 완료만 거르고 GROUP BY 회원, MAX(amount) 를 구해요.",
+      answer: "SELECT m.name, MAX(o.amount) AS max_amount FROM members m JOIN orders o ON m.id = o.member_id WHERE o.status = '완료' GROUP BY m.id, m.name;"
+    },
+    {
+      id: "good-products", title: "평점 좋은 제품", level: "hard", ordered: false,
+      prompt: "리뷰(reviews)의 평균 평점(rating)이 4 이상인 제품(product)을 조회하세요.",
+      hint: "reviews 와 orders 를 JOIN 해 제품별로 GROUP BY 하고 HAVING AVG(rating) >= 4 로 걸러요.",
+      answer: "SELECT o.product FROM reviews r JOIN orders o ON r.order_id = o.id GROUP BY o.product HAVING AVG(r.rating) >= 4;"
+    },
+    {
+      id: "no-review", title: "리뷰 없는 완료 주문", level: "hard", ordered: false,
+      prompt: "상태가 '완료'인데 리뷰(reviews)가 하나도 없는 주문의 id 와 product 를 조회하세요.",
+      hint: "id NOT IN (SELECT order_id FROM reviews) 와 status 조건을 함께 써요.",
+      answer: "SELECT id, product FROM orders WHERE status = '완료' AND id NOT IN (SELECT order_id FROM reviews);"
+    },
+    {
+      id: "top-rated-member", title: "평균 평점 1위 회원", level: "hard", ordered: true,
+      prompt: "받은 리뷰의 평균 평점이 가장 높은 회원 한 명의 이름(name)을 조회하세요.",
+      hint: "members, orders, reviews 를 모두 JOIN 해 회원별 AVG(rating) 로 정렬하고 LIMIT 1 을 써요.",
+      answer: "SELECT m.name FROM members m JOIN orders o ON m.id = o.member_id JOIN reviews r ON r.order_id = o.id GROUP BY m.id, m.name ORDER BY AVG(r.rating) DESC LIMIT 1;"
     }
   ]
 };
