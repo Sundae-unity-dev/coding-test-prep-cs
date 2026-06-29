@@ -262,7 +262,8 @@
       ['좌표 압축', 't34', ['좌표 압축', 'coordinate compression', '순위', 'rank', '압축']],
       ['스위핑 (라인 스윕)', 't35', ['스위핑', 'sweeping', 'line sweep', '구간 겹침', '이벤트']],
       ['최소 공통 조상 (LCA)', 't36', ['lca', '최소 공통 조상', 'lowest common ancestor', '트리', '조상']],
-      ['기하 기초 (CCW)', 't37', ['기하', 'ccw', '외적', 'cross product', '선분 교차', '볼록 껍질']]
+      ['기하 기초 (CCW)', 't37', ['기하', 'ccw', '외적', 'cross product', '선분 교차', '볼록 껍질']],
+      ['이렇게 묶어서 출제돼요', 't38', ['조합 패턴', '복합 유형', '묶어서 출제', '파라메트릭', '신호', 'combine']]
     ].forEach(function (e) { items.push({ t: e[0], sub: '개념', href: 'concepts.html#' + e[1], kind: '개념', tags: e[2] }); });
 
     var btn = document.createElement('button');
