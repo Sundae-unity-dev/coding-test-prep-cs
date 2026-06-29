@@ -245,6 +245,14 @@
       ['QA 기초 CS', 's-cs', ['qa', 'cs', '네트워크', '데이터베이스']]
     ].forEach(function (e) { items.push({ t: e[0], sub: '개념정리(QA)', href: 'qa.html#' + e[1], kind: 'QA', tags: e[2] }); });
     items.push({ t: 'SQL 연습', sub: '브라우저 SQLite 채점', href: 'sql.html', kind: 'SQL', tags: ['sql', 'query', '쿼리', 'select', 'join'] });
+    // 확장 개념(CT_CONCEPTS 미등록분)도 검색에 노출해요. 제목은 concepts.html 사이드바와 맞춰 주세요.
+    [
+      ['트리 기본과 순회', 't22', ['tree', '트리', '이진트리', '순회', '전위', '중위', '후위']],
+      ['DP 핵심 유형 (LIS / LCS / 배낭)', 't23', ['dp', 'lis', 'lcs', '배낭', 'knapsack', '최장 증가', '최장 공통']],
+      ['최소 신장 트리 (크루스칼 / 프림)', 't24', ['mst', '크루스칼', 'kruskal', '프림', 'prim', '신장 트리']],
+      ['플로이드-워셜', 't25', ['floyd', 'warshall', '플로이드', '워셜', '전체 쌍 최단경로']],
+      ['벨만-포드', 't26', ['bellman', 'ford', '벨만', '포드', '음수 간선', '음수 사이클']]
+    ].forEach(function (e) { items.push({ t: e[0], sub: '개념', href: 'concepts.html#' + e[1], kind: '개념', tags: e[2] }); });
 
     var btn = document.createElement('button');
     btn.type = 'button'; btn.className = 'gs-trigger'; btn.setAttribute('aria-label', '검색'); btn.title = '검색 (단축키 /)';

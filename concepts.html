@@ -325,8 +325,14 @@
     <div class="grp">수학</div>
     <button data-topic="t20" data-kw="소수 prime 에라토스테네스 sieve 체 약수 제곱근 sqrt 소인수">19. 소수와 에라토스테네스의 체</button>
     <button data-topic="t21" data-kw="최대공약수 gcd 최소공배수 lcm 유클리드 호제법 euclid 나머지 약수 배수">20. 유클리드 호제법</button>
+    <div class="grp">확장</div>
+    <button data-topic="t22" data-kw="트리 tree 이진트리 binary 순회 traversal 전위 중위 후위 preorder inorder postorder 루트 리프 부모 자식">21. 트리 기본과 순회</button>
+    <button data-topic="t23" data-kw="dp 다이나믹 lis lcs 배낭 knapsack 최장 증가 부분 수열 최장 공통 동전 점화식 유형">22. DP 핵심 유형 (LIS / LCS / 배낭)</button>
+    <button data-topic="t24" data-kw="최소 신장 트리 mst 크루스칼 kruskal 프림 prim 간선 가중치 유니온파인드 연결">23. 최소 신장 트리 (크루스칼 / 프림)</button>
+    <button data-topic="t25" data-kw="플로이드 워셜 floyd warshall 전체 쌍 최단경로 all pairs 경유 거쳐가는">24. 플로이드-워셜</button>
+    <button data-topic="t26" data-kw="벨만 포드 bellman ford 음수 간선 음수 사이클 완화 relax 최단경로">25. 벨만-포드</button>
     <div class="grp">마무리</div>
-    <button data-topic="t17" data-kw="추천문제 프로그래머스 유형별 매핑 problem">21. 유형별 추천 문제</button>
+    <button data-topic="t17" data-kw="추천문제 프로그래머스 유형별 매핑 problem">26. 유형별 추천 문제</button>
   </div>
   <div class="nores" id="noRes">검색 결과가 없어요</div>
 </aside>
@@ -2107,7 +2113,401 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
   </div>
 </div>
 
-<!-- ==================== 21. 유형별 추천 문제 ==================== -->
+<!-- ==================== 21. 트리 기본과 순회 ==================== -->
+<div class="topic" id="t22">
+  <div class="crumb">자료구조</div>
+  <h2>트리 기본과 순회</h2>
+  <p class="lead">사이클 없이 위에서 아래로 뻗어 내려가는 자료구조예요. 폴더 구조, 가계도, 댓글의 답글이 모두 트리이고 코딩 테스트에 아주 자주 나와요.</p>
+
+  <h3>트리란 무엇인가</h3>
+  <p>노드 N개를 간선 N-1개로 이어, 어떤 두 노드 사이 경로가 딱 하나뿐인 그래프예요. 맨 위 노드를 루트, 자식이 없는 끝 노드를 리프라고 불러요. "사이클이 없는 연결 그래프"라는 점이 일반 그래프와 다른 핵심이에요.</p>
+  <div class="tip"><strong>그래프의 특수한 경우예요</strong> : 트리는 사이클이 없어서 DFS/BFS가 그대로 통해요. 방문 배열 대신 "나를 부른 부모만 빼고 자식으로 내려가면" 돼서 더 간단해요.</div>
+
+  <h3>이진 트리 표현</h3>
+  <p>자식이 최대 둘인 트리를 이진 트리라고 해요. 노드마다 왼쪽과 오른쪽 자식을 가리키면 돼요.</p>
+  <pre><span class="kw">class</span> Node
+{
+    <span class="kw">public</span> <span class="kw">int</span> val;
+    <span class="kw">public</span> Node left, right;
+}</pre>
+
+  <h3>세 가지 순회 : 전위 / 중위 / 후위</h3>
+  <p>나 자신을 언제 방문(출력)하느냐의 차이예요. 전위는 "나 먼저", 중위는 "왼쪽 다음 나", 후위는 "두 자식을 다 본 뒤 나"예요.</p>
+  <pre><span class="kw">void</span> Preorder(Node n)   <span class="cm">// 전위: 나 -&gt; 왼 -&gt; 오</span>
+{
+    <span class="kw">if</span> (n == <span class="kw">null</span>) <span class="kw">return</span>;
+    Visit(n.val);
+    Preorder(n.left);
+    Preorder(n.right);
+}
+
+<span class="kw">void</span> Inorder(Node n)    <span class="cm">// 중위: 왼 -&gt; 나 -&gt; 오 (탐색 트리면 오름차순)</span>
+{
+    <span class="kw">if</span> (n == <span class="kw">null</span>) <span class="kw">return</span>;
+    Inorder(n.left);
+    Visit(n.val);
+    Inorder(n.right);
+}
+
+<span class="kw">void</span> Postorder(Node n)  <span class="cm">// 후위: 왼 -&gt; 오 -&gt; 나 (자식부터 정리)</span>
+{
+    <span class="kw">if</span> (n == <span class="kw">null</span>) <span class="kw">return</span>;
+    Postorder(n.left);
+    Postorder(n.right);
+    Visit(n.val);
+}</pre>
+
+  <h3>동작 따라가기</h3>
+  <p>아래 트리를 세 방식으로 순회하면 방문 순서가 이렇게 달라져요.</p>
+  <pre>        1
+       / \
+      2   3
+     / \
+    4   5</pre>
+  <table>
+    <tr><th>순회</th><th>방문 순서</th></tr>
+    <tr><td>전위</td><td>1 2 4 5 3</td></tr>
+    <tr><td>중위</td><td>4 2 5 1 3</td></tr>
+    <tr><td>후위</td><td>4 5 2 3 1</td></tr>
+  </table>
+  <div class="tip"><strong>레벨 순회는 BFS예요</strong> : 위에서 아래로 같은 깊이를 왼쪽부터 보고 싶으면 큐를 써요. 위 트리는 1 2 3 4 5 순서가 돼요.</div>
+
+  <div class="card">
+    <ul class="plain">
+      <li><b>이럴 때 써요</b></li>
+      <li>부모와 자식으로 자료가 계층을 이룰 때 (폴더, 조직도, 카테고리)</li>
+      <li>이진 탐색 트리에서 정렬된 순서가 필요할 때 (중위 순회)</li>
+      <li>자식의 결과를 모아 부모를 계산할 때 (후위 순회, 트리 DP의 토대)</li>
+    </ul>
+  </div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 사이클 없는 계층 구조를 다룰 때예요.</li>
+      <li><b>복잡도</b> : 모든 순회가 노드 수에 비례하는 O(N).</li>
+      <li><b>핵심</b> : 나를 언제 방문하느냐로 전위/중위/후위가 갈려요.</li>
+      <li><b>실수 주의</b> : 무방향 간선으로 트리를 만들면, 내려갈 때 부모로 되돌아가지 않게 부모를 빼고 재귀하세요.</li>
+    </ul>
+  </div>
+
+  <div class="quiz" data-qid="q22-1">
+    <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">이진 탐색 트리를 오름차순으로 출력하려면 어떤 순회를 써야 할까요?</span></div>
+    <div class="opts">
+      <button data-ok="0">전위 순회</button>
+      <button data-ok="1">중위 순회</button>
+      <button data-ok="0">후위 순회</button>
+    </div>
+    <div class="expl"><b class="ok">정답: 중위 순회</b><br>이진 탐색 트리는 왼쪽 자식이 나보다 작고 오른쪽 자식이 크다는 규칙이 있어요. 그래서 왼쪽 -&gt; 나 -&gt; 오른쪽 순으로 방문하는 중위 순회가 값을 오름차순으로 뽑아 줘요.</div>
+    <button class="retry">다시 풀기</button>
+  </div>
+
+  <div class="quiz" data-qid="q22-2">
+    <div class="qhead"><span class="tag">QUIZ 2</span><span class="qtext">노드가 N개인 트리의 간선 수는 몇 개일까요?</span></div>
+    <div class="opts">
+      <button data-ok="1">N - 1개</button>
+      <button data-ok="0">N개</button>
+      <button data-ok="0">N + 1개</button>
+    </div>
+    <div class="expl"><b class="ok">정답: N - 1개</b><br>트리는 루트를 뺀 모든 노드가 부모와 잇는 간선을 정확히 하나씩 가져요. 그래서 간선은 항상 노드보다 하나 적은 N-1개이고, 이보다 많으면 사이클이 생겨 트리가 아니에요.</div>
+    <button class="retry">다시 풀기</button>
+  </div>
+</div>
+
+<!-- ==================== 22. DP 핵심 유형 ==================== -->
+<div class="topic" id="t23">
+  <div class="crumb">동적 계획법</div>
+  <h2>DP 핵심 유형 (LIS / LCS / 배낭)</h2>
+  <p class="lead">동적 계획법은 점화식이 전부예요. 시험에 반복해서 나오는 세 가지 대표 유형의 점화식을 손에 익히면 변형 문제도 풀려요.</p>
+
+  <h3>LIS : 최장 증가 부분 수열</h3>
+  <p>수열에서 순서를 지키며 고른, 점점 커지는 가장 긴 부분 수열의 길이예요. <code>dp[i]</code> 를 "i번째로 끝나는 증가 수열의 최대 길이"로 두면 돼요.</p>
+  <pre><span class="kw">int</span>[] dp = <span class="kw">new</span> <span class="kw">int</span>[n];
+<span class="kw">int</span> best = <span class="nm">0</span>;
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; n; i++)
+{
+    dp[i] = <span class="nm">1</span>;                          <span class="cm">// 최소한 자기 자신</span>
+    <span class="kw">for</span> (<span class="kw">int</span> j = <span class="nm">0</span>; j &lt; i; j++)
+        <span class="kw">if</span> (a[j] &lt; a[i])
+            dp[i] = Math.Max(dp[i], dp[j] + <span class="nm">1</span>);
+    best = Math.Max(best, dp[i]);
+}</pre>
+  <div class="tip"><strong>더 빠른 방법</strong> : 위는 O(N^2)예요. 이분 탐색을 곁들이면 O(N log N)까지 줄어드는데, 길이만 필요할 때 자주 써요.</div>
+
+  <h3>LCS : 최장 공통 부분 수열</h3>
+  <p>두 문자열에서 순서를 지키며 공통으로 뽑을 수 있는 가장 긴 부분 수열이에요. 2차원 표 <code>L[i, j]</code> 를 채워요.</p>
+  <pre><span class="kw">int</span>[,] L = <span class="kw">new</span> <span class="kw">int</span>[n + <span class="nm">1</span>, m + <span class="nm">1</span>];
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">1</span>; i &lt;= n; i++)
+    <span class="kw">for</span> (<span class="kw">int</span> j = <span class="nm">1</span>; j &lt;= m; j++)
+        L[i, j] = (A[i - <span class="nm">1</span>] == B[j - <span class="nm">1</span>])
+            ? L[i - <span class="nm">1</span>, j - <span class="nm">1</span>] + <span class="nm">1</span>            <span class="cm">// 글자가 같으면 대각선 + 1</span>
+            : Math.Max(L[i - <span class="nm">1</span>, j], L[i, j - <span class="nm">1</span>]); <span class="cm">// 다르면 위/왼쪽 중 큰 값</span></pre>
+
+  <h3>0/1 배낭 (Knapsack)</h3>
+  <p>무게 한도 W 안에서 물건을 골라 가치 합을 최대로 만드는 문제예요. 물건은 통째로 담거나 안 담거나 둘 중 하나예요. 1차원 배열을 <b>뒤에서 앞으로</b> 갱신하는 게 핵심이에요.</p>
+  <pre><span class="kw">int</span>[] dp = <span class="kw">new</span> <span class="kw">int</span>[W + <span class="nm">1</span>];
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; n; i++)
+    <span class="kw">for</span> (<span class="kw">int</span> w = W; w &gt;= weight[i]; w--)  <span class="cm">// 뒤에서부터: 한 물건을 두 번 담지 않으려고</span>
+        dp[w] = Math.Max(dp[w], dp[w - weight[i]] + value[i]);
+<span class="cm">// dp[W] 가 최대 가치예요</span></pre>
+  <div class="warn"><b>배낭에서 자주 하는 실수</b> : 무게 루프를 앞에서부터(작은 w 에서 큰 w) 돌면 같은 물건을 여러 번 담게 돼요(그건 무한 배낭이에요). 0/1 배낭은 반드시 큰 w에서 작은 w로 내려가며 갱신하세요.</div>
+
+  <div class="card">
+    <ul class="plain">
+      <li><b>이럴 때 써요</b></li>
+      <li>LIS : 가장 긴 증가/감소 구간, 줄 세우기, 겹치지 않게 고르기</li>
+      <li>LCS : 두 수열의 유사도, 편집 거리의 토대</li>
+      <li>배낭 : 한정된 용량이나 예산에서 가치 최대화, 부분합으로 만들 수 있는 값 판별</li>
+    </ul>
+  </div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 작은 문제의 답이 큰 문제에 그대로 쓰일 때예요.</li>
+      <li><b>복잡도</b> : LIS O(N^2) 또는 O(N log N), LCS O(NM), 배낭 O(NW).</li>
+      <li><b>핵심</b> : dp 의 의미(무엇을 담는 칸인지)를 한 문장으로 정의하는 게 먼저예요.</li>
+      <li><b>실수 주의</b> : 0/1 배낭의 무게 루프 방향, 표 인덱스의 1 밀림에 주의하세요.</li>
+    </ul>
+  </div>
+
+  <div class="quiz" data-qid="q23-1">
+    <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">0/1 배낭에서 1차원 dp 배열의 무게 루프를 큰 값에서 작은 값으로 도는 이유는?</span></div>
+    <div class="opts">
+      <button data-ok="1">한 물건을 한 번만 담기 위해서</button>
+      <button data-ok="0">배열 접근이 더 빨라서</button>
+      <button data-ok="0">최대 가치가 더 커지기 때문에</button>
+    </div>
+    <div class="expl"><b class="ok">정답: 한 물건을 한 번만 담으려고</b><br>작은 무게부터 갱신하면 방금 이 물건을 담아 갱신한 칸을 같은 물건이 또 참고해 중복으로 담겨요. 큰 무게에서 작은 무게로 내려가면 각 물건이 한 번만 반영돼 0/1 조건을 지켜요.</div>
+    <button class="retry">다시 풀기</button>
+  </div>
+
+  <div class="quiz" data-qid="q23-2">
+    <div class="qhead"><span class="tag">QUIZ 2</span><span class="qtext">LCS 에서 두 글자 A[i-1] 과 B[j-1] 이 같을 때 L[i, j] 는 무엇이 될까요?</span></div>
+    <div class="opts">
+      <button data-ok="1">L[i-1, j-1] + 1</button>
+      <button data-ok="0">Math.Max(L[i-1, j], L[i, j-1])</button>
+      <button data-ok="0">L[i-1, j-1] 그대로</button>
+    </div>
+    <div class="expl"><b class="ok">정답: L[i-1, j-1] + 1</b><br>글자가 같으면 그 글자를 공통 수열에 새로 더할 수 있어요. 그래서 두 문자열을 한 칸씩 줄인 상태의 답(대각선 위 L[i-1, j-1])에 1을 더해요. 다를 때만 위나 왼쪽 중 큰 값을 가져와요.</div>
+    <button class="retry">다시 풀기</button>
+  </div>
+</div>
+
+<!-- ==================== 23. 최소 신장 트리 ==================== -->
+<div class="topic" id="t24">
+  <div class="crumb">그래프</div>
+  <h2>최소 신장 트리 (크루스칼 / 프림)</h2>
+  <p class="lead">모든 도시를 잇되 도로 길이의 합을 가장 적게 만드는 문제예요. 모든 노드를 사이클 없이 연결하는 가장 싼 트리를 찾아요.</p>
+
+  <h3>최소 신장 트리(MST)란</h3>
+  <p>그래프의 모든 노드를 잇는 부분 그래프 중, 간선 가중치 합이 최소인 트리예요. 노드가 N개면 간선은 정확히 N-1개를 골라요. 만드는 방법은 두 가지가 대표적이에요.</p>
+
+  <h3>크루스칼 : 싼 간선부터 욕심내기</h3>
+  <p>모든 간선을 가중치 오름차순으로 정렬한 뒤, 사이클을 만들지 않는 간선만 차례로 더해요. 사이클 판별은 분리 집합(Union-Find)으로 해요.</p>
+  <pre><span class="cm">// edges 를 가중치 오름차순으로 정렬해 두었다고 할게요</span>
+Array.Sort(edges, (x, y) =&gt; x.w - y.w);
+
+<span class="kw">int</span> total = <span class="nm">0</span>, used = <span class="nm">0</span>;
+<span class="kw">foreach</span> (<span class="kw">var</span> e <span class="kw">in</span> edges)
+{
+    <span class="kw">if</span> (Find(e.u) != Find(e.v))    <span class="cm">// 두 끝이 다른 그룹일 때만</span>
+    {
+        Union(e.u, e.v);
+        total += e.w;
+        <span class="kw">if</span> (++used == n - <span class="nm">1</span>) <span class="kw">break</span>;  <span class="cm">// 간선 N-1개를 골랐으면 끝</span>
+    }
+}</pre>
+  <div class="tip"><strong>분리 집합과 한 몸이에요</strong> : "이 간선을 더하면 사이클이 생기나?"는 <code>Find(u) == Find(v)</code> 한 줄로 판별돼요. 14번 주제(Union-Find)를 먼저 익히면 크루스칼은 거저예요.</div>
+
+  <h3>프림 : 한 점에서 키워 나가기</h3>
+  <p>시작 노드 하나에서 출발해, 지금 트리에 닿는 간선 중 가장 싼 것을 우선순위 큐로 골라 붙여 나가요. 다익스트라와 모양이 거의 같아요.</p>
+  <pre><span class="cm">// pq: (노드, 가중치). 트리에 새로 닿는 가장 싼 간선을 꺼내요</span>
+<span class="kw">var</span> pq = <span class="kw">new</span> PriorityQueue&lt;<span class="kw">int</span>, <span class="kw">int</span>&gt;();
+pq.Enqueue(start, <span class="nm">0</span>);
+<span class="kw">int</span> total = <span class="nm">0</span>;
+<span class="kw">while</span> (pq.Count &gt; <span class="nm">0</span>)
+{
+    pq.TryDequeue(<span class="kw">out</span> <span class="kw">int</span> u, <span class="kw">out</span> <span class="kw">int</span> w);
+    <span class="kw">if</span> (visited[u]) <span class="kw">continue</span>;
+    visited[u] = <span class="kw">true</span>;
+    total += w;
+    <span class="kw">foreach</span> (<span class="kw">var</span> (v, c) <span class="kw">in</span> adj[u])
+        <span class="kw">if</span> (!visited[v]) pq.Enqueue(v, c);
+}</pre>
+
+  <div class="card">
+    <ul class="plain">
+      <li><b>이럴 때 써요</b></li>
+      <li>"모든 지점을 최소 비용으로 연결" (도로, 전선, 통신망 설치)</li>
+      <li>간선이 적으면(희소) 크루스칼, 간선이 빽빽하면 프림이 보통 편해요</li>
+    </ul>
+  </div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 모든 노드를 가장 싸게 연결할 때예요.</li>
+      <li><b>복잡도</b> : 크루스칼 O(E log E)(정렬이 지배), 프림 O(E log V).</li>
+      <li><b>핵심</b> : 크루스칼은 간선 정렬 + 사이클 거르기, 프림은 우선순위 큐로 가장 싼 연결 고르기.</li>
+      <li><b>실수 주의</b> : 간선 N-1개를 고르면 멈추세요. 크루스칼에서 Union-Find 없이 사이클을 못 거르면 틀려요.</li>
+    </ul>
+  </div>
+
+  <div class="quiz" data-qid="q24-1">
+    <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">크루스칼에서 정렬된 간선을 더할 때 건너뛰어야 하는 경우는 언제일까요?</span></div>
+    <div class="opts">
+      <button data-ok="1">두 끝 노드가 이미 같은 그룹일 때 (사이클이 생김)</button>
+      <button data-ok="0">간선 가중치가 음수일 때</button>
+      <button data-ok="0">두 끝 노드의 번호가 같을 때</button>
+    </div>
+    <div class="expl"><b class="ok">정답: 이미 같은 그룹일 때</b><br><code>Find(u) == Find(v)</code> 이면 두 노드는 이미 연결돼 있어요. 여기에 간선을 또 더하면 사이클이 생겨 트리가 깨져요. 그래서 서로 다른 그룹일 때만 잇고 Union 으로 합쳐요.</div>
+    <button class="retry">다시 풀기</button>
+  </div>
+
+  <div class="quiz" data-qid="q24-2">
+    <div class="qhead"><span class="tag">QUIZ 2</span><span class="qtext">노드가 N개일 때 최소 신장 트리가 고르는 간선의 수는 몇 개일까요?</span></div>
+    <div class="opts">
+      <button data-ok="1">N - 1개</button>
+      <button data-ok="0">N개</button>
+      <button data-ok="0">간선 전체의 절반</button>
+    </div>
+    <div class="expl"><b class="ok">정답: N - 1개</b><br>모든 노드를 사이클 없이 연결하는 트리이므로 간선은 항상 N-1개예요. 그래서 크루스칼은 N-1개를 고르는 순간 멈추면 돼요.</div>
+    <button class="retry">다시 풀기</button>
+  </div>
+</div>
+
+<!-- ==================== 24. 플로이드-워셜 ==================== -->
+<div class="topic" id="t25">
+  <div class="crumb">그래프</div>
+  <h2>플로이드-워셜 (전체 쌍 최단 경로)</h2>
+  <p class="lead">모든 노드에서 모든 노드까지의 최단 거리를 한 번에 구해요. 노드가 적을 때(보통 수백 개 이하) 세 줄짜리 3중 루프로 끝나는 게 매력이에요.</p>
+
+  <h3>거쳐 가는 노드를 하나씩 허락하기</h3>
+  <p>핵심 아이디어는 "i에서 j로 갈 때 노드 k를 거쳐 가면 더 짧아지나?"를 모든 k에 대해 시험하는 거예요. <code>dist[i, j]</code> 를 i에서 j까지 현재까지의 최단 거리로 두고 갱신해요.</p>
+  <pre><span class="cm">// dist[i,j]: 간선 가중치로 초기화, 없으면 INF, dist[i,i] = 0</span>
+<span class="kw">for</span> (<span class="kw">int</span> k = <span class="nm">0</span>; k &lt; n; k++)          <span class="cm">// 거쳐 가는 노드 (가장 바깥!)</span>
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; n; i++)
+        <span class="kw">for</span> (<span class="kw">int</span> j = <span class="nm">0</span>; j &lt; n; j++)
+            <span class="kw">if</span> (dist[i, k] + dist[k, j] &lt; dist[i, j])
+                dist[i, j] = dist[i, k] + dist[k, j];</pre>
+  <div class="warn"><b>루프 순서가 생명이에요</b> : 거쳐 가는 노드 <code>k</code> 가 반드시 가장 바깥 루프여야 해요. i, j 를 바깥에 두면 아직 준비되지 않은 경로를 참고해 틀린 답이 나와요.</div>
+  <div class="warn"><b>오버플로 주의</b> : 도달 불가를 큰 수 INF로 둘 때 <code>dist[i,k] + dist[k,j]</code> 가 INF + INF 로 넘칠 수 있어요. INF 를 너무 크지 않게(예: 십억대) 잡거나, 두 값이 INF 면 건너뛰세요.</div>
+
+  <h3>동작 한 줄 요약</h3>
+  <p>k 루프가 한 바퀴 끝날 때마다 "0번부터 k번 노드까지만 중간 경유지로 허락한 최단 거리"가 완성돼요. k 가 n-1까지 끝나면 모든 경유가 허락된 진짜 최단 거리예요.</p>
+
+  <div class="card">
+    <ul class="plain">
+      <li><b>이럴 때 써요</b></li>
+      <li>노드 수가 작고(수백 이하) 모든 쌍의 최단 거리가 필요할 때</li>
+      <li>임의의 두 지점 사이 거리를 여러 번 물어볼 때</li>
+      <li>경유 가능 여부(도달성)만 1과 0으로 채우는 변형에도 그대로 써요</li>
+    </ul>
+  </div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 전체 쌍 최단 거리, 노드 수가 작을 때예요.</li>
+      <li><b>복잡도</b> : O(N^3). N이 500 근처를 넘으면 부담돼요.</li>
+      <li><b>핵심</b> : 경유 노드 k 를 가장 바깥 루프에 두고 dist[i,k] + dist[k,j] 로 갱신.</li>
+      <li><b>실수 주의</b> : 루프 순서(k 바깥)와 INF 덧셈 오버플로를 조심하세요.</li>
+    </ul>
+  </div>
+
+  <div class="quiz" data-qid="q25-1">
+    <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">플로이드-워셜에서 가장 바깥에 와야 하는 루프는 무엇일까요?</span></div>
+    <div class="opts">
+      <button data-ok="1">거쳐 가는 노드 k</button>
+      <button data-ok="0">출발 노드 i</button>
+      <button data-ok="0">도착 노드 j</button>
+    </div>
+    <div class="expl"><b class="ok">정답: 거쳐 가는 노드 k</b><br>k 를 바깥에 두어야 "0번부터 k번까지를 경유지로 허락한 최단 거리"가 단계적으로 완성돼요. i 나 j 를 바깥에 두면 아직 갱신되지 않은 거리를 참고해 틀린 답이 나와요.</div>
+    <button class="retry">다시 풀기</button>
+  </div>
+
+  <div class="quiz" data-qid="q25-2">
+    <div class="qhead"><span class="tag">QUIZ 2</span><span class="qtext">노드가 400개인 그래프에서 플로이드-워셜의 대략적인 연산량은?</span></div>
+    <div class="opts">
+      <button data-ok="1">약 6400만 번 (400^3)</button>
+      <button data-ok="0">약 16만 번 (400^2)</button>
+      <button data-ok="0">약 400번</button>
+    </div>
+    <div class="expl"><b class="ok">정답: 약 6400만 번</b><br>3중 루프라 O(N^3)이에요. 400^3 은 약 6400만으로 충분히 빠르지만, N 이 1000을 넘으면 10억대가 되어 시간이 빠듯해요. 그땐 다익스트라를 여러 번 돌리는 편이 나아요.</div>
+    <button class="retry">다시 풀기</button>
+  </div>
+</div>
+
+<!-- ==================== 25. 벨만-포드 ==================== -->
+<div class="topic" id="t26">
+  <div class="crumb">그래프</div>
+  <h2>벨만-포드 (음수 간선 최단 경로)</h2>
+  <p class="lead">다익스트라가 못 푸는, 음수 간선이 있는 그래프의 최단 거리를 구해요. 게다가 음수 사이클(돌수록 비용이 줄어드는 고리)까지 잡아내요.</p>
+
+  <h3>모든 간선을 V-1번 완화하기</h3>
+  <p>완화(relax)란 "u를 거쳐 v로 가면 더 짧아지나?"를 확인해 거리를 줄이는 거예요. 모든 간선을 한 바퀴 완화하길 노드 수보다 하나 적게(V-1번) 반복하면 최단 거리가 확정돼요.</p>
+  <pre><span class="kw">long</span>[] dist = <span class="kw">new</span> <span class="kw">long</span>[n];
+Array.Fill(dist, INF);
+dist[start] = <span class="nm">0</span>;
+
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; n - <span class="nm">1</span>; i++)        <span class="cm">// V-1번 반복</span>
+    <span class="kw">foreach</span> (<span class="kw">var</span> (u, v, w) <span class="kw">in</span> edges)
+        <span class="kw">if</span> (dist[u] != INF &amp;&amp; dist[u] + w &lt; dist[v])
+            dist[v] = dist[u] + w;</pre>
+  <div class="tip"><strong>왜 V-1번일까요</strong> : 최단 경로는 노드를 많아야 V개 지나니 간선은 최대 V-1개예요. 한 번 완화할 때마다 경로가 간선 하나씩 길어질 수 있으니, V-1번이면 가장 긴 최단 경로까지 완성돼요.</div>
+
+  <h3>음수 사이클 판별</h3>
+  <p>V-1번을 다 돌린 뒤 한 번 더 완화해서 또 줄어드는 간선이 있다면, 돌수록 비용이 작아지는 음수 사이클이 있다는 뜻이에요.</p>
+  <pre><span class="kw">bool</span> hasNegativeCycle = <span class="kw">false</span>;
+<span class="kw">foreach</span> (<span class="kw">var</span> (u, v, w) <span class="kw">in</span> edges)
+    <span class="kw">if</span> (dist[u] != INF &amp;&amp; dist[u] + w &lt; dist[v])
+        hasNegativeCycle = <span class="kw">true</span>;   <span class="cm">// 한 번 더 줄어들면 음수 사이클</span></pre>
+  <div class="warn"><b>다익스트라와의 갈림길</b> : 음수 간선이 없으면 빠른 다익스트라(O(E log V))를 쓰세요. 벨만-포드는 O(VE)로 느리지만, 음수 간선이나 음수 사이클 판별이 필요할 때만의 무기예요.</div>
+
+  <div class="card">
+    <ul class="plain">
+      <li><b>이럴 때 써요</b></li>
+      <li>간선 가중치에 음수가 섞여 있을 때</li>
+      <li>"무한히 이득을 보는 고리가 있는가?" 같은 음수 사이클 판별</li>
+      <li>환전 차익이나 시간 되감기처럼 비용이 줄어드는 모델</li>
+    </ul>
+  </div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card">
+    <ul class="plain">
+      <li><b>언제</b> : 음수 간선이 있거나 음수 사이클을 찾을 때예요.</li>
+      <li><b>복잡도</b> : O(V x E). 다익스트라보다 느려요.</li>
+      <li><b>핵심</b> : 모든 간선을 V-1번 완화, 한 번 더 줄면 음수 사이클.</li>
+      <li><b>실수 주의</b> : 아직 못 간 노드(dist == INF)에서 완화하지 마세요. 거리 합은 long 으로 두세요.</li>
+    </ul>
+  </div>
+
+  <div class="quiz" data-qid="q26-1">
+    <div class="qhead"><span class="tag">QUIZ 1</span><span class="qtext">벨만-포드에서 모든 간선을 V-1번 완화하는 이유로 알맞은 것은?</span></div>
+    <div class="opts">
+      <button data-ok="1">최단 경로의 간선 수가 최대 V-1개이기 때문에</button>
+      <button data-ok="0">간선이 V-1개뿐이기 때문에</button>
+      <button data-ok="0">정렬에 V-1번이 필요하기 때문에</button>
+    </div>
+    <div class="expl"><b class="ok">정답: 최단 경로의 간선이 최대 V-1개라서</b><br>사이클이 없는 최단 경로는 노드를 많아야 V개 지나니 간선은 최대 V-1개예요. 한 번 완화에 경로가 간선 하나씩 길어질 수 있으므로 V-1번이면 가장 긴 최단 경로까지 모두 확정돼요.</div>
+    <button class="retry">다시 풀기</button>
+  </div>
+
+  <div class="quiz" data-qid="q26-2">
+    <div class="qhead"><span class="tag">QUIZ 2</span><span class="qtext">V-1번 완화를 끝낸 뒤 한 번 더 돌렸더니 또 줄어드는 간선이 있었어요. 무슨 뜻일까요?</span></div>
+    <div class="opts">
+      <button data-ok="1">음수 사이클이 존재한다</button>
+      <button data-ok="0">최단 거리가 아직 안 끝났으니 더 돌려야 한다</button>
+      <button data-ok="0">시작 노드를 잘못 골랐다</button>
+    </div>
+    <div class="expl"><b class="ok">정답: 음수 사이클이 있어요</b><br>V-1번이면 최단 거리가 확정돼야 정상이에요. 그런데도 더 줄어든다면 돌 때마다 비용이 작아지는 음수 사이클이 있다는 신호예요. 이 경우 최단 거리 자체가 정의되지 않아요.</div>
+    <button class="retry">다시 풀기</button>
+  </div>
+</div>
+
+<!-- ==================== 26. 유형별 추천 문제 ==================== -->
 <div class="topic" id="t17">
   <div class="crumb">마무리</div>
   <h2>유형별 추천 문제</h2>
@@ -2170,7 +2570,7 @@ dir = (dir + <span class="nm">3</span>) % <span class="nm">4</span>;       <span
 
 <script>
 (function () {
-  var TOPICS = ['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11','t12','t13','t14','t15','t16','t18','t19','t20','t21','t17'];
+  var TOPICS = ['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11','t12','t13','t14','t15','t16','t18','t19','t20','t21','t22','t23','t24','t25','t26','t17'];
   var QUIZ_KEY = 'ct_concepts_quiz_v1';
   var menuBtns = document.querySelectorAll('#menu button');
   var current = 0;
