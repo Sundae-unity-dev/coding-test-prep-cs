@@ -257,24 +257,8 @@
       ['QA 면접 단골 질문', 'qinterview', ['qa', '면접', 'interview']]
     ].forEach(function (e) { items.push({ t: e[0], sub: '개념정리(QA)', href: 'qa.html#' + e[1], kind: 'QA', tags: e[2] }); });
     items.push({ t: 'SQL 연습', sub: '브라우저 SQLite 채점', href: 'sql.html', kind: 'SQL', tags: ['sql', 'query', '쿼리', 'select', 'join'] });
-    // 확장 개념(CT_CONCEPTS 미등록분)도 검색에 노출해요. 제목은 concepts.html 사이드바와 맞춰 주세요.
+    // t22~t37 은 CT_CONCEPTS 에 등록돼 위 자동 루프로 검색에 들어가요. 여기엔 CT_CONCEPTS 에 없는 참조 주제만 둬요.
     [
-      ['트리 기본과 순회', 't22', ['tree', '트리', '이진트리', '순회', '전위', '중위', '후위']],
-      ['DP 핵심 유형 (LIS / LCS / 배낭)', 't23', ['dp', 'lis', 'lcs', '배낭', 'knapsack', '최장 증가', '최장 공통']],
-      ['최소 신장 트리 (크루스칼 / 프림)', 't24', ['mst', '크루스칼', 'kruskal', '프림', 'prim', '신장 트리']],
-      ['플로이드-워셜', 't25', ['floyd', 'warshall', '플로이드', '워셜', '전체 쌍 최단경로']],
-      ['벨만-포드', 't26', ['bellman', 'ford', '벨만', '포드', '음수 간선', '음수 사이클']],
-      ['문자열 매칭 (KMP / 라빈-카프)', 't27', ['kmp', 'rabin karp', '라빈카프', '문자열 매칭', '패턴', '실패 함수']],
-      ['트라이 (Trie)', 't28', ['trie', '트라이', '접두사', 'prefix', '자동완성']],
-      ['세그먼트 트리와 펜윅 트리', 't29', ['segment tree', '세그먼트', 'fenwick', '펜윅', 'bit', '구간 합', '구간 질의']],
-      ['분할 정복', 't30', ['divide and conquer', '분할 정복', '병합 정렬', '빠른 거듭제곱', 'fast power']],
-      ['DP 심화 (트리 / 구간 / 비트마스크)', 't31', ['트리 dp', '구간 dp', '비트마스크 dp', 'tsp', '외판원', 'tree dp']],
-      ['조합론', 't32', ['조합론', '순열', '조합', 'combination', '파스칼', '모듈러', '역원', '페르마']],
-      ['모듈러 연산', 't33', ['모듈러', 'modular', '나머지', 'mod', '역원', '페르마', '큰 수']],
-      ['좌표 압축', 't34', ['좌표 압축', 'coordinate compression', '순위', 'rank', '압축']],
-      ['스위핑 (라인 스윕)', 't35', ['스위핑', 'sweeping', 'line sweep', '구간 겹침', '이벤트']],
-      ['최소 공통 조상 (LCA)', 't36', ['lca', '최소 공통 조상', 'lowest common ancestor', '트리', '조상']],
-      ['기하 기초 (CCW)', 't37', ['기하', 'ccw', '외적', 'cross product', '선분 교차', '볼록 껍질']],
       ['이렇게 묶어서 출제돼요', 't38', ['조합 패턴', '복합 유형', '묶어서 출제', '파라메트릭', '신호', 'combine']]
     ].forEach(function (e) { items.push({ t: e[0], sub: '개념', href: 'concepts.html#' + e[1], kind: '개념', tags: e[2] }); });
 

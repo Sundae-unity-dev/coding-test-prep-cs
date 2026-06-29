@@ -226,7 +226,7 @@
   <div class="badge">엘리스 트랙 수강생용</div>
   <h1>Coding Test Prep, All in One Place</h1>
   <p class="typed-line"><span id="typed"></span><span class="cursor"></span></p>
-  <p class="hero-sub">흩어진 자료, 이제 그만 찾아도 돼요. 21개 핵심 개념과 63개 실전 문제, 16주 합격 로드맵까지 한곳에 모았어요. 막히면 힌트와 모범 답안이 있고, 작성한 풀이는 브라우저에서 바로 채점돼요.</p>
+  <p class="hero-sub">흩어진 자료, 이제 그만 찾아도 돼요. <span class="jsConc">36</span>개 핵심 개념과 54개 예시 문제, 16주 합격 로드맵까지 한곳에 모았어요. 막히면 힌트와 모범 답안이 있고, 작성한 풀이는 브라우저에서 바로 채점돼요.</p>
   <div class="cta">
     <a class="primary" href="guide.html">가이드부터 보기</a>
     <a class="ghost" href="practice.html">예시 문제 풀어보기</a>
@@ -234,9 +234,9 @@
 </header>
 
 <div class="stats">
-  <div class="stat"><b data-count="21">21</b><span>핵심 개념 주제</span></div>
-  <div class="stat"><b data-count="40">40</b><span>주제별 퀴즈</span></div>
-  <div class="stat"><b data-count="63">63</b><span>대표 연습 문제</span></div>
+  <div class="stat"><b data-count="36">36</b><span>핵심 개념 주제</span></div>
+  <div class="stat"><b data-count="72">72</b><span>주제별 퀴즈</span></div>
+  <div class="stat"><b data-count="54">54</b><span>대표 예시 문제</span></div>
 </div>
 
 <div class="ticker" aria-label="자주 묻는 질문">
@@ -310,7 +310,7 @@
       <div class="ico" aria-hidden="true">📚</div>
       <div class="ctxt">
         <h3>필수 개념 정리</h3>
-        <p>시간 복잡도부터 다익스트라, 위상정렬, 수학까지 21개 주제를 예제 코드와 함께 다뤄요. 주제마다 퀴즈가 있고 추천 문제도 연결돼 있어요.</p>
+        <p>시간 복잡도부터 다익스트라, 위상정렬, 트리, 수학까지 <span class="jsConc">36</span>개 주제를 예제 코드와 함께 다뤄요. 주제마다 퀴즈가 있고 추천 문제도 연결돼 있어요.</p>
       </div>
       <div class="go">개념 정리 열기 →</div>
     </a>
@@ -371,7 +371,8 @@
     // 히어로 타이핑 효과 (문구를 한 글자씩 썼다 지웠다 반복)
     var typedEl = document.getElementById('typed');
     if (typedEl) {
-      var phrases = ['막막한 코딩 테스트, 전략부터 잡아요', '21개 핵심 개념을 예제 코드로 쉽게', '63개 실전 문제를 브라우저에서 바로 채점', '16주로 합격 루틴 만들기'];
+      var _nc = (window.CT_CONCEPTS || []).length || 36;
+      var phrases = ['막막한 코딩 테스트, 전략부터 잡아요', _nc + '개 핵심 개념을 예제 코드로 쉽게', '54개 예시 문제를 브라우저에서 바로 채점', '16주로 합격 루틴 만들기'];
       if (reduce) {
         typedEl.textContent = phrases[0];
       } else {
@@ -387,6 +388,16 @@
         })();
       }
     }
+
+    // 개념 수와 퀴즈 수는 데이터에서 동적으로 채워요(개념 추가 시 자동 반영). 예시 문제(54)는 practice 페이지 기준 고정.
+    (function () {
+      var nc = (window.CT_CONCEPTS || []).length;
+      if (!nc) return;
+      var sb = document.querySelectorAll('.stats .stat b[data-count]');
+      if (sb[0]) sb[0].setAttribute('data-count', nc);
+      if (sb[1]) sb[1].setAttribute('data-count', nc * 2);
+      [].forEach.call(document.querySelectorAll('.jsConc'), function (el) { el.textContent = nc; });
+    })();
 
     // 통계 숫자 카운트업 (뷰포트 진입 시 0에서 목표값까지)
     var stats = document.querySelectorAll('.stat b[data-count]');
@@ -423,7 +434,7 @@
       var bar = document.getElementById(barId);
       requestAnimationFrame(function () { setTimeout(function () { bar.style.width = pct + '%'; }, 150); });
     }
-    fill('dQuiz', 'dQuizBar', quizDone, 40);
+    fill('dQuiz', 'dQuizBar', quizDone, ((window.CT_CONCEPTS || []).length || 20) * 2);
     fill('dSolve', 'dSolveBar', solveDone, (window.CT_PROBLEMS || []).length || 63);
     fill('dChk', 'dChkBar', chkDone, 13);
 

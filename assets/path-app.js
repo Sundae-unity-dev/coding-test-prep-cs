@@ -10,7 +10,7 @@
   var ALL = window.CT_PROBLEMS || [];
   var CONCEPTS = window.CT_CONCEPTS || [];
   var QUIZ = window.CT_CONCEPT_QUIZ || {};
-  var TIERS = ['입문', '기초', '중급', '심화'];
+  var TIERS = ['입문', '기초', '중급', '심화', '확장'];
   var examples = ALL.filter(function (p) { return !p.g; });
   var gichul = ALL.filter(function (p) { return p.g; });
   var devOrderedLessons = [];
@@ -50,7 +50,7 @@
   var ov = document.getElementById('qzOv');
   var panel = document.getElementById('qzBox');
   var activeTid = null, curIdx = 0;
-  var WEEKS = { '입문': '1~4주차', '기초': '5~8주차', '중급': '9~12주차', '심화': '13~16주차' };
+  var WEEKS = { '입문': '1~4주차', '기초': '5~8주차', '중급': '9~12주차', '심화': '13~16주차', '확장': '심화 이후' };
   var orderState = {};   // 순서 맞추기: 문제별 표시 순서(셔플)를 세션 동안 고정
   var dispCache = {};    // 객관식/복수정답: 보기 표시 순서 셔플(암기 방지)을 세션 동안 고정
   function dispOrder(key, n) { if (!dispCache[key]) dispCache[key] = shuffleIdx(n); return dispCache[key]; }
@@ -68,7 +68,6 @@
   function correctCount(tid) { var p = pq(), n = 0, L = qList(tid); for (var i = 0; i < L.length; i++) if (p[tid + '-' + i]) n++; return n; }
   function lessonDone(c) { var t = qList(c.id).length; return t > 0 && correctCount(c.id) >= t; }
   function conceptOf(tid) { var arr = orderedLessonsList(); for (var i = 0; i < arr.length; i++) if (arr[i].id === tid) return arr[i]; return null; }
-  function firstIncompleteLesson() { var arr = orderedLessonsList(); for (var i = 0; i < arr.length; i++) if (!lessonDone(arr[i])) return arr[i]; return null; }
   function nextIncompleteLessonAfter(tid) {
     var arr = orderedLessonsList();
     var idx = -1; for (var i = 0; i < arr.length; i++) if (arr[i].id === tid) { idx = i; break; }

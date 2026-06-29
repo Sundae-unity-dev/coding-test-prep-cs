@@ -283,7 +283,7 @@
 
   document.getElementById('cSolve').textContent = solvedN + ' / ' + TOTAL;
   document.getElementById('cStreak').textContent = streak + '일';
-  document.getElementById('cQuiz').textContent = quizN + ' / 40';
+  document.getElementById('cQuiz').textContent = quizN + ' / ' + (((window.CT_CONCEPTS || []).length || 20) * 2);
   document.getElementById('cReview').textContent = reviewN;
   document.getElementById('reviewLink').textContent = '복습할 문제';
 
