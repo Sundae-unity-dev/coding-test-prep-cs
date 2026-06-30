@@ -62,7 +62,7 @@
       var weak = it.pct < 70 ? ' weak' : '';
       return '<div class="srs-row' + weak + '" data-tid="' + it.tid + '" data-pct="' + it.pct + '">'
         + '<div class="srs-meta"><b>' + String(it.name).replace(/[<>&]/g, '') + '</b>'
-        + '<span class="srs-tag">정답률 ' + it.pct + '% · ' + stage + '</span></div>'
+        + '<span class="srs-tag">정답률 ' + it.pct + '% | ' + stage + '</span></div>'
         + '<div class="srs-act"><a class="srs-go" href="concepts.html#' + it.tid + '">개념 보기 →</a>'
         + '<button type="button" class="srs-done">복습 완료</button></div></div>';
     }).join('');

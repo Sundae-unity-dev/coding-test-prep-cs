@@ -39,7 +39,7 @@
 
     el.className = 'goalbar' + (dl !== null && dl <= 3 && remaining > 0 ? ' urgent' : '');
     el.innerHTML = '<span class="gb-dday">' + ddText + '</span>'
-      + '<span class="gb-info"><b>' + g.date + '</b> 목표 · ' + pace + '</span>'
+      + '<span class="gb-info"><b>' + g.date + '</b> 목표 | ' + pace + '</span>'
       + '<span class="gb-actions"><button type="button" class="gb-edit">변경</button><button type="button" class="gb-clear">해제</button></span>'
       + '<span class="gb-edit-wrap" hidden><input type="date" class="gb-date" min="' + minDate + '" value="' + g.date + '"><button type="button" class="gb-save">저장</button></span>';
     wire(el, solved, total);
