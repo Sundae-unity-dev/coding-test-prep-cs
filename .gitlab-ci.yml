@@ -1,0 +1,19 @@
+# GitLab Pages 배포
+# 이 사이트는 레포 루트에 있는 정적 파일(HTML/CSS/JS + Blazor WASM 런박스)이고
+# 별도 빌드가 없어서, 전체를 public/ 으로 복사하기만 하면 됩니다.
+# GitLab Pages 는 public/ 폴더를 그대로 서비스해요.
+image: alpine:latest
+
+pages:
+  stage: deploy
+  script:
+    - apk add --no-cache rsync
+    - mkdir -p public
+    # .git / public / CI 설정 자신을 뺀 모든 파일을 public/ 으로 복사
+    - rsync -a --exclude='/public/' --exclude='/.git/' --exclude='/.gitlab-ci.yml' ./ public/
+  artifacts:
+    paths:
+      - public
+  rules:
+    # 기본 브랜치(main)에 push 될 때만 배포
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
