@@ -68,6 +68,12 @@ window.CT_PROBLEMS = [
   { id: 'coordcomp', t: '좌표 압축 지도', lv: '중급' , tags: ['정렬'] },
   { id: 'modpow', t: '봉인 마법의 잔여 마나', lv: '중급' , tags: ['수학'] },
   { id: 'ccw', t: '세 정찰병의 방향', lv: '심화' , tags: ['수학'] },
+  { id: 'trie', t: '전화번호부 일관성', lv: '중급' , tags: ['자료구조'] },
+  { id: 'kmp', t: '주문서 패턴 탐지', lv: '심화' , tags: ['문자열'] },
+  { id: 'fenwick', t: '마나 구간 합 갱신', lv: '심화' , tags: ['자료구조'] },
+  { id: 'bellman', t: '음수 마력의 최소 비용 경로', lv: '심화' , tags: ['최단경로'] },
+  { id: 'lca', t: '길드 계보의 공통 조상', lv: '심화' , tags: ['트리'] },
+  { id: 'treedp', t: '겹치지 않는 정찰대 배치', lv: '심화' , tags: ['트리'] },
   // 기출 유형 문제(gichul.html)
   { id: 'report', t: '신고 누적 정지 집계', lv: '중급', g: true , tags: ['해시'] },
   { id: 'compress', t: '반복 패턴 압축 최소 길이', lv: '중급', g: true , tags: ['배열/문자열'] },
