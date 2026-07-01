@@ -435,7 +435,7 @@
       requestAnimationFrame(function () { setTimeout(function () { bar.style.width = pct + '%'; }, 150); });
     }
     fill('dQuiz', 'dQuizBar', quizDone, ((window.CT_CONCEPTS || []).length || 20) * 2);
-    fill('dSolve', 'dSolveBar', solveDone, (window.CT_PROBLEMS || []).length || 63);
+    fill('dSolve', 'dSolveBar', solveDone, (window.CT_PROBLEMS || []).length);
     fill('dChk', 'dChkBar', chkDone, 13);
 
     // 학습 스트릭 + 최근 14일 미니 캘린더 (로컬 날짜)
@@ -521,7 +521,7 @@
     // 시험 D-day 목표 + 페이스 (goal.js defer 로드 후)
     if (window.ctGoal) {
       var solved = window.ctProgress ? window.ctProgress().solvedDone : Object.keys(rd('ct_practice_solved_v1')).filter(function (k) { return rd('ct_practice_solved_v1')[k]; }).length;
-      var total = (window.CT_PROBLEMS || []).length || 63;
+      var total = (window.CT_PROBLEMS || []).length;
       window.ctGoal.render(document.getElementById('goalBar'), solved, total);
     }
   });

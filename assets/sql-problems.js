@@ -217,6 +217,67 @@ window.CT_SQL = {
       prompt: "받은 리뷰의 평균 평점이 가장 높은 회원 한 명의 이름(name)을 조회하세요.",
       hint: "members, orders, reviews 를 모두 JOIN 해 회원별 AVG(rating) 로 정렬하고 LIMIT 1 을 써요.",
       answer: "SELECT m.name FROM members m JOIN orders o ON m.id = o.member_id JOIN reviews r ON r.order_id = o.id GROUP BY m.id, m.name ORDER BY AVG(r.rating) DESC LIMIT 1;"
+    },
+    // 심화: 윈도우 함수 / CTE / 셀프조인 / UNION / 외부조인 / 상관 서브쿼리
+    {
+      id: "grade-rank", title: "등급 안에서 가입 순위", level: "hard", ordered: true,
+      prompt: "각 등급(grade) 안에서 가입일(joined)이 빠른 순서대로 순위를 매겨 이름(name), 등급(grade), 순위를 조회하세요. 결과는 등급, 순위 순으로 정렬해요.",
+      hint: "RANK() OVER (PARTITION BY grade ORDER BY joined) 처럼 윈도우 함수를 써요.",
+      answer: "SELECT name, grade, RANK() OVER (PARTITION BY grade ORDER BY joined) AS rnk FROM members ORDER BY grade, rnk;"
+    },
+    {
+      id: "member-top-order", title: "회원별 최고가 주문", level: "hard", ordered: true,
+      prompt: "완료된 주문 중에서 각 회원이 가장 비싸게 산 주문 한 건씩만 남겨 member_id, product, amount 를 회원 id 순으로 조회하세요.",
+      hint: "PARTITION BY member_id ORDER BY amount DESC 로 ROW_NUMBER 를 매기고 1등만 걸러요.",
+      answer: "SELECT member_id, product, amount FROM (SELECT member_id, product, amount, ROW_NUMBER() OVER (PARTITION BY member_id ORDER BY amount DESC) rn FROM orders WHERE status = '완료') WHERE rn = 1 ORDER BY member_id;"
+    },
+    {
+      id: "running-sales", title: "일자별 누적 매출", level: "hard", ordered: true,
+      prompt: "완료된 주문을 주문일(ordered_at) 순서로 나열하고, 그 시점까지의 누적 금액(running total)을 함께 조회하세요. 컬럼은 ordered_at, amount, 누적합 이에요.",
+      hint: "SUM(amount) OVER (ORDER BY ordered_at, id) 로 누적합을 구해요.",
+      answer: "SELECT ordered_at, amount, SUM(amount) OVER (ORDER BY ordered_at, id) AS running FROM orders WHERE status = '완료' ORDER BY ordered_at, id;"
+    },
+    {
+      id: "order-diff", title: "직전 주문과의 금액 차이", level: "hard", ordered: true,
+      prompt: "회원 id 가 4 인 회원의 모든 주문을 시간순으로 나열하고, 직전 주문 금액과의 차이를 함께 조회하세요. 컬럼은 ordered_at, amount, 차이 이고 첫 행의 차이는 NULL 이에요.",
+      hint: "LAG(amount) OVER (ORDER BY ordered_at) 로 직전 값을 가져와 빼요.",
+      answer: "SELECT ordered_at, amount, amount - LAG(amount) OVER (ORDER BY ordered_at) AS diff FROM orders WHERE member_id = 4 ORDER BY ordered_at;"
+    },
+    {
+      id: "cte-bigspender", title: "큰손 회원 찾기 (WITH)", level: "mid", ordered: true,
+      prompt: "WITH 절로 회원별 완료 주문 금액 합계를 먼저 구한 뒤, 합계가 100000 이상인 회원의 이름(name)과 합계를 금액 내림차순으로 조회하세요.",
+      hint: "WITH s AS (SELECT member_id, SUM(amount) tot FROM orders WHERE status = '완료' GROUP BY member_id) 로 시작해요.",
+      answer: "WITH s AS (SELECT member_id, SUM(amount) tot FROM orders WHERE status = '완료' GROUP BY member_id) SELECT m.name, s.tot FROM s JOIN members m ON m.id = s.member_id WHERE s.tot >= 100000 ORDER BY s.tot DESC;"
+    },
+    {
+      id: "same-city-pair", title: "같은 도시 회원 짝", level: "mid", ordered: true,
+      prompt: "같은 도시(city)에 사는 두 회원의 이름 쌍을 조회하세요. 같은 쌍이 중복되지 않게 하고(작은 id 가 앞), 첫 이름 기준 오름차순으로 정렬해요. 컬럼은 name1, name2 예요.",
+      hint: "members 를 자기 자신과 JOIN 하고 a.city = b.city AND a.id < b.id 조건을 써요.",
+      answer: "SELECT a.name AS name1, b.name AS name2 FROM members a JOIN members b ON a.city = b.city AND a.id < b.id ORDER BY a.name, b.name;"
+    },
+    {
+      id: "gold-or-seoul", title: "골드 또는 서울 회원", level: "mid", ordered: true,
+      prompt: "등급이 '골드' 인 회원과 도시가 '서울' 인 회원의 이름을 UNION 으로 중복 없이 합쳐 이름 오름차순으로 조회하세요.",
+      hint: "두 SELECT 를 UNION 으로 이어요. UNION 은 중복을 자동으로 제거해요.",
+      answer: "SELECT name FROM members WHERE grade = '골드' UNION SELECT name FROM members WHERE city = '서울' ORDER BY name;"
+    },
+    {
+      id: "no-orders", title: "주문 없는 회원", level: "basic", ordered: true,
+      prompt: "주문 기록이 한 번도 없는 회원의 이름(name)을 조회하세요.",
+      hint: "members 를 orders 와 LEFT JOIN 한 뒤 orders 쪽이 NULL 인 행만 남겨요.",
+      answer: "SELECT m.name FROM members m LEFT JOIN orders o ON o.member_id = m.id WHERE o.id IS NULL ORDER BY m.name;"
+    },
+    {
+      id: "member-avg-rating", title: "회원별 평균 평점", level: "hard", ordered: true,
+      prompt: "리뷰를 받은 회원별로 이름(name), 받은 리뷰 개수, 평균 평점을 조회하세요. 평균 평점 내림차순, 같으면 이름 오름차순으로 정렬해요.",
+      hint: "members, orders, reviews 를 모두 JOIN 하고 회원별로 GROUP BY 해 COUNT 와 AVG 를 구해요.",
+      answer: "SELECT m.name, COUNT(r.id) AS cnt, AVG(r.rating) AS avg_rating FROM members m JOIN orders o ON o.member_id = m.id JOIN reviews r ON r.order_id = o.id GROUP BY m.id, m.name ORDER BY avg_rating DESC, m.name;"
+    },
+    {
+      id: "above-own-avg", title: "자기 평균보다 비싼 주문", level: "hard", ordered: true,
+      prompt: "각 회원의 완료 주문 중에서, 그 회원 자신의 완료 주문 평균 금액보다 비싼 주문의 id 와 amount 를 id 순으로 조회하세요. (상관 서브쿼리)",
+      hint: "WHERE amount > (SELECT AVG(amount) FROM orders o2 WHERE o2.member_id = o.member_id AND o2.status = '완료') 처럼 바깥 행을 참조하는 서브쿼리를 써요.",
+      answer: "SELECT id, amount FROM orders o WHERE status = '완료' AND amount > (SELECT AVG(amount) FROM orders o2 WHERE o2.member_id = o.member_id AND o2.status = '완료') ORDER BY id;"
     }
   ]
 };

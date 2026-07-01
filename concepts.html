@@ -3630,7 +3630,7 @@ events.Sort((a, b) =&gt; a.x != b.x ? a.x - b.x : a.delta - b.delta);  <span cla
   var qn = Object.keys(_qz).filter(function (k) { return _qz[k] === true || (_qz[k] && _qz[k].correct); }).length;
   var sn = Object.keys(SOLVED).filter(function (k) { return SOLVED[k]; }).length;
   var brandEl = document.querySelector('aside .brand');
-  if (brandEl) { var d = document.createElement('div'); d.className = 'side-progress'; d.textContent = '퀴즈 ' + qn + '/' + document.querySelectorAll('.quiz').length + ', 문제 ' + sn + '/' + ((window.CT_PROBLEMS || []).length || 63) + ' 진행 중'; brandEl.appendChild(d); }
+  if (brandEl) { var d = document.createElement('div'); d.className = 'side-progress'; d.textContent = '퀴즈 ' + qn + '/' + document.querySelectorAll('.quiz').length + ', 문제 ' + sn + '/' + ((window.CT_PROBLEMS || []).length) + ' 진행 중'; brandEl.appendChild(d); }
 })();
 </script>
 <script defer src="assets/concept-code.js"></script>

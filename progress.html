@@ -472,7 +472,7 @@
       var g = window.ctGamify.summary();
       var solved = rd('ct_practice_solved_v1');
       var solvedN = Object.keys(solved).filter(function (k) { return solved[k]; }).length;
-      var TOTAL = (window.CT_PROBLEMS || []).length || 63;
+      var TOTAL = (window.CT_PROBLEMS || []).length;
       var visitor = rd('ct_visitor_v1'), name = (visitor && visitor.name) ? String(visitor.name) : '';
       var W = 1080, H = 1080, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
       var x = cv.getContext('2d'), FF = "'Elice DX Neolli', 'Malgun Gothic', sans-serif";
