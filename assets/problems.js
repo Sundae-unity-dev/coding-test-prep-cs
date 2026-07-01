@@ -74,6 +74,17 @@ window.CT_PROBLEMS = [
   { id: 'bellman', t: '음수 마력의 최소 비용 경로', lv: '심화' , tags: ['최단경로'] },
   { id: 'lca', t: '길드 계보의 공통 조상', lv: '심화' , tags: ['트리'] },
   { id: 'treedp', t: '겹치지 않는 정찰대 배치', lv: '심화' , tags: ['트리'] },
+  // 확장 2 (신규 유형 보강 + 기초)
+  { id: 'sumrange', t: '구간 마나 합산', lv: '입문' , tags: ['수학'] },
+  { id: 'gcd2', t: '두 톱니바퀴의 최대공약수', lv: '기초' , tags: ['수학'] },
+  { id: 'isprime', t: '봉인석의 소수 판정', lv: '기초' , tags: ['수학'] },
+  { id: 'factmod', t: '봉인 마법의 팩토리얼', lv: '기초' , tags: ['수학'] },
+  { id: 'topk', t: '상위 K 전투력', lv: '기초' , tags: ['우선순위큐'] },
+  { id: 'ropes', t: '밧줄 잇기 최소 비용', lv: '중급' , tags: ['우선순위큐'] },
+  { id: 'sweepmax', t: '동시 접속 최대치', lv: '중급' , tags: ['스위핑'] },
+  { id: 'windowmax', t: '슬라이딩 창 최대 데미지', lv: '심화' , tags: ['슬라이딩윈도우'] },
+  { id: 'inversions', t: '뒤집힌 순서 쌍 세기', lv: '심화' , tags: ['분할정복'] },
+  { id: 'combmod', t: '조합의 수 나머지', lv: '심화' , tags: ['조합론'] },
   // 기출 유형 문제(gichul.html)
   { id: 'report', t: '신고 누적 정지 집계', lv: '중급', g: true , tags: ['해시'] },
   { id: 'compress', t: '반복 패턴 압축 최소 길이', lv: '중급', g: true , tags: ['배열/문자열'] },

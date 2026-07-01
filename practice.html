@@ -121,14 +121,14 @@
 <header class="hero">
   <div class="badge">엘리스 트랙 수강생용</div>
   <h1>Practice Problems</h1>
-  <p>코딩 테스트 빈출 유형을 게임 세계관으로 직접 만든 64문제예요. 입문부터 심화까지 4단계로 나뉘어 있고, 문제마다 제약 조건과 힌트, 언어별 모범 답안이 함께 있어요. "문제 풀기"를 누르면 코드 실행기가 열리고, 거기서 코드를 작성해 "채점하기"를 누르면 테스트 케이스를 모두 만족하는지 바로 판정돼요.</p>
+  <p>코딩 테스트 빈출 유형을 게임 세계관으로 직접 만든 74문제예요. 입문부터 심화까지 4단계로 나뉘어 있고, 문제마다 제약 조건과 힌트, 언어별 모범 답안이 함께 있어요. "문제 풀기"를 누르면 코드 실행기가 열리고, 거기서 코드를 작성해 "채점하기"를 누르면 테스트 케이스를 모두 만족하는지 바로 판정돼요.</p>
 </header>
 
 <main>
 
   <div class="progress-wrap">
     <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
-    <div class="progress-text" id="progText">0 / 64 해결</div>
+    <div class="progress-text" id="progText">0 / 74 해결</div>
   </div>
 
   <div class="howto"><strong>이렇게 풀어요</strong> : 문제를 고르면 코드 실행기(런박스)가 열려요. 문제 설명과 시작 코드가 준비돼 있으니, 직접 작성하고 <b>채점하기</b>를 누르면 공개/숨김 테스트 케이스를 한 번에 채점해 정답 여부를 알려줘요. 막히면 힌트와 모범 답안도 그 안에서 볼 수 있어요. 해결한 문제는 자동으로 표시돼요.</div>
@@ -537,6 +537,66 @@
       <h2>64. 겹치지 않는 정찰대 배치</h2>
       <p>간선으로 이어진 노드를 동시에 고르지 않으면서 최대 몇 개를 고를 수 있는지 구해요. 노드마다 뽑음/안뽑음 두 경우를 자식부터 채우는 트리 DP예요.</p>
       <a class="go" href="run/?problem=treedp">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="sumrange">
+      <div class="top"><span class="tag">수학</span><span class="lv intro">입문</span><span class="done">해결 ✓</span></div>
+      <h2>65. 구간 마나 합산</h2>
+      <p>a 부터 b 까지 모든 정수의 합을 구해요. 하나씩 더하지 않고 등차수열 합 공식으로 한 번에 구하는 감을 익혀요.</p>
+      <a class="go" href="run/?problem=sumrange">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="gcd2">
+      <div class="top"><span class="tag">수학</span><span class="lv basic">기초</span><span class="done">해결 ✓</span></div>
+      <h2>66. 두 톱니바퀴의 최대공약수</h2>
+      <p>두 수의 최대공약수를 구해요. 큰 수를 작은 수로 나눈 나머지로 계속 바꾸는 유클리드 호제법이 핵심이에요.</p>
+      <a class="go" href="run/?problem=gcd2">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="isprime">
+      <div class="top"><span class="tag">수학</span><span class="lv basic">기초</span><span class="done">해결 ✓</span></div>
+      <h2>67. 봉인석의 소수 판정</h2>
+      <p>N 이 소수인지 판정해요. N 까지 다 보지 않고 제곱근까지만 나눠 보면 된다는 점이 포인트예요.</p>
+      <a class="go" href="run/?problem=isprime">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="factmod">
+      <div class="top"><span class="tag">수학</span><span class="lv basic">기초</span><span class="done">해결 ✓</span></div>
+      <h2>68. 봉인 마법의 팩토리얼</h2>
+      <p>N 팩토리얼을 큰 소수로 나눈 나머지를 구해요. 곱하는 도중에 매번 나머지를 취해 값이 넘치지 않게 해요.</p>
+      <a class="go" href="run/?problem=factmod">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="topk">
+      <div class="top"><span class="tag">우선순위큐</span><span class="lv basic">기초</span><span class="done">해결 ✓</span></div>
+      <h2>69. 상위 K 전투력</h2>
+      <p>가장 큰 K 개를 큰 순서대로 뽑아요. 전체 정렬로도 되고, 크기 K 인 최소 힙을 유지하는 방법도 익혀요.</p>
+      <a class="go" href="run/?problem=topk">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="ropes">
+      <div class="top"><span class="tag">우선순위큐</span><span class="lv mid">중급</span><span class="done">해결 ✓</span></div>
+      <h2>70. 밧줄 잇기 최소 비용</h2>
+      <p>모든 밧줄을 하나로 잇는 최소 비용을 구해요. 매번 가장 짧은 두 개를 먼저 잇는 그리디를 최소 힙으로 구현해요.</p>
+      <a class="go" href="run/?problem=ropes">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="sweepmax">
+      <div class="top"><span class="tag">스위핑</span><span class="lv mid">중급</span><span class="done">해결 ✓</span></div>
+      <h2>71. 동시 접속 최대치</h2>
+      <p>여러 접속 구간에서 한 시점에 동시 접속한 최대 인원을 구해요. 시작 +1, 끝 -1 이벤트를 시간순으로 훑는 스위핑이에요.</p>
+      <a class="go" href="run/?problem=sweepmax">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="windowmax">
+      <div class="top"><span class="tag">슬라이딩윈도우</span><span class="lv hard">심화</span><span class="done">해결 ✓</span></div>
+      <h2>72. 슬라이딩 창 최대 데미지</h2>
+      <p>크기 k 인 창을 밀며 각 창의 최댓값을 모두 구해요. 단조 감소 덱을 쓰면 전체를 한 번에 훑어 빠르게 풀려요.</p>
+      <a class="go" href="run/?problem=windowmax">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="inversions">
+      <div class="top"><span class="tag">분할정복</span><span class="lv hard">심화</span><span class="done">해결 ✓</span></div>
+      <h2>73. 뒤집힌 순서 쌍 세기</h2>
+      <p>앞의 수가 뒤의 수보다 큰 쌍의 개수를 구해요. 병합 정렬로 합치는 단계에서 한 번에 세면 빠르게 처리돼요.</p>
+      <a class="go" href="run/?problem=inversions">문제 풀기 →</a>
+    </div>
+    <div class="card" data-pid="combmod">
+      <div class="top"><span class="tag">조합론</span><span class="lv hard">심화</span><span class="done">해결 ✓</span></div>
+      <h2>74. 조합의 수 나머지</h2>
+      <p>C(n, r) 을 큰 소수로 나눈 나머지를 구해요. 나눗셈을 페르마 소정리로 역원 곱셈으로 바꾸는 게 핵심이에요.</p>
+      <a class="go" href="run/?problem=combmod">문제 풀기 →</a>
     </div>
   </div>
   <button class="reset" id="resetBtn">해결 기록 초기화</button>

@@ -728,5 +728,105 @@
       "starter": "const data = require('fs').readFileSync(0, 'utf8').split('\\n');\nconst n = +data[0];\nconst adj = Array.from({ length: n + 1 }, () => []);\nfor (let i = 0; i < n - 1; i++) { const [a, b] = data[1 + i].split(' ').map(Number); adj[a].push(b); adj[b].push(a); }\n// TODO: 트리 DP로 인접하지 않게 고른 최대 노드 수를 구하세요 (후위 순회)\n",
       "solution": "const data = require('fs').readFileSync(0, 'utf8').split('\\n');\nconst n = +data[0];\nconst adj = Array.from({ length: n + 1 }, () => []);\nfor (let i = 0; i < n - 1; i++) { const [a, b] = data[1 + i].split(' ').map(Number); adj[a].push(b); adj[b].push(a); }\nconst dp = Array.from({ length: n + 1 }, () => [0, 0]);\nconst par = Array(n + 1).fill(0), vis = Array(n + 1).fill(false), order = [];\nconst st = [1]; vis[1] = true;\nwhile (st.length) { const u = st.pop(); order.push(u); for (const v of adj[u]) if (!vis[v]) { vis[v] = true; par[v] = u; st.push(v); } }\nfor (let i = order.length - 1; i >= 0; i--) {\n  const u = order[i]; dp[u][1] = 1;\n  for (const v of adj[u]) if (v !== par[u]) { dp[u][0] += Math.max(dp[v][0], dp[v][1]); dp[u][1] += dp[v][0]; }\n}\nconsole.log(Math.max(dp[1][0], dp[1][1]));\n"
     }
+  },
+  "sumrange": {
+    "python": {
+      "starter": "a, b = map(int, input().split())\n# TODO: a 부터 b 까지의 합을 출력하세요\n",
+      "solution": "a, b = map(int, input().split())\nprint((a + b) * (b - a + 1) // 2)\n"
+    },
+    "javascript": {
+      "starter": "const [a, b] = require('fs').readFileSync(0, 'utf8').split(' ').map(BigInt);\n// TODO: a 부터 b 까지의 합을 출력하세요\n",
+      "solution": "const [a, b] = require('fs').readFileSync(0, 'utf8').trim().split(' ').map(BigInt);\nconsole.log(((a + b) * (b - a + 1n) / 2n).toString());\n"
+    }
+  },
+  "gcd2": {
+    "python": {
+      "starter": "a, b = map(int, input().split())\n# TODO: 최대공약수를 출력하세요\n",
+      "solution": "import math\na, b = map(int, input().split())\nprint(math.gcd(a, b))\n"
+    },
+    "javascript": {
+      "starter": "let [a, b] = require('fs').readFileSync(0, 'utf8').trim().split(' ').map(Number);\n// TODO: 최대공약수를 출력하세요\n",
+      "solution": "let [a, b] = require('fs').readFileSync(0, 'utf8').trim().split(' ').map(Number);\nwhile (b) { [a, b] = [b, a % b]; }\nconsole.log(a);\n"
+    }
+  },
+  "isprime": {
+    "python": {
+      "starter": "n = int(input())\n# TODO: 소수면 소수, 아니면 합성수 를 출력하세요\n",
+      "solution": "n = int(input())\nprime = n >= 2\ni = 2\nwhile i * i <= n:\n    if n % i == 0:\n        prime = False\n        break\n    i += 1\nprint('소수' if prime else '합성수')\n"
+    },
+    "javascript": {
+      "starter": "const n = Number(require('fs').readFileSync(0, 'utf8').trim());\n// TODO: 소수면 소수, 아니면 합성수 를 출력하세요\n",
+      "solution": "const n = Number(require('fs').readFileSync(0, 'utf8').trim());\nlet prime = n >= 2;\nfor (let i = 2; i * i <= n; i++) { if (n % i === 0) { prime = false; break; } }\nconsole.log(prime ? '소수' : '합성수');\n"
+    }
+  },
+  "factmod": {
+    "python": {
+      "starter": "n = int(input())\nMOD = 10 ** 9 + 7\n# TODO: n! % MOD 를 출력하세요\n",
+      "solution": "n = int(input())\nMOD = 10 ** 9 + 7\nr = 1\nfor i in range(2, n + 1):\n    r = r * i % MOD\nprint(r)\n"
+    },
+    "javascript": {
+      "starter": "const n = Number(require('fs').readFileSync(0, 'utf8').trim());\nconst MOD = 1000000007;\n// TODO: n! % MOD 를 출력하세요\n",
+      "solution": "const n = Number(require('fs').readFileSync(0, 'utf8').trim());\nconst MOD = 1000000007;\nlet r = 1;\nfor (let i = 2; i <= n; i++) r = (r * i) % MOD;\nconsole.log(r);\n"
+    }
+  },
+  "topk": {
+    "python": {
+      "starter": "n, k = map(int, input().split())\na = list(map(int, input().split()))\n# TODO: 가장 큰 K 개를 내림차순으로 출력하세요\n",
+      "solution": "n, k = map(int, input().split())\na = list(map(int, input().split()))\na.sort(reverse=True)\nprint(' '.join(map(str, a[:k])))\n"
+    },
+    "javascript": {
+      "starter": "const L = require('fs').readFileSync(0, 'utf8').trim().split('\\n');\nconst [n, k] = L[0].split(' ').map(Number);\nconst a = L[1].split(' ').map(Number);\n// TODO: 가장 큰 K 개를 내림차순으로 출력하세요\n",
+      "solution": "const L = require('fs').readFileSync(0, 'utf8').trim().split('\\n');\nconst [n, k] = L[0].split(' ').map(Number);\nconst a = L[1].split(' ').map(Number);\na.sort((x, y) => y - x);\nconsole.log(a.slice(0, k).join(' '));\n"
+    }
+  },
+  "ropes": {
+    "python": {
+      "starter": "import heapq\nn = int(input())\na = list(map(int, input().split()))\n# TODO: 매번 가장 짧은 두 밧줄을 이어 최소 비용을 출력하세요\n",
+      "solution": "import heapq\nn = int(input())\na = list(map(int, input().split()))\nheapq.heapify(a)\ncost = 0\nwhile len(a) > 1:\n    x = heapq.heappop(a)\n    y = heapq.heappop(a)\n    s = x + y\n    cost += s\n    heapq.heappush(a, s)\nprint(cost)\n"
+    },
+    "javascript": {
+      "starter": "const L = require('fs').readFileSync(0, 'utf8').trim().split('\\n');\nconst n = Number(L[0]);\nconst a = L[1].split(' ').map(Number);\n// TODO: 최소 힙으로 매번 두 최솟값을 결합해 최소 비용을 출력하세요\n",
+      "solution": "const L = require('fs').readFileSync(0, 'utf8').trim().split('\\n');\nconst n = Number(L[0]);\nconst a = L[1].split(' ').map(Number);\nclass MinHeap {\n  constructor() { this.h = []; }\n  get size() { return this.h.length; }\n  push(v) { const h = this.h; h.push(v); let i = h.length - 1; while (i > 0) { const p = (i - 1) >> 1; if (h[p] <= h[i]) break; [h[p], h[i]] = [h[i], h[p]]; i = p; } }\n  pop() { const h = this.h; const top = h[0]; const last = h.pop(); if (h.length) { h[0] = last; let i = 0; const n = h.length; while (true) { let l = 2 * i + 1, r = 2 * i + 2, s = i; if (l < n && h[l] < h[s]) s = l; if (r < n && h[r] < h[s]) s = r; if (s === i) break; [h[s], h[i]] = [h[i], h[s]]; i = s; } } return top; }\n}\nconst pq = new MinHeap();\nfor (const x of a) pq.push(x);\nlet cost = 0;\nwhile (pq.size > 1) { const x = pq.pop(), y = pq.pop(); const s = x + y; cost += s; pq.push(s); }\nconsole.log(cost);\n"
+    }
+  },
+  "sweepmax": {
+    "python": {
+      "starter": "n = int(input())\n# TODO: 시작 +1, 끝 -1 이벤트를 만들어 동시 최대치를 출력하세요\n",
+      "solution": "n = int(input())\nev = []\nfor _ in range(n):\n    s, e = map(int, input().split())\n    ev.append((s, 1))\n    ev.append((e, -1))\nev.sort(key=lambda x: (x[0], x[1]))\ncur = mx = 0\nfor _, d in ev:\n    cur += d\n    if cur > mx:\n        mx = cur\nprint(mx)\n"
+    },
+    "javascript": {
+      "starter": "const L = require('fs').readFileSync(0, 'utf8').trim().split('\\n');\nconst n = Number(L[0]);\n// TODO: 시작 +1, 끝 -1 이벤트를 만들어 동시 최대치를 출력하세요\n",
+      "solution": "const L = require('fs').readFileSync(0, 'utf8').trim().split('\\n');\nconst n = Number(L[0]);\nconst ev = [];\nfor (let i = 0; i < n; i++) { const [s, e] = L[1 + i].split(' ').map(Number); ev.push([s, 1]); ev.push([e, -1]); }\nev.sort((a, b) => a[0] - b[0] || a[1] - b[1]);\nlet cur = 0, mx = 0;\nfor (const [, d] of ev) { cur += d; if (cur > mx) mx = cur; }\nconsole.log(mx);\n"
+    }
+  },
+  "windowmax": {
+    "python": {
+      "starter": "from collections import deque\nn, k = map(int, input().split())\na = list(map(int, input().split()))\n# TODO: 단조 덱으로 각 창의 최댓값을 출력하세요\n",
+      "solution": "from collections import deque\nn, k = map(int, input().split())\na = list(map(int, input().split()))\ndq = deque()\nout = []\nfor i in range(n):\n    while dq and a[dq[-1]] <= a[i]:\n        dq.pop()\n    dq.append(i)\n    if dq[0] <= i - k:\n        dq.popleft()\n    if i >= k - 1:\n        out.append(a[dq[0]])\nprint(' '.join(map(str, out)))\n"
+    },
+    "javascript": {
+      "starter": "const L = require('fs').readFileSync(0, 'utf8').trim().split('\\n');\nconst [n, k] = L[0].split(' ').map(Number);\nconst a = L[1].split(' ').map(Number);\n// TODO: 단조 덱으로 각 창의 최댓값을 출력하세요\n",
+      "solution": "const L = require('fs').readFileSync(0, 'utf8').trim().split('\\n');\nconst [n, k] = L[0].split(' ').map(Number);\nconst a = L[1].split(' ').map(Number);\nconst dq = [];\nlet head = 0;\nconst out = [];\nfor (let i = 0; i < n; i++) {\n  while (dq.length > head && a[dq[dq.length - 1]] <= a[i]) dq.pop();\n  dq.push(i);\n  if (dq[head] <= i - k) head++;\n  if (i >= k - 1) out.push(a[dq[head]]);\n}\nconsole.log(out.join(' '));\n"
+    }
+  },
+  "inversions": {
+    "python": {
+      "starter": "import sys\ndata = sys.stdin.read().split('\\n')\nn = int(data[0])\na = list(map(int, data[1].split())) if n > 0 else []\n# TODO: 병합 정렬로 뒤집힌 쌍 개수를 출력하세요\n",
+      "solution": "import sys\ndata = sys.stdin.read().split('\\n')\nn = int(data[0])\na = list(map(int, data[1].split())) if n > 0 else []\ntmp = [0] * n\ncnt = 0\ndef sort(l, r):\n    global cnt\n    if l >= r:\n        return\n    m = (l + r) // 2\n    sort(l, m)\n    sort(m + 1, r)\n    i, j, k = l, m + 1, l\n    while i <= m and j <= r:\n        if a[i] <= a[j]:\n            tmp[k] = a[i]; i += 1\n        else:\n            tmp[k] = a[j]; j += 1; cnt += (m - i + 1)\n        k += 1\n    while i <= m:\n        tmp[k] = a[i]; i += 1; k += 1\n    while j <= r:\n        tmp[k] = a[j]; j += 1; k += 1\n    for t in range(l, r + 1):\n        a[t] = tmp[t]\nsort(0, n - 1)\nprint(cnt)\n"
+    },
+    "javascript": {
+      "starter": "const data = require('fs').readFileSync(0, 'utf8').split('\\n');\nconst n = Number(data[0]);\nconst a = n > 0 ? data[1].split(' ').map(Number) : [];\n// TODO: 병합 정렬로 뒤집힌 쌍 개수를 출력하세요\n",
+      "solution": "const data = require('fs').readFileSync(0, 'utf8').split('\\n');\nconst n = Number(data[0]);\nconst a = n > 0 ? data[1].split(' ').map(Number) : [];\nconst tmp = new Array(n);\nlet cnt = 0;\nfunction sort(l, r) {\n  if (l >= r) return;\n  const m = (l + r) >> 1;\n  sort(l, m); sort(m + 1, r);\n  let i = l, j = m + 1, k = l;\n  while (i <= m && j <= r) {\n    if (a[i] <= a[j]) tmp[k++] = a[i++];\n    else { tmp[k++] = a[j++]; cnt += (m - i + 1); }\n  }\n  while (i <= m) tmp[k++] = a[i++];\n  while (j <= r) tmp[k++] = a[j++];\n  for (let t = l; t <= r; t++) a[t] = tmp[t];\n}\nsort(0, n - 1);\nconsole.log(cnt);\n"
+    }
+  },
+  "combmod": {
+    "python": {
+      "starter": "n, r = map(int, input().split())\nMOD = 10 ** 9 + 7\n# TODO: C(n, r) % MOD 를 출력하세요\n",
+      "solution": "n, r = map(int, input().split())\nMOD = 10 ** 9 + 7\nif r < 0 or r > n:\n    print(0)\nelse:\n    num = den = 1\n    for i in range(r):\n        num = num * ((n - i) % MOD) % MOD\n        den = den * ((i + 1) % MOD) % MOD\n    print(num * pow(den, MOD - 2, MOD) % MOD)\n"
+    },
+    "javascript": {
+      "starter": "const [n, r] = require('fs').readFileSync(0, 'utf8').trim().split(' ').map(Number);\nconst MOD = 1000000007n;\n// TODO: C(n, r) % MOD 를 출력하세요\n",
+      "solution": "const [n, r] = require('fs').readFileSync(0, 'utf8').trim().split(' ').map(Number);\nconst MOD = 1000000007n;\nfunction pm(b, e) { b %= MOD; let res = 1n; while (e > 0n) { if (e & 1n) res = res * b % MOD; b = b * b % MOD; e >>= 1n; } return res; }\nif (r < 0 || r > n) { console.log(0); }\nelse {\n  let num = 1n, den = 1n;\n  for (let i = 0; i < r; i++) { num = num * BigInt(n - i) % MOD; den = den * BigInt(i + 1) % MOD; }\n  console.log((num * pm(den, MOD - 2n) % MOD).toString());\n}\n"
+    }
   }
 }
