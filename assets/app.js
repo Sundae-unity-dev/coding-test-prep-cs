@@ -360,7 +360,36 @@
     ov.querySelector('.ct-ob-go').focus();
   }
 
-  function init() { buildControls(); initReveal(); initCopy(); initSearch(); initHelp(); initReminder(); initOnboarding(); }
+  // 관리자 공지 배너: 서버(?notice=1)에서 활성 공지를 받아 상단에 표시(공지 id별 1회 닫기). 10분 캐시.
+  function showNotice(n) {
+    if (!n || !n.text) return;
+    if (/\/admin\.html$/.test(location.pathname)) return;
+    if (ctUtil.lsGet('ct_notice_seen_v1', '') === n.id) return;
+    var bar = document.createElement('div');
+    bar.className = 'ct-notice';
+    bar.innerHTML = '<span>📢 ' + ctUtil.esc(n.text) + '</span> <button type="button" aria-label="닫기">×</button>';
+    bar.querySelector('button').addEventListener('click', function () { bar.remove(); ctUtil.lsSet('ct_notice_seen_v1', n.id); });
+    document.body.insertBefore(bar, document.body.firstChild);
+  }
+  function initNotice() {
+    var url = window.CT_ENDPOINT; if (!url) return;
+    if (/\/admin\.html$/.test(location.pathname)) return;
+    var cache = ctUtil.lsGet('ct_notice_cache_v1', null);
+    if (cache && cache.ts && (Date.now() - cache.ts < 600000)) { showNotice(cache.notice); return; }
+    var cbName = 'ctNoticeCb';
+    window[cbName] = function (d) {
+      var s = document.getElementById('ctNoticeJsonp'); if (s) s.remove(); try { delete window[cbName]; } catch (e) {}
+      var n = d && d.notice ? d.notice : null;
+      ctUtil.lsSet('ct_notice_cache_v1', { ts: Date.now(), notice: n });
+      showNotice(n);
+    };
+    var sc = document.createElement('script'); sc.id = 'ctNoticeJsonp';
+    sc.src = url + (url.indexOf('?') < 0 ? '?' : '&') + 'notice=1&callback=' + cbName + '&_=' + Date.now();
+    sc.onerror = function () { try { delete window[cbName]; } catch (e) {} };
+    document.body.appendChild(sc);
+  }
+
+  function init() { buildControls(); initReveal(); initCopy(); initSearch(); initHelp(); initReminder(); initOnboarding(); initNotice(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
