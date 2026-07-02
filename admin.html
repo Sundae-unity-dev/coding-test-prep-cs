@@ -365,7 +365,7 @@
   }
 
   // CSV 내보내기 (엑셀 한글 위해 BOM 추가)
-  function csvCell(v) { return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; }
+  function csvCell(v) { var s = String(v == null ? '' : v); if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; return '"' + s.replace(/"/g, '""') + '"'; }
   function exportCsv() {
     var head = ['이름', '최근접속', '방문', '학습시간(초)', '시도한문제', '해결', '정답률(%)', '총채점', '개념수', '상태'];
     var lines = [head.map(csvCell).join(',')];

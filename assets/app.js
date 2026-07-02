@@ -321,7 +321,46 @@
     });
   }
 
-  function init() { buildControls(); initReveal(); initCopy(); initSearch(); initHelp(); }
+  // 복귀 리마인더: 마지막 학습 후 2일 이상 쉬었고 오늘 아직 활동/닫음이 없으면 상단에 가벼운 넛지.
+  function initReminder() {
+    if (/\/admin\.html$/.test(location.pathname)) return;
+    var act = ctUtil.lsGet('ct_activity_v1', {}) || {};
+    var days = Object.keys(act).filter(Boolean);
+    if (days.length === 0) return;                 // 신규 사용자는 온보딩이 담당
+    var today = ctUtil.ymd();
+    if (act[today]) return;                        // 오늘 이미 학습함
+    if (ctUtil.lsGet('ct_reminder_dismiss_v1', '') === today) return;  // 오늘 이미 닫음
+    var last = days.sort().pop();
+    if (Math.round((new Date(today) - new Date(last)) / 86400000) < 2) return;
+    var bar = document.createElement('div');
+    bar.className = 'ct-remind';
+    bar.innerHTML = '<span>오랜만이에요. 오늘 한 문제 풀고 학습 흐름을 이어가요.</span> <a href="practice.html">문제 풀기</a> <button type="button" aria-label="닫기">×</button>';
+    bar.querySelector('button').addEventListener('click', function () { bar.remove(); ctUtil.lsSet('ct_reminder_dismiss_v1', today); });
+    document.body.insertBefore(bar, document.body.firstChild);
+  }
+
+  // 첫 방문 온보딩: 홈에서 한 번만 뜨는 환영 안내(닫으면 다시 안 뜸).
+  function initOnboarding() {
+    if (!/\/(index\.html)?$/.test(location.pathname)) return;   // 홈에서만
+    if (ctUtil.lsGet('ct_onboarded_v1', 0)) return;
+    var ov = document.createElement('div');
+    ov.className = 'ct-onboard'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', '환영 안내');
+    ov.innerHTML = '<div class="ct-ob-box"><h2>환영해요!</h2>' +
+      '<p>Elice Coding Camp 는 이렇게 쓰면 돼요.</p>' +
+      '<ul><li><b>학습 경로</b> 개념부터 문제까지 순서대로 따라가요.</li>' +
+      '<li><b>예시 문제</b> 브라우저에서 바로 코드를 짜고 채점받아요.</li>' +
+      '<li><b>마이페이지</b> 진행도와 복습할 것을 한눈에 봐요.</li></ul>' +
+      '<button type="button" class="ct-ob-go">시작하기</button></div>';
+    document.body.appendChild(ov);
+    function close() { ov.remove(); ctUtil.lsSet('ct_onboarded_v1', 1); document.removeEventListener('keydown', onKey); }
+    function onKey(e) { if (e.key === 'Escape') close(); }
+    ov.querySelector('.ct-ob-go').addEventListener('click', close);
+    ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+    document.addEventListener('keydown', onKey);
+    ov.querySelector('.ct-ob-go').focus();
+  }
+
+  function init() { buildControls(); initReveal(); initCopy(); initSearch(); initHelp(); initReminder(); initOnboarding(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();

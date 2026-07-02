@@ -280,7 +280,7 @@
   var d = new Date(); if (!activity[ymd(d)]) d.setDate(d.getDate() - 1);
   var streak = 0; while (activity[ymd(d)]) { streak++; d.setDate(d.getDate() - 1); }
 
-  if (visitor && visitor.name) document.getElementById('hello').innerHTML = '<b>' + String(visitor.name).replace(/[<>&]/g, '') + '</b>님, 지금까지의 학습 기록이에요.';
+  if (visitor && visitor.name) document.getElementById('hello').innerHTML = '<b>' + ctUtil.esc(visitor.name) + '</b>님, 지금까지의 학습 기록이에요.';
 
   document.getElementById('cSolve').textContent = solvedN + ' / ' + TOTAL;
   document.getElementById('cStreak').textContent = streak + '일';

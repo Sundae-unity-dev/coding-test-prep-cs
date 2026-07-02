@@ -260,3 +260,16 @@ body.gs-lock { overflow: hidden; }
 .focus .ft-reset { font-family: inherit; font-size: 14px; font-weight: 700; padding: 11px 20px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink-soft); border-radius: 999px; cursor: pointer; }
 .focus .ft-today { font-size: 13.5px; color: var(--ink-soft); }
 .focus .ft-today b { color: var(--purple-dark); font-size: 15px; }
+
+/* 복귀 리마인더 배너 + 첫 방문 온보딩 */
+.ct-remind { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; background: var(--purple-bg); color: var(--ink); border-bottom: 1px solid var(--line); padding: 9px 16px; font-size: 13.5px; }
+.ct-remind a { color: var(--purple-dark); font-weight: 800; text-decoration: none; }
+.ct-remind a:hover { text-decoration: underline; }
+.ct-remind button { background: none; border: none; color: var(--ink-soft); font-size: 16px; line-height: 1; cursor: pointer; }
+.ct-onboard { position: fixed; inset: 0; z-index: 200; background: rgba(20,15,40,0.5); display: flex; align-items: center; justify-content: center; padding: 20px; }
+.ct-onboard .ct-ob-box { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 26px 26px 22px; max-width: 400px; width: 100%; box-shadow: 0 18px 50px var(--shadow); }
+.ct-onboard h2 { margin: 0 0 8px; font-size: 20px; color: var(--ink); }
+.ct-onboard p { margin: 0 0 14px; font-size: 14px; color: var(--ink-soft); }
+.ct-onboard ul { margin: 0 0 18px; padding-left: 18px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: var(--ink); line-height: 1.55; }
+.ct-onboard .ct-ob-go { width: 100%; background: var(--purple); color: #fff; border: none; border-radius: 11px; padding: 12px; font-size: 15px; font-weight: 800; cursor: pointer; font-family: inherit; }
+.ct-onboard .ct-ob-go:hover { background: var(--purple-dark); }
