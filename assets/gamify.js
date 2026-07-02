@@ -15,8 +15,8 @@
   // ===== 유틸 =====
   function readObj(k) { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch (e) { return {}; } }
   function readArr(k) { try { var v = JSON.parse(localStorage.getItem(k)); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
-  function write(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
-  function ymd(d) { d = d || new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  var write = ctUtil.lsSet;
+  var ymd = ctUtil.ymd;
   function today() { return (window.ctToday ? window.ctToday() : ymd()); }
   function problemsMap() { var m = {}; (window.CT_PROBLEMS || []).forEach(function (p) { m[p.id] = p; }); return m; }
 

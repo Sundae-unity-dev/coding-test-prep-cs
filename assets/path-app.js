@@ -4,8 +4,8 @@
    저장: ct_path_quiz_v1[tid-i]=true(정답), ct_path_lessons_v1[tid]=true(완료, 활동 스탬프용). */
 (function () {
   function readObj(k) { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch (e) { return {}; } }
-  function write(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
-  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+  var write = ctUtil.lsSet;
+  var esc = ctUtil.esc;
 
   var ALL = window.CT_PROBLEMS || [];
   var CONCEPTS = window.CT_CONCEPTS || [];

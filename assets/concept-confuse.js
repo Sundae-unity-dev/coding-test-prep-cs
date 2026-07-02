@@ -121,7 +121,7 @@ window.CT_CONFUSE = {
 };
 (function () {
   var C = window.CT_CONFUSE || {};
-  function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]; }); }
+  var esc = ctUtil.esc;
   Object.keys(C).forEach(function (tid) {
     var topic = document.getElementById(tid); if (!topic || !C[tid] || !C[tid].length) return;
     if (topic.querySelector('.confuse')) return;

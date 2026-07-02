@@ -15,7 +15,6 @@
     try { localStorage.setItem(LS_THEME, t); } catch (e) {}
     if (window.ctEditor && window.ctEditor.setTheme) window.ctEditor.setTheme(t === 'dark' ? 'vs-dark' : 'vs');
   }
-  window.ctSetTheme = setTheme;
 
   // 떠있는 컨트롤: 다크 토글 + 맨 위로
   function buildControls() {
@@ -101,7 +100,6 @@
     window.addEventListener('resize', check, { passive: true });
     check();
   }
-  window.ctReveal = initReveal;
 
   // 코드 블록 복사 버튼 (토큰 span 은 textContent 로 순수 코드 추출). 표 안의 작은 pre 는 제외.
   // root 아래의 pre 에만 붙여요. 동적으로 그려진 코드에도 다시 호출할 수 있게 window.ctAddCopy 로 노출해요.
@@ -139,7 +137,7 @@
   };
 
   // 학습 활동(스트릭) 기록. 로컬 날짜 기준이라 런박스/개념/홈이 같은 함수를 써서 일자가 일관돼요.
-  function ymd(d) { d = d || new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  var ymd = ctUtil.ymd;
   window.ctToday = function () { return ymd(); };
   window.ctStampActivity = function () {
     try { var k = 'ct_activity_v1', o = JSON.parse(localStorage.getItem(k) || '{}'), t = ymd(); o[t] = (o[t] || 0) + 1; localStorage.setItem(k, JSON.stringify(o)); } catch (e) {}
@@ -151,7 +149,7 @@
     if (!box) return;
     opts = opts || {};
     var limit = opts.limit || 20;
-    function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+    var esc = ctUtil.esc;
     function row(r, rk, meName) {
       var medal = rk === 1 ? '🥇' : rk === 2 ? '🥈' : rk === 3 ? '🥉' : rk;
       var meCls = (meName && r.name === meName) ? ' lb-me' : '';
@@ -214,7 +212,7 @@
   function initSearch() {
     var nav = document.querySelector('.sitenav .nav-links');
     if (!nav || !window.CT_PROBLEMS) return;
-    function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+    var esc = ctUtil.esc;
     var items = [];
     (window.CT_CONCEPTS || []).forEach(function (c) { items.push({ t: c.t, sub: '개념 ' + (c.n || ''), href: 'concepts.html#' + c.id, kind: '개념' }); });
     (window.CT_PROBLEMS || []).filter(function (p) { return !p.g; }).forEach(function (p) { items.push({ t: p.t, sub: (p.tags && p.tags.length ? p.tags.join(', ') : '예시 문제'), href: 'practice.html#p-' + p.id, kind: '문제', tags: p.tags || [] }); });

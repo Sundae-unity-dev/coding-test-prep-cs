@@ -9,8 +9,8 @@
 
   function read() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
   function write(v) { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) {} }
-  function todayMid() { var d = new Date(); d.setHours(0, 0, 0, 0); return d; }
-  function ymd(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  var todayMid = ctUtil.todayMid;
+  var ymd = ctUtil.ymd;
   function daysSince(dateStr) { return Math.round((todayMid() - new Date(dateStr + 'T00:00:00')) / 86400000); }
   function clampBox(b) { return Math.max(0, Math.min(b, INTERVALS.length - 1)); }
 

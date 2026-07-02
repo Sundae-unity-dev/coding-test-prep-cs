@@ -9,10 +9,10 @@
 
   function read(k) { try { return JSON.parse(localStorage.getItem(k)) || null; } catch (e) { return null; } }
   function obj(k) { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch (e) { return {}; } }
-  function write(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  var write = ctUtil.lsSet;
   function del(k) { try { localStorage.removeItem(k); } catch (e) {} }
   function now() { return new Date().getTime(); }
-  function ymd(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  var ymd = ctUtil.ymd;
   function todayKey() { return ymd(new Date()); }
 
   function todayMinutes() { var l = obj(LKEY); return l[todayKey()] || 0; }

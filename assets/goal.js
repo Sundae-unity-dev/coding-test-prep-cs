@@ -5,8 +5,8 @@
   var KEY = 'ct_goal_v1';
   function read() { try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch (e) { return null; } }
   function write(v) { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) {} }
-  function todayMid() { var d = new Date(); d.setHours(0, 0, 0, 0); return d; }
-  function ymd(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  var todayMid = ctUtil.todayMid;
+  var ymd = ctUtil.ymd;
 
   function daysLeft() {
     var g = read(); if (!g || !g.date) return null;

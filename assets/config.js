@@ -6,5 +6,3 @@
  *  3) 관리자 비밀번호는 사이트가 아니라 Apps Script 안(ADMIN_PW)에 둡니다.
  */
 window.CT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyxZfh21OuWs3YNYl1qHdlwu07PaXcBVCG1tblmGn_XYcEPUo4XLJF5rm2_fOzGeLuwTg/exec';
-// 배포 위치(서브경로/루트)에 상관없이 현재 페이지 폴더를 base 로 자동 감지 (GitHub Pages 서브경로 + GitLab Pages 루트 겸용)
-window.CT_BASE = location.pathname.replace(/[^/]*$/, '');
