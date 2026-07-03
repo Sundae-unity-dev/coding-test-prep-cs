@@ -139,13 +139,15 @@
     } catch (e) {}
   }
 
-  // 재입장(관리자가 삭제/전체초기화)했을 때 이 브라우저의 신원+진행도를 완전히 비워요(ct_reset_epoch 는 유지).
+  // 재입장(관리자가 삭제/전체초기화)했을 때 이 브라우저를 완전히 비워요: 신원+진행도(localStorage) + 사이트 캐시(서비스워커).
+  // ct_reset_epoch 만 남겨 같은 전체초기화가 반복 발동하지 않게 해요. 캐시를 비우면 다음 접속에 최신 파일을 새로 받아요.
   function fullClientReset() {
     try {
       var rm = [];
       for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (/^ct_/.test(k) && k !== 'ct_reset_epoch') rm.push(k); }
       rm.forEach(function (k) { localStorage.removeItem(k); });
     } catch (e) {}
+    try { if (window.caches && caches.keys) caches.keys().then(function (ks) { ks.forEach(function (k) { caches.delete(k); }); }); } catch (e) {}  // 서비스워커 캐시(사이트 파일/런박스 자산)까지 비움
   }
   // 서버에 "내 기록이 아직 있나(exists) + 전체 재입장 시각(resetEpoch)" 확인. 반드시 첫 활동 전송 전에 호출.
   // 응답 실패(오프라인/타임아웃)면 초기화하지 않아요(정상 학생을 실수로 지우지 않기 위해).
