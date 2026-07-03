@@ -139,7 +139,38 @@
     } catch (e) {}
   }
 
-  function init() {
+  // 재입장(관리자가 삭제/전체초기화)했을 때 이 브라우저의 신원+진행도를 완전히 비워요(ct_reset_epoch 는 유지).
+  function fullClientReset() {
+    try {
+      var rm = [];
+      for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (/^ct_/.test(k) && k !== 'ct_reset_epoch') rm.push(k); }
+      rm.forEach(function (k) { localStorage.removeItem(k); });
+    } catch (e) {}
+  }
+  // 서버에 "내 기록이 아직 있나(exists) + 전체 재입장 시각(resetEpoch)" 확인. 반드시 첫 활동 전송 전에 호출.
+  // 응답 실패(오프라인/타임아웃)면 초기화하지 않아요(정상 학생을 실수로 지우지 않기 위해).
+  function checkReset(v, cb) {
+    var done = false;
+    function finish(r) { if (done) return; done = true; cb(r); }
+    var cbName = 'ctChk' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    function cleanup() { clearTimeout(timer); var s = document.getElementById(cbName); if (s) s.remove(); try { delete window[cbName]; } catch (e) {} }
+    var timer = setTimeout(function () { cleanup(); finish(false); }, 4000);
+    window[cbName] = function (d) {
+      cleanup();
+      if (!d) { finish(false); return; }
+      var serverEpoch = Number(d.resetEpoch) || 0, localEpoch = 0;
+      try { localEpoch = Number(localStorage.getItem('ct_reset_epoch')) || 0; } catch (e) {}
+      if (serverEpoch && serverEpoch > localEpoch) { try { localStorage.setItem('ct_reset_epoch', String(serverEpoch)); } catch (e) {} finish(true); return; }  // 전체 재입장
+      if (d.exists === false) { var ok = false; try { ok = localStorage.getItem('ct_vid_ok') === '1'; } catch (e) {} finish(ok); return; }               // 삭제됨(단, 이전에 존재 확인된 신원만)
+      if (d.exists === true) { try { localStorage.setItem('ct_vid_ok', '1'); if (serverEpoch) localStorage.setItem('ct_reset_epoch', String(serverEpoch)); } catch (e) {} }
+      finish(false);
+    };
+    var sc = document.createElement('script'); sc.id = cbName;
+    sc.src = ENDPOINT + (ENDPOINT.indexOf('?') < 0 ? '?' : '&') + 'checkvid=' + encodeURIComponent(v.id) + '&callback=' + cbName + '&_=' + Date.now();
+    sc.onerror = function () { cleanup(); finish(false); };
+    document.body.appendChild(sc);
+  }
+  function onboardAndStart() {
     ensureVisitor(function () {
       window.ctTrack('visit', { page: pageName() });
       startConceptObserver();
@@ -147,6 +178,13 @@
       setTimeout(sendXp, 2000);                 // gamify 준비될 시간을 주고 전송
       window.addEventListener('pagehide', sendXp);
     });
+  }
+  function init() {
+    var v = getVisitor(), checked = false;
+    try { checked = sessionStorage.getItem('ct_reset_chk') === '1'; } catch (e) {}
+    if (!v || !v.id || checked) { onboardAndStart(); return; }   // 신규거나 이번 세션에 이미 확인했으면 바로 진행
+    try { sessionStorage.setItem('ct_reset_chk', '1'); } catch (e) {}
+    checkReset(v, function (reset) { if (reset) fullClientReset(); onboardAndStart(); });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
