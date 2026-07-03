@@ -425,7 +425,7 @@
   function jsonp(params, cb) {
     var url = window.CT_ENDPOINT; if (!url) { showErr('CT_ENDPOINT 가 비어 있어요.'); return; }
     var name = 'ctCb' + (++_cb);
-    var timer = setTimeout(function () { done({ error: 'timeout' }); }, 20000);
+    var timer = setTimeout(function () { done({ error: 'timeout' }); }, 30000);
     function done(d) { clearTimeout(timer); var s = document.getElementById(name); if (s) s.remove(); try { delete window[name]; } catch (e) { window[name] = null; } cb(d); }
     window[name] = function (d) { done(d); };
     var qs = keys(params).map(function (k) { return k + '=' + encodeURIComponent(params[k]); }).join('&');
