@@ -10,13 +10,14 @@
     { href: 'path.html', label: '학습 경로' },
     { href: 'practice.html', label: '예시 문제' },
     { href: 'gichul.html', label: '기출 문제' },
+    { href: 'sql.html', label: 'SQL' },
     { href: 'templates.html', label: '템플릿' },
     { href: 'run/?mode=exam', label: '모의고사' }
   ];
   var box = document.querySelector('.sitenav .nav-links');
   if (!box) return;
   var page = (location.pathname.split('/').pop() || 'index.html');
-  var onHref = page === 'sql.html' ? 'qa.html' : page;   // SQL 은 QA 영역으로 묶음
+  var onHref = page;
   box.innerHTML = CT_NAV.map(function (it) {
     return '<a' + (it.href === onHref ? ' class="on"' : '') + ' href="' + it.href + '">' + it.label + '</a>';
   }).join('');
