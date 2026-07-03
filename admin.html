@@ -195,6 +195,34 @@
   .rawwrap th { position:sticky; top:0; }
   .rawwrap td { max-width:280px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:12.5px; }
 
+  /* 접근성 유틸 */
+  .visually-hidden { position:absolute !important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+  .skip-link { position:absolute; left:8px; top:-40px; z-index:300; background:var(--purple); color:#fff; padding:8px 14px; border-radius:0 0 8px 8px; font-weight:700; transition:top .15s; }
+  .skip-link:focus { top:0; }
+  tbody tr[tabindex]:focus-visible, .mcard[tabindex]:focus-visible, .hbar[tabindex]:focus-visible, .triage-row[tabindex]:focus-visible { outline:2px solid var(--purple); outline-offset:-2px; border-radius:6px; }
+  #memHead th[data-sort] { cursor:pointer; }
+  .btn, .tabnav button { min-height:36px; }
+  td.chk input, .mcard .selchk, #selAll { width:18px; height:18px; }
+  #mSort { display:none; }
+  @media (max-width:720px){ #mSort { display:block; } }
+
+  /* 개입 대기열 / 모의고사 분석 / 문제 드릴다운 */
+  .triage-row { display:grid; grid-template-columns:minmax(80px,1fr) minmax(90px,1.3fr) auto auto; align-items:center; gap:10px; padding:8px 6px; border-bottom:1px solid var(--line); font-size:13px; cursor:pointer; }
+  .triage-row:last-child { border-bottom:none; }
+  .triage-row:hover { background:rgba(136,67,255,0.06); }
+  .triage-row .tn { font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .triage-row .tp { color:var(--ink-soft); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .triage-row .tw { color:var(--ink-soft); font-size:11.5px; white-space:nowrap; }
+  .exgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin-bottom:12px; }
+  .drill { margin:2px 0 10px; padding:10px 12px; background:var(--purple-bg); border-radius:10px; font-size:12.5px; }
+  .drill .dl { display:flex; flex-wrap:wrap; gap:5px; margin-top:4px; }
+  .drill .dp { background:var(--card); border:1px solid var(--line); border-radius:999px; padding:2px 9px; font-size:11.5px; }
+  .hbar.expandable { cursor:pointer; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .drawer, .drawer-ov, #toast, .vbar .fill, .hbar .track i, .skip-link { transition:none !important; }
+  }
+
   /* 토스트 */
   #toast { position:fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(20px); background:var(--card); border:1px solid var(--line); border-left:4px solid var(--purple); border-radius:12px; padding:11px 16px; box-shadow:0 12px 30px var(--shadow); font-size:13.5px; font-weight:700; opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; z-index:200; }
   #toast.on { opacity:1; transform:translateX(-50%) translateY(0); }
@@ -213,13 +241,14 @@
 <body>
 <div id="gate" class="gate">
   <h2>관리자 로그인</h2>
-  <div id="gateErr" class="err"></div>
-  <input id="pw" type="password" placeholder="비밀번호" autocomplete="off">
+  <div id="gateErr" class="err" role="alert" aria-live="assertive"></div>
+  <input id="pw" type="password" placeholder="비밀번호" aria-label="관리자 비밀번호" autocomplete="off">
   <button id="loginBtn" type="button">들어가기</button>
 </div>
 
 <div id="dash" style="display:none;">
-  <div class="topbar">
+  <a href="#maincontent" class="skip-link">본문 바로가기</a>
+  <header class="topbar">
     <h1>학습 현황</h1>
     <span id="updated" class="updated"></span>
     <div class="grow"></div>
@@ -227,37 +256,47 @@
     <button id="refreshBtn" class="btn" type="button">새로고침</button>
     <button id="csvBtn" class="btn" type="button">CSV</button>
     <button id="logoutBtn" class="btn" type="button">로그아웃</button>
-  </div>
-  <div class="wrap">
+  </header>
+  <main class="wrap" id="maincontent">
     <div id="pwWarn">
       <span>⚠️ 기본 비밀번호를 그대로 쓰고 있어요. 삭제/설정 권한이 있으니 강한 비밀번호로 바꿔주세요.</span>
       <div class="grow" style="flex:1"></div>
       <button id="pwWarnGo" class="btn solid" type="button">지금 바꾸기</button>
     </div>
-    <div class="tabnav">
-      <button class="on" type="button" data-page="overview">개요</button>
-      <button type="button" data-page="students">학생</button>
-      <button type="button" data-page="problems">문제 난이도</button>
-      <button type="button" data-page="manage">관리</button>
-      <button type="button" data-page="settings">설정</button>
-    </div>
+    <nav class="tabnav" role="tablist" aria-label="관리 영역">
+      <button class="on" type="button" role="tab" aria-selected="true" aria-controls="pageOverview" id="tab-overview" data-page="overview">개요</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="pageStudents" id="tab-students" data-page="students">학생</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="pageProblems" id="tab-problems" data-page="problems">문제 난이도</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="pageManage" id="tab-manage" data-page="manage">관리</button>
+      <button type="button" role="tab" aria-selected="false" aria-controls="pageSettings" id="tab-settings" data-page="settings">설정</button>
+    </nav>
 
-    <div id="pageOverview" class="page on">
+    <div id="pageOverview" class="page on" role="tabpanel" aria-labelledby="tab-overview" tabindex="0">
       <div id="cards" class="cards"></div>
+      <div class="sec">
+        <h3>개입 대기열<span class="rangebtns"><button id="triageCsv" class="btn" type="button">상담 명단 CSV</button><button id="triagePrint" class="btn" type="button">명단 인쇄</button></span></h3>
+        <p class="hint">지금 막혀 있는 (학생, 문제)를 시도 많은 순으로 모았어요. 눌러서 상세를 볼 수 있어요.</p>
+        <div id="triageBox"></div>
+      </div>
       <div class="grid2">
         <div class="sec"><h3>일별 활동 학생 수<span class="rangebtns"><button type="button" data-days="14" class="on">14일</button><button type="button" data-days="30">30일</button></span></h3><p class="hint">하루에 한 번이라도 활동한 학생 수예요.</p><div id="chartDaily" class="vbars"></div></div>
         <div class="sec"><h3>해결 문제 수 분포</h3><p class="hint">학생들이 지금까지 푼 문제 수 구간이에요.</p><div id="chartHisto" class="histo"></div></div>
       </div>
       <div class="sec"><h3>어려운 문제 Top</h3><p class="hint">전체 학생 기준 해결률이 낮은 순서예요.</p><div id="chartHard"></div></div>
+      <div class="sec"><h3>모의고사 분석</h3><p class="hint">레벨별 합격률과 시간 활용률, 미응시자를 한눈에 봐요.</p><div id="examBox"></div></div>
       <div class="sec"><h3 id="attnTitle">주의가 필요한 학생</h3><div id="attnBox"></div></div>
       <div class="sec"><h3>최근 활동</h3><p class="hint">전체 학생의 최근 활동이에요.</p><div id="feed" class="feed"></div></div>
     </div>
 
-    <div id="pageStudents" class="page">
+    <div id="pageStudents" class="page" role="tabpanel" aria-labelledby="tab-students" tabindex="0">
       <div class="toolbar">
-        <input id="search" type="text" placeholder="이름 또는 작성 코드 내용 검색..." autocomplete="off">
-        <select id="filter">
+        <input id="search" type="text" placeholder="이름 또는 작성 코드 내용 검색..." aria-label="학생 이름 또는 코드 내용 검색" autocomplete="off">
+        <select id="filter" aria-label="학생 상태 필터">
           <option value="all">전체</option><option value="active">활성(7일)</option><option value="inactive">비활성</option><option value="alert">주의 필요</option>
+        </select>
+        <select id="mSort" aria-label="정렬 기준">
+          <option value="last:-1">최근 접속순</option><option value="name:1">이름순</option><option value="visits:-1">방문 많은순</option>
+          <option value="time:-1">학습시간 많은순</option><option value="solved:-1">푼 문제 많은순</option><option value="rate:-1">정답률 높은순</option>
         </select>
       </div>
       <div id="bulkbar" class="bulkbar">
@@ -269,29 +308,29 @@
       </div>
       <div class="tablewrap">
         <table><thead><tr id="memHead">
-          <th class="chk"><input type="checkbox" id="selAll" title="전체 선택"></th>
-          <th data-sort="name">멤버</th><th data-sort="last" class="num">최근 접속</th><th data-sort="visits" class="num">방문</th>
-          <th data-sort="time" class="num">학습시간</th><th data-sort="solved" class="num">푼 문제</th><th data-sort="rate" class="num">정답률</th>
-          <th data-sort="concepts" class="num">개념</th><th>상태</th>
+          <th class="chk" scope="col"><input type="checkbox" id="selAll" aria-label="전체 선택"></th>
+          <th scope="col" data-sort="name" tabindex="0" role="button">멤버</th><th scope="col" data-sort="last" class="num" tabindex="0" role="button">최근 접속</th><th scope="col" data-sort="visits" class="num" tabindex="0" role="button">방문</th>
+          <th scope="col" data-sort="time" class="num" tabindex="0" role="button">학습시간</th><th scope="col" data-sort="solved" class="num" tabindex="0" role="button">푼 문제</th><th scope="col" data-sort="rate" class="num" tabindex="0" role="button">정답률</th>
+          <th scope="col" data-sort="concepts" class="num" tabindex="0" role="button">개념</th><th scope="col">상태</th>
         </tr></thead><tbody id="rows"></tbody></table>
       </div>
       <div id="mcards" class="mcards"></div>
       <div id="empty" class="muted" style="margin-top:14px;display:none;">조건에 맞는 학생이 없어요.</div>
     </div>
 
-    <div id="pageProblems" class="page">
+    <div id="pageProblems" class="page" role="tabpanel" aria-labelledby="tab-problems" tabindex="0">
       <div class="toolbar">
-        <select id="probSort"><option value="rate">해결률 낮은 순</option><option value="att">시도 많은 순</option><option value="name">이름순</option></select>
+        <select id="probSort" aria-label="문제 정렬 기준"><option value="rate">해결률 낮은 순</option><option value="att">시도 많은 순</option><option value="name">이름순</option></select>
       </div>
       <div class="sec"><div id="probBars"></div><div id="probEmpty" class="muted" style="display:none;">아직 문제 풀이 기록이 없어요.</div></div>
     </div>
 
-    <div id="pageManage" class="page">
+    <div id="pageManage" class="page" role="tabpanel" aria-labelledby="tab-manage" tabindex="0">
       <div class="sec noticeForm">
         <h3>공지사항</h3>
         <p class="hint">학생 사이트 상단에 배너로 표시돼요. 비우고 삭제하면 사라집니다.</p>
         <div id="curNotice" class="curnotice" style="display:none;"></div>
-        <textarea id="noticeText" placeholder="예: 이번 주 금요일 모의고사가 있어요. 미리 연습해 두세요."></textarea>
+        <textarea id="noticeText" aria-label="공지 내용" placeholder="예: 이번 주 금요일 모의고사가 있어요. 미리 연습해 두세요."></textarea>
         <div class="row">
           <label class="muted">종료일 <input type="date" id="noticeUntil"></label>
           <div class="grow" style="flex:1"></div>
@@ -327,7 +366,7 @@
         <h3>원본 데이터 보기</h3>
         <p class="hint">시트를 직접 열지 않아도 여기서 원본을 확인할 수 있어요. 읽기 전용이에요.</p>
         <div class="toolbar">
-          <select id="rawSheet">
+          <select id="rawSheet" aria-label="원본 시트 선택">
             <option value="progress">progress (요약)</option>
             <option value="events">events (활동)</option>
             <option value="attempts">attempts (채점)</option>
@@ -336,24 +375,24 @@
             <option value="leaderboard">leaderboard (리더보드)</option>
             <option value="notes">notes (교사메모)</option>
           </select>
-          <input id="rawSearch" type="text" placeholder="내용 검색..." autocomplete="off">
+          <input id="rawSearch" type="text" placeholder="내용 검색..." aria-label="원본 데이터 내용 검색" autocomplete="off">
         </div>
         <div id="rawView" class="rawwrap"></div>
       </div>
     </div>
 
-    <div id="pageSettings" class="page">
+    <div id="pageSettings" class="page" role="tabpanel" aria-labelledby="tab-settings" tabindex="0">
       <div class="sec">
         <h3>비밀번호 변경</h3>
         <p class="hint">Apps Script 를 열지 않고 여기서 바로 바꿀 수 있어요. 8자 이상, 되도록 길고 어렵게 설정하세요. 저장하면 바로 적용돼요.</p>
-        <div class="field"><label>새 비밀번호</label><input id="npw1" type="password" autocomplete="new-password" placeholder="새 비밀번호 (8자 이상)"></div>
-        <div class="field"><label>새 비밀번호 확인</label><div class="inline"><input id="npw2" type="password" autocomplete="new-password" placeholder="한 번 더 입력"><button id="npwSave" class="btn solid" type="button">비밀번호 변경</button></div></div>
+        <div class="field"><label for="npw1">새 비밀번호</label><input id="npw1" type="password" autocomplete="new-password" aria-label="새 비밀번호" placeholder="새 비밀번호 (8자 이상)"></div>
+        <div class="field"><label for="npw2">새 비밀번호 확인</label><div class="inline"><input id="npw2" type="password" autocomplete="new-password" aria-label="새 비밀번호 확인" placeholder="한 번 더 입력"><button id="npwSave" class="btn solid" type="button">비밀번호 변경</button></div></div>
       </div>
       <div class="sec">
         <h3>이번 주 과제</h3>
         <p class="hint">학생 사이트 상단에 과제 배너로 표시돼요. 연결할 문제를 고르면 배너에서 바로 이동돼요.</p>
         <div id="curAssign" class="curval" style="display:none;"></div>
-        <div class="field"><textarea id="asgText" placeholder="예: 이번 주는 BFS/DFS 문제 3개를 풀어 오세요."></textarea></div>
+        <div class="field"><textarea id="asgText" aria-label="이번 주 과제 내용" placeholder="예: 이번 주는 BFS/DFS 문제 3개를 풀어 오세요."></textarea></div>
         <div class="field inline">
           <label style="margin:0;">종료일 <input type="date" id="asgUntil" style="width:auto;"></label>
           <label style="margin:0;">연결 문제 <select id="asgPid" style="width:auto;"></select></label>
@@ -367,7 +406,7 @@
         <p class="hint">학생 사이트 상단에 추천 문제 한 개를 강조해서 보여줘요.</p>
         <div id="curFeat" class="curval" style="display:none;"></div>
         <div class="field inline">
-          <select id="featPid" style="flex:1;"></select>
+          <select id="featPid" style="flex:1;" aria-label="오늘의 문제 선택"></select>
           <button id="featSave" class="btn solid" type="button">저장</button>
           <button id="featClear" class="btn danger" type="button">해제</button>
         </div>
@@ -376,7 +415,7 @@
         <h3>점검 모드</h3>
         <p class="hint">켜면 학생 사이트 상단에 점검 안내 배너가 표시돼요(닫을 수 없음).</p>
         <div class="field"><label class="togglerow"><input type="checkbox" id="maintOn"> 점검 모드 켜기</label></div>
-        <div class="field inline"><input id="maintText" type="text" placeholder="예: 잠시 점검 중이에요. 곧 정상화됩니다."><button id="maintSave" class="btn solid" type="button">저장</button></div>
+        <div class="field inline"><input id="maintText" type="text" aria-label="점검 안내 문구" placeholder="예: 잠시 점검 중이에요. 곧 정상화됩니다."><button id="maintSave" class="btn solid" type="button">저장</button></div>
       </div>
       <div class="sec">
         <h3>학생 재입장(닉네임 재설정)</h3>
@@ -386,11 +425,11 @@
         </div>
       </div>
     </div>
-  </div>
+  </main>
 </div>
 
 <div id="drawerOv" class="drawer-ov"></div>
-<aside id="drawer" class="drawer" role="dialog" aria-modal="true" aria-label="학생 상세">
+<aside id="drawer" class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerName">
   <div class="dh"><span class="dn" id="drawerName"></span>
     <span class="dacts">
       <button id="drPrint" class="btn" type="button">인쇄</button>
@@ -403,7 +442,7 @@
   <div class="db" id="drawerBody"></div>
 </aside>
 
-<div id="toast"></div>
+<div id="toast" role="status" aria-live="polite"></div>
 <div id="printArea"></div>
 
 <script src="assets/config.js"></script>
@@ -527,11 +566,11 @@
     MEMBERS.forEach(function (m) { m._met = null; m._codeText = null; metrics(m); });
     SEL = {};
     document.getElementById('updated').textContent = '갱신 ' + fmtTime(DATA.now);
-    renderCards(); renderDaily(); renderHisto(); renderHard(); renderAttn(); renderFeed();
+    renderCards(); renderTriage(); renderDaily(); renderHisto(); renderHard(); renderExamAnalysis(); renderAttn(); renderFeed();
     renderRows(); renderProblems(); renderBoard(); renderCurNotice(); updateSortArrows();
     renderSettings(); renderPwWarn(); renderRaw(); renderBulk();
   }
-  function stat(ico, n, l) { return '<div class="stat"><div class="ico">' + ico + '</div><div class="n">' + esc(n) + '</div><div class="l">' + esc(l) + '</div></div>'; }
+  function stat(ico, n, l) { return '<div class="stat"><div class="ico" aria-hidden="true">' + ico + '</div><div class="n">' + esc(n) + '</div><div class="l">' + esc(l) + '</div></div>'; }
   function renderCards() {
     var active = 0, alertN = 0, totalSolved = 0, rSum = 0, rCnt = 0;
     MEMBERS.forEach(function (m) { var x = m._met; if (x.active) active++; if (x.flags.length) alertN++; totalSolved += x.solvedN; if (x.attempted) { rSum += x.rate; rCnt++; } });
@@ -549,7 +588,10 @@
     for (var i = dailyDays - 1; i >= 0; i--) { var d = new Date(today); d.setDate(d.getDate() - i); days.push(ctUtil.ymd(d)); }
     var vals = days.map(function (k) { return byDay[k] ? keys(byDay[k]).length : 0; });
     var max = Math.max(1, Math.max.apply(null, vals)), todayKey = ctUtil.ymd(today);
-    document.getElementById('chartDaily').innerHTML = days.map(function (k, i) {
+    var box = document.getElementById('chartDaily');
+    box.setAttribute('role', 'img');
+    box.setAttribute('aria-label', '일별 활동 학생 수 최근 ' + dailyDays + '일: ' + days.map(function (k, i) { return k.slice(5) + ' ' + vals[i] + '명'; }).join(', '));
+    box.innerHTML = days.map(function (k, i) {
       var v = vals[i], h = Math.round(v / max * 100), lab = k.slice(5).replace('-', '/');
       return '<div class="vbar' + (k === todayKey ? ' today' : '') + '" title="' + k + ': ' + v + '명"><div class="v">' + (v || '') + '</div><div class="fill" style="height:' + h + '%"></div><div class="lab">' + lab + '</div></div>';
     }).join('');
@@ -558,7 +600,10 @@
     var bk = [{ l: '0', a: 0, b: 0 }, { l: '1-3', a: 1, b: 3 }, { l: '4-7', a: 4, b: 7 }, { l: '8-15', a: 8, b: 15 }, { l: '16+', a: 16, b: 1e9 }], c = bk.map(function () { return 0; });
     MEMBERS.forEach(function (m) { var s = m._met.solvedN; bk.forEach(function (x, i) { if (s >= x.a && s <= x.b) c[i]++; }); });
     var max = Math.max(1, Math.max.apply(null, c));
-    document.getElementById('chartHisto').innerHTML = bk.map(function (x, i) { return '<div class="hcol" title="' + x.l + '문제: ' + c[i] + '명"><div class="v">' + c[i] + '</div><div class="fill" style="height:' + Math.round(c[i] / max * 100) + '%"></div><div class="lab">' + x.l + '</div></div>'; }).join('');
+    var box = document.getElementById('chartHisto');
+    box.setAttribute('role', 'img');
+    box.setAttribute('aria-label', '해결 문제 수 분포: ' + bk.map(function (x, i) { return x.l + '문제 ' + c[i] + '명'; }).join(', '));
+    box.innerHTML = bk.map(function (x, i) { return '<div class="hcol" title="' + x.l + '문제: ' + c[i] + '명"><div class="v">' + c[i] + '</div><div class="fill" style="height:' + Math.round(c[i] / max * 100) + '%"></div><div class="lab">' + x.l + '</div></div>'; }).join('');
   }
   function rateClass(r) { return r < 40 ? 'r-low' : (r < 70 ? 'r-mid' : 'r-hi'); }
   function renderHard() {
@@ -604,19 +649,25 @@
     var rows = document.getElementById('rows'); rows.innerHTML = '';
     list.forEach(function (m) {
       var x = m._met, tr = document.createElement('tr');
-      tr.innerHTML = '<td class="chk"><input type="checkbox"' + (SEL[m.name] ? ' checked' : '') + '></td><td><b>' + esc(m.name) + '</b></td><td class="num">' + esc(fmtTime(m.lastSeen ? m.lastSeen.toISOString() : '')) + '</td><td class="num">' + m.visits + '</td><td class="num">' + esc(fmtSec(m.totalSec)) + '</td><td class="num">' + x.solvedN + '</td><td class="num">' + (x.attempted ? x.rate + '%' : '-') + '</td><td class="num">' + keys(m.concepts).length + '</td><td>' + statusBadge(m) + '</td>';
+      tr.setAttribute('tabindex', '0'); tr.setAttribute('role', 'button'); tr.setAttribute('aria-label', m.name + ' 상세 보기');
+      tr.innerHTML = '<td class="chk"><input type="checkbox" aria-label="선택: ' + esc(m.name) + '"' + (SEL[m.name] ? ' checked' : '') + '></td><td><b>' + esc(m.name) + '</b></td><td class="num">' + esc(fmtTime(m.lastSeen ? m.lastSeen.toISOString() : '')) + '</td><td class="num">' + m.visits + '</td><td class="num">' + esc(fmtSec(m.totalSec)) + '</td><td class="num">' + x.solvedN + '</td><td class="num">' + (x.attempted ? x.rate + '%' : '-') + '</td><td class="num">' + keys(m.concepts).length + '</td><td>' + statusBadge(m) + '</td>';
       var cb = tr.querySelector('input');
       cb.addEventListener('click', function (e) { e.stopPropagation(); toggleSel(m.name, cb.checked); });
-      tr.addEventListener('click', function () { openDrawer(m); });
+      cb.addEventListener('keydown', function (e) { e.stopPropagation(); });
+      tr.addEventListener('click', function () { openDrawer(m, tr); });
+      tr.addEventListener('keydown', function (e) { if ((e.key === 'Enter' || e.key === ' ') && e.target === tr) { e.preventDefault(); openDrawer(m, tr); } });
       rows.appendChild(tr);
     });
     var mc = document.getElementById('mcards'); mc.innerHTML = '';
     list.forEach(function (m) {
       var x = m._met, div = document.createElement('div'); div.className = 'mcard';
-      div.innerHTML = '<div class="mh"><input type="checkbox" class="selchk"' + (SEL[m.name] ? ' checked' : '') + '><span class="mname">' + esc(m.name) + '</span>' + statusBadge(m) + '</div><div class="mmeta"><span>최근 ' + esc(fmtTime(m.lastSeen ? m.lastSeen.toISOString() : '')) + '</span><span>푼 문제 ' + x.solvedN + '</span><span>정답률 ' + (x.attempted ? x.rate + '%' : '-') + '</span><span>학습 ' + esc(fmtSec(m.totalSec)) + '</span></div>';
+      div.setAttribute('tabindex', '0'); div.setAttribute('role', 'button'); div.setAttribute('aria-label', m.name + ' 상세 보기');
+      div.innerHTML = '<div class="mh"><input type="checkbox" class="selchk" aria-label="선택: ' + esc(m.name) + '"' + (SEL[m.name] ? ' checked' : '') + '><span class="mname">' + esc(m.name) + '</span>' + statusBadge(m) + '</div><div class="mmeta"><span>최근 ' + esc(fmtTime(m.lastSeen ? m.lastSeen.toISOString() : '')) + '</span><span>푼 문제 ' + x.solvedN + '</span><span>정답률 ' + (x.attempted ? x.rate + '%' : '-') + '</span><span>학습 ' + esc(fmtSec(m.totalSec)) + '</span></div>';
       var cb = div.querySelector('.selchk');
       cb.addEventListener('click', function (e) { e.stopPropagation(); toggleSel(m.name, cb.checked); });
-      div.addEventListener('click', function () { openDrawer(m); });
+      cb.addEventListener('keydown', function (e) { e.stopPropagation(); });
+      div.addEventListener('click', function () { openDrawer(m, div); });
+      div.addEventListener('keydown', function (e) { if ((e.key === 'Enter' || e.key === ' ') && e.target === div) { e.preventDefault(); openDrawer(m, div); } });
       mc.appendChild(div);
     });
     var sa = document.getElementById('selAll'); if (sa) sa.checked = list.length > 0 && list.every(function (m) { return SEL[m.name]; });
@@ -631,12 +682,94 @@
     bar.classList.toggle('on', n > 0);
     document.getElementById('bulkCount').textContent = n + '명 선택';
   }
-  function updateSortArrows() { [].forEach.call(document.querySelectorAll('#memHead th[data-sort]'), function (th) { if (th.getAttribute('data-sort') === SORT.key) th.setAttribute('data-dir', String(SORT.dir)); else th.removeAttribute('data-dir'); }); }
+  function updateSortArrows() {
+    [].forEach.call(document.querySelectorAll('#memHead th[data-sort]'), function (th) {
+      if (th.getAttribute('data-sort') === SORT.key) { th.setAttribute('data-dir', String(SORT.dir)); th.setAttribute('aria-sort', SORT.dir === 1 ? 'ascending' : 'descending'); }
+      else { th.removeAttribute('data-dir'); th.removeAttribute('aria-sort'); }
+    });
+    var ms = document.getElementById('mSort'); if (ms) { var v = SORT.key + ':' + SORT.dir; if ([].some.call(ms.options, function (o) { return o.value === v; })) ms.value = v; }
+  }
+  function applySort(k) { if (SORT.key === k) SORT.dir = -SORT.dir; else { SORT.key = k; SORT.dir = (k === 'name' ? 1 : -1); } renderRows(); updateSortArrows(); }
+  function drilldownFor(pid) {
+    var solvers = [], stuck = [], firstTry = 0, firstTotal = 0;
+    MEMBERS.forEach(function (m) {
+      var p = buildProblems(m).filter(function (pp) { return String(pp.pid) === String(pid); })[0];
+      if (!p) return;
+      if (p.attempts.length) { firstTotal++; if (p.attempts[0]) firstTry++; }
+      if (p.solved) solvers.push(m.name); else if (p.attempts.length) stuck.push(m.name);
+    });
+    return { solvers: solvers, stuck: stuck, firstRate: firstTotal ? Math.round(firstTry / firstTotal * 100) : 0, firstTotal: firstTotal };
+  }
+  function drillHtml(d) {
+    function chips(a) { return a.length ? a.map(function (n) { return '<span class="dp">' + esc(n) + '</span>'; }).join('') : '없음'; }
+    return '첫 시도 정답률 <b>' + d.firstRate + '%</b> (' + d.firstTotal + '명 중)' +
+      '<div class="dl"><b>해결 ' + d.solvers.length + ':</b> ' + chips(d.solvers) + '</div>' +
+      '<div class="dl"><b>막힘 ' + d.stuck.length + ':</b> ' + chips(d.stuck) + '</div>';
+  }
   function renderProblems() {
     var by = document.getElementById('probSort').value, stats = buildProblemStats();
     stats.sort(function (a, b) { if (by === 'att') return b.totalAtt - a.totalAtt; if (by === 'name') return a.title.localeCompare(b.title); return a.rate - b.rate || b.totalAtt - a.totalAtt; });
     document.getElementById('probEmpty').style.display = stats.length ? 'none' : 'block';
-    document.getElementById('probBars').innerHTML = stats.map(function (a) { return '<div class="hbar ' + rateClass(a.rate) + '"><span class="hlab" title="' + esc(a.title) + '">' + esc(a.title) + '</span><span class="track"><i style="width:' + a.rate + '%"></i></span><span class="hv">' + a.rate + '% / 시도 ' + a.totalAtt + '</span></div>'; }).join('');
+    var box = document.getElementById('probBars');
+    box.innerHTML = stats.map(function (a) { return '<div class="hbar expandable ' + rateClass(a.rate) + '" data-pid="' + esc(a.pid) + '" tabindex="0" role="button" aria-expanded="false"><span class="hlab" title="' + esc(a.title) + '">' + esc(a.title) + '</span><span class="track"><i style="width:' + a.rate + '%"></i></span><span class="hv">' + a.rate + '% / 시도 ' + a.totalAtt + '</span></div><div class="drill" style="display:none;"></div>'; }).join('');
+    [].forEach.call(box.querySelectorAll('.hbar.expandable'), function (bar) {
+      function toggle() {
+        var panel = bar.nextElementSibling; if (!panel) return;
+        if (panel.style.display !== 'none') { panel.style.display = 'none'; bar.setAttribute('aria-expanded', 'false'); return; }
+        if (!panel.getAttribute('data-loaded')) { panel.innerHTML = drillHtml(drilldownFor(bar.getAttribute('data-pid'))); panel.setAttribute('data-loaded', '1'); }
+        panel.style.display = 'block'; bar.setAttribute('aria-expanded', 'true');
+      }
+      bar.addEventListener('click', toggle);
+      bar.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+    });
+  }
+  function renderTriage() {
+    var box = document.getElementById('triageBox'), items = [];
+    MEMBERS.forEach(function (m) { m._met.stuck.forEach(function (p) { items.push({ m: m, p: p }); }); });
+    items.sort(function (a, b) { return b.p.attempts.length - a.p.attempts.length || (b.p.lastAt || 0) - (a.p.lastAt || 0); });
+    if (!items.length) { box.innerHTML = '<div class="muted">지금 막혀 있는 학생이 없어요.</div>'; return; }
+    box.innerHTML = '';
+    items.slice(0, 100).forEach(function (it) {
+      var p = it.p, div = document.createElement('div');
+      div.className = 'triage-row'; div.setAttribute('tabindex', '0'); div.setAttribute('role', 'button'); div.setAttribute('aria-label', it.m.name + ', ' + p.title + ' 상세 보기');
+      var trail = p.attempts.slice(-8).map(function (ok) { return '<span class="pbadge ' + (ok ? 'ok' : 'no') + '">' + (ok ? 'O' : 'X') + '</span>'; }).join('');
+      div.innerHTML = '<span class="tn">' + esc(it.m.name) + '</span><span class="tp">' + esc(p.title) + '</span><span class="trail">' + trail + '</span><span class="tw">' + esc(fmtTime(p.lastAt ? p.lastAt.toISOString() : '')) + '</span>';
+      div.addEventListener('click', function () { openDrawer(it.m, div); });
+      div.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDrawer(it.m, div); } });
+      box.appendChild(div);
+    });
+  }
+  function atRiskList() { return MEMBERS.filter(function (m) { return m._met.flags.length; }).sort(function (a, b) { return b._met.flags.length - a._met.flags.length; }); }
+  function exportAtRisk() {
+    var flagged = atRiskList(); if (!flagged.length) { toast('상담 대상이 없어요.'); return; }
+    var head = ['이름', '사유', '미접속일', '푼 문제', '정답률(%)', '교사 메모'];
+    var lines = [head.map(csvCell).join(',')];
+    flagged.forEach(function (m) { var x = m._met; lines.push([m.name, alertReason(m), (x.daysIdle > 900 ? '-' : x.daysIdle), x.solvedN, x.rate, noteOf(m)].map(csvCell).join(',')); });
+    download('상담명단_' + ctUtil.ymd() + '.csv', lines.join('\r\n'), 'text/csv');
+  }
+  function printAtRisk() {
+    var flagged = atRiskList(); if (!flagged.length) { toast('상담 대상이 없어요.'); return; }
+    var h = '<h2>상담 대상 명단</h2><div class="pr-sub">생성 ' + esc(fmtTime(DATA.now)) + ' / ' + flagged.length + '명</div><div class="pr-sec">';
+    h += flagged.map(function (m) { var x = m._met; return '<div style="margin-bottom:8px;"><b>' + esc(m.name) + '</b> - ' + esc(alertReason(m)) + ' (푼 ' + x.solvedN + ', 정답률 ' + x.rate + '%)' + (noteOf(m) ? '<br>메모: ' + esc(noteOf(m)) : '') + '</div>'; }).join('');
+    document.getElementById('printArea').innerHTML = h + '</div>'; window.print();
+  }
+  function renderExamAnalysis() {
+    var box = document.getElementById('examBox'), ex = DATA.exams || [];
+    if (!ex.length) { box.innerHTML = '<div class="muted">아직 모의고사 응시 기록이 없어요.</div>'; return; }
+    var byLevel = {}, takers = {};
+    ex.forEach(function (x) {
+      takers[String(x.vid)] = 1;
+      var lv = x.level || '전체', a = byLevel[lv] || (byLevel[lv] = { n: 0, sp: 0, sc: 0, util: 0, ut: 0 });
+      a.n++; a.sp += num(x.passed); a.sc += num(x.count);
+      var lim = num(x.minutes) * 60; if (lim > 0) { a.util += Math.min(num(x.usedSec) / lim, 1); a.ut++; }
+    });
+    var takerNames = {}; MEMBERS.forEach(function (m) { if (keys(m.vids).some(function (v) { return takers[v]; })) takerNames[m.name] = 1; });
+    var nonTakers = MEMBERS.filter(function (m) { return !keys(m.vids).some(function (v) { return takers[v]; }); });
+    var totalPass = 0, totalCnt = 0; keys(byLevel).forEach(function (k) { totalPass += byLevel[k].sp; totalCnt += byLevel[k].sc; });
+    var h = '<div class="exgrid">' + mstat(ex.length, '총 응시') + mstat(keys(takerNames).length, '응시 학생') + mstat(nonTakers.length, '미응시 학생') + mstat((totalCnt ? Math.round(totalPass / totalCnt * 100) : 0) + '%', '전체 정답률') + '</div>';
+    h += keys(byLevel).sort().map(function (lv) { var a = byLevel[lv], rate = a.sc ? Math.round(a.sp / a.sc * 100) : 0, util = a.ut ? Math.round(a.util / a.ut * 100) : 0; return '<div class="hbar ' + rateClass(rate) + '"><span class="hlab">' + esc(lv) + '</span><span class="track"><i style="width:' + rate + '%"></i></span><span class="hv">' + rate + '% / ' + a.n + '회 / 시간 ' + util + '%</span></div>'; }).join('');
+    if (nonTakers.length) h += '<p class="hint" style="margin-top:12px;">미응시자 (' + nonTakers.length + '): ' + nonTakers.map(function (m) { return esc(m.name); }).join(', ') + '</p>';
+    box.innerHTML = h;
   }
 
   // ===== 관리 탭 =====
@@ -667,11 +800,11 @@
       '<textarea id="drNote" placeholder="교사 메모 (관리자만 보여요)">' + esc(noteOf(m)) + '</textarea>' +
       '<div class="darow"><button id="drNoteBtn" class="btn" type="button">메모 저장</button><span class="muted">이름을 다른 학생과 같게 바꾸면 자동으로 합쳐져요.</span></div>' +
       '</div>';
-    h += '<div class="tabs"><button class="tab on" data-tab="overview">개요</button><button class="tab" data-tab="problems">문제별 (' + attempted + ')</button><button class="tab" data-tab="concepts">개념 (' + keys(m.concepts).length + ')</button><button class="tab" data-tab="exams">모의고사 (' + exams.length + ')</button><button class="tab" data-tab="timeline">타임라인</button></div>';
-    h += '<div class="tabpane on" data-pane="overview"><div class="muted" style="margin-bottom:12px;">처음 방문 ' + esc(fmtTime(m.firstSeen ? m.firstSeen.toISOString() : '')) + ' / 누적 방문 ' + m.visits + '회 / 학습시간 ' + esc(fmtSec(m.totalSec)) + ' / 접속 기기 ' + keys(m.vids).length + '대</div><div class="statgrid">' + mstat(attempted, '시도한 문제') + mstat(solvedN, '해결') + mstat(rate + '%', '정답률') + mstat(hasAtt ? totalAtt : '-', '총 채점') + '</div>';
+    h += '<div class="tabs" role="tablist" aria-label="학생 상세 영역"><button class="tab on" role="tab" aria-selected="true" data-tab="overview">개요</button><button class="tab" role="tab" aria-selected="false" data-tab="problems">문제별 (' + attempted + ')</button><button class="tab" role="tab" aria-selected="false" data-tab="concepts">개념 (' + keys(m.concepts).length + ')</button><button class="tab" role="tab" aria-selected="false" data-tab="exams">모의고사 (' + exams.length + ')</button><button class="tab" role="tab" aria-selected="false" data-tab="timeline">타임라인</button></div>';
+    h += '<div class="tabpane on" role="tabpanel" tabindex="0" data-pane="overview"><div class="muted" style="margin-bottom:12px;">처음 방문 ' + esc(fmtTime(m.firstSeen ? m.firstSeen.toISOString() : '')) + ' / 누적 방문 ' + m.visits + '회 / 학습시간 ' + esc(fmtSec(m.totalSec)) + ' / 접속 기기 ' + keys(m.vids).length + '대</div><div class="statgrid">' + mstat(attempted, '시도한 문제') + mstat(solvedN, '해결') + mstat(rate + '%', '정답률') + mstat(hasAtt ? totalAtt : '-', '총 채점') + '</div>';
     if (exams.length) h += '<div class="muted" style="margin-top:10px;">모의고사 ' + exams.length + '회, 최근 ' + exams[0].passed + '/' + exams[0].count + ' 통과 (' + esc(exams[0].level || '전체') + ')</div>';
     h += '</div>';
-    h += '<div class="tabpane" data-pane="problems">';
+    h += '<div class="tabpane" role="tabpanel" tabindex="0" data-pane="problems">';
     if (!problems.length) h += '<span class="muted">아직 시도한 문제가 없어요.</span>';
     else problems.forEach(function (p, i) {
       h += '<div class="pcard"><div class="ph"><span class="ptitle">' + esc(p.title) + '</span><span class="status ' + (p.solved ? 'done' : 'try') + '">' + (p.solved ? '완료' : '시도중') + '</span></div><div class="pmeta">';
@@ -683,7 +816,7 @@
       h += '</div>';
     });
     h += '</div>';
-    h += '<div class="tabpane" data-pane="concepts">';
+    h += '<div class="tabpane" role="tabpanel" tabindex="0" data-pane="concepts">';
     var cev = {};
     (DATA.events || []).filter(function (e) { return m.vids[String(e.vid)] && e.type === 'concept'; }).forEach(function (e) { var k = e.info || '', t = new Date(e.time || 0); if (!cev[k]) cev[k] = { title: k, n: 0, last: null }; cev[k].n++; if (!cev[k].last || t > cev[k].last) cev[k].last = t; });
     var clist = keys(cev).map(function (k) { return cev[k]; }).sort(function (a, b) { return (b.last || 0) - (a.last || 0); });
@@ -691,11 +824,11 @@
     else if (keys(m.concepts).length) h += '<div class="chips">' + keys(m.concepts).map(function (x) { return '<span class="chip">' + esc(x) + '</span>'; }).join('') + '</div>';
     else h += '<span class="muted">아직 열람한 개념이 없어요.</span>';
     h += '</div>';
-    h += '<div class="tabpane" data-pane="exams">';
+    h += '<div class="tabpane" role="tabpanel" tabindex="0" data-pane="exams">';
     if (!exams.length) h += '<span class="muted">아직 모의고사 응시 기록이 없어요.</span>';
     else { h += '<div class="tl">'; exams.forEach(function (x) { h += '<div><b>' + esc(x.level || '전체') + '</b> ' + x.passed + '/' + x.count + ' 통과 <span class="muted">' + esc(fmtSec(x.usedSec)) + ' 사용, 제한 ' + x.minutes + '분, ' + esc(fmtTime(x.time)) + '</span></div>'; }); h += '</div>'; }
     h += '</div>';
-    h += '<div class="tabpane" data-pane="timeline">' + timelineHtml(m) + '</div>';
+    h += '<div class="tabpane" role="tabpanel" tabindex="0" data-pane="timeline">' + timelineHtml(m) + '</div>';
     return h;
   }
   function timelineHtml(m) {
@@ -709,12 +842,13 @@
   }
   function mstat(n, l) { return '<div class="mstat"><div class="mn">' + esc(n) + '</div><div class="ml">' + esc(l) + '</div></div>'; }
 
-  var drawer = document.getElementById('drawer'), drawerOv = document.getElementById('drawerOv');
-  function openDrawer(m) {
-    curMember = m;
+  var drawer = document.getElementById('drawer'), drawerOv = document.getElementById('drawerOv'), lastTrigger = null;
+  var dash = document.getElementById('dash');
+  function openDrawer(m, trigger) {
+    curMember = m; lastTrigger = trigger || document.activeElement;
     document.getElementById('drawerName').textContent = m.name;
     var body = document.getElementById('drawerBody'); body.innerHTML = detailHtml(m); body.scrollTop = 0;
-    [].forEach.call(body.querySelectorAll('.tab'), function (t) { t.addEventListener('click', function () { var nm = t.getAttribute('data-tab'); [].forEach.call(body.querySelectorAll('.tab'), function (x) { x.classList.toggle('on', x === t); }); [].forEach.call(body.querySelectorAll('.tabpane'), function (p) { p.classList.toggle('on', p.getAttribute('data-pane') === nm); }); }); });
+    [].forEach.call(body.querySelectorAll('.tab'), function (t) { t.addEventListener('click', function () { var nm = t.getAttribute('data-tab'); [].forEach.call(body.querySelectorAll('.tab'), function (x) { var on = x === t; x.classList.toggle('on', on); x.setAttribute('aria-selected', on ? 'true' : 'false'); }); [].forEach.call(body.querySelectorAll('.tabpane'), function (p) { p.classList.toggle('on', p.getAttribute('data-pane') === nm); }); }); });
     [].forEach.call(body.querySelectorAll('.copy'), function (btn) { btn.addEventListener('click', function () { var pre = body.querySelector('#code' + btn.getAttribute('data-code')); if (!pre) return; try { navigator.clipboard.writeText(pre.textContent); btn.textContent = '복사됨'; setTimeout(function () { btn.textContent = '복사'; }, 1200); } catch (e) {} }); });
     var rn = body.querySelector('#drRenameBtn'); if (rn) rn.addEventListener('click', function () {
       var nv = (body.querySelector('#drRename').value || '').trim();
@@ -725,10 +859,16 @@
     var nb = body.querySelector('#drNoteBtn'); if (nb) nb.addEventListener('click', function () {
       adminAction({ action: 'setNote', vid: keys(m.vids)[0], name: m.name, note: body.querySelector('#drNote').value }, '메모를 저장했어요');
     });
+    try { dash.inert = true; } catch (e) {} dash.setAttribute('aria-hidden', 'true');   // 배경 비활성 = 포커스 트랩
     drawer.classList.add('on'); drawerOv.classList.add('on');
     document.getElementById('drawerClose').focus();
   }
-  function closeDrawer() { drawer.classList.remove('on'); drawerOv.classList.remove('on'); curMember = null; }
+  function closeDrawer() {
+    if (!drawer.classList.contains('on')) return;
+    drawer.classList.remove('on'); drawerOv.classList.remove('on'); curMember = null;
+    try { dash.inert = false; } catch (e) {} dash.removeAttribute('aria-hidden');
+    if (lastTrigger && lastTrigger.focus) { try { lastTrigger.focus(); } catch (e) {} } lastTrigger = null;
+  }
 
   // ===== 리포트/내보내기 =====
   function csvCell(v) { var s = String(v == null ? '' : v); if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; return '"' + s.replace(/"/g, '""') + '"'; }
@@ -813,6 +953,8 @@
   document.getElementById('pw').addEventListener('keydown', function (e) { if (e.key === 'Enter') load(this.value.trim()); });
   document.getElementById('refreshBtn').addEventListener('click', function () { load(PW); });
   document.getElementById('csvBtn').addEventListener('click', exportCsv);
+  document.getElementById('triageCsv').addEventListener('click', exportAtRisk);
+  document.getElementById('triagePrint').addEventListener('click', printAtRisk);
   document.getElementById('logoutBtn').addEventListener('click', logout);
   document.getElementById('autoRef').addEventListener('change', autoRefreshToggle);
   document.getElementById('search').addEventListener('input', renderRows);
@@ -829,7 +971,12 @@
   document.getElementById('noticeClear').addEventListener('click', function () { if (confirm('공지를 삭제할까요?')) { document.getElementById('noticeText').value = ''; adminAction({ action: 'clearNotice' }, '공지를 삭제했어요'); } });
   document.getElementById('cleanGarbled').addEventListener('click', function () { if (confirm('이름이 깨진(인코딩 오류) 데이터를 정리할까요?')) adminAction({ action: 'cleanGarbled' }, '정리했어요'); });
   [].forEach.call(document.querySelectorAll('[data-sheet]'), function (b) { b.addEventListener('click', function () { exportSheet(b.getAttribute('data-sheet')); }); });
-  [].forEach.call(document.querySelectorAll('.tabnav button'), function (b) { b.addEventListener('click', function () { [].forEach.call(document.querySelectorAll('.tabnav button'), function (x) { x.classList.toggle('on', x === b); }); var pg = b.getAttribute('data-page'); ['overview', 'students', 'problems', 'manage', 'settings'].forEach(function (n) { document.getElementById('page' + n.charAt(0).toUpperCase() + n.slice(1)).classList.toggle('on', n === pg); }); }); });
+  var tabBtns = [].slice.call(document.querySelectorAll('.tabnav button'));
+  function activateTab(b) { tabBtns.forEach(function (x) { var on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-selected', on ? 'true' : 'false'); }); var pg = b.getAttribute('data-page'); ['overview', 'students', 'problems', 'manage', 'settings'].forEach(function (n) { document.getElementById('page' + n.charAt(0).toUpperCase() + n.slice(1)).classList.toggle('on', n === pg); }); }
+  tabBtns.forEach(function (b, i) {
+    b.addEventListener('click', function () { activateTab(b); });
+    b.addEventListener('keydown', function (e) { var j = e.key === 'ArrowRight' ? i + 1 : (e.key === 'ArrowLeft' ? i - 1 : (e.key === 'Home' ? 0 : (e.key === 'End' ? tabBtns.length - 1 : -1))); if (j < 0) return; e.preventDefault(); var t = tabBtns[(j + tabBtns.length) % tabBtns.length]; t.focus(); activateTab(t); });
+  });
 
   // 일괄 선택
   document.getElementById('selAll').addEventListener('change', function () { var on = this.checked; filtered().forEach(function (m) { if (on) SEL[m.name] = 1; else delete SEL[m.name]; }); renderRows(); renderBulk(); });
@@ -853,7 +1000,8 @@
   document.getElementById('rawSheet').addEventListener('change', renderRaw);
   document.getElementById('rawSearch').addEventListener('input', renderRaw);
   [].forEach.call(document.querySelectorAll('.rangebtns button'), function (b) { b.addEventListener('click', function () { [].forEach.call(document.querySelectorAll('.rangebtns button'), function (x) { x.classList.toggle('on', x === b); }); dailyDays = num(b.getAttribute('data-days')) || 14; renderDaily(); }); });
-  [].forEach.call(document.querySelectorAll('#memHead th[data-sort]'), function (th) { th.addEventListener('click', function () { var k = th.getAttribute('data-sort'); if (SORT.key === k) SORT.dir = -SORT.dir; else { SORT.key = k; SORT.dir = (k === 'name' ? 1 : -1); } renderRows(); updateSortArrows(); }); });
+  [].forEach.call(document.querySelectorAll('#memHead th[data-sort]'), function (th) { var k = th.getAttribute('data-sort'); th.addEventListener('click', function () { applySort(k); }); th.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); applySort(k); } }); });
+  document.getElementById('mSort').addEventListener('change', function () { var v = this.value.split(':'); SORT.key = v[0]; SORT.dir = num(v[1]) || -1; renderRows(); updateSortArrows(); });
 
   window.__ctAdmin = { inject: function (d) { window.ctAdminData ? window.ctAdminData(d) : (function () { DATA = d; document.getElementById('gate').style.display = 'none'; document.getElementById('dash').style.display = 'block'; render(); })(); } };
   window.ctAdminData = function (d) { if (!d || d.error) { showErr('비밀번호가 맞지 않아요.'); return; } DATA = d; document.getElementById('gate').style.display = 'none'; document.getElementById('dash').style.display = 'block'; render(); };
