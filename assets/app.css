@@ -269,6 +269,17 @@ body.gs-lock { overflow: hidden; }
 .ct-notice { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; background: #FFF4E6; color: #7A4B00; border-bottom: 1px solid #F0D9B5; padding: 10px 16px; font-size: 13.5px; font-weight: 600; }
 .ct-notice button { background: none; border: none; color: #7A4B00; font-size: 16px; line-height: 1; cursor: pointer; }
 html[data-theme="dark"] .ct-notice { background: #2E2410; color: #E6C88A; border-color: #4A3A1A; }
+/* 점검(빨강, 닫기 없음) / 이번 주 과제(파랑) / 오늘의 문제(보라). 공지와 같은 상단 배너 계열. */
+.ct-maint { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; background: #FBE9E9; color: #9B1C1C; border-bottom: 1px solid #F0C4C4; padding: 10px 16px; font-size: 13.5px; font-weight: 700; }
+html[data-theme="dark"] .ct-maint { background: #2E1616; color: #F0A9A9; border-color: #4A2020; }
+.ct-assign { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; background: #E7F0FF; color: #1B4B91; border-bottom: 1px solid #C4D8F0; padding: 10px 16px; font-size: 13.5px; font-weight: 600; }
+.ct-assign a { color: #1B4B91; font-weight: 800; text-decoration: underline; }
+.ct-assign button { background: none; border: none; color: #1B4B91; font-size: 16px; line-height: 1; cursor: pointer; }
+html[data-theme="dark"] .ct-assign { background: #14233A; color: #A9CBF0; border-color: #24405F; }
+html[data-theme="dark"] .ct-assign a { color: #A9CBF0; }
+.ct-featured { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; background: var(--purple-bg); color: var(--purple-dark); border-bottom: 1px solid var(--line); padding: 8px 16px; font-size: 13px; font-weight: 700; }
+.ct-featured a { color: var(--purple-dark); font-weight: 800; text-decoration: underline; }
+.ct-featured button { background: none; border: none; color: var(--purple-dark); font-size: 16px; line-height: 1; cursor: pointer; }
 .ct-onboard { position: fixed; inset: 0; z-index: 200; background: rgba(20,15,40,0.5); display: flex; align-items: center; justify-content: center; padding: 20px; }
 .ct-onboard .ct-ob-box { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 26px 26px 22px; max-width: 400px; width: 100%; box-shadow: 0 18px 50px var(--shadow); }
 .ct-onboard h2 { margin: 0 0 8px; font-size: 20px; color: var(--ink); }

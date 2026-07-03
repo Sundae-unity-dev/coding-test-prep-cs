@@ -360,36 +360,55 @@
     ov.querySelector('.ct-ob-go').focus();
   }
 
-  // 관리자 공지 배너: 서버(?notice=1)에서 활성 공지를 받아 상단에 표시(공지 id별 1회 닫기). 10분 캐시.
-  function showNotice(n) {
-    if (!n || !n.text) return;
-    if (/\/admin\.html$/.test(location.pathname)) return;
-    if (ctUtil.lsGet('ct_notice_seen_v1', '') === n.id) return;
-    var bar = document.createElement('div');
-    bar.className = 'ct-notice';
-    bar.innerHTML = '<span>📢 ' + ctUtil.esc(n.text) + '</span> <button type="button" aria-label="닫기">×</button>';
-    bar.querySelector('button').addEventListener('click', function () { bar.remove(); ctUtil.lsSet('ct_notice_seen_v1', n.id); });
-    document.body.insertBefore(bar, document.body.firstChild);
+  // 관리자 배너: 서버(?pub=1)에서 공지/이번 주 과제/오늘의 문제/점검 안내를 받아 상단에 표시. 10분 캐시.
+  // 각 배너는 id(또는 pid)별로 1회 닫으면 다시 안 떠요. 점검 배너는 닫을 수 없어요.
+  function pubBanner(cls, html, dismiss) {
+    var bar = document.createElement('div'); bar.className = cls; bar.innerHTML = html;
+    var x = bar.querySelector('button.ct-x');
+    if (x && dismiss) x.addEventListener('click', function () { bar.remove(); dismiss(); });
+    return bar;
   }
-  function initNotice() {
+  function showPublic(p) {
+    if (!p) return;
+    if (/\/admin\.html$/.test(location.pathname)) return;
+    var frag = document.createDocumentFragment();
+    if (p.maintenance && p.maintenance.on) {
+      frag.appendChild(pubBanner('ct-maint', '<span>🛠 ' + ctUtil.esc(p.maintenance.text || '잠시 점검 중이에요.') + '</span>'));
+    }
+    var n = p.notice;
+    if (n && n.text && ctUtil.lsGet('ct_notice_seen_v1', '') !== n.id) {
+      frag.appendChild(pubBanner('ct-notice', '<span>📢 ' + ctUtil.esc(n.text) + '</span> <button type="button" class="ct-x" aria-label="닫기">×</button>', function () { ctUtil.lsSet('ct_notice_seen_v1', n.id); }));
+    }
+    var a = p.assignment;
+    if (a && a.text && ctUtil.lsGet('ct_asg_seen_v1', '') !== a.id) {
+      var link = a.pid ? ' <a href="practice.html#p-' + encodeURIComponent(a.pid) + '">풀러 가기 →</a>' : '';
+      frag.appendChild(pubBanner('ct-assign', '<span>📝 이번 주 과제: ' + ctUtil.esc(a.text) + '</span>' + link + ' <button type="button" class="ct-x" aria-label="닫기">×</button>', function () { ctUtil.lsSet('ct_asg_seen_v1', a.id); }));
+    }
+    var f = p.featured;
+    if (f && f.pid && ctUtil.lsGet('ct_feat_seen_v1', '') !== f.pid) {
+      frag.appendChild(pubBanner('ct-featured', '<span>⭐ 오늘의 문제</span> <a href="practice.html#p-' + encodeURIComponent(f.pid) + '">풀러 가기 →</a> <button type="button" class="ct-x" aria-label="닫기">×</button>', function () { ctUtil.lsSet('ct_feat_seen_v1', f.pid); }));
+    }
+    if (frag.childNodes.length) document.body.insertBefore(frag, document.body.firstChild);
+  }
+  function initPub() {
     var url = window.CT_ENDPOINT; if (!url) return;
     if (/\/admin\.html$/.test(location.pathname)) return;
-    var cache = ctUtil.lsGet('ct_notice_cache_v1', null);
-    if (cache && cache.ts && (Date.now() - cache.ts < 600000)) { showNotice(cache.notice); return; }
-    var cbName = 'ctNoticeCb';
+    var cache = ctUtil.lsGet('ct_pub_cache_v1', null);
+    if (cache && cache.ts && (Date.now() - cache.ts < 600000)) { showPublic(cache.pub); return; }
+    var cbName = 'ctPubCb';
     window[cbName] = function (d) {
-      var s = document.getElementById('ctNoticeJsonp'); if (s) s.remove(); try { delete window[cbName]; } catch (e) {}
-      var n = d && d.notice ? d.notice : null;
-      ctUtil.lsSet('ct_notice_cache_v1', { ts: Date.now(), notice: n });
-      showNotice(n);
+      var s = document.getElementById('ctPubJsonp'); if (s) s.remove(); try { delete window[cbName]; } catch (e) {}
+      var pub = (d && !d.error) ? d : null;   // 구백엔드(미재배포)면 error -> 조용히 무배너
+      ctUtil.lsSet('ct_pub_cache_v1', { ts: Date.now(), pub: pub });
+      showPublic(pub);
     };
-    var sc = document.createElement('script'); sc.id = 'ctNoticeJsonp';
-    sc.src = url + (url.indexOf('?') < 0 ? '?' : '&') + 'notice=1&callback=' + cbName + '&_=' + Date.now();
+    var sc = document.createElement('script'); sc.id = 'ctPubJsonp';
+    sc.src = url + (url.indexOf('?') < 0 ? '?' : '&') + 'pub=1&callback=' + cbName + '&_=' + Date.now();
     sc.onerror = function () { try { delete window[cbName]; } catch (e) {} };
     document.body.appendChild(sc);
   }
 
-  function init() { buildControls(); initReveal(); initCopy(); initSearch(); initHelp(); initReminder(); initOnboarding(); initNotice(); }
+  function init() { buildControls(); initReveal(); initCopy(); initSearch(); initHelp(); initReminder(); initOnboarding(); initPub(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
