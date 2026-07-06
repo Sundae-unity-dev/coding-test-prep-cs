@@ -37,6 +37,17 @@
   .card p { font-size: 13.5px; color: var(--ink-soft); flex: 1; margin-bottom: 14px; }
   .card .go { align-self: flex-start; font-size: 13.5px; font-weight: 800; color: #fff; background: var(--purple); text-decoration: none; padding: 8px 16px; border-radius: 9px; transition: background 0.15s; }
   .card .go:hover { background: var(--purple-dark); }
+  .card.solved { border-color: var(--green); }
+  .ctop { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .lv { font-size: 10.5px; font-weight: 800; border-radius: 999px; padding: 1px 8px; }
+  .lv.basic { color: #2563EB; background: #EFF4FE; } .lv.mid { color: #D97706; background: #FFF7ED; } .lv.hard { color: #8843FF; background: #F4EEFF; }
+  html[data-theme="dark"] .lv.basic { color: #8FB6FF; background: #16243A; } html[data-theme="dark"] .lv.mid { color: #E6AE4D; background: #3A2E14; } html[data-theme="dark"] .lv.hard { color: #C3A8FF; background: #2A2342; }
+  .done { margin-left: auto; color: var(--green); font-weight: 800; font-size: 12.5px; }
+  .cstat { font-size: 12px; color: var(--ink-soft); margin-bottom: 12px; min-height: 16px; }
+  .progress-wrap { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 18px; display: flex; align-items: center; gap: 14px; box-shadow: 0 2px 10px var(--shadow); margin-bottom: 6px; }
+  .progress-bar { flex: 1; height: 10px; background: var(--line); border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--purple), #B388FF); border-radius: 99px; transition: width 0.3s ease; }
+  .progress-text { font-size: 13.5px; font-weight: 700; color: var(--purple-dark); min-width: 92px; text-align: right; }
 
   footer { text-align: center; color: var(--ink-soft); font-size: 13px; padding: 26px 20px 50px; }
 </style>
@@ -64,59 +75,82 @@
 
   <div class="notebox"><strong>안내</strong> : 실제 기출을 변형해 출제했어요. 같은 유형을 더 풀고 싶다면 백준(BOJ)이나 프로그래머스에서 이어서 연습해 보면 좋아요.</div>
 
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+    <div class="progress-text" id="progText">0 / 9 해결</div>
+  </div>
+
   <div class="sec-title"><h2>카카오 블라인드 스타일</h2><span class="sub">주제는 가려 두었어요. 문제를 읽고 직접 풀이를 떠올려 보세요</span></div>
   <div class="cards">
-    <div class="card">
+    <div class="card" data-pid="report">
+      <div class="ctop"><span class="lv mid">중급</span><span class="done" hidden>해결 ✓</span></div>
       <h3>신고 누적 정지 집계</h3>
       <p>여러 명이 서로를 신고하고, k번 이상 신고당하면 정지돼요. 정지된 사람을 신고한 모두에게 가는 안내 메일 수를 구해요.</p>
+      <div class="cstat" id="cstat-report"></div>
       <a class="go" href="run/?problem=report">문제 풀기 →</a>
     </div>
-    <div class="card">
+    <div class="card" data-pid="compress">
+      <div class="ctop"><span class="lv mid">중급</span><span class="done" hidden>해결 ✓</span></div>
       <h3>반복 패턴 압축 최소 길이</h3>
       <p>문자열을 여러 단위 길이로 잘라 연속 반복을 (횟수)(조각)으로 줄였을 때 만들 수 있는 가장 짧은 길이를 구해요.</p>
+      <div class="cstat" id="cstat-compress"></div>
       <a class="go" href="run/?problem=compress">문제 풀기 →</a>
     </div>
-    <div class="card">
+    <div class="card" data-pid="keypad">
+      <div class="ctop"><span class="lv basic">기초</span><span class="done" hidden>해결 ✓</span></div>
       <h3>한 손 키패드 입력</h3>
       <p>키패드에서 두 엄지의 현재 위치와의 거리를 비교해 더 가까운 손으로 누른 결과를 구해요. 거리가 같으면 주로 쓰는 손을 써요.</p>
+      <div class="cstat" id="cstat-keypad"></div>
       <a class="go" href="run/?problem=keypad">문제 풀기 →</a>
     </div>
   </div>
 
   <div class="sec-title"><h2>삼성 SW역량테스트 스타일</h2><span class="sub">주제는 가려 두었어요. 입출력 조건을 보고 접근을 설계해 보세요</span></div>
   <div class="cards">
-    <div class="card">
+    <div class="card" data-pid="complex">
+      <div class="ctop"><span class="lv mid">중급</span><span class="done" hidden>해결 ✓</span></div>
       <h3>섬 묶음 세기</h3>
       <p>0과 1의 지도에서 상하좌우로 이어진 땅을 한 섬으로 묶어, 섬의 개수와 각 섬의 크기를 오름차순으로 구해요.</p>
+      <div class="cstat" id="cstat-complex"></div>
       <a class="go" href="run/?problem=complex">문제 풀기 →</a>
     </div>
-    <div class="card">
+    <div class="card" data-pid="nqueen">
+      <div class="ctop"><span class="lv hard">심화</span><span class="done" hidden>해결 ✓</span></div>
       <h3>퀸 배치 경우의 수</h3>
       <p>N x N 체스판에 퀸 N개를 서로 공격하지 못하게 놓는 방법의 수를 구해요.</p>
+      <div class="cstat" id="cstat-nqueen"></div>
       <a class="go" href="run/?problem=nqueen">문제 풀기 →</a>
     </div>
-    <div class="card">
+    <div class="card" data-pid="tilings">
+      <div class="ctop"><span class="lv basic">기초</span><span class="done" hidden>해결 ✓</span></div>
       <h3>2 x n 바닥 채우기</h3>
       <p>2 x n 바닥을 1 x 2, 2 x 1 타일로 빈틈없이 채우는 방법의 수를 구해요.</p>
+      <div class="cstat" id="cstat-tilings"></div>
       <a class="go" href="run/?problem=tilings">문제 풀기 →</a>
     </div>
   </div>
 
   <div class="sec-title"><h2>빈출 핵심 유형</h2><span class="sub">주제는 가려 두었어요. 어느 시험에서나 자주 나오는 형태예요</span></div>
   <div class="cards">
-    <div class="card">
+    <div class="card" data-pid="coinmin">
+      <div class="ctop"><span class="lv mid">중급</span><span class="done" hidden>해결 ✓</span></div>
       <h3>최소 동전 거스름돈</h3>
       <p>여러 종류의 동전으로 금액 k를 만드는 데 필요한 최소 동전 개수를 구해요. 만들 수 없으면 -1을 출력해요.</p>
+      <div class="cstat" id="cstat-coinmin"></div>
       <a class="go" href="run/?problem=coinmin">문제 풀기 →</a>
     </div>
-    <div class="card">
+    <div class="card" data-pid="josephus">
+      <div class="ctop"><span class="lv basic">기초</span><span class="done" hidden>해결 ✓</span></div>
       <h3>원형 탈락 순서</h3>
       <p>둥글게 앉은 사람들에서 K번째 사람을 차례로 제거할 때, 제거되는 순서를 구해요.</p>
+      <div class="cstat" id="cstat-josephus"></div>
       <a class="go" href="run/?problem=josephus">문제 풀기 →</a>
     </div>
-    <div class="card">
+    <div class="card" data-pid="editdist">
+      <div class="ctop"><span class="lv hard">심화</span><span class="done" hidden>해결 ✓</span></div>
       <h3>문자열 교정 비용</h3>
       <p>한 문자열을 다른 문자열로 바꾸는 데 드는 최소 편집 횟수(삽입, 삭제, 교체)를 구해요.</p>
+      <div class="cstat" id="cstat-editdist"></div>
       <a class="go" href="run/?problem=editdist">문제 풀기 →</a>
     </div>
   </div>
@@ -130,5 +164,42 @@
 <script defer src="assets/app.js"></script>
 <script src="assets/problems.js"></script>
 <script defer src="assets/gamify.js"></script>
+<script>
+(function () {
+  var SKEY = 'ct_practice_solved_v1';
+  function readObj(k) { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch (e) { return {}; } }
+  var cards = [].slice.call(document.querySelectorAll('.card[data-pid]'));
+  function refresh() {
+    var solved = readObj(SKEY), n = 0;
+    cards.forEach(function (c) {
+      var on = !!solved[c.dataset.pid];
+      c.classList.toggle('solved', on);
+      var d = c.querySelector('.done'); if (d) d.hidden = !on;
+      if (on) n++;
+    });
+    var pct = cards.length ? Math.round(n / cards.length * 100) : 0;
+    document.getElementById('progFill').style.width = pct + '%';
+    document.getElementById('progText').textContent = n + ' / ' + cards.length + ' 해결';
+  }
+  refresh();
+  window.addEventListener('focus', refresh);
+  window.addEventListener('storage', refresh);
+  // 커뮤니티 정답률(공개 추적 데이터). app.js(defer)가 ctProblemStats 정의할 때까지 짧게 재시도.
+  (function tryRates(k) {
+    if (!window.ctProblemStats) { if (k < 40) setTimeout(function () { tryRates(k + 1); }, 200); return; }
+    window.ctProblemStats(function (map) {
+      if (!map) return;
+      cards.forEach(function (c) {
+        var pid = c.dataset.pid, st = map[pid], slot = document.getElementById('cstat-' + pid);
+        if (!st || st.rate === null || !slot) return;
+        slot.textContent = '커뮤니티 정답률 ' + st.rate + '% (' + st.triers + '명 시도)';
+      });
+    });
+  })(0);
+  // #p-<id> 딥링크(오늘의 문제/검색 진입)
+  function jump() { if (location.hash.indexOf('#p-') !== 0) return; var c = document.querySelector('.card[data-pid="' + location.hash.slice(3) + '"]'); if (c) c.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  window.addEventListener('hashchange', jump); jump();
+})();
+</script>
 </body>
 </html>

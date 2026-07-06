@@ -215,7 +215,7 @@
     var esc = ctUtil.esc;
     var items = [];
     (window.CT_CONCEPTS || []).forEach(function (c) { items.push({ t: c.t, sub: '개념 ' + (c.n || ''), href: 'concepts.html#' + c.id, kind: '개념' }); });
-    (window.CT_PROBLEMS || []).filter(function (p) { return !p.g; }).forEach(function (p) { items.push({ t: p.t, sub: (p.tags && p.tags.length ? p.tags.join(', ') : '예시 문제'), href: 'practice.html#p-' + p.id, kind: '문제', tags: p.tags || [] }); });
+    (window.CT_PROBLEMS || []).forEach(function (p) { items.push({ t: p.t, sub: (p.tags && p.tags.length ? p.tags.join(', ') : '예시 문제'), href: (p.g ? 'gichul.html#p-' : 'practice.html#p-') + p.id, kind: p.g ? '기출' : '문제', tags: p.tags || [] }); });
 
     // 템플릿/QA/SQL 은 데이터가 각 페이지에서만 로드돼요. 전역 검색에 노출하려고 가벼운 색인을 여기 둬요.
     // (제목은 templates-data.js / qa-data.js 와 맞춰 주세요.)
