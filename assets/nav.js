@@ -6,7 +6,7 @@
   var CT_NAV = [
     { href: 'guide.html', label: '준비 가이드' },
     { href: 'concepts.html', label: '개념 정리' },
-    { href: 'qa.html', label: '개념정리(QA)' },
+    { href: 'qa.html', label: 'QA 이론' },
     { href: 'path.html', label: '학습 경로' },
     { href: 'practice.html', label: '예시 문제' },
     { href: 'gichul.html', label: '기출 문제' },
