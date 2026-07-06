@@ -39,6 +39,7 @@
   .tpl pre.hide { display: none; }
   html[data-theme="dark"] .tpl pre { background: #11111C; }
 
+  .tplsearch { width: 100%; box-sizing: border-box; padding: 11px 14px; font-size: 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--ink); margin: 0 0 12px; font-family: inherit; }
   #empty { color: var(--ink-soft); font-size: 14px; padding: 30px 0; text-align: center; display: none; }
 </style>
 </head>
@@ -59,6 +60,7 @@
 <main>
   <div class="notebox"><strong>이렇게 써요.</strong> 위에서 카테고리를 고르고, 각 카드의 언어 탭(C# / Python / JS)을 눌러 원하는 언어로 바꾼 뒤 코드 오른쪽 위 <b>복사</b> 버튼으로 가져가요. 변수명과 입력 형식은 문제에 맞게 손봐서 쓰면 돼요.</div>
 
+  <input id="tplSearch" type="search" class="tplsearch" placeholder="템플릿 검색 (예: 다익스트라, 이분 탐색, 입출력)" aria-label="템플릿 검색" autocomplete="off">
   <div class="cats" id="cats"></div>
   <div id="list"></div>
   <p id="empty">해당 카테고리에 템플릿이 없어요.</p>
@@ -112,13 +114,19 @@
       + pres + '</div>';
   }
 
+  var curQ = '';
   function render() {
-    var items = T.filter(function (t) { return curCat === '전체' || t.cat === curCat; });
+    var items = T.filter(function (t) {
+      if (curCat !== '전체' && t.cat !== curCat) return false;
+      if (curQ && (t.title + ' ' + t.note + ' ' + t.cat).toLowerCase().indexOf(curQ) < 0) return false;
+      return true;
+    });
     listEl.innerHTML = items.map(cardHtml).join('');
     emptyEl.style.display = items.length ? 'none' : '';
     // app.js initCopy 는 init 시점에 이미 돌았으므로, 새로 그린 pre 에 복사 버튼을 다시 붙여요.
     if (window.ctAddCopy) window.ctAddCopy(listEl);
   }
+  document.getElementById('tplSearch').addEventListener('input', function () { curQ = this.value.toLowerCase().trim(); render(); });
 
   // 언어 탭 전환 (이벤트 위임)
   listEl.addEventListener('click', function (e) {

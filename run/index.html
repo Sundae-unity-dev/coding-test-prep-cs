@@ -35,10 +35,14 @@
     </div>
 
     <div id="blazor-error-ui">
-        An unhandled error has occurred.
-        <a href="." class="reload">Reload</a>
-        <span class="dismiss">🗙</span>
+        오류가 발생했어요.
+        <a href="." class="reload">새로고침</a>
+        <span class="dismiss" role="button" aria-label="닫기">×</span>
     </div>
+
+    <!-- 사이트로 돌아가는 길(런박스는 자체 화면이라 별도 고정 링크 제공) -->
+    <a id="siteBack" href="../practice.html" title="문제 목록으로 돌아가기"
+       style="position:fixed; left:14px; bottom:14px; z-index:150; display:inline-flex; align-items:center; gap:6px; padding:9px 15px; border-radius:999px; background:var(--card,#1C1C2A); color:var(--ink,#E7E7F1); border:1px solid var(--line,#2E2E40); box-shadow:0 6px 18px rgba(0,0,0,.4); font-size:13.5px; font-weight:700; text-decoration:none; font-family:'Elice DX Neolli',Pretendard,-apple-system,'Malgun Gothic',sans-serif;">← 문제 목록</a>
 
     <!-- 로딩이 너무 오래 걸리면(자산 캐시 손상/네트워크) 강제 새로고침 안내 -->
     <div id="loadFallback" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(19,19,27,.93); color:#E7E7F1; align-items:center; justify-content:center; text-align:center; padding:24px; font-family:'Elice DX Neolli',Pretendard,-apple-system,'Malgun Gothic',sans-serif;">
