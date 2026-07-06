@@ -20,6 +20,13 @@ html pre, html code, html kbd { font-family: "Elice Digital Coding", Consolas, "
   --code-inline-bg: #EFEAFB; --code-inline-ink: #6A2FD0;
   --shadow: rgba(60,30,130,0.12);
   --green: #16A34A; --amber: #D97706;
+  --red: #DC2626; --blue: #2563EB;
+  --green-bg: #EFFAF3; --red-bg: #FEF1F1; --blue-bg: #E7F0FF;
+  /* 브랜드 히어로 그라디언트(6개 페이지 공용) */
+  --hero-grad: linear-gradient(135deg, #3B1B7E 0%, #6A2FD0 55%, #8843FF 100%);
+  /* 제목/컨테이너 스케일 */
+  --fs-h1: 30px; --fs-h2: 20px; --fs-h3: 16px;
+  --wrap: 1120px; --wrap-narrow: 960px;
 }
 
 /* 다크 토큰 (html[data-theme=dark] = 특정도 0,1,1 로 인라인 :root 0,1,0 을 이김) */
@@ -32,6 +39,7 @@ html[data-theme="dark"] {
   --shadow: rgba(0,0,0,0.55);
   --green: #5FD08A; --amber: #E6AE4D;
   --green-bg: #17341F; --red-bg: #3A1E1E;
+  --red: #F0A9A9; --blue: #8FB6FF; --blue-bg: #16243A;
 }
 html[data-theme="dark"] body { background: var(--bg); color: var(--ink); }
 

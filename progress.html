@@ -14,15 +14,11 @@
 <script src="assets/util.js"></script>
 <style>
   body { margin:0; background:var(--bg); color:var(--ink); font-family:Pretendard,-apple-system,'Malgun Gothic',sans-serif; }
-  nav { position:sticky; top:0; z-index:100; display:flex; align-items:center; gap:18px; padding:12px 22px; background:var(--nav-bg); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); }
-  nav a { color:var(--ink-soft); text-decoration:none; font-size:14px; font-weight:600; }
-  nav a:hover { color:var(--purple-dark); }
-  .sitebrand { display:flex; align-items:center; gap:8px; font-weight:800; color:var(--ink); font-size:15px; }
-  .wrap { max-width:960px; margin:0 auto; padding:26px 18px 80px; }
+  .wrap { max-width:var(--wrap-narrow); margin:0 auto; padding:26px 18px 80px; }
 
   /* 상단 히어로: 인사 + 전체 진행 링 */
   .hero { display:flex; align-items:center; justify-content:space-between; gap:22px;
-          background:linear-gradient(135deg, #3B1B7E, #6A2FD0 62%, #8843FF); color:#fff;
+          background:var(--hero-grad); color:#fff;
           border-radius:20px; padding:26px 28px; box-shadow:0 12px 30px rgba(106,47,208,0.28); margin-bottom:20px; }
   .hero h1 { font-size:26px; margin:0 0 6px; }
   .hero .hello { font-size:14.5px; opacity:.92; margin-bottom:16px; }
@@ -48,7 +44,7 @@
   .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
   .sec { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:20px 22px; margin-bottom:16px; box-shadow:0 6px 18px var(--shadow); }
   .grid2 .sec { margin-bottom:0; }
-  .sec h2 { font-size:15.5px; margin:0 0 14px; display:flex; align-items:center; gap:7px; }
+  .sec h2 { font-size:17px; margin:0 0 14px; display:flex; align-items:center; gap:7px; }
   .tier { margin-bottom:13px; } .tier:last-child { margin-bottom:0; }
   .tier .tl { display:flex; justify-content:space-between; font-size:13px; margin-bottom:5px; }
   .tier .tl b { font-weight:700; }

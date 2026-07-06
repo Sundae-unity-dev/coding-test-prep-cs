@@ -20,20 +20,10 @@
   a { color: inherit; }
 
   /* 상단 내비게이션 (다른 페이지와 동일한 평면 네비) */
-  nav {
-    position: sticky; top: 0; z-index: 50;
-    display: flex; align-items: center; gap: 18px;
-    padding: 12px 22px;
-    background: var(--nav-bg); backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--line);
-  }
-  nav a { color: var(--ink-soft); text-decoration: none; font-size: 14px; font-weight: 600; }
-  nav a:hover { color: var(--purple-dark); }
-  nav .sitebrand { display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--ink); font-size: 15px; }
 
   /* 히어로 */
   header {
-    background: linear-gradient(135deg, #3B1B7E 0%, #6A2FD0 55%, #8843FF 100%);
+    background: var(--hero-grad);
     color: #fff; text-align: center; padding: 88px 24px 78px; position: relative; overflow: hidden;
   }
   header::after {

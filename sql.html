@@ -11,7 +11,7 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.7; word-break: keep-all; overflow-wrap: break-word; }
   .sitebrand { display: flex; align-items: center; gap: 9px; font-weight: 800; font-size: 15px; color: var(--ink); text-decoration: none; }
-  header.hero { background: linear-gradient(135deg, #3B1B7E 0%, #6A2FD0 55%, #8843FF 100%); color: #fff; text-align: center; padding: 52px 24px 44px; }
+  header.hero { background: var(--hero-grad); color: #fff; text-align: center; padding: 52px 24px 44px; }
   header.hero .badge { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); padding: 4px 14px; border-radius: 99px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
   header.hero h1 { font-size: 30px; font-weight: 800; margin-bottom: 12px; }
   header.hero p { font-size: 15px; opacity: 0.92; max-width: 640px; margin: 0 auto; }
@@ -42,6 +42,8 @@
   .plist button .done { margin-left: auto; color: var(--green); font-weight: 800; }
   .lv.intro { color: #16A34A; background: #EFFAF3; } .lv.basic { color: #2563EB; background: #EFF4FE; }
   .lv.mid { color: #D97706; background: #FFF7ED; } .lv.hard { color: #8843FF; background: #F4EEFF; }
+  html[data-theme="dark"] .lv.intro { color: #7BE0A0; background: #16341F; } html[data-theme="dark"] .lv.basic { color: #8FB6FF; background: #16243A; }
+  html[data-theme="dark"] .lv.mid { color: #E6AE4D; background: #3A2E14; } html[data-theme="dark"] .lv.hard { color: #C3A8FF; background: #2A2342; }
 
   .panel { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; }
   .panel h3 { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
