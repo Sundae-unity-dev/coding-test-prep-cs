@@ -68,6 +68,15 @@
   .solbox { margin-top: 12px; }
   .solbox pre { background: #1E1E2E; color: #E6E6F0; padding: 13px 15px; border-radius: 10px; font-size: 13.5px; overflow-x: auto; word-break: normal; }
   .loading { text-align: center; color: var(--ink-soft); padding: 40px; font-size: 14px; }
+  .sqltop { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 0 0 14px; }
+  .sqlsearch { flex: 1; min-width: 180px; padding: 10px 13px; font-size: 13.5px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--ink); font-family: inherit; }
+  .sqlprog { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; color: var(--purple-dark); }
+  .sqlprog .bar { width: 120px; height: 9px; background: var(--line); border-radius: 99px; overflow: hidden; }
+  .sqlprog .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--purple), #B388FF); border-radius: 99px; transition: width 0.3s ease; }
+  .pnav { display: flex; justify-content: space-between; gap: 8px; margin-top: 16px; }
+  .pnav button { font-family: inherit; font-size: 13px; font-weight: 700; padding: 8px 15px; border: 1px solid var(--line); background: var(--card); color: var(--ink-soft); border-radius: 9px; cursor: pointer; }
+  .pnav button:hover:not(:disabled) { border-color: var(--purple); color: var(--purple-dark); }
+  .pnav button:disabled { opacity: 0.4; cursor: default; }
   footer { text-align: center; color: var(--ink-soft); font-size: 13px; padding: 26px 20px 50px; }
   @media (max-width: 760px) { .work { grid-template-columns: 1fr; } .plist { position: static; flex-direction: row; flex-wrap: wrap; } .plist button { flex: 1 1 auto; } }
 </style>
@@ -98,6 +107,10 @@
   <div class="schema" id="schema"></div>
 
   <h2 class="sec">문제</h2>
+  <div class="sqltop">
+    <input id="sqlSearch" class="sqlsearch" type="search" placeholder="문제 검색 (제목)" aria-label="SQL 문제 검색" autocomplete="off">
+    <div class="sqlprog"><span id="sqlProgText">0 / 0 해결</span><span class="bar"><i id="sqlProgFill"></i></span></div>
+  </div>
   <div id="boot" class="loading">SQL 엔진을 불러오는 중이에요...</div>
   <div class="work" id="work" style="display:none;">
     <div class="plist" id="plist"></div>
@@ -134,7 +147,6 @@
   }
   function sameResult(a, b) {
     if (a.rows.length !== b.rows.length) return false;
-    if ((a.cols.length || a.rows[0] && a.rows[0].length) !== (b.cols.length || b.rows[0] && b.rows[0].length)) { /* 컬럼 수는 행 길이로도 검증 */ }
     for (var i = 0; i < a.rows.length; i++) {
       if (a.rows[i].length !== b.rows[i].length) return false;
       for (var j = 0; j < a.rows[i].length; j++) if (a.rows[i][j] !== b.rows[i][j]) return false;
@@ -166,13 +178,26 @@
     document.getElementById('schema').innerHTML = html;
   }
 
+  var query = '';
   function renderList() {
-    document.getElementById('plist').innerHTML = DATA.problems.map(function (p, i) {
-      return '<button data-i="' + i + '"' + (cur === i ? ' class="on"' : '') + '><span class="lv ' + p.level + '">' + (LVN[p.level] || '') + '</span>' + esc(p.title) + (solved[p.id] ? '<span class="done">✓</span>' : '') + '</button>';
-    }).join('');
+    var q = query;
+    var html = DATA.problems.map(function (p, i) { return { p: p, i: i }; })
+      .filter(function (o) { return !q || o.p.title.toLowerCase().indexOf(q) >= 0; })
+      .map(function (o) {
+        var p = o.p, i = o.i;
+        return '<button data-i="' + i + '"' + (cur === i ? ' class="on"' : '') + '><span class="lv ' + p.level + '">' + (LVN[p.level] || '') + '</span>' + esc(p.title) + (solved[p.id] ? '<span class="done">✓</span>' : '') + '</button>';
+      }).join('');
+    document.getElementById('plist').innerHTML = html || '<div class="reserr" style="padding:10px;">검색 결과가 없어요.</div>';
     [].slice.call(document.querySelectorAll('#plist button')).forEach(function (b) {
       b.addEventListener('click', function () { select(+b.getAttribute('data-i')); });
     });
+    refreshProgress();
+  }
+  function refreshProgress() {
+    var t = DATA.problems.length, n = DATA.problems.filter(function (p) { return solved[p.id]; }).length;
+    var f = document.getElementById('sqlProgFill'), x = document.getElementById('sqlProgText');
+    if (f) f.style.width = (t ? Math.round(n / t * 100) : 0) + '%';
+    if (x) x.textContent = n + ' / ' + t + ' 해결';
   }
 
   function renderTable(res) {
@@ -194,13 +219,16 @@
       '<div class="btns"><button class="run" id="runBtn">실행</button><button class="grade" id="gradeBtn">채점하기</button>' +
       '<button class="ghost" id="hintBtn">힌트</button><button class="ghost" id="solBtn">정답 보기</button></div>' +
       '<div class="verdict" id="verdict"></div>' +
-      '<div id="out"></div><div class="solbox" id="sol"></div>';
+      '<div id="out"></div><div class="solbox" id="sol"></div>' +
+      '<div class="pnav"><button id="prevBtn"' + (i <= 0 ? ' disabled' : '') + '>← 이전 문제</button><button id="nextBtn"' + (i >= DATA.problems.length - 1 ? ' disabled' : '') + '>다음 문제 →</button></div>';
     document.getElementById('runBtn').onclick = function () { doRun(false); };
     document.getElementById('gradeBtn').onclick = function () { doRun(true); };
     document.getElementById('hintBtn').onclick = function () { document.getElementById('hint').classList.toggle('show'); };
     document.getElementById('solBtn').onclick = function () {
       document.getElementById('sol').innerHTML = '<pre>' + esc(p.answer) + '</pre>';
     };
+    document.getElementById('prevBtn').onclick = function () { if (i > 0) select(i - 1); };
+    document.getElementById('nextBtn').onclick = function () { if (i < DATA.problems.length - 1) select(i + 1); };
   }
 
   function doRun(grade) {
@@ -232,6 +260,8 @@
     DATA.problems.forEach(function (p) { try { expected[p.id] = normalize(runSQL(p.answer), p.ordered); } catch (e) { expected[p.id] = { cols: [], rows: [] }; } });
     var si = 0; try { var pid = new URLSearchParams(location.search).get('p'); if (pid) { for (var k = 0; k < DATA.problems.length; k++) if (DATA.problems[k].id === pid) { si = k; break; } } } catch (e) {}
     renderSchema(); renderList(); select(si);
+    var sInp = document.getElementById('sqlSearch');
+    if (sInp) sInp.addEventListener('input', function () { query = this.value.toLowerCase().trim(); renderList(); });
     document.getElementById('boot').style.display = 'none';
     document.getElementById('work').style.display = 'grid';
   }
