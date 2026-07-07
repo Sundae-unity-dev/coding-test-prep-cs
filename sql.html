@@ -77,6 +77,20 @@
   .pnav button { font-family: inherit; font-size: 13px; font-weight: 700; padding: 8px 15px; border: 1px solid var(--line); background: var(--card); color: var(--ink-soft); border-radius: 9px; cursor: pointer; }
   .pnav button:hover:not(:disabled) { border-color: var(--purple); color: var(--purple-dark); }
   .pnav button:disabled { opacity: 0.4; cursor: default; }
+  .sqllevel { padding: 10px 12px; font-size: 13.5px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--ink); font-family: inherit; }
+  /* 문제 은행 카드 그리드 */
+  .bankgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .scard { text-align: left; font-family: inherit; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; cursor: pointer; display: flex; flex-direction: column; transition: border-color 0.15s, box-shadow 0.15s; }
+  .scard:hover { border-color: var(--purple); box-shadow: 0 8px 22px var(--shadow); }
+  .scard.solved { border-color: var(--green); }
+  .scard .ctop { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .scard h3 { font-size: 16px; font-weight: 800; margin-bottom: 6px; }
+  .scard p { font-size: 13px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 12px; flex: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .scard .done { margin-left: auto; color: var(--green); font-weight: 800; font-size: 12.5px; }
+  .scard .go { align-self: flex-start; font-size: 13px; font-weight: 800; color: var(--purple-dark); }
+  .backbtn { font-family: inherit; font-size: 13.5px; font-weight: 700; padding: 8px 15px; border: 1px solid var(--line); background: var(--card); color: var(--ink-soft); border-radius: 9px; cursor: pointer; margin-bottom: 16px; }
+  .backbtn:hover { border-color: var(--purple); color: var(--purple-dark); }
+  #bankEmpty { color: var(--ink-soft); font-size: 14px; padding: 30px 0; text-align: center; }
   footer { text-align: center; color: var(--ink-soft); font-size: 13px; padding: 26px 20px 50px; }
   @media (max-width: 760px) { .work { grid-template-columns: 1fr; } .plist { position: static; flex-direction: row; flex-wrap: wrap; } .plist button { flex: 1 1 auto; } }
 </style>
@@ -101,19 +115,24 @@
 </header>
 
 <main>
-  <div class="notebox"><strong>이렇게 풀어요.</strong> 왼쪽에서 문제를 고르고, 쿼리를 작성한 뒤 <b>실행</b>으로 결과를 확인하고 <b>채점하기</b>로 정답과 비교해요. 결과의 컬럼 순서는 문제에서 요구한 대로 맞춰 주세요. 정렬을 요구하지 않는 문제는 행 순서가 달라도 정답으로 인정돼요.</div>
+  <div class="notebox"><strong>이렇게 풀어요.</strong> 아래에서 문제를 골라 들어가면 쿼리를 작성하고 <b>실행</b>으로 결과를 확인한 뒤 <b>채점하기</b>로 정답과 비교해요. 결과의 컬럼 순서는 문제에서 요구한 대로 맞춰 주세요. 정렬을 요구하지 않는 문제는 행 순서가 달라도 정답으로 인정돼요.</div>
 
-  <h2 class="sec">데이터베이스 구조</h2>
-  <div class="schema" id="schema"></div>
-
-  <h2 class="sec">문제</h2>
-  <div class="sqltop">
-    <input id="sqlSearch" class="sqlsearch" type="search" placeholder="문제 검색 (제목)" aria-label="SQL 문제 검색" autocomplete="off">
-    <div class="sqlprog"><span id="sqlProgText">0 / 0 해결</span><span class="bar"><i id="sqlProgFill"></i></span></div>
-  </div>
   <div id="boot" class="loading">SQL 엔진을 불러오는 중이에요...</div>
-  <div class="work" id="work" style="display:none;">
-    <div class="plist" id="plist"></div>
+
+  <div id="bankView" style="display:none;">
+    <div class="sqltop">
+      <input id="sqlSearch" class="sqlsearch" type="search" placeholder="문제 검색 (제목)" aria-label="SQL 문제 검색" autocomplete="off">
+      <select id="sqlLevel" class="sqllevel" aria-label="난이도 필터"><option value="all">전체 난이도</option><option value="intro">입문</option><option value="basic">기초</option><option value="mid">중급</option><option value="hard">심화</option></select>
+      <div class="sqlprog"><span id="sqlProgText">0 / 0 해결</span><span class="bar"><i id="sqlProgFill"></i></span></div>
+    </div>
+    <div class="bankgrid" id="bankGrid"></div>
+    <p id="bankEmpty" style="display:none;">조건에 맞는 문제가 없어요.</p>
+  </div>
+
+  <div id="solveView" style="display:none;">
+    <button id="backBtn" class="backbtn" type="button">← 문제 목록</button>
+    <h2 class="sec">데이터베이스 구조</h2>
+    <div class="schema" id="schema"></div>
     <div class="panel" id="panel"></div>
   </div>
 </main>
@@ -178,20 +197,36 @@
     document.getElementById('schema').innerHTML = html;
   }
 
-  var query = '';
-  function renderList() {
-    var q = query;
-    var html = DATA.problems.map(function (p, i) { return { p: p, i: i }; })
-      .filter(function (o) { return !q || o.p.title.toLowerCase().indexOf(q) >= 0; })
-      .map(function (o) {
-        var p = o.p, i = o.i;
-        return '<button data-i="' + i + '"' + (cur === i ? ' class="on"' : '') + '><span class="lv ' + p.level + '">' + (LVN[p.level] || '') + '</span>' + esc(p.title) + (solved[p.id] ? '<span class="done">✓</span>' : '') + '</button>';
-      }).join('');
-    document.getElementById('plist').innerHTML = html || '<div class="reserr" style="padding:10px;">검색 결과가 없어요.</div>';
-    [].slice.call(document.querySelectorAll('#plist button')).forEach(function (b) {
-      b.addEventListener('click', function () { select(+b.getAttribute('data-i')); });
+  var query = '', curLevel = 'all';
+  function renderBank() {
+    var q = query, lv = curLevel;
+    var items = DATA.problems.map(function (p, i) { return { p: p, i: i }; }).filter(function (o) {
+      if (lv !== 'all' && o.p.level !== lv) return false;
+      if (q && o.p.title.toLowerCase().indexOf(q) < 0 && String(o.p.prompt || '').toLowerCase().indexOf(q) < 0) return false;
+      return true;
+    });
+    var grid = document.getElementById('bankGrid');
+    grid.innerHTML = items.map(function (o) {
+      var p = o.p;
+      return '<button class="scard' + (solved[p.id] ? ' solved' : '') + '" data-i="' + o.i + '"><div class="ctop"><span class="lv ' + p.level + '">' + (LVN[p.level] || '') + '</span>' + (solved[p.id] ? '<span class="done">해결 ✓</span>' : '') + '</div><h3>' + esc(p.title) + '</h3><p>' + esc(p.prompt || '') + '</p><span class="go">풀기 →</span></button>';
+    }).join('');
+    document.getElementById('bankEmpty').style.display = items.length ? 'none' : 'block';
+    [].slice.call(grid.querySelectorAll('.scard')).forEach(function (b) {
+      b.addEventListener('click', function () { openSolve(+b.getAttribute('data-i')); });
     });
     refreshProgress();
+  }
+  function openSolve(i) {
+    document.getElementById('bankView').style.display = 'none';
+    document.getElementById('solveView').style.display = 'block';
+    select(i);
+    window.scrollTo({ top: 0 });
+  }
+  function backToBank() {
+    document.getElementById('solveView').style.display = 'none';
+    document.getElementById('bankView').style.display = 'block';
+    renderBank();
+    window.scrollTo({ top: 0 });
   }
   function refreshProgress() {
     var t = DATA.problems.length, n = DATA.problems.filter(function (p) { return solved[p.id]; }).length;
@@ -208,7 +243,7 @@
   }
 
   function select(i) {
-    cur = i; renderList();
+    cur = i;
     var p = DATA.problems[i];
     var panel = document.getElementById('panel');
     panel.innerHTML =
@@ -245,7 +280,7 @@
     var mine = normalize(res, p.ordered), exp = expected[p.id];
     if (sameResult(mine, exp)) {
       vd.className = 'verdict show ok'; vd.textContent = '정답이에요! 결과가 정확히 일치해요.';
-      if (!solved[p.id]) { solved[p.id] = true; wr(SKEY, solved); renderList(); }
+      if (!solved[p.id]) { solved[p.id] = true; wr(SKEY, solved); refreshProgress(); }
       if (window.ctStampActivity) window.ctStampActivity();
       if (window.ctTrack) { try { window.ctTrack('sql', { id: p.id }); } catch (e) {} }
     } else {
@@ -258,12 +293,15 @@
     db = new SQL.Database();
     db.run(DATA.setup);
     DATA.problems.forEach(function (p) { try { expected[p.id] = normalize(runSQL(p.answer), p.ordered); } catch (e) { expected[p.id] = { cols: [], rows: [] }; } });
-    var si = 0; try { var pid = new URLSearchParams(location.search).get('p'); if (pid) { for (var k = 0; k < DATA.problems.length; k++) if (DATA.problems[k].id === pid) { si = k; break; } } } catch (e) {}
-    renderSchema(); renderList(); select(si);
+    var si = -1; try { var pid = new URLSearchParams(location.search).get('p'); if (pid) { for (var k = 0; k < DATA.problems.length; k++) if (DATA.problems[k].id === pid) { si = k; break; } } } catch (e) {}
+    renderSchema(); renderBank();
     var sInp = document.getElementById('sqlSearch');
-    if (sInp) sInp.addEventListener('input', function () { query = this.value.toLowerCase().trim(); renderList(); });
+    if (sInp) sInp.addEventListener('input', function () { query = this.value.toLowerCase().trim(); renderBank(); });
+    var lSel = document.getElementById('sqlLevel');
+    if (lSel) lSel.addEventListener('change', function () { curLevel = this.value; renderBank(); });
+    document.getElementById('backBtn').addEventListener('click', backToBank);
     document.getElementById('boot').style.display = 'none';
-    document.getElementById('work').style.display = 'grid';
+    if (si >= 0) openSolve(si); else document.getElementById('bankView').style.display = 'block';
   }
 
   window.addEventListener('load', function () {
