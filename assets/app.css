@@ -2,11 +2,11 @@
 
 /* ===== 엘리스 글꼴 (본문 = Elice DX Neolli / 코드 = Elice Digital Coding) =====
    @font-face 의 url 은 이 CSS(assets/app.css) 기준 상대경로라, run/ 에서 ../assets/app.css 로 불러도 동일하게 assets/fonts/ 를 가리킨다. */
-@font-face { font-family: "Elice DX Neolli"; src: url("fonts/EliceDXNeolli-Light.ttf") format("truetype"); font-weight: 300; font-style: normal; font-display: swap; }
-@font-face { font-family: "Elice DX Neolli"; src: url("fonts/EliceDXNeolli-Medium.ttf") format("truetype"); font-weight: 400 600; font-style: normal; font-display: swap; }
-@font-face { font-family: "Elice DX Neolli"; src: url("fonts/EliceDXNeolli-Bold.ttf") format("truetype"); font-weight: 700 900; font-style: normal; font-display: swap; }
-@font-face { font-family: "Elice Digital Coding"; src: url("fonts/EliceDigitalCodingverH_Regular.ttf") format("truetype"); font-weight: 400 600; font-style: normal; font-display: swap; }
-@font-face { font-family: "Elice Digital Coding"; src: url("fonts/EliceDigitalCodingverH_Bold.ttf") format("truetype"); font-weight: 700 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "Elice DX Neolli"; src: url("fonts/EliceDXNeolli-Light.woff2") format("woff2"), url("fonts/EliceDXNeolli-Light.ttf") format("truetype"); font-weight: 300; font-style: normal; font-display: swap; }
+@font-face { font-family: "Elice DX Neolli"; src: url("fonts/EliceDXNeolli-Medium.woff2") format("woff2"), url("fonts/EliceDXNeolli-Medium.ttf") format("truetype"); font-weight: 400 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Elice DX Neolli"; src: url("fonts/EliceDXNeolli-Bold.woff2") format("woff2"), url("fonts/EliceDXNeolli-Bold.ttf") format("truetype"); font-weight: 700 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "Elice Digital Coding"; src: url("fonts/EliceDigitalCodingverH_Regular.woff2") format("woff2"), url("fonts/EliceDigitalCodingverH_Regular.ttf") format("truetype"); font-weight: 400 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Elice Digital Coding"; src: url("fonts/EliceDigitalCodingverH_Bold.woff2") format("woff2"), url("fonts/EliceDigitalCodingverH_Bold.ttf") format("truetype"); font-weight: 700 900; font-style: normal; font-display: swap; }
 /* html 접두로 각 페이지 인라인 body/pre 규칙(특정도 0,0,1)보다 우선 적용 */
 html body { font-family: "Elice DX Neolli", Pretendard, -apple-system, "Malgun Gothic", sans-serif; }
 html pre, html code, html kbd { font-family: "Elice Digital Coding", Consolas, "D2Coding", monospace; }

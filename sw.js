@@ -2,7 +2,7 @@
 // 런박스(/run/)는 자체 SW(service-worker.js)가 더 구체적 스코프로 담당하므로 여기선 건드리지 않아요.
 // 배포 위치(GitHub Pages 서브경로 /coding-test-prep-cs/ 또는 GitLab Pages 루트 /)를 sw.js 위치에서 자동 감지
 var BASE = self.location.pathname.replace(/sw\.js$/, '');
-var CACHE = 'ctcamp-shell-v83';
+var CACHE = 'ctcamp-shell-v84';
 var SHELL = [
   BASE, BASE + 'index.html', BASE + 'guide.html', BASE + 'concepts.html', BASE + 'practice.html', BASE + 'gichul.html', BASE + 'progress.html', BASE + 'path.html', BASE + 'sql.html', BASE + 'qa.html', BASE + 'templates.html',
   BASE + 'assets/app.css', BASE + 'assets/app.js', BASE + 'assets/nav.js', BASE + 'assets/config.js', BASE + 'assets/util.js', BASE + 'assets/tracker.js', BASE + 'assets/problems.js', BASE + 'assets/gamify.js',
