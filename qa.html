@@ -872,12 +872,27 @@
     <tr><td>REST Assured</td><td>Java 라이브러리. 코드로 작성하고 BDD 스타일(given-when-then). CI/CD 통합에 유리.</td></tr>
   </table>
 
+  <h3>불안정한 테스트(Flaky) 다루기</h3>
+  <p>같은 코드인데 어떤 날은 통과하고 어떤 날은 실패하는 테스트를 flaky 테스트라고 해요. 자동화 신뢰를 무너뜨리는 가장 큰 적이에요.</p>
+  <table>
+    <tr><th>흔한 원인</th><th>해결</th></tr>
+    <tr><td>고정 대기(sleep) / 타이밍</td><td>요소가 준비될 때까지 기다리는 <b>명시적 대기</b>로 교체(Playwright는 자동 대기).</td></tr>
+    <tr><td>테스트 간 의존/순서 의존</td><td>각 테스트를 독립적으로. 자체 데이터 생성/정리로 격리.</td></tr>
+    <tr><td>깨지기 쉬운 로케이터</td><td>안정적 선택자 우선순위: <b>test-id &gt; id &gt; 이름/역할 &gt; CSS &gt; XPath</b>(XPath 남용 지양).</td></tr>
+    <tr><td>공유 상태/환경</td><td>테스트 전용 데이터와 초기화, 병렬 실행 시 충돌 방지.</td></tr>
+  </table>
+  <div class="tip"><b>좋은 자동화 테스트의 조건(FIRST).</b> Fast(빠르게), Independent(독립적), Repeatable(어디서나 같은 결과), Self-validating(통과/실패 자동 판정), Timely(적시 작성). 그리고 assert는 명확하게 하나의 목적만.</div>
+
+  <h3>자동화의 ROI (언제 자동화하나)</h3>
+  <p>자동화는 공짜가 아니에요(작성/유지보수 비용). <b>자주 반복 + 오래 유지 + 안정적</b>인 테스트일수록 이득이에요. 한 번 쓰고 버릴 테스트나 UI가 매주 바뀌는 초기 화면은 수동/탐색적이 나아요.</p>
+
   <h3>한눈에 정리</h3>
   <div class="card"><ul class="plain">
-    <li><b>피라미드</b> : 단위 많이, E2E 적게.</li>
-    <li><b>자동화 대상</b> : 반복 회귀/스모크, 안정적인 기능.</li>
+    <li><b>피라미드</b> : 단위 많이, E2E 적게(느리고 깨지기 쉬움).</li>
+    <li><b>자동화 대상</b> : 반복 회귀/스모크, 안정적인 기능. ROI가 나오는 곳.</li>
     <li><b>UI 도구</b> : Selenium(넓음), Playwright(안정/빠름), Cypress(JS 전용).</li>
     <li><b>API 도구</b> : Postman(GUI), REST Assured(코드).</li>
+    <li><b>Flaky</b> : 명시적 대기 / 테스트 독립 / 안정적 로케이터 / FIRST 원칙.</li>
   </ul></div>
 </div>
 
