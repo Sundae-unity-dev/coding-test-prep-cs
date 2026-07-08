@@ -159,17 +159,20 @@
     <button data-topic="qarch" data-kw="앱 구조 클라이언트 서버 프론트 백엔드 db api rest http 메서드 상태 코드 모바일 네이티브 하이브리드">9. 앱 구조와 API</button>
     <button data-topic="qweb" data-kw="웹 테스트 크로스 브라우징 반응형 쿠키 세션 캐시 폼 검증 xss sql injection csrf 성능 접근성">10. 웹 테스트</button>
     <button data-topic="qcs" data-kw="cs 자료구조 데이터베이스 네트워크 운영체제 스택 큐 해시 인덱스 acid tcp 프로세스 스레드">11. CS 핵심</button>
+    <div class="grp">정보처리기사 심화</div>
+    <button data-topic="qpattern" data-kw="디자인 패턴 design pattern gof 생성 구조 행위 싱글톤 팩토리 빌더 어댑터 데코레이터 파사드 프록시 옵저버 전략 상태 커맨드 템플릿 정보처리기사 설계">12. 디자인 패턴 (GoF)</button>
+    <button data-topic="qnorm" data-kw="정규화 normalization 정규형 1nf 2nf 3nf bcnf 이상현상 반정규화 함수 종속 부분 이행 데이터베이스 db 정보처리기사">13. 정규화</button>
     <div class="grp">실무</div>
-    <button data-topic="qbug" data-kw="버그 리포트 결함 유형 생명주기 심각도 우선순위 테스트 케이스 tc 셀프 점검">12. 버그 리포팅과 결함 관리</button>
+    <button data-topic="qbug" data-kw="버그 리포트 결함 유형 생명주기 심각도 우선순위 테스트 케이스 tc 셀프 점검">14. 버그 리포팅과 결함 관리</button>
     <div class="grp">자동화와 배포</div>
-    <button data-topic="qauto" data-kw="테스트 자동화 selenium playwright cypress 도구 비교 api postman rest assured 피라미드">13. 테스트 자동화와 도구</button>
-    <button data-topic="qpython" data-kw="python 자동화 pytest requests selenium 코드 assert fixture api">14. Python으로 QA 자동화</button>
-    <button data-topic="qcicd" data-kw="ci cd 지속적 통합 배포 jenkins 파이프라인 jenkinsfile 품질 게이트 github actions 회귀">15. CI/CD와 Jenkins</button>
+    <button data-topic="qauto" data-kw="테스트 자동화 selenium playwright cypress 도구 비교 api postman rest assured 피라미드">15. 테스트 자동화와 도구</button>
+    <button data-topic="qpython" data-kw="python 자동화 pytest requests selenium 코드 assert fixture api">16. Python으로 QA 자동화</button>
+    <button data-topic="qcicd" data-kw="ci cd 지속적 통합 배포 jenkins 파이프라인 jenkinsfile 품질 게이트 github actions 회귀">17. CI/CD와 Jenkins</button>
     <div class="grp">취업</div>
-    <button data-topic="qjob" data-kw="채용 공고 요구 역량 자격요건 우대사항 키워드 우선순위 istqb 포트폴리오 능통">16. 채용 공고로 보는 요구 역량</button>
-    <button data-topic="qinterview" data-kw="면접 질문 답변 상황형 qa qc 회귀">17. 면접 단골 질문</button>
+    <button data-topic="qjob" data-kw="채용 공고 요구 역량 자격요건 우대사항 키워드 우선순위 istqb 포트폴리오 능통">18. 채용 공고로 보는 요구 역량</button>
+    <button data-topic="qinterview" data-kw="면접 질문 답변 상황형 qa qc 회귀">19. 면접 단골 질문</button>
     <div class="grp">마무리</div>
-    <button data-topic="qnext" data-kw="다음 단계 sql 알고리즘 모의고사 학습 경로 실전 퀴즈">18. 다음 단계</button>
+    <button data-topic="qnext" data-kw="다음 단계 sql 알고리즘 모의고사 학습 경로 실전 퀴즈">20. 다음 단계</button>
   </div>
   <div class="nores" id="noRes">검색 결과가 없어요</div>
 </aside>
@@ -782,6 +785,109 @@
     <li><b>DB</b> : 인덱스, 정규화, ACID, JOIN.</li>
     <li><b>네트워크</b> : TCP 신뢰/UDP 속도, 3-way handshake, HTTPS 암호화.</li>
     <li><b>OS</b> : 프로세스와 스레드, 교착 상태 네 조건, 동기화.</li>
+  </ul></div>
+</div>
+
+<!-- 디자인 패턴 (정보처리기사 심화) -->
+<div class="topic" id="qpattern">
+  <div class="crumb">정보처리기사 심화</div>
+  <h2>디자인 패턴 (GoF)</h2>
+  <p class="lead">자주 나오는 설계 문제에 대한 <b>검증된 재사용 해법</b>이에요. 코드를 그대로 베끼는 게 아니라 "이런 상황엔 이렇게 구조를 짠다"는 설계 어휘라, 팀 간 소통도 빨라져요. GoF(Gang of Four)가 23개를 <b>생성/구조/행위</b> 3범주로 정리했어요. 정보처리기사 필기 단골이에요.</p>
+
+  <h3>세 가지 범주</h3>
+  <table>
+    <tr><th>범주</th><th>무엇을 다루나</th><th>대표 패턴</th></tr>
+    <tr><td>생성(Creational)</td><td>객체를 <b>어떻게 만드나</b>. 생성 과정을 감추고 유연하게.</td><td>싱글톤, 팩토리 메서드, 추상 팩토리, 빌더, 프로토타입</td></tr>
+    <tr><td>구조(Structural)</td><td>객체/클래스를 <b>어떻게 조합하나</b>. 더 큰 구조를 유연하게.</td><td>어댑터, 브리지, 컴포지트, 데코레이터, 파사드, 플라이웨이트, 프록시</td></tr>
+    <tr><td>행위(Behavioral)</td><td>객체 간 <b>책임 분배와 상호작용</b>. 알고리즘/흐름을 유연하게.</td><td>옵저버, 전략, 상태, 커맨드, 템플릿 메서드, 책임 연쇄, 이터레이터, 중재자, 메멘토, 방문자, 인터프리터</td></tr>
+  </table>
+
+  <h3>꼭 아는 대표 패턴</h3>
+  <table>
+    <tr><th>패턴</th><th>의도 / 언제</th></tr>
+    <tr><td>싱글톤(Singleton)</td><td>인스턴스를 <b>단 하나</b>만 만들고 전역 접근점을 제공. 설정/로그/연결 풀 등. (주의: 전역 상태라 테스트가 어렵고 남용은 안티패턴으로 봐요.)</td></tr>
+    <tr><td>팩토리 메서드(Factory Method)</td><td>어떤 객체를 만들지 <b>서브클래스가 결정</b>. new를 직접 쓰지 않아 생성과 사용을 분리.</td></tr>
+    <tr><td>추상 팩토리(Abstract Factory)</td><td>관련 있는 객체들의 <b>제품군</b>을 통째로 생성(예: 다크/라이트 테마 UI 세트).</td></tr>
+    <tr><td>어댑터(Adapter)</td><td>호환되지 않는 인터페이스를 <b>맞춰 끼워</b> 기존 코드를 재사용(변환기).</td></tr>
+    <tr><td>데코레이터(Decorator)</td><td>상속 대신 <b>감싸서</b> 기능을 동적으로 덧붙임(예: 스트림에 버퍼링+암호화 겹치기).</td></tr>
+    <tr><td>파사드(Facade)</td><td>복잡한 서브시스템 앞에 <b>단순한 창구</b> 하나를 둬 사용을 쉽게.</td></tr>
+    <tr><td>프록시(Proxy)</td><td>실제 객체의 <b>대리인</b>을 둬 지연 생성/접근 제어/캐싱.</td></tr>
+    <tr><td>옵저버(Observer)</td><td>한 객체 상태가 바뀌면 <b>구독자들에게 자동 통지</b>(발행-구독, 이벤트 리스너).</td></tr>
+    <tr><td>전략(Strategy)</td><td>알고리즘을 <b>캡슐화해 교체</b> 가능하게(정렬 기준, 결제 수단 등 런타임 교체).</td></tr>
+    <tr><td>상태(State)</td><td>내부 <b>상태에 따라 행동이 달라짐</b>. if 덩어리를 상태 객체로.</td></tr>
+    <tr><td>커맨드(Command)</td><td>요청을 <b>객체로 캡슐화</b>. 실행 취소(undo)/큐잉/로깅에 유리.</td></tr>
+    <tr><td>템플릿 메서드(Template Method)</td><td>알고리즘 <b>골격은 상위에서</b> 정하고 일부 단계만 서브클래스가 구현.</td></tr>
+  </table>
+
+  <h3>워크스루: 전략 패턴</h3>
+  <p>"결제 수단을 런타임에 바꾼다"를 if 분기 대신 전략으로 풀어요.</p>
+  <pre><span class="kw">interface</span> <span class="ty">PayStrategy</span> { <span class="kw">void</span> pay(<span class="kw">int</span> amount); }
+<span class="kw">class</span> <span class="ty">CardPay</span> : PayStrategy { <span class="kw">public void</span> pay(<span class="kw">int</span> a){ <span class="cm">/* 카드 결제 */</span> } }
+<span class="kw">class</span> <span class="ty">KakaoPay</span> : PayStrategy { <span class="kw">public void</span> pay(<span class="kw">int</span> a){ <span class="cm">/* 카카오 결제 */</span> } }
+
+<span class="cm">// 사용하는 쪽은 구체 클래스를 몰라도 됨 - 전략만 바꿔 끼움</span>
+checkout.setStrategy(<span class="kw">new</span> <span class="ty">KakaoPay</span>());
+checkout.pay(<span class="nm">10000</span>);</pre>
+  <div class="tip"><b>왜 좋은가.</b> 결제 수단이 늘어도 <code>if/switch</code>를 고치지 않고 새 전략 클래스만 추가하면 돼요(개방-폐쇄 원칙, OCP). 옵저버/전략/템플릿 메서드는 실무에서 가장 자주 만나요.</div>
+
+  <div class="warn"><b>주의.</b> 패턴은 목적이 아니라 도구예요. 단순한 문제에 패턴을 억지로 끼우면 오히려 복잡해져요(오버엔지니어링). "이 문제가 정말 이 패턴이 푸는 문제인가"를 먼저 물어요.</div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card"><ul class="plain">
+    <li><b>3범주</b> : 생성(만들기) / 구조(조합) / 행위(상호작용), 총 23개.</li>
+    <li><b>생성</b> : 싱글톤, 팩토리 메서드, 추상 팩토리, 빌더, 프로토타입.</li>
+    <li><b>구조</b> : 어댑터, 데코레이터, 파사드, 프록시, 브리지, 컴포지트, 플라이웨이트.</li>
+    <li><b>행위</b> : 옵저버, 전략, 상태, 커맨드, 템플릿 메서드 등.</li>
+    <li><b>핵심</b> : 전략=알고리즘 교체, 옵저버=변화 통지, 어댑터=인터페이스 변환, 싱글톤=인스턴스 하나(남용 주의).</li>
+  </ul></div>
+</div>
+
+<!-- 정규화 (정보처리기사 심화) -->
+<div class="topic" id="qnorm">
+  <div class="crumb">정보처리기사 심화</div>
+  <h2>정규화 (Normalization)</h2>
+  <p class="lead">테이블을 규칙에 따라 나눠 <b>중복을 줄이고 이상 현상을 없애는</b> 설계 과정이에요. SQL을 배울 때 "왜 테이블을 쪼개나"의 답이고, 정보처리기사 DB 과목의 핵심이에요.</p>
+
+  <h3>먼저: 이상 현상 (Anomaly)</h3>
+  <p>한 테이블에 여러 정보를 몰아넣으면(비정규) 세 가지 문제가 생겨요. 아래처럼 (학번, 이름, 과목, 학점, 학과, 학과사무실)을 한 테이블에 둔 경우예요.</p>
+  <table>
+    <tr><th>이상</th><th>문제</th></tr>
+    <tr><td>삽입 이상</td><td>새 학과를 등록하려는데 학생이 없으면(수강 없음) 넣을 수 없어요(불필요한 데이터 강요).</td></tr>
+    <tr><td>갱신 이상</td><td>학과 사무실이 바뀌면 그 학과 학생 <b>모든 행</b>을 고쳐야 하고, 일부만 고치면 불일치가 생겨요.</td></tr>
+    <tr><td>삭제 이상</td><td>어떤 학생의 마지막 수강 기록을 지우면 그 학과 정보까지 <b>같이 사라져요</b>.</td></tr>
+  </table>
+
+  <h3>정규형 단계 (1NF -&gt; 2NF -&gt; 3NF -&gt; BCNF)</h3>
+  <table>
+    <tr><th>정규형</th><th>조건</th><th>제거 대상</th></tr>
+    <tr><td>1NF</td><td>모든 속성이 <b>원자값</b>(하나의 칸에 값 하나). 반복 그룹/다중값 제거.</td><td>반복/다중값</td></tr>
+    <tr><td>2NF</td><td>1NF + <b>부분 함수 종속 제거</b>(복합키 일부에만 종속되는 속성을 분리).</td><td>부분 종속</td></tr>
+    <tr><td>3NF</td><td>2NF + <b>이행 함수 종속 제거</b>(A-&gt;B-&gt;C에서 키가 아닌 것에 종속되는 것 분리).</td><td>이행 종속</td></tr>
+    <tr><td>BCNF</td><td>3NF + 모든 <b>결정자가 후보키</b>(3NF의 예외적 이상까지 제거한 강화형).</td><td>결정자 이상</td></tr>
+  </table>
+  <div class="tip"><b>함수 종속(FD)이 열쇠예요.</b> X-&gt;Y는 "X가 정해지면 Y가 하나로 정해진다"는 뜻이에요. <b>부분 종속</b>은 복합키(예: 학번+과목)의 일부(학번)만으로 결정되는 것(이름), <b>이행 종속</b>은 키 아닌 속성을 거쳐 결정되는 것(학번-&gt;학과-&gt;학과사무실)이에요.</div>
+
+  <h3>워크스루: 단계별 분해</h3>
+  <table>
+    <tr><th>단계</th><th>테이블</th></tr>
+    <tr><td>비정규</td><td>수강(학번, 이름, 과목, 학점, 학과, 학과사무실) - 한 학생이 여러 과목을 다중값으로</td></tr>
+    <tr><td>1NF</td><td>행을 나눠 한 칸에 값 하나: (학번, 이름, 과목, 학점, 학과, 학과사무실) 각 (학번,과목) 조합마다 한 행</td></tr>
+    <tr><td>2NF</td><td>부분 종속 분리: 학생(학번, 이름, 학과, 학과사무실) + 수강(학번, 과목, 학점). 이름/학과는 학번에만 종속이라 분리</td></tr>
+    <tr><td>3NF</td><td>이행 종속 분리: 학생(학번, 이름, 학과) + 학과(학과, 학과사무실) + 수강(학번, 과목, 학점). 학과사무실은 학과에 종속</td></tr>
+  </table>
+
+  <h3>반정규화 (Denormalization)</h3>
+  <p>정규화는 무결성엔 좋지만 <b>조인이 많아져 조회가 느려질</b> 수 있어요. 그래서 성능이 중요한 곳에서는 일부러 중복을 허용해 테이블을 합치거나 계산값을 저장하기도 해요(반정규화). 대신 갱신 시 <b>일관성 관리 책임</b>이 늘어나요.</p>
+  <div class="warn"><b>트레이드오프.</b> 정규화 = 중복 최소/무결성 우선(쓰기 안전), 반정규화 = 조회 성능 우선(읽기 빠름). 정답은 없고 워크로드(읽기 많음 vs 쓰기 많음)에 따라 선택해요.</div>
+
+  <h3>한눈에 정리</h3>
+  <div class="card"><ul class="plain">
+    <li><b>목적</b> : 중복 제거로 삽입/갱신/삭제 <b>이상 현상</b>을 없애요.</li>
+    <li><b>1NF</b> : 원자값(반복/다중값 제거).</li>
+    <li><b>2NF</b> : 부분 함수 종속 제거.</li>
+    <li><b>3NF</b> : 이행 함수 종속 제거.</li>
+    <li><b>BCNF</b> : 모든 결정자가 후보키.</li>
+    <li><b>반정규화</b> : 조회 성능을 위해 일부러 중복 허용(무결성 vs 성능 트레이드오프).</li>
   </ul></div>
 </div>
 
