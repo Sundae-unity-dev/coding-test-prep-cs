@@ -206,6 +206,20 @@
   #mSort { display:none; }
   @media (max-width:720px){ #mSort { display:block; } }
 
+  /* 로딩 오버레이 */
+  #loadingOverlay { position:fixed; inset:0; z-index:200; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.35); backdrop-filter:blur(2px); }
+  #loadingOverlay.on { display:flex; }
+  #loadingOverlay .box { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:22px 30px; display:flex; align-items:center; gap:12px; font-size:14px; font-weight:700; box-shadow:0 12px 40px var(--shadow); }
+  #loadingOverlay .spin { width:20px; height:20px; border:3px solid var(--line); border-top-color:var(--purple); border-radius:50%; animation:ctspin .7s linear infinite; }
+  @keyframes ctspin { to { transform:rotate(360deg); } }
+
+  /* 원본 데이터 페이지네이션 */
+  .rawpg { display:flex; align-items:center; justify-content:center; gap:8px; padding:10px 0 4px; font-size:13px; }
+  .rawpg button { padding:5px 12px; font-size:13px; font-weight:700; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--ink-soft); cursor:pointer; }
+  .rawpg button:hover:not(:disabled) { border-color:var(--purple); color:var(--purple-dark); }
+  .rawpg button:disabled { opacity:0.4; cursor:default; }
+  .rawpg .pginfo { font-variant-numeric:tabular-nums; color:var(--ink-soft); }
+
   /* 개입 대기열 / 모의고사 분석 / 문제 드릴다운 */
   .triage-row { display:grid; grid-template-columns:minmax(80px,1fr) minmax(90px,1.3fr) auto auto; align-items:center; gap:10px; padding:8px 6px; border-bottom:1px solid var(--line); font-size:13px; cursor:pointer; }
   .triage-row:last-child { border-bottom:none; }
@@ -443,6 +457,7 @@
 </aside>
 
 <div id="toast" role="status" aria-live="polite"></div>
+<div id="loadingOverlay"><div class="box"><div class="spin"></div><span>불러오는 중...</span></div></div>
 <div id="printArea"></div>
 
 <script src="assets/config.js"></script>
@@ -450,7 +465,9 @@
 <script src="assets/app.js"></script>
 <script>
 (function () {
-  var DATA = null, PW = '', MEMBERS = [], curMember = null, dailyDays = 14, autoTimer = null, SEL = {};
+  var DATA = null, PW = '', MEMBERS = [], curMember = null, dailyDays = 14, autoTimer = null, SEL = {}, rawPage = 0;
+  var RAW_PER_PAGE = 100;
+  function loadingOn(on) { var el = document.getElementById('loadingOverlay'); if (el) el.classList.toggle('on', !!on); }
   var esc = ctUtil.esc;
   function keys(o) { return Object.keys(o); }
   function num(v) { var n = Number(v); return isNaN(n) ? 0 : n; }
@@ -482,8 +499,10 @@
   }
   function load(pw) {
     PW = pw;
+    loadingOn(true);
     jsonp({ token: pw }, function (d) {
-      if (!d || d.error) { showErr('비밀번호가 맞지 않아요.'); return; }
+      loadingOn(false);
+      if (!d || d.error) { showErr(d && d.error === 'rate_limited' ? '로그인 시도가 너무 많아요. 15분 뒤에 다시 시도하세요.' : '비밀번호가 맞지 않아요.'); return; }
       DATA = d;
       document.getElementById('gate').style.display = 'none';
       document.getElementById('dash').style.display = 'block';
@@ -494,7 +513,7 @@
   function adminAction(params, okMsg) {
     params.token = PW;
     jsonp(params, function (d) {
-      if (!d || d.error) { toast('실패: ' + ((d && d.error) || '알 수 없음')); return; }
+      if (!d || d.error) { toast('실패: ' + ((d && (d.error === 'rate_limited' ? '시도 제한. 15분 뒤에 다시.' : d.error === 'auth' ? '인증 실패' : d.error)) || '알 수 없음')); return; }
       if (okMsg) toast(okMsg);
       load(PW);
     });
@@ -930,9 +949,21 @@
     if (!rows.length) { box.innerHTML = '<div class="muted" style="padding:12px;">데이터가 없어요.</div>'; return; }
     var head = keys(rows[0]);
     var list = q ? rows.filter(function (r) { return head.some(function (k) { return String(r[k] == null ? '' : r[k]).toLowerCase().indexOf(q) >= 0; }); }) : rows;
+    var total = list.length, pages = Math.max(1, Math.ceil(total / RAW_PER_PAGE));
+    if (rawPage >= pages) rawPage = 0;
+    var start = rawPage * RAW_PER_PAGE, end = Math.min(start + RAW_PER_PAGE, total);
     var h = '<table><thead><tr>' + head.map(function (k) { return '<th>' + esc(k) + '</th>'; }).join('') + '</tr></thead><tbody>';
-    h += list.slice(0, 500).map(function (r) { return '<tr>' + head.map(function (k) { var v = String(r[k] == null ? '' : r[k]); return '<td title="' + esc(v) + '">' + esc(v.slice(0, 200)) + '</td>'; }).join('') + '</tr>'; }).join('');
-    box.innerHTML = h + '</tbody></table>';
+    h += list.slice(start, end).map(function (r) { return '<tr>' + head.map(function (k) { var v = String(r[k] == null ? '' : r[k]); return '<td title="' + esc(v) + '">' + esc(v.slice(0, 200)) + '</td>'; }).join('') + '</tr>'; }).join('');
+    h += '</tbody></table>';
+    if (pages > 1) {
+      h += '<div class="rawpg"><button id="rawPrev" ' + (rawPage === 0 ? 'disabled' : '') + ' aria-label="이전 페이지">이전</button>';
+      h += '<span class="pginfo">' + (rawPage + 1) + ' / ' + pages + ' (' + total + '행)</span>';
+      h += '<button id="rawNext" ' + (rawPage >= pages - 1 ? 'disabled' : '') + ' aria-label="다음 페이지">다음</button></div>';
+    }
+    box.innerHTML = h;
+    var pv = document.getElementById('rawPrev'), nx = document.getElementById('rawNext');
+    if (pv) pv.addEventListener('click', function () { if (rawPage > 0) { rawPage--; renderRaw(); } });
+    if (nx) nx.addEventListener('click', function () { if (rawPage < pages - 1) { rawPage++; renderRaw(); } });
   }
   function changePassword() {
     var a = document.getElementById('npw1').value, b = document.getElementById('npw2').value;
@@ -997,14 +1028,14 @@
   // 데이터 도구
   document.getElementById('backupBtn').addEventListener('click', fullBackup);
   document.getElementById('resetWeekBtn').addEventListener('click', function () { if (confirm('주간 리더보드 XP 를 모두 0 으로 초기화할까요? (누적 XP 는 유지)')) adminAction({ action: 'resetWeek' }, '초기화했어요'); });
-  document.getElementById('rawSheet').addEventListener('change', renderRaw);
-  document.getElementById('rawSearch').addEventListener('input', renderRaw);
+  document.getElementById('rawSheet').addEventListener('change', function () { rawPage = 0; renderRaw(); });
+  document.getElementById('rawSearch').addEventListener('input', function () { rawPage = 0; renderRaw(); });
   [].forEach.call(document.querySelectorAll('.rangebtns button'), function (b) { b.addEventListener('click', function () { [].forEach.call(document.querySelectorAll('.rangebtns button'), function (x) { x.classList.toggle('on', x === b); }); dailyDays = num(b.getAttribute('data-days')) || 14; renderDaily(); }); });
   [].forEach.call(document.querySelectorAll('#memHead th[data-sort]'), function (th) { var k = th.getAttribute('data-sort'); th.addEventListener('click', function () { applySort(k); }); th.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); applySort(k); } }); });
   document.getElementById('mSort').addEventListener('change', function () { var v = this.value.split(':'); SORT.key = v[0]; SORT.dir = num(v[1]) || -1; renderRows(); updateSortArrows(); });
 
   window.__ctAdmin = { inject: function (d) { window.ctAdminData ? window.ctAdminData(d) : (function () { DATA = d; document.getElementById('gate').style.display = 'none'; document.getElementById('dash').style.display = 'block'; render(); })(); } };
-  window.ctAdminData = function (d) { if (!d || d.error) { showErr('비밀번호가 맞지 않아요.'); return; } DATA = d; document.getElementById('gate').style.display = 'none'; document.getElementById('dash').style.display = 'block'; render(); };
+  window.ctAdminData = function (d) { if (!d || d.error) { showErr(d && d.error === 'rate_limited' ? '로그인 시도가 너무 많아요. 15분 뒤에 다시 시도하세요.' : '비밀번호가 맞지 않아요.'); return; } DATA = d; document.getElementById('gate').style.display = 'none'; document.getElementById('dash').style.display = 'block'; render(); };
 })();
 </script>
 </body>
