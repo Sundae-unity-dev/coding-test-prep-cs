@@ -7,7 +7,7 @@
     <title>코드 실행기</title>
     <base href="./" />
     <script>(function(){try{var t=localStorage.getItem('ctprep_theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
-    <link href="_framework/dotnet.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-zHx4GRocaUAIUYuA6I2VDpOFA2ItOvthoAOWI8d5N40=" />
+    <link href="_framework/dotnet.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-kjzFXLVgLMUpAUsMFaXQwSw2/hGhwodwNEIfs5/U5bw=" />
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="../assets/app.css" />
     <link rel="stylesheet" href="css/app.css" />
@@ -40,18 +40,29 @@
         <span class="dismiss" role="button" aria-label="닫기">×</span>
     </div>
 
-    <!-- 사이트로 돌아가는 길(런박스는 자체 화면이라 별도 고정 링크 제공) -->
+    <!-- 사이트로 돌아가는 길(런박스는 자체 화면이라 별도 고정 링크 제공). from 파라미터로 돌아갈 페이지 자동 전환 -->
     <a id="siteBack" href="../practice.html" title="문제 목록으로 돌아가기"
        style="position:fixed; left:14px; bottom:14px; z-index:150; display:inline-flex; align-items:center; gap:6px; padding:9px 15px; border-radius:999px; background:var(--card,#1C1C2A); color:var(--ink,#E7E7F1); border:1px solid var(--line,#2E2E40); box-shadow:0 6px 18px rgba(0,0,0,.4); font-size:13.5px; font-weight:700; text-decoration:none; font-family:'Elice DX Neolli',Pretendard,-apple-system,'Malgun Gothic',sans-serif;">← 문제 목록</a>
+    <script>(function(){var p=new URLSearchParams(location.search);var f=p.get('from');if(!f&&document.referrer){var r=document.referrer.toLowerCase();if(r.indexOf('gichul')>=0)f='gichul';else if(r.indexOf('concept')>=0)f='concepts';else if(r.indexOf('path')>=0)f='path';else if(r.indexOf('practice')>=0||r.indexOf('progress')>=0)f='practice';}f=f||'practice';var m={practice:['practice.html','문제 목록'],gichul:['gichul.html','기출 문제'],concepts:['concepts.html','개념 정리'],path:['path.html','학습 경로']};var b=document.getElementById('siteBack');if(b){var r2=m[f]||m.practice;b.href='../'+r2[0];b.textContent='\u2190 '+r2[1];b.title=r2[1]+'으로 돌아가기';}})();</script>
 
     <!-- 로딩이 너무 오래 걸리면(자산 캐시 손상/네트워크) 강제 새로고침 안내 -->
     <div id="loadFallback" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(19,19,27,.93); color:#E7E7F1; align-items:center; justify-content:center; text-align:center; padding:24px; font-family:'Elice DX Neolli',Pretendard,-apple-system,'Malgun Gothic',sans-serif;">
         <div style="max-width:400px;">
             <div style="font-size:42px; margin-bottom:12px;">⏳</div>
             <div style="font-size:18px; font-weight:800; margin-bottom:8px;">코드 실행기 로딩이 오래 걸려요</div>
-            <div style="font-size:14px; color:#A4A6BC; line-height:1.65; margin-bottom:20px;">처음에는 받을 파일이 좀 많아요. 너무 안 열리면 아래 버튼으로 저장된 캐시를 비우고 새로 받아 보세요.</div>
+            <div style="font-size:14px; color:#A4A6BC; line-height:1.65; margin-bottom:20px;">처음에는 받을 파일이 좀 많아요. 인터넷 연결이 불안정하면 시간이 더 걸려요. 너무 안 열리면 아래 버튼으로 저장된 캐시를 비우고 새로 받아 보세요.</div>
             <button id="lfReload" type="button" style="font-family:inherit; font-size:14.5px; font-weight:800; padding:12px 24px; border:none; border-radius:11px; background:#8843FF; color:#fff; cursor:pointer;">강제 새로고침</button>
             <button id="lfWait" type="button" style="display:block; margin:14px auto 0; background:none; border:none; color:#A4A6BC; font-size:13px; text-decoration:underline; cursor:pointer;">조금 더 기다릴게요</button>
+        </div>
+    </div>
+
+    <!-- 코드 에디터(Monaco) CDN 로딩 실패 시 안내 -->
+    <div id="cdnError" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(19,19,27,.93); color:#E7E7F1; align-items:center; justify-content:center; text-align:center; padding:24px; font-family:'Elice DX Neolli',Pretendard,-apple-system,'Malgun Gothic',sans-serif;">
+        <div style="max-width:400px;">
+            <div style="font-size:42px; margin-bottom:12px;">📡</div>
+            <div style="font-size:18px; font-weight:800; margin-bottom:8px;">코드 에디터를 불러오지 못했어요</div>
+            <div style="font-size:14px; color:#A4A6BC; line-height:1.65; margin-bottom:20px;">인터넷 연결을 확인하고 새로고침해 주세요. 에디터 자원을 CDN에서 받아오지 못했어요.</div>
+            <button onclick="location.reload()" style="font-family:inherit; font-size:14.5px; font-weight:800; padding:12px 24px; border:none; border-radius:11px; background:#8843FF; color:#fff; cursor:pointer;">새로고침</button>
         </div>
     </div>
     <script src="_framework/blazor.webassembly.66stpp682q.js"></script>
@@ -147,7 +158,7 @@
                 }, 600);
               });
             }
-          }).catch(function (e) { console.error('ctEditor init', e); });
+          }).catch(function (e) { console.error('ctEditor init', e); var ce = document.getElementById('cdnError'); if (ce) ce.style.display = 'flex'; });
         },
         getValue: function () { return window.ctEditor._ed ? window.ctEditor._ed.getValue() : null; },
         copy: function () { try { navigator.clipboard.writeText((window.ctEditor._ed ? window.ctEditor._ed.getValue() : '') || ''); return true; } catch (e) { return false; } },
