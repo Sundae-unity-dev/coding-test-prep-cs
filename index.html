@@ -55,7 +55,7 @@
   /* 통계 띠 */
   .stats {
     max-width: 760px; margin: -34px auto 0; padding: 0 20px; position: relative; z-index: 5;
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px;
   }
   .stats .stat {
     background: var(--card); border: 1px solid var(--line); border-radius: 14px;
@@ -191,7 +191,7 @@
   @media (max-width: 760px) {
     a.card { flex-wrap: wrap; gap: 14px; }
     a.card .go { margin-left: auto; }
-    .stats { grid-template-columns: repeat(3, 1fr); }
+    .stats { grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
     header h1 { font-size: 28px; }
   }
 </style>
@@ -214,7 +214,7 @@
   <div class="badge">엘리스 트랙 수강생용</div>
   <h1>Coding Test Prep, All in One Place</h1>
   <p class="typed-line"><span id="typed"></span><span class="cursor"></span></p>
-  <p class="hero-sub">흩어진 자료, 이제 그만 찾아도 돼요. <span class="jsConc">36</span>개 핵심 개념과 74개 예시 문제, 16주 합격 로드맵까지 한곳에 모았어요. 막히면 힌트와 모범 답안이 있고, 작성한 풀이는 브라우저에서 바로 채점돼요.</p>
+  <p class="hero-sub">흩어진 자료, 이제 그만 찾아도 돼요. <span class="jsConc">36</span>개 핵심 개념과 83개 문제, 16주 합격 로드맵까지 한곳에 모았어요. 막히면 힌트와 모범 답안이 있고, 작성한 풀이는 브라우저에서 바로 채점돼요.</p>
   <div class="cta">
     <a class="primary" href="guide.html">가이드부터 보기</a>
     <a class="ghost" href="practice.html">예시 문제 풀어보기</a>
@@ -225,6 +225,8 @@
   <div class="stat"><b data-count="36">36</b><span>핵심 개념 주제</span></div>
   <div class="stat"><b data-count="72">72</b><span>주제별 퀴즈</span></div>
   <div class="stat"><b data-count="74">74</b><span>대표 예시 문제</span></div>
+  <div class="stat"><b data-count="9">9</b><span>기출 변형 문제</span></div>
+  <div class="stat"><b data-count="38">38</b><span>SQL 연습 문제</span></div>
 </div>
 
 <div class="ticker" aria-label="자주 묻는 질문">
@@ -400,7 +402,7 @@
     var typedEl = document.getElementById('typed');
     if (typedEl) {
       var _nc = (window.CT_CONCEPTS || []).length || 36;
-      var phrases = ['막막한 코딩 테스트, 전략부터 잡아요', _nc + '개 핵심 개념을 예제 코드로 쉽게', '74개 예시 문제를 브라우저에서 바로 채점', '16주로 합격 루틴 만들기'];
+      var phrases = ['막막한 코딩 테스트, 전략부터 잡아요', _nc + '개 핵심 개념을 예제 코드로 쉽게', '83개 문제를 브라우저에서 바로 채점', '16주로 합격 루틴 만들기'];
       if (reduce) {
         typedEl.textContent = phrases[0];
       } else {
@@ -417,14 +419,20 @@
       }
     }
 
-    // 개념 수와 퀴즈 수는 데이터에서 동적으로 채워요(개념 추가 시 자동 반영). 예시 문제(54)는 practice 페이지 기준 고정.
+    // 개념/퀴즈/예시/기출 수는 데이터에서 동적으로 채워요(개념 추가 시 자동 반영). SQL(38)은 sql-problems.js 미로드 페이지라 고정.
     (function () {
       var nc = (window.CT_CONCEPTS || []).length;
-      if (!nc) return;
+      var probs = window.CT_PROBLEMS || [];
+      var exCount = probs.filter(function (p) { return !p.g; }).length;
+      var giCount = probs.filter(function (p) { return p.g; }).length;
       var sb = document.querySelectorAll('.stats .stat b[data-count]');
-      if (sb[0]) sb[0].setAttribute('data-count', nc);
-      if (sb[1]) sb[1].setAttribute('data-count', nc * 2);
-      [].forEach.call(document.querySelectorAll('.jsConc'), function (el) { el.textContent = nc; });
+      if (nc) {
+        if (sb[0]) sb[0].setAttribute('data-count', nc);
+        if (sb[1]) sb[1].setAttribute('data-count', nc * 2);
+      }
+      if (exCount && sb[2]) sb[2].setAttribute('data-count', exCount);
+      if (giCount && sb[3]) sb[3].setAttribute('data-count', giCount);
+      [].forEach.call(document.querySelectorAll('.jsConc'), function (el) { el.textContent = nc || 36; });
     })();
 
     // 통계 숫자 카운트업 (뷰포트 진입 시 0에서 목표값까지)
